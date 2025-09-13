@@ -1,0 +1,837 @@
+.ui-dialog .charsheet * {
+}
+.ui-dialog .charsheet {
+  background-color: linen;
+  background-image: url(https://files.d20.io/images/450487066/uiAszlE0bRlWroPkO-cpQA/original.webp?17537137155);
+}
+
+/**************** Grid Layouts ****************/
+.ui-dialog .charsheet .grid-career {
+  display: grid;
+  column-gap: 10px;
+  grid-template-columns:  1fr 3fr;
+  row-gap: 5px;
+}
+.ui-dialog .charsheet .grid-career input[type=text] {
+  width: 100%;
+}
+
+.ui-dialog .charsheet .grid-coins {
+  display: grid;
+  column-gap: 10px;
+  grid-template-columns:  [first] repeat(6, 1fr) [last];
+  margin-bottom: 10px;
+  row-gap: 2px;
+}
+.ui-dialog .charsheet .grid-coins input {
+  width: 65px;
+}
+.ui-dialog .charsheet .grid-coins label {
+  margin: 0px;
+}
+
+.ui-dialog .charsheet .grid-dice {
+  display: grid;
+  grid-template-columns:  [first] repeat(15, 1fr) [last];
+  margin-bottom: 12px;
+}
+.ui-dialog .charsheet .grid-dice img {
+  height: 50px;
+  width: 50px;
+}
+.ui-dialog .charsheet .grid-dice input[type=number] {
+  font-size: 2em;
+  font-weight: bold;
+  height: auto;
+  width: 50px;
+}
+
+.ui-dialog .charsheet .grid-dice-header {
+  background-color: rgba(248, 248, 255, 0.5);
+  border-radius: 4px;
+  margin-bottom: 12px;
+  padding: 2px 5px;
+}
+.ui-dialog .charsheet .aggression-toggle:not([value='0']) ~ .grid-dice-header{
+  background-color: rgba(248, 128, 128, 0.5);
+}
+.ui-dialog .charsheet .grid-dice-header input.roll-reason {
+  background-color: transparent;
+  border: none;
+  cursor: default;
+  width: 350px;
+}
+.ui-dialog .charsheet .grid-dice-header button {
+  background-color: transparent;
+  border: none;
+  color: royalblue;
+  font-weight: bold;
+}
+
+.ui-dialog .charsheet .grid-characteristics,
+.ui-dialog .charsheet .grid-monster-stats {
+  display: grid;
+  column-gap: 10px;
+  grid-template-columns:  [first] repeat(4, 1fr) [last];
+}
+.ui-dialog .charsheet .grid-characteristics button {
+  height: 20px;
+  padding: 0px;
+}
+.ui-dialog .charsheet div.grid-monster-stats * {
+  color: darkgray;
+}
+
+.ui-dialog .charsheet .grid-headerAdvancedSkills {
+  display: grid;
+  grid-template-columns: 215px 100px 80px 215px auto;
+}
+
+.ui-dialog .charsheet .grid-headerTalents {
+  display: grid;
+  grid-template-columns: 80px 215px 220px auto;
+}
+
+.ui-dialog .charsheet .grid-overview {
+  display: grid;
+  column-gap: 10px;
+  grid-template-columns:  [first] repeat(4, 1fr) [last];
+}
+
+.ui-dialog .charsheet .grid-persistent {
+  display: grid;
+  column-gap: 10px;
+  grid-template-columns:  [first] repeat(2, 1fr) [last];
+  row-gap: 5px;
+}
+
+.ui-dialog .charsheet .grid-skills {
+  display: grid;
+  column-gap: 10px;
+  grid-template-columns:  115px 50px 60px 100px auto 115px 50px 60px 100px auto;
+}
+.ui-dialog .charsheet .grid-skills button {
+  height: 20px;
+  padding: 0px;
+}
+.ui-dialog .charsheet .grid-skills input[type=text] {
+  width: auto;
+}
+.ui-dialog .charsheet .grid-skills select {
+  width: 50px;
+}
+
+.ui-dialog .charsheet .grid-stances {
+  background-color: rgba(248, 248, 255, 0.5);
+  border-radius: 4px;
+  display: grid;
+  column-gap: 10px;
+  grid-template-columns:  [first] repeat(11, 1fr) [last];
+  justify-items: center;
+  margin-bottom: 12px;
+  padding: 2px;
+  row-gap: 5px;
+}
+.ui-dialog .charsheet .grid-stances label {
+  padding-left: 5px;
+}
+
+.ui-dialog .charsheet .span5 {
+  justify-self: center;
+  grid-column: span 5;
+}
+
+/**************** Core HTML element modifications ********************/
+.ui-dialog .charsheet hr {
+  grid-column: 1 / -1;
+  margin-bottom: 15px;
+  margin-top: 0px;
+}
+
+.ui-dialog .charsheet input {
+  background-color: ghostwhite;
+  font-size: 0.90em;
+  height: 19px;
+}
+
+.ui-dialog .charsheet input[type=checkbox] {
+  accent-color: darkolivegreen;
+  height: 15px;
+  width: 15px;
+}
+
+.ui-dialog .charsheet input[readonly] {
+  background-color: whitesmoke;
+}
+
+.ui-dialog .charsheet input[type=radio] {
+  transform: scale(1.5);
+}
+
+.ui-dialog .charsheet label { 
+  display: inline-block; 
+  font-size: 0.95em;
+  width: auto;
+}
+
+.ui-dialog .charsheet select {
+  background-color: ghostwhite;
+  font-size: 0.9em;
+  height: 19px;
+  margin: 0px;
+  padding: 0px;
+}
+
+.ui-dialog .charsheet textarea {
+  background-color: ghostwhite;
+  font-size: 0.90em;
+}
+
+/**************** Roll20 rendered element modifications **********/
+.ui-dialog .charsheet .repcontainer > .repitem {
+  margin-bottom: 5px;
+}
+.ui-dialog .charsheet .repcontainer > .repitem label {
+  display: inline;
+  font-size: 0.9em;
+  font-weight: normal;
+  padding-right: 2px;
+}
+.ui-dialog .charsheet .repcontainer[data-groupname="repeating_sockets"] > .repitem {
+  display: inline-block;
+  margin-right: 20px;
+}
+
+/**************** Buttons *****************************/
+.ui-dialog .charsheet button {
+font-size: 1em !important;
+}
+
+.ui-dialog .charsheet button[name='roll_weapon_damage'],
+.ui-dialog .charsheet button[name='act_getcritical'],
+.ui-dialog .charsheet button[name='act_getinsanity'] {
+  font-size: 0.9em;
+  height: 20px;
+  padding: 0px 5px;
+}
+
+/* Remove Roll20 button icon */
+.ui-dialog .charsheet button[name='roll_action_chat']::before,
+.ui-dialog .charsheet button[name='roll_action_effect_conservative']::before,
+.ui-dialog .charsheet button[name='roll_action_effect_reckless']::before,
+.ui-dialog .charsheet button[name='roll_weapon_chat']::before,
+.ui-dialog .charsheet button[name='roll_weapon_damage']::before {
+  content: '';
+}
+
+.ui-dialog .charsheet button.roll-dice {
+  border: 2px solid blue;
+}
+
+/**************** Custom Classes ********************/
+.ui-dialog .charsheet .ability-name {
+  font-weight: bold;
+  width: 150px;
+}
+.ui-dialog .charsheet .ability-effect {
+  width: calc(100% - 175px);
+}
+
+.ui-dialog .charsheet .action-char {
+  width: 150px;
+}
+.ui-dialog .charsheet .action-difficulty {
+  width: 75px;
+}
+.ui-dialog .charsheet .action-effect {
+  width: 99.5%;
+}
+.ui-dialog .charsheet .action-effect-cons-btn {
+  border: 2px solid darkgreen;
+}
+.ui-dialog .charsheet .action-effect-reck-btn {
+  border: 2px solid darkred;
+}
+.ui-dialog .charsheet .action-name {
+  font-weight: bold;
+}
+.ui-dialog .charsheet .action-requirements {
+  width: 395px;
+}
+.ui-dialog .charsheet .action-results {
+  margin-bottom: 2px;
+}
+.ui-dialog .charsheet .action-results button {
+  vertical-align: top;
+}
+.ui-dialog .charsheet .action-results textarea {
+  display: inline-block;
+  margin: 0px;
+  padding: 0px;
+  width: 45.5%;
+}
+.ui-dialog .charsheet .action-skill {
+  width: 150px;
+}
+.ui-dialog .charsheet .action-special {
+  width: 99.5%;
+}
+.ui-dialog .charsheet .action-type {
+  width: 150px;
+}
+.ui-dialog .charsheet .actions button {
+  height: 20px;
+  padding: 0px 5px;
+}
+
+.ui-dialog .charsheet .armor-name {
+  width: 150px;
+}
+.ui-dialog .charsheet .armor-type {
+  width: 150px;
+}
+
+.ui-dialog .charsheet .character-name {
+  font-size: 1.1em;
+  font-weight: bold;
+}
+
+.ui-dialog .charsheet .career {
+  width: 210px;
+}
+.ui-dialog .charsheet .career-image {
+  height: 520px;
+  width: 828px;
+}
+
+.ui-dialog .charsheet .condition-effects {
+  width: 100%;
+}
+.ui-dialog .charsheet .condition-name {
+  font-weight: bold;
+}
+
+.ui-dialog .charsheet .critical-effects {
+  width: 100%;
+}
+.ui-dialog .charsheet .critical-name {
+  font-weight: bold;
+}
+
+.ui-dialog .charsheet .disease-description {
+  font-style: italic;
+}
+.ui-dialog .charsheet .disease-name {
+  font-weight: bold;
+  width: 150px;
+}
+.ui-dialog .charsheet .disease-traits {
+  width: 150px;
+}
+.ui-dialog .charsheet .disease-description,
+.ui-dialog .charsheet .disease-effects {
+  width: 100%;
+}
+
+.ui-dialog .charsheet .equipment button {
+  height: 20px;
+  padding: 0px 5px;
+}
+
+.ui-dialog .charsheet .insanity-description {
+  font-style: italic;
+}
+.ui-dialog .charsheet .insanity-name {
+  font-weight: bold;
+  width: 150px;
+}
+.ui-dialog .charsheet .insanity-traits {
+  width: 150px;
+}
+.ui-dialog .charsheet .insanity-description,
+.ui-dialog .charsheet .insanity-effects {
+  width: 100%;
+}
+
+.ui-dialog .charsheet .item-name {
+  width: 150px;
+}
+.ui-dialog .charsheet .item-quality {
+  width: 100px;
+}
+
+.ui-dialog .charsheet .mutation-description {
+  font-style: italic;
+}
+.ui-dialog .charsheet .mutation-name {
+  font-weight: bold;
+  width: 150px;
+}
+.ui-dialog .charsheet .mutation-traits {
+  width: 150px;
+}
+.ui-dialog .charsheet .mutation-description,
+.ui-dialog .charsheet .mutation-effects {
+  width: 100%;
+}
+
+.ui-dialog .charsheet .optgroup {
+  background-color: lightgrey;
+  font-weight: bold;
+}
+.ui-dialog .charsheet .option {
+  margin-left: 20px;
+}
+
+.ui-dialog .charsheet .talent-category {
+  width: 80px;
+}
+.ui-dialog .charsheet .talent-effect {
+  width: calc(100% - 375px);
+}
+.ui-dialog .charsheet .talent-name {
+  font-weight: bold;
+  width: 150px;
+}
+.ui-dialog .charsheet .talent-status {
+  width: 80px;
+}
+.ui-dialog .charsheet .talent-status:has(option[value='1']:checked),
+.ui-dialog .charsheet .talent-status:has(option[value='2']:checked) {
+  background-color: azure; 
+}
+
+.ui-dialog .charsheet .weapon-name {
+  width: 150px;
+}
+.ui-dialog .charsheet .weapon-qualities {
+  width: 400px;
+}
+.ui-dialog .charsheet .weapon-range {
+  width: 100px;
+}
+.ui-dialog .charsheet .weapon-type {
+  width: 150px;
+}
+
+/**************** Custom highlighting ********************/
+/* 'Good' Status */
+.ui-dialog .charsheet input.advancesNegative:is([value='0'],[value=""],:not([value])) ~ .advances,
+.ui-dialog .charsheet .action-is-on-cooldown:is([value='0'],[value=""],:not([value])) ~ .action-cooldown,
+.ui-dialog .charsheet .condition-is-on-cooldown:is([value='0'],[value=""],:not([value])) ~ .condition-cooldown,
+.ui-dialog .charsheet .talent-is-on-cooldown:is([value='0'],[value=""],:not([value])) ~ .talent-cooldown {
+  background-color: palegreen;
+  border-color: forestgreen;
+  color: forestgreen;
+  font-weight: bold;
+}
+
+/* 'Alert' Status */
+.ui-dialog .charsheet .action-cooldown,
+.ui-dialog .charsheet .condition-cooldown,
+.ui-dialog .charsheet .talent-cooldown,
+.ui-dialog .charsheet input.advancesNegative[value='2'] ~ .advances,
+.ui-dialog .charsheet input.agIsFatigued[value='1'] ~ .ag,
+.ui-dialog .charsheet input.encumbranceExceedsCapacity[value='1'] ~ .encumbrance,
+.ui-dialog .charsheet input.fatigueExceedsCapacity[value='1'] ~ .fatigue,
+.ui-dialog .charsheet input.felIsDistressed[value='1'] ~ .fel,
+.ui-dialog .charsheet input.intIsDistressed[value='1'] ~ .int,
+.ui-dialog .charsheet input.stIsFatigued[value='1'] ~ .st,
+.ui-dialog .charsheet input.stressExceedsCapacity[value='1'] ~ .stress,
+.ui-dialog .charsheet input.toIsFatigued[value='1'] ~ .to,
+.ui-dialog .charsheet input.wpIsDistressed[value='1'] ~ .wp {
+  background-color: lemonchiffon; 
+  border-color: coral;
+  color: coral;
+  font-weight: bold;
+}
+
+/* 'Warning' Status' */
+.ui-dialog .charsheet input.advancesNegative[value='1'] ~ .advances,
+.ui-dialog .charsheet input.corruptionExceedsThreshold[value='1'] ~ .corruption,
+.ui-dialog .charsheet input.creationBalanceNotZero[value='1'] ~ .creationBalance,
+.ui-dialog .charsheet input.encumbranceExceedsCapacity[value='2'] ~ .encumbrance,
+.ui-dialog .charsheet input.fatigueExceedsCapacity[value='2'] ~ .fatigue,
+.ui-dialog .charsheet input.fortuneExceedsMax[value='1'] ~ .fortune,
+.ui-dialog .charsheet input.stressExceedsCapacity[value='2'] ~ .stress,
+.ui-dialog .charsheet input.woundsExceedsThreshold[value='1'] ~ .wounds {
+  background-color: lightpink; 
+  border-color: red;
+  color: red;
+  font-weight: bold;
+}
+
+/**************** Status indicators ********************/
+.ui-dialog .charsheet input.diseased:is([value='0'],[value=""],:not([value])) ~ .diseased-icon,
+.ui-dialog .charsheet input.encumbranceExceedsCapacity:is([value='0'],[value=""],:not([value])) ~ .encumbrance-icon,
+.ui-dialog .charsheet input.fatigueExceedsCapacity:is([value='0'],[value=""],:not([value])) ~ .fatigue-icon,
+.ui-dialog .charsheet input.has-crit:is([value='0'],[value=""],:not([value])) ~ .critical-icon,
+.ui-dialog .charsheet input.heal-on-cooldown:is([value='0'],[value=""],:not([value])) ~ .heal-cooldown-icon,
+.ui-dialog .charsheet input.on-edge:is([value='0'],[value=""],:not([value])) ~ .on-edge-icon,
+.ui-dialog .charsheet input.stressExceedsCapacity:is([value='0'],[value=""],:not([value])) ~ .stress-icon,
+.ui-dialog .charsheet input.unconscious:is([value='0'],[value=""],:not([value])) ~ .unconscious-icon {
+  display: none;
+}
+
+/**************** Fortune/ACE toggle ********************/
+.ui-dialog .charsheet input.aggression-toggle:not([value='0']) ~ .fortune-controls-header {
+  display: none;
+}
+.ui-dialog .charsheet input.aggression-toggle:is([value='0'],[value=""],:not([value])) ~ .aggression-controls-header {
+  display: none;
+}
+
+/**************** Details section toggle (global) ****************
+Note that each toggle must have a different name value */
+.ui-dialog .charsheet div.details {
+  background-color: rgba(255, 250, 240, 0.5);
+  padding-left: 2px;
+}
+
+.ui-dialog .charsheet div.details > * {
+  margin-bottom: 2px;
+}
+
+.ui-dialog .charsheet input.toggle-show:not(:checked) ~ div.details {
+    display: none;
+}
+
+/**************** WFRP3e stance styles ****************/
+.ui-dialog .charsheet .custom-radio {
+  margin-bottom: 0px;
+}
+
+/* Hide the native radio button */
+.ui-dialog .charsheet .custom-radio input[type="radio"] {
+  display: none;
+}
+
+/* Style the label to look like a wide rectangle */
+.ui-dialog .charsheet .custom-radio .radio-label,
+.ui-dialog .charsheet .custom-radio .radio-labelCons,
+.ui-dialog .charsheet .custom-radio .radio-labelReck {
+  display: inline-block;
+  width: 50px;
+  padding: 0px;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+.ui-dialog .charsheet .custom-radio .radio-label {
+  border: 2px solid darkslategray;
+  background-color: ghostwhite;
+  color: darkslategray;
+}
+.ui-dialog .charsheet .custom-radio .radio-labelCons {
+  border: 2px solid darkgreen;
+  background-color: ghostwhite;
+  color: darkgreen;
+}
+.ui-dialog .charsheet .custom-radio .radio-labelReck {
+  border: 2px solid darkred;
+  background-color: ghostwhite;
+  color: darkred;
+}
+
+/* Highlight when selected */
+.ui-dialog .charsheet .custom-radio input[type="radio"]:checked + .radio-label {
+  background-color: darkslategray;
+  color: ghostwhite;
+  border-color: darkslategray;
+}
+.ui-dialog .charsheet .custom-radio input[type="radio"]:checked + .radio-labelCons {
+  background-color: green;
+  color: ghostwhite;
+  border-color: darkgreen;
+}
+.ui-dialog .charsheet .custom-radio input[type="radio"]:checked + .radio-labelReck {
+  background-color: crimson;
+  color: ghostwhite;
+  border-color: darkred;
+}
+
+/* Hide unused stances */
+.ui-dialog .charsheet input.stance-is-hidden-C5[value='1'] + .custom-radio {
+  visibility: hidden;
+}
+
+/**************** WFRP3e talent sockets ********************/
+.ui-dialog .charsheet input[name='attr_socketCategory_lock']:not(:checked) ~ .socketCategory_select {
+  display: none;
+}
+
+/**************** Race field lock toggle ****************/
+.ui-dialog .charsheet button.toggle-lock {
+    background-color: white;
+    border: none;
+    width: 12px;
+}
+.ui-dialog .charsheet button.toggle-lock .locked,
+.ui-dialog .charsheet button.toggle-lock .unlocked {
+    font-family: "Pictos" !important;
+}
+
+.ui-dialog .charsheet select.race,
+.ui-dialog .charsheet input.race-readonly {
+  display: inline-block;
+  width: 182px;
+}
+
+.ui-dialog .charsheet input.toggle-lock-race[value='0'] ~ select.race {
+    display: none;
+}
+.ui-dialog .charsheet input.toggle-lock-race[value='0'] ~ .toggle-lock .unlocked {
+    display: none;
+}
+.ui-dialog .charsheet input.toggle-lock-race[value='1'] ~ input.race-readonly {
+    display: none;
+}
+.ui-dialog .charsheet input.toggle-lock-race[value='1'] ~ .toggle-lock .locked {
+    display: none;
+}
+
+/**************** Tab controls ****************/
+.ui-dialog .charsheet .button-panel {
+    padding-bottom: 15px;
+}
+.ui-dialog .charsheet .overview,
+.ui-dialog .charsheet .characteristics,
+.ui-dialog .charsheet .skills,
+.ui-dialog .charsheet .actions,
+.ui-dialog .charsheet .talents,
+.ui-dialog .charsheet .effects,
+.ui-dialog .charsheet .equipment,
+.ui-dialog .charsheet .careers {
+	display: none;
+}
+.ui-dialog .charsheet .tabstoggle[value='overview'] ~ section.overview,
+.ui-dialog .charsheet .tabstoggle[value='characteristics'] ~ section.characteristics,
+.ui-dialog .charsheet .tabstoggle[value='skills'] ~ section.skills,
+.ui-dialog .charsheet .tabstoggle[value='actions'] ~ section.actions,
+.ui-dialog .charsheet .tabstoggle[value='talents'] ~ section.talents,
+.ui-dialog .charsheet .tabstoggle[value='effects'] ~ section.effects,
+.ui-dialog .charsheet .tabstoggle[value='equipment'] ~ section.equipment,
+.ui-dialog .charsheet .tabstoggle[value='careers'] ~ section.careers {
+	display: block;
+}
+
+.ui-dialog .charsheet .btnOverview,
+.ui-dialog .charsheet .btnCharacteristics,
+.ui-dialog .charsheet .btnSkills,
+.ui-dialog .charsheet .btnActions,
+.ui-dialog .charsheet .btnTalents,
+.ui-dialog .charsheet .btnEffects,
+.ui-dialog .charsheet .btnEquipment,
+.ui-dialog .charsheet .btnCareers {
+    align-self: center;
+    background-color: whitesmoke;
+    background-image: none;
+    border-color: black;
+    border-radius: 15px 225px 255px 15px 15px 255px 225px 15px;
+    border-style: solid;
+    border-width: 2px;
+    box-shadow: rgba(0, 0, 0, .2) 15px 28px 25px -18px;
+    box-sizing: border-box;
+    color: black;
+    cursor: pointer;
+    display: inline-block;
+    height: auto;
+    line-height: 16px;
+    outline: none;
+    padding: 2px 10px;
+    text-decoration: none;
+    transition: all 235ms ease-in-out;
+    border-bottom-left-radius: 15px 255px;
+    border-bottom-right-radius: 225px 15px;
+    border-top-left-radius: 255px 15px;
+    border-top-right-radius: 15px 225px;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}  
+.ui-dialog .charsheet .btnOverview:hover,
+.ui-dialog .charsheet .btnCharacteristics:hover,
+.ui-dialog .charsheet .btnSkills:hover,
+.ui-dialog .charsheet .btnActions:hover,
+.ui-dialog .charsheet .btnTalents:hover,
+.ui-dialog .charsheet .btnEffects:hover,
+.ui-dialog .charsheet .btnEquipment:hover,
+.ui-dialog .charsheet .btnCareers:hover {
+box-shadow: rgba(0, 0, 0, .3) 2px 8px 8px -5px;
+transform: translate3d(0, 2px, 0);
+}
+.ui-dialog .charsheet .btnOverview:focus,
+.ui-dialog .charsheet .btnCharacteristics:focus,
+.ui-dialog .charsheet .btnSkills:focus,
+.ui-dialog .charsheet .btnActions:focus,
+.ui-dialog .charsheet .btnTalents:focus,
+.ui-dialog .charsheet .btnEffects:focus,
+.ui-dialog .charsheet .btnEquipment:focus,
+.ui-dialog .charsheet .btnCareers:focus {
+box-shadow: rgba(0, 0, 0, .3) 2px 8px 4px -6px;
+}
+.ui-dialog .charsheet .buttonstoggle[value='overview'] ~ button.btnOverview,
+.ui-dialog .charsheet .buttonstoggle[value='characteristics'] ~ button.btnCharacteristics,
+.ui-dialog .charsheet .buttonstoggle[value='skills'] ~ button.btnSkills,
+.ui-dialog .charsheet .buttonstoggle[value='actions'] ~ button.btnActions,
+.ui-dialog .charsheet .buttonstoggle[value='talents'] ~ button.btnTalents,
+.ui-dialog .charsheet .buttonstoggle[value='effects'] ~ button.btnEffects,
+.ui-dialog .charsheet .buttonstoggle[value='equipment'] ~ button.btnEquipment,
+.ui-dialog .charsheet .buttonstoggle[value='careers'] ~ button.btnCareers {
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, .3) 2px 8px 4px -6px;
+    font-weight: bold;
+    transform: translate3d(0, 2px, 0);
+}
+
+/**************** Roll Template Styles ****************/
+/* Better default template */
+/* Smaller margins - remove these if you want the huge default left margin */
+.sheet-rolltemplate-custom,
+.sheet-rolltemplate-menu {
+  margin-left: -37px;
+}
+.withoutavatars .sheet-rolltemplate-custom,
+.withoutavatars .sheet-rolltemplate-menu {
+  margin-left: -7px;
+}
+  
+  .sheet-rolltemplate-custom .sheet-container,
+  .sheet-rolltemplate-menu .sheet-container {
+    border: 1px solid;
+    /* by default, the border is the same color as the header. You can change this here, e.g. to black */
+    border-color: var(--header-bg-color);
+  }
+  
+  /* Header formatting - title and subtitle */
+  .sheet-rolltemplate-custom .sheet-header,
+  .sheet-rolltemplate-menu .sheet-header {
+    background-image: var(--header-bg-image);
+    background-color: var(--header-bg-color);
+    /* change text-align to center to center the header text */
+    text-align: left;
+    color: var(--header-text-color);
+    padding: 5px;
+  }
+  .sheet-rolltemplate-custom .sheet-title,
+  .sheet-rolltemplate-menu .sheet-title {
+    font-size:1.1em;
+    text-align: center;
+  }
+  .sheet-rolltemplate-custom .sheet-subtitle,
+  .sheet-rolltemplate-menu .sheet-subtitle {
+    font-size:.9em;
+    text-align: center;
+  }
+  
+  /* example colors */
+  .sheet-rolltemplate-custom .sheet-container,
+  .sheet-rolltemplate-menu .sheet-container {
+    /* this is the default color */
+    --header-bg-color:dimgray;
+    --header-text-color: #FFF;
+  }
+  .sheet-rolltemplate-custom .sheet-container.sheet-color-black,
+  .sheet-rolltemplate-menu .sheet-container.sheet-color-black {
+    --header-bg-color: black;
+    --header-text-color: #FFF;
+  }
+  .sheet-rolltemplate-custom .sheet-container.sheet-color-brown,
+  .sheet-rolltemplate-menu .sheet-container.sheet-color-brown {
+    --header-bg-color: saddlebrown;
+    --header-text-color: #FFF;
+  }
+  .sheet-rolltemplate-custom .sheet-container.sheet-color-blue,
+  .sheet-rolltemplate-menu .sheet-container.sheet-color-blue {
+    --header-bg-color: darkslateblue;
+    --header-text-color: #FFF;
+  }
+  .sheet-rolltemplate-custom .sheet-container.sheet-color-gold,
+  .sheet-rolltemplate-menu .sheet-container.sheet-color-gold {
+    --header-bg-color: gold;
+    --header-text-color: #000;
+  }
+  .sheet-rolltemplate-custom .sheet-container.sheet-color-green,
+  .sheet-rolltemplate-menu .sheet-container.sheet-color-green {
+    --header-bg-color: green;
+    --header-text-color: #FFF;
+  }
+  .sheet-rolltemplate-custom .sheet-container.sheet-color-orange,
+  .sheet-rolltemplate-menu .sheet-container.sheet-color-orange {
+    --header-bg-color: darkorange;
+    --header-text-color: #000;
+  }
+  .sheet-rolltemplate-custom .sheet-container.sheet-color-red,
+  .sheet-rolltemplate-menu .sheet-container.sheet-color-red {
+    --header-bg-color: maroon;
+    --header-text-color: #FFF;
+  }
+
+/* Success/Failure colors*/
+.sheet-rolltemplate-custom .sheet-success {
+    color: green;
+    font-weight: bold;
+}
+.sheet-rolltemplate-custom .sheet-failure {
+    color: red;
+    font-weight: bold;
+}
+  
+  /* Allprops part */
+  .sheet-rolltemplate-custom .sheet-content,
+  .sheet-rolltemplate-menu .sheet-content {
+    display: grid;
+    background: #FFF;
+    /* Header formatting - modify the column layout below */
+    grid-template-columns: auto auto;
+    /* Line height to match default roll template */
+    line-height:1.4em;
+  }
+  .sheet-rolltemplate-custom .sheet-content > div,
+  .sheet-rolltemplate-menu .sheet-content > div {
+    padding: 5px;
+  }
+  
+  /* Left column */
+  .sheet-rolltemplate-custom .sheet-content .sheet-key,
+  .sheet-rolltemplate-menu .sheet-content .sheet-key {
+    font-weight: bold;
+    padding-right: 10px;
+    text-align: right;
+  }
+  
+  /* Empty rule, use this if you want to change the right column 
+  .sheet-rolltemplate-custom .sheet-value {
+  }
+  */
+  
+  /* Make even-numbered rows grey */
+  .sheet-rolltemplate-custom .sheet-content div:nth-child(4n+3),
+  .sheet-rolltemplate-custom .sheet-content div:nth-child(4n) {
+    background:#EEE;
+  }
+  
+  /* Description field */
+  .sheet-rolltemplate-custom .sheet-desc,
+  .sheet-rolltemplate-menu .sheet-desc {
+    grid-column: span 2;
+    padding: 5px;
+    text-align: center;
+  }
+
+  /* Chat menu styles */
+  .sheet-rolltemplate-custom a[href^='!'],.sheet-rolltemplate-custom a[href^='~'],
+  .sheet-rolltemplate-menu a[href^='!'],.sheet-rolltemplate-menu a[href^='~'] {
+    background-color:transparent;
+    border:0;
+    color:#3f8aa6;
+    display:inline;
+    font-style: italic;
+    font-weight: bold;
+    padding: 0
+}
+
+.sheet-rolltemplate-custom .sheet-desc {
+    text-align: left;
+}

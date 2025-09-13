@@ -1,0 +1,3075 @@
+<section class='dice'>
+    <input type='hidden' class='aggression-toggle' name='attr_aggression_max'/>
+    <div class='grid-dice-header'>
+        <span class='character-name' name='attr_character_name'></span>
+
+        <input type='hidden' value='0' name='attr_fatigueExceedsCapacity' class='fatigueExceedsCapacity' />
+        <input type='hidden' value='0' name='attr_stressExceedsCapacity' class='stressExceedsCapacity' />
+        <input type='hidden' value='0' name='attr_heal_on_cooldown' class='heal-on-cooldown' />
+        <input type='hidden' value='0' name='attr_unconscious' class='unconscious' />
+        <input type='hidden' value='0' name='attr_diseased' class='diseased' />
+        <input type='hidden' value='0' name='attr_on_edge' class='on-edge' />
+        <input type='hidden' value='0' name='attr_has_crit' class='has-crit'/>
+        <input type='hidden' value='0' name='attr_encumbranceExceedsCapacity' class='encumbranceExceedsCapacity'/>
+        <span class='unconscious-icon' title='unconscious'>&#x1F634;</span>
+        <span class='on-edge-icon' title='on the edge'>&#x1F635;&#x200D;&#x1F4AB;</span>
+        <span class='diseased-icon' title='diseased'>&#x1F922;</span>
+        <span class='fatigue-icon' title='fatigued'>&#x1FA78;</span>
+        <span class='stress-icon' title='distressed'>&#x1F4A7;</span>
+        <span class='heal-cooldown-icon' title='healed'>&#x1FA79;</span>
+        <span class='critical-icon' title='has crits'>&#x2764;&#xFE0F;&#x200D;&#x1FA79;</span>
+        <span class='encumbrance-icon' title='encumbered'>&#x1F3CB;</span>
+        |
+        <button type='action' name='act_clear_seed' title='clear seed'><u>clear</u></button>
+        |
+        <input type='text' class='roll-reason' name='attr_roll_reason' title='seed description' readonly/>
+        <input type='hidden' value='' name='attr_roll_char_name'/>
+        <input type='hidden' value='' name='attr_roll_char_value'/>
+        <input type='hidden' value='black' name='attr_roll_color'/>
+        |
+        <input type='hidden' class='aggression-toggle' name='attr_aggression_max'/>
+        <span class='fortune-controls-header'><span title='fortune'>&#x2B1C;</span> (<strong><span name='attr_fortune'></span></strong>)<button type='action' name='act_use_fortune'><u>use fortune</u></button></span>
+        <span class='aggression-controls-header'><button type='action' name='act_use_aggression' title='aggression'>&#x1F620;</button>(<strong><span name='attr_aggression'></span></strong>) / <button type='action' name='act_use_cunning' title='cunning'>&#x1F9E0;</button>(<strong><span name='attr_cunning'></span></strong>) / <button type='action' name='act_use_expertise' title='expertise'>&#x1F7E8;</button>(<strong><span name='attr_expertise'></span></strong>) / <button type='action' name='act_reset_ace'><u>reset</u></button></span>
+    </div>
+    <div class='grid-dice'>
+        <img title='Characteristic Dice' src='https://files.d20.io/images/442357887/Ba6H7jbMHfyyHKzoct6OyQ/original.png?5'/>
+        <input type='number' value='0' min='0' max='9' name='attr_numDiceCharacteristic'/>
+        <img title='Conservative Dice' src='https://files.d20.io/images/442357903/GOAam4viePNUnOtTUWVbOw/original.png?5'/>
+        <input type='number' value='0' min='0' max='9' name='attr_numDiceConservative'/>
+        <img title='Reckless Dice' src='https://files.d20.io/images/442357956/UNngikg4cklfV-x4zFwtmg/original.png?5'/>
+        <input type='number' value='0' min='0' max='9' name='attr_numDiceReckless'/>
+        <img title='Expertise Dice' src='https://files.d20.io/images/442357928/Kx6w2yeIuoVT_UchI_fj8Q/original.png?5'/>
+        <input type='number' value='0' min='0' max='9' name='attr_numDiceExpertise'/>
+        <img title='Challenge Dice' src='https://files.d20.io/images/442357882/3fAixwR1Swj1aBFlOHY7Ug/original.png?5'/>
+        <input type='number' value='0' min='0' max='9' name='attr_numDiceChallenge'/>
+        <img title='Misfortune Dice' src='https://files.d20.io/images/442357947/N8Ekjpl6ez8fbZ8Q34BdDQ/original.png?5'/>
+        <input type='number' value='0' min='0' max='9' name='attr_numDiceMisfortune'/>
+        <img title='Fortune Dice' src='https://files.d20.io/images/442357934/5LiZAGCldyzqgCNmgpZJ0Q/original.png?5'/>
+        <input type='number' value='0' min='0' max='9' name='attr_numDiceFortune'/>
+        <button type='roll' class='roll-dice' name='roll_dice' value='&{template:custom} {{title=**@{character_name}**}} {{subtitle=@{roll_reason}}} {{color=@{roll_color}}} \n!wfrp @{numDiceCharacteristic}@{numDiceConservative}@{numDiceReckless}@{numDiceExpertise}@{numDiceChallenge}@{numDiceMisfortune}@{numDiceFortune}'></button>
+    </div>
+    <div class='grid-stances'>
+        <input type='hidden' value='Conservative' name='attr_stanceCurrent'/>
+        <input type='hidden' value='green' name='attr_stanceColor'/>
+        <input type='hidden' class='stance-is-hidden-C5' name='attr_stanceIsHiddenC5' />
+        <label class='custom-radio'>
+            <input type='radio' name='attr_stance' value='-5'>
+            <span class='radio-labelCons' title='Conservative 5'>C5</span>
+        </label>
+        <input type='hidden' class='stance-is-hidden-C5' name='attr_stanceIsHiddenC4' />
+        <label class='custom-radio'>
+            <input type='radio' name='attr_stance' value='-4'>
+            <span class='radio-labelCons' title='Conservative 4'>C4</span>
+        </label>
+        <input type='hidden' class='stance-is-hidden-C5' name='attr_stanceIsHiddenC3' />
+        <label class='custom-radio'>
+            <input type='radio' name='attr_stance' value='-3'>
+            <span class='radio-labelCons' title='Conservative 3'>C3</span>
+        </label>
+        <input type='hidden' class='stance-is-hidden-C5' name='attr_stanceIsHiddenC2' />
+        <label class='custom-radio'>
+            <input type='radio' name='attr_stance' value='-2'>
+            <span class='radio-labelCons' title='Conservative 2'>C2</span>
+        </label>
+        <input type='hidden' class='stance-is-hidden-C5' name='attr_stanceIsHiddenC1' />
+        <label class='custom-radio'>
+            <input type='radio' name='attr_stance' value='-1'>
+            <span class='radio-labelCons' title='Conservative 1'>C1</span>
+        </label>
+        <label class='custom-radio'>
+            <input type='radio' name='attr_stance' value='0' selected>
+            <span class='radio-label' title='Neutral'>N</span>
+        </label>
+        <input type='hidden' class='stance-is-hidden-C5' name='attr_stanceIsHiddenR1' />
+        <label class='custom-radio'>
+            <input type='radio' name='attr_stance' value='1'>
+            <span class='radio-labelReck' title='Reckless 1'>R1</span>
+        </label>
+        <input type='hidden' class='stance-is-hidden-C5' name='attr_stanceIsHiddenR2' />
+        <label class='custom-radio'>
+            <input type='radio' name='attr_stance' value='2'>
+            <span class='radio-labelReck' title='Reckless 2'>R2</span>
+        </label>
+        <input type='hidden' class='stance-is-hidden-C5' name='attr_stanceIsHiddenR3' />
+        <label class='custom-radio'>
+            <input type='radio' name='attr_stance' value='3'>
+            <span class='radio-labelReck' title='Reckless 3'>R3</span>
+        </label>
+        <input type='hidden' class='stance-is-hidden-C5' name='attr_stanceIsHiddenR4' />
+        <label class='custom-radio'>
+            <input type='radio' name='attr_stance' value='4'>
+            <span class='radio-labelReck' title='Reckless 4'>R4</span>
+        </label>
+        <input type='hidden' class='stance-is-hidden-C5' name='attr_stanceIsHiddenR5' />
+        <label class='custom-radio'>
+            <input type='radio' name='attr_stance' value='5'>
+            <span class='radio-labelReck' title='Reckless 5'>R5</span>
+        </label>
+    </div>
+</section>
+<input type='hidden' class='no-show' name='attr_no_show'/>
+<div class='button-panel'>
+    <input type='hidden' class='buttonstoggle' name='attr_sheetButtons' value='overview'/>
+    <button type='action' class='btnOverview' name='act_overview' >Overview</button>
+    <button type='action' class='btnCharacteristics' name='act_characteristics' >Characteristics</button>
+    <button type='action' class='btnSkills' name='act_skills' >Skills</button>
+    <button type='action' class='btnActions' name='act_actions' >Actions</button>
+    <button type='action' class='btnTalents' name='act_talents' >Talents</button>
+    <button type='action' class='btnEffects' name='act_effects' >Effects</button>
+    <button type='action' class='btnEquipment' name='act_equipment' >Equipment</button>
+    <button type='action' class='btnCareers' name='act_careers' >Careers</button>
+    </div>
+</div>
+<input type='hidden' class='tabstoggle' name='attr_sheetTab' value='overview'/>
+
+<section class='overview'>
+    <div class='grid-overview'>
+        <label>Character Name</label>
+        <input type='text' name='attr_character_name' />
+        <label>Race</label>
+        <div>
+            <input class='toggle-lock-race' type='hidden' value='1' name='attr_toggle_lock_race_value'/>
+            <button class='toggle-lock' type='action' name='act_toggle_lock_race_button'><span class='locked'>(</span><span class='unlocked'>)</span></button>
+            <select class='race' name='attr_race'>
+                <option value='1'>Human</option>
+                <option value='2'>Dwarf</option>
+                <option value='3'>High Elf</option>
+                <option value='4'>Wood Elf</option>
+                <option value='0'>Other</option>
+            </select>
+            <input type='text' class='race-readonly' name='attr_race_label' value='Human' readonly />
+        </div>
+
+        <label>Current Career</label>
+        <!--<input type='text' name='attr_career'/>-->
+        <select class='career' name='attr_career'>
+            <option value=''>Select career...</option>
+            <option value='https://files.d20.io/images/451474619/slYtX2IGjHvo8MaucT_2xA/original.png?175442088055'>Apprentice Wizard</option>
+            <option value='https://files.d20.io/images/451475876/dJY0b9mq5hppw4SE9S-wIQ/original.png?175442157055'>Envoy</option>
+            <option value='https://files.d20.io/images/451475879/JeTLqBIEPot7e_AuStmVIQ/original.png?175442157055'>Roadwarden</option>
+            <option value='https://files.d20.io/images/451475877/w7aHp75VONJWHsInom-dEg/original.png?175442157055'>Troll Slayer</option>
+        </select>
+
+        <label>Ethnicity</label>
+        <input type='text' name='attr_ethnicity'/>
+
+        <label>Rank</label>
+        <input type='number' value='1' min='1' max='9' name='attr_rank' readonly/>
+        <label>Experience</label>
+        <input type='number' value='0' min='0' name='attr_experience'/>
+
+        <label>Economic Tier</label>
+        <input type='text' name='attr_tier' readonly/>
+        <label>Encumbrance</label>
+        <input type='hidden' class='encumbranceExceedsCapacity' name='attr_encumbranceExceedsCapacity'/>
+        <input type='number' value='0' min='0' name='attr_encumbrance' class='encumbrance' readonly/>
+        
+    </div>
+    <hr/>
+    <div class='grid-overview'>
+        <div>
+            <input type='checkbox' value='1' name='attr_heal_on_cooldown'/>
+            <span>Healed</span>
+            <input type='checkbox' value='1' name='attr_unconscious'/>
+            <span>Unconscious</span>
+        </div>
+        <label>&#x1F49C; Wounds</label>
+        <label>&#x2622;&#xFE0F; Corruption</label>
+        <label>&#x2B1C; Fortune</label>
+
+        <label>Threshold/Max</label>
+        <input type='number' value='11' min='0' name='attr_wounds_max' readonly/>
+        <input type='number' value='7' min='0' name='attr_corruption_max' readonly/>
+        <input type='number' min='0' name='attr_fortune_max' readonly/>
+
+        <label>Current</label>
+        <input type='hidden' value='0' name='attr_woundsExceedsThreshold' class='woundsExceedsThreshold' />
+        <input type='number' value='0' min='0' name='attr_wounds' class='wounds'/>
+        <input type='hidden' value='0' name='attr_corruptionExceedsThreshold' class='corruptionExceedsThreshold' />
+        <input type='number' value='0' min='0' name='attr_corruption' class='corruption'/>
+        <input type='hidden' value='0' name='attr_fortuneExceedsMax' class='fortuneExceedsMax' />
+        <input type='number' min='0' name='attr_fortune' class='fortune'/>
+    </div>
+    <hr/>
+    <div class='grid-overview'>
+        <label>&#x1FA78; Fatigue</label>
+        <input type='hidden' value='0' name='attr_fatigueExceedsCapacity' class='fatigueExceedsCapacity' />
+        <input type='number' value='0' min='0' name='attr_fatigue' class='fatigue'/>
+        <label>&#x1F4A7; Stress</label>
+        <input type='hidden' value='0' name='attr_stressExceedsCapacity' class='stressExceedsCapacity' />
+        <input type='number' value='0' min='0' name='attr_stress' class='stress'/>
+
+        <label>&#x1F6E1;&#xFE0F; Defense</label>
+        <input type='number' value='0' min='0' name='attr_defense' readonly/>
+        <label>&#x1F9FD; Soak</label>
+        <input type='number' value='0' min='0' name='attr_soak' readonly/>
+    </div>
+    <hr/>
+    <div class='grid-overview'>
+        <label>Stance Settings</label>
+        <span></span>
+        <label>Conservative Depth</label>
+        <input type='number' min='0' max='5' name='attr_stanceDepthCons'/>
+        
+        <label>Dominant Stance</label>
+        <select name='attr_stanceDominant'>
+            <option>Conservative</option>
+            <option>Reckless</option>
+        </select>
+        <label>Reckless Depth</label>
+        <input type='number' min='0' max='5' name='attr_stanceDepthReck'/>
+    </div>
+</section>
+
+<section class='characteristics'>
+    <div class='grid-characteristics'>
+        <label>Physical Characteristics</label>
+        <span></span>
+        <span></span>
+        <button type='action' class='btn' name='act_init_ag_check' title='Seed combat initiative roll'>Combat Initiative</button>
+
+        <label>&#x1FA78; Fatigue</label>
+        <input type='hidden' value='0' name='attr_fatigueExceedsCapacity' class='fatigueExceedsCapacity' />
+        <input type='hidden' value='0' name='attr_fatgiue_max'/>
+        <input type='number' value='0' min='0' name='attr_fatigue' class='fatigue'/>
+        <span title='bonus fortune dice'>+&#x2B1C;</span>
+        <button type='action' class='btn' name='act_terror_check' title='Seed terror check'>Terror Check</button>
+
+        <label>Strength (St)</label>
+        <input type='hidden' value='0' name='attr_stIsFatigued' class='stIsFatigued' />
+        <input type='number' value='2' min='0' max='9' name='attr_st' class='st'/>
+        <input type='hidden' value='2' name='attr_stChar' />
+        <input type='hidden' value='0' name='attr_stReck' />
+        <input type='hidden' value='0' name='attr_stCons' />
+        <input type='hidden' value='0' name='attr_stExert' />
+        <input type='number' value='0' min='0' max='9' name='attr_stFortune' />
+        <button type='action' class='btn' name='act_stCheck' title='Seed St check'>Seed</button>
+
+        <label>Toughness (To)</label>
+        <input type='hidden' value='0' name='attr_toIsFatigued' class='toIsFatigued' />
+        <input type='number' value='2' min='0' max='9' name='attr_to' class='to'/>
+        <input type='hidden' value='2' name='attr_toChar' />
+        <input type='hidden' value='0' name='attr_toReck' />
+        <input type='hidden' value='0' name='attr_toCons' />
+        <input type='hidden' value='0' name='attr_toExert' />
+        <input type='number' value='0' min='0' max='9' name='attr_toFortune' />
+        <button type='action' class='btn' name='act_toCheck' title='Seed To check'>Seed</button>
+    
+        <label>Agility (Ag)</label>
+        <input type='hidden' value='0' name='attr_agIsFatigued' class='agIsFatigued' />
+        <input type='number' value='2' min='0' max='9' name='attr_ag' class='ag'/>
+        <input type='hidden' value='2' name='attr_agChar' />
+        <input type='hidden' value='0' name='attr_agReck' />
+        <input type='hidden' value='0' name='attr_agCons' />
+        <input type='hidden' value='0' name='attr_agExert' />
+        <input type='number' value='0' min='0' max='9' name='attr_agFortune' />
+        <button type='action' class='btn' name='act_agCheck' title='Seed Ag check'>Seed</button>
+    </div>
+    <hr/>
+    <div class='grid-characteristics'>
+        <label>Mental Characteristics</label>
+        <span></span>
+        <span></span>
+        <button type='action' class='btn' name='act_init_fel_check' title='Seed social initiative roll'>Social Initiative</button>
+        
+        <label>&#x1F4A7; Stress</label>
+            <input type='hidden' value='0' name='attr_stressExceedsCapacity' class='stressExceedsCapacity' />
+            <input type='hidden' value='0' name='attr_stress_max'/>
+            <input type='number' value='0' min='0' name='attr_stress' class='stress'/>
+        <span title='bonus fortune dice'>+&#x2B1C;</span>
+        <button type='action' class='btn' name='act_fear_check' title='Seed fear check'>Fear Check</button>
+
+        <label>Intelligence (Int)</label>
+        <input type='hidden' value='0' name='attr_intIsDistressed' class='intIsDistressed' />
+        <input type='number' value='2' min='0' max='9' name='attr_int' class='int'/>
+        <input type='hidden' value='2' name='attr_intChar' />
+        <input type='hidden' value='0' name='attr_intReck' />
+        <input type='hidden' value='0' name='attr_intCons' />
+        <input type='hidden' value='0' name='attr_intExert' />
+        <input type='number' value='0' min='0' max='9' name='attr_intFortune' />
+        <button type='action' class='btn' name='act_intCheck' title='Seed Int check'>Seed</button>
+            
+        <label>Willpower (WP)</label>
+        <input type='hidden' value='0' name='attr_wpIsDistressed' class='wpIsDistressed' />
+        <input type='number' value='2' min='0' max='9' name='attr_wp' class='wp'/>
+        <input type='hidden' value='2' name='attr_wpChar' />
+        <input type='hidden' value='0' name='attr_wpReck' />
+        <input type='hidden' value='0' name='attr_wpCons' />
+        <input type='hidden' value='0' name='attr_wpExert' />
+        <input type='number' value='0' min='0' max='9' name='attr_wpFortune' />
+        <button type='action' class='btn' name='act_wpCheck' title='Seed WP check'>Seed</button>
+
+        <label>Fellowship (Fel)</label>
+        <input type='hidden' value='0' name='attr_felIsDistressed' class='felIsDistressed' />
+        <input type='number' value='2' min='0' max='9' name='attr_fel' class='fel'/>
+        <input type='hidden' value='2' name='attr_felChar' />
+        <input type='hidden' value='0' name='attr_felReck' />
+        <input type='hidden' value='0' name='attr_felCons' />
+        <input type='hidden' value='0' name='attr_felExert' />
+        <input type='number' value='0' min='0' max='9' name='attr_felFortune' />
+        <button type='action' class='btn' name='act_felCheck' title='Seed Fel check'>Seed</button>
+    </div>
+    <hr/>
+    <div class='grid-characteristics'>
+        <span>(Casters Only)</span>
+        <label>Current</label>
+        <label>Equilibrium</label>
+        <label>Max</label>
+
+        <label>&#x2734;&#xFE0F; Power</label>
+        <input type='number' value='2' min='0' name='attr_power'/>
+        <input type='number' value='2' min='0' name='attr_power_equilibrium' readonly/>
+        <input type='number' value='2' min='0' name='attr_power_max' readonly/>
+
+        <label>&#x1F64F; Favour</label>
+        <input type='number' value='2' min='0' name='attr_favour'/>
+        <input type='number' value='2' min='0' name='attr_favour_equilibrium' readonly/>
+        <input type='number' value='2' min='0' name='attr_favour_max' readonly/>
+    </div>
+    <hr/>
+    <div class='grid-monster-stats'>
+        <span>(NPCs Only)</span>
+        <label>&#x1F620; Aggression</label>
+        <label>&#x1F9E0; Cunning</label>
+        <label>&#x1F7E8; Expertise</label>
+
+        <label>Max</label>
+        <input type='number' value='0' min='0' name='attr_aggression_max'/>
+        <input type='number' value='0' min='0' name='attr_cunning_max'/>
+        <input type='number' value='0' min='0' name='attr_expertise_max'/>
+
+        <label>Current</label>
+        <input type='number' value='0' min='0' name='attr_aggression'/>
+        <input type='number' value='0' min='0' name='attr_cunning'/>
+        <input type='number' value='0' min='0' name='attr_expertise'/>
+
+        <label>Fear Rating</label>
+        <input type='number' value='0' min='0' max='5' name='attr_fear'/>
+        <label>Terror Rating</label>
+        <input type='number' value='0' min='0' max='5' name='attr_terror'/>
+    </div>
+</section>
+
+<section class='skills'>
+    <div class='grid-skills'>
+        <span>Physical Skills</span>
+        <span>Char</span>
+        <span>Exp</span>
+        <span>Specialization</span>
+        <span></span>
+        <span>Mental Skills</span>
+        <span>Char</span>
+        <span>Exp</span>
+        <span>Specialization</span>
+        <span></span>
+
+        <label>Athletics</label>
+        <select name='attr_athleticsChar'>
+            <option selected>St</option>
+            <option>To</option>
+            <option>Ag</option>
+            <option>Int</option>
+            <option>WP</option>
+            <option>Fel</option>
+        </select>
+        <input type='hidden' value='St' name='attr_athleticsCharDefault' />
+        <input type='number' value='0' min='0' max='3' name='attr_athleticsExp' />
+        <input type='text' name='attr_athleticsSpec'/>
+        <button type='action' class='btn' name='act_athleticsCheck'>Seed</button>
+
+        <label>Charm</label>
+        <select name='attr_charmChar'>
+            <option>St</option>
+            <option>To</option>
+            <option>Ag</option>
+            <option>Int</option>
+            <option>WP</option>
+            <option selected>Fel</option>
+        </select>
+        <input type='hidden' value='Fel' name='attr_charmCharDefault' />
+        <input type='number' value='0' min='0' max='3' name='attr_charmExp' />
+        <input type='text' name='attr_charmSpec'/>
+        <button type='action' class='btn' name='act_charmCheck'>Seed</button>
+
+        <label>Ballistics</label>
+        <select name='attr_ballisticsChar'>
+            <option>St</option>
+            <option>To</option>
+            <option selected>Ag</option>
+            <option>Int</option>
+            <option>WP</option>
+            <option>Fel</option>
+        </select>
+        <input type='hidden' value='Ag' name='attr_ballisticsCharDefault' />
+        <input type='number' value='0' min='0' max='3' name='attr_ballisticsExp' />
+        <input type='text' name='attr_ballisticsSpec'/>
+        <button type='action' class='btn' name='act_ballisticsCheck'>Seed</button>
+        
+        <label>Discipline</label>
+        <select name='attr_disciplineChar'>
+            <option>St</option>
+            <option>To</option>
+            <option>Ag</option>
+            <option>Int</option>
+            <option selected>WP</option>
+            <option >Fel</option>
+        </select>
+        <input type='hidden' value='WP' name='attr_disciplineCharDefault' />
+        <input type='number' value='0' min='0' max='3' name='attr_disciplineExp' />
+        <input type='text' name='attr_disciplineSpec'/>
+        <button type='action' class='btn' name='act_disciplineCheck'>Seed</button>
+
+        <label>Coordination</label>
+        <select name='attr_coordinationChar'>
+            <option>St</option>
+            <option>To</option>
+            <option selected>Ag</option>
+            <option>Int</option>
+            <option>WP</option>
+            <option>Fel</option>
+        </select>
+        <input type='hidden' value='Ag' name='attr_coordinationCharDefault' />
+        <input type='number' value='0' min='0' max='3' name='attr_coordinationExp' />
+        <input type='text' name='attr_coordinationSpec'/>
+        <button type='action' class='btn' name='act_coordinationCheck'>Seed</button>
+
+        <label>First Aid</label>
+        <select name='attr_firstaidChar'>
+            <option>St</option>
+            <option>To</option>
+            <option>Ag</option>
+            <option selected>Int</option>
+            <option>WP</option>
+            <option>Fel</option>
+        </select>
+        <input type='hidden' value='Int' name='attr_firstaidCharDefault' />
+        <input type='number' value='0' min='0' max='3' name='attr_firstaidExp' />
+        <input type='text' name='attr_firstaidSpec'/>
+        <button type='action' class='btn' name='act_firstaidCheck'>Seed</button>
+
+        <label>Intimidate</label>
+        <select name='attr_intimidateChar'>
+            <option selected>St</option>
+            <option>To</option>
+            <option>Ag</option>
+            <option>Int</option>
+            <option>WP</option>
+            <option>Fel</option>
+        </select>
+        <input type='hidden' value='St' name='attr_intimidateCharDefault' />
+        <input type='number' value='0' min='0' max='3' name='attr_intimidateExp' />
+        <input type='text' name='attr_intimidateSpec'/>
+        <button type='action' class='btn' name='act_intimidateCheck'>Seed</button>
+
+        <label>Folklore</label>
+        <select name='attr_folkloreChar'>
+            <option>St</option>
+            <option>To</option>
+            <option>Ag</option>
+            <option selected>Int</option>
+            <option>WP</option>
+            <option>Fel</option>
+        </select>
+        <input type='hidden' value='Int' name='attr_folkloreCharDefault' />
+        <input type='number' value='0' min='0' max='3' name='attr_folkloreExp' />
+        <input type='text' name='attr_folkloreSpec'/>
+        <button type='action' class='btn' name='act_folkloreCheck'>Seed</button>
+
+        <label>Resilience</label>
+        <select name='attr_resilienceChar'>
+            <option>St</option>
+            <option selected>To</option>
+            <option>Ag</option>
+            <option>Int</option>
+            <option>WP</option>
+            <option>Fel</option>
+        </select>
+        <input type='hidden' value='To' name='attr_resilienceCharDefault' />
+        <input type='number' value='0' min='0' max='3' name='attr_resilienceExp' />
+        <input type='text' name='attr_resilienceSpec'/>
+        <button type='action' class='btn' name='act_resilienceCheck'>Seed</button>
+
+        <label>Guile</label>
+        <select name='attr_guileChar'>
+            <option>St</option>
+            <option>To</option>
+            <option>Ag</option>
+            <option>Int</option>
+            <option>WP</option>
+            <option selected>Fel</option>
+        </select>
+        <input type='hidden' value='Fel' name='attr_guileCharDefault' />
+        <input type='number' value='0' min='0' max='3' name='attr_guileExp' />
+        <input type='text' name='attr_guileSpec'/>
+        <button type='action' class='btn' name='act_guileCheck'>Seed</button>
+
+        <label>Ride</label>
+        <select name='attr_rideChar'>
+            <option>St</option>
+            <option>To</option>
+            <option selected>Ag</option>
+            <option>Int</option>
+            <option>WP</option>
+            <option>Fel</option>
+        </select>
+        <input type='hidden' value='Ag' name='attr_rideCharDefault' />
+        <input type='number' value='0' min='0' max='3' name='attr_rideExp' />
+        <input type='text' name='attr_rideSpec'/>
+        <button type='action' class='btn' name='act_rideCheck'>Seed</button>
+
+        <label>Intuition</label>
+        <select name='attr_intuitionChar'>
+            <option>St</option>
+            <option>To</option>
+            <option>Ag</option>
+            <option selected>Int</option>
+            <option>WP</option>
+            <option>Fel</option>
+        </select>
+        <input type='hidden' value='Int' name='attr_intuitionCharDefault' />
+        <input type='number' value='0' min='0' max='3' name='attr_intuitionExp' />
+        <input type='text' name='attr_intuitionSpec'/>
+        <button type='action' class='btn' name='act_intuitionCheck'>Seed</button>
+
+        <label>Skulduggery</label>
+        <select name='attr_skulduggeryChar'>
+            <option>St</option>
+            <option>To</option>
+            <option selected>Ag</option>
+            <option>Int</option>
+            <option>WP</option>
+            <option>Fel</option>
+        </select>
+        <input type='hidden' value='Ag' name='attr_skulduggeryCharDefault' />
+        <input type='number' value='0' min='0' max='3' name='attr_skulduggeryExp' />
+        <input type='text' name='attr_skulduggerySpec'/>
+        <button type='action' class='btn' name='act_skulduggeryCheck'>Seed</button>
+
+        <label>Leadership</label>
+        <select name='attr_leadershipChar'>
+            <option>St</option>
+            <option>To</option>
+            <option>Ag</option>
+            <option>Int</option>
+            <option>WP</option>
+            <option selected>Fel</option>
+        </select>
+        <input type='hidden' value='Fel' name='attr_leadershipCharDefault' />
+        <input type='number' value='0' min='0' max='3' name='attr_leadershipExp' />
+        <input type='text' name='attr_leadershipSpec'/>
+        <button type='action' class='btn' name='act_leadershipCheck'>Seed</button>
+
+        <label>Stealth</label>
+        <select name='attr_stealthChar'>
+            <option>St</option>
+            <option>To</option>
+            <option selected>Ag</option>
+            <option>Int</option>
+            <option>WP</option>
+            <option>Fel</option>
+        </select>
+        <input type='hidden' value='Ag' name='attr_stealthCharDefault' />
+        <input type='number' value='0' min='0' max='3' name='attr_stealthExp' />
+        <input type='text' name='attr_stealthSpec'/>
+        <button type='action' class='btn' name='act_stealthCheck'>Seed</button>
+
+        <label>Nature Lore</label>
+        <select name='attr_natureloreChar'>
+            <option>St</option>
+            <option>To</option>
+            <option>Ag</option>
+            <option selected>Int</option>
+            <option>WP</option>
+            <option>Fel</option>
+        </select>
+        <input type='hidden' value='Int' name='attr_natureloreCharDefault' />
+        <input type='number' value='0' min='0' max='3' name='attr_natureloreExp' />
+        <input type='text' name='attr_natureloreSpec'/>
+        <button type='action' class='btn' name='act_natureloreCheck'>Seed</button>
+
+        <label>Weapons</label>
+        <select name='attr_weaponsChar'>
+            <option selected>St</option>
+            <option>To</option>
+            <option>Ag</option>
+            <option>Int</option>
+            <option>WP</option>
+            <option>Fel</option>
+        </select>
+        <input type='hidden' value='St' name='attr_weaponsChar' />
+        <input type='number' value='0' min='0' max='3' name='attr_weaponsExp' />
+        <input type='text' name='attr_weaponsSpec'/>
+        <button type='action' class='btn' name='act_weaponsCheck'>Seed</button>
+
+        <label>Observation</label>
+        <select name='attr_observationChar'>
+            <option>St</option>
+            <option>To</option>
+            <option>Ag</option>
+            <option selected>Int</option>
+            <option>WP</option>
+            <option>Fel</option>
+        </select>
+        <input type='hidden' value='Int' name='attr_observationCharDefault' />
+        <input type='number' value='0' min='0' max='3' name='attr_observationExp' />
+        <input type='text' name='attr_observationSpec'/>
+        <button type='action' class='btn' name='act_observationCheck'>Seed</button>
+    </div>
+    <hr/>
+    <div class='grid-skills'>
+        <label>Animal Handling</label>
+        <select name='attr_animalhandlingChar'>
+            <option>St</option>
+            <option>To</option>
+            <option>Ag</option>
+            <option>Int</option>
+            <option>WP</option>
+            <option selected>Fel</option>
+        </select>
+        <input type='hidden' value='Fel' name='attr_animalhandlingCharDefault' />
+        <input type='number' min='0' max='3' name='attr_animalhandlingExp' />
+        <input type='text' name='attr_animalhandlingSpec'/>
+        <button type='action' class='btn' name='act_animalhandlingCheck'>Seed</button>
+
+        <label>Channelling</label>
+        <select name='attr_channellingChar'>
+            <option>St</option>
+            <option>To</option>
+            <option>Ag</option>
+            <option>Int</option>
+            <option selected>WP</option>
+            <option>Fel</option>
+        </select>
+        <input type='hidden' value='WP' name='attr_channellingCharDefault' />
+        <input type='number' min='0' max='3' name='attr_channellingExp' />
+        <input type='text' name='attr_channellingSpec'/>
+        <button type='action' class='btn' name='act_channellingCheck'>Seed</button>
+
+        <label>Education</label>
+        <select name='attr_educationChar'>
+            <option>St</option>
+            <option>To</option>
+            <option>Ag</option>
+            <option selected>Int</option>
+            <option>WP</option>
+            <option>Fel</option>
+        </select>
+        <input type='hidden' value='Int' name='attr_educationCharDefault' />
+        <input type='number' min='0' max='3' name='attr_educationExp' />
+        <input type='text' name='attr_educationSpec'/>
+        <button type='action' class='btn' name='act_educationCheck'>Seed</button>
+
+        <label>Invocation</label>
+        <select name='attr_invocationChar'>
+            <option>St</option>
+            <option>To</option>
+            <option>Ag</option>
+            <option>Int</option>
+            <option>WP</option>
+            <option selected>Fel</option>
+        </select>
+        <input type='hidden' value='Fel' name='attr_invocationCharDefault' />
+        <input type='number' min='0' max='3' name='attr_invocationExp' />
+        <input type='text' name='attr_invocationSpec'/>
+        <button type='action' class='btn' name='act_invocationCheck'>Seed</button>
+
+        <label>Mystical Sight</label>
+        <select name='attr_mysticalsightChar'>
+            <option>St</option>
+            <option>To</option>
+            <option>Ag</option>
+            <option selected>Int</option>
+            <option>WP</option>
+            <option>Fel</option>
+        </select>
+        <input type='hidden' value='Int' name='attr_mysticalsightCharDefault' />
+        <input type='number' min='0' max='3' name='attr_mysticalsightExp' />
+        <input type='text' name='attr_mysticalsightSpec'/>
+        <button type='action' class='btn' name='act_mysticalsightCheck'>Seed</button>
+
+        <label>Medicine</label>
+        <select name='attr_medicineChar'>
+            <option>St</option>
+            <option>To</option>
+            <option>Ag</option>
+            <option selected>Int</option>
+            <option>WP</option>
+            <option>Fel</option>
+        </select>
+        <input type='hidden' value='Int' name='attr_medicineCharDefault' />
+        <input type='number' min='0' max='3' name='attr_medicineExp' />
+        <input type='text' name='attr_medicineSpec'/>
+        <button type='action' class='btn' name='act_medicineCheck'>Seed</button>
+
+        <label>Piety</label>
+        <select name='attr_pietyChar'>
+            <option>St</option>
+            <option>To</option>
+            <option>Ag</option>
+            <option>Int</option>
+            <option selected>WP</option>
+            <option>Fel</option>
+        </select>
+        <input type='hidden' value='WP' name='attr_pietyCharDefault' />
+        <input type='number' min='0' max='3' name='attr_pietyExp' />
+        <input type='text' name='attr_pietySpec'/>
+        <button type='action' class='btn' name='act_pietyCheck'>Seed</button>
+
+        <label>Spellcraft</label>
+        <select name='attr_spellcraftChar'>
+            <option>St</option>
+            <option>To</option>
+            <option>Ag</option>
+            <option selected>Int</option>
+            <option>WP</option>
+            <option>Fel</option>
+        </select>
+        <input type='hidden' value='Int' name='attr_spellcraftCharDefault' />
+        <input type='number' min='0' max='3' name='attr_spellcraftExp' />
+        <input type='text' name='attr_spellcraftSpec'/>
+        <button type='action' class='btn' name='act_spellcraftCheck'>Seed</button>
+
+        <label>Tradecraft</label>
+        <select name='attr_tradecraftChar'>
+            <option>St</option>
+            <option>To</option>
+            <option>Ag</option>
+            <option selected>Int</option>
+            <option>WP</option>
+            <option>Fel</option>
+        </select>
+        <input type='hidden' value='Int' name='attr_tradecraftCharDefault' />
+        <input type='number' min='0' max='3' name='attr_tradecraftExp' />
+        <input type='text' name='attr_tradecraftSpec'/>
+        <button type='action' class='btn' name='act_tradecraftCheck'>Seed</button>
+    </div>
+</section>
+
+<section class='actions'>
+    <fieldset class='repeating_actions'>
+        <input type='hidden' value='0' class='action-is-on-cooldown' name='attr_action_cooldown' />
+        <input type='number' class='action-cooldown' value='0' min='0' name='attr_action_cooldown' />
+        <input type='text' class='action-name' name='attr_actionName' placeholder='Action Name...'/>
+        <input type='text' class='action-requirements' name='attr_actionRequirements' placeholder='Requirements...'/>
+        <input type='text' class='action-difficulty' name='attr_actionDifficulty' placeholder='Difficulty...'/>
+        <button type='roll' name='roll_action_chat' title='send to chat' value='&{template:custom} {{title=@{character_name}}} {{subtitle=Action Card Description}} {{color=brown}} {{Name=@{actionName}}} {{Description=@{actionEffect}}} {{Traits=@{actionTraits}}} {{Requirements=@{actionRequirements}}} {{Check=@{actionCheck}}} {{Difficulty=@{actionDifficulty}}} {{Recharge=[[@{actionRecharge}]] turns}} {{Special=@{actionSpecial}}}'>?</button>
+        <button type='action' class='btn' name='act_actionseed'>Seed</button>
+        <input type='checkbox' class='toggle-show'/><br/>
+        <div class='details'>
+            <input type='number' value='0' min='0' name='attr_actionRecharge'/>
+            <input type='text' name='attr_actionTraits' placeholder='Traits...'/>
+            <input type='text' name='attr_actionCheck' placeholder='Skill Check...'/>
+            <select class='action-skill' name='attr_actionSkill'>
+                <option value=''>Skill...</option>
+                <option value='animalhandling'>Animal Handling</option>
+                <option value='athletics'>Athletics</option>
+                <option value='ballistics'>Ballistics</option>
+                <option value='channelling'>Channelling</option>
+                <option value='charm'>Charm</option>
+                <option value='coordination'>Coordination</option>
+                <option value='discipline'>Discipline</option>
+                <option value='education'>Education</option>
+                <option value='firstaid'>First Aid</option>
+                <option value='folklore'>Folklore</option>
+                <option value='guile'>Guile</option>
+                <option value='intimidate'>Intimidate</option>
+                <option value='intuition'>Intuition</option>
+                <option value='invocation'>Invocation</option>
+                <option value='leadership'>Leadership</option>
+                <option value='magicalsight'>Magical Sight</option>
+                <option value='medicine'>Medicine</option>
+                <option value='naturelore'>Nature Lore</option>
+                <option value='observation'>Observation</option>
+                <option value='piety'>Piety</option>
+                <option value='resilience'>Resilience</option>
+                <option value='ride'>Ride</option>
+                <option value='skulduggery'>Skulduggery</option>
+                <option value='spellcraft'>Spellcraft</option>
+                <option value='stealth'>Stealth</option>
+                <option value='tradecraft'>Tradecraft</option>
+                <option value='weapons'>Weapons</option>
+            </select>            
+            <select class='action-char' name='attr_actionChar'>
+                <option>Characteristic...</option>
+                <option>St</option>
+                <option>To</option>
+                <option>Ag</option>
+                <option>Int</option>
+                <option>WP</option>
+                <option>Fel</option>
+            </select>
+            <br/>
+            <input type='text' class='action-effect' name='attr_actionEffect' placeholder='Effect...'/>
+            <input type='text' class='action-special' name='attr_actionSpecial' placeholder='Special...'/>
+            <div class='action-results'>                
+                <button type='roll' class='action-effect-cons-btn' name='roll_action_effect_conservative' title='send to chat' value='&{template:custom} {{title=@{character_name}}} {{subtitle=Action Card Results}} {{color=green}} {{Name=@{actionName}}} {{Stance=Conservative}} {{Effect=@{actionResultsConservative}}}'>></button>
+                <textarea name='attr_actionResultsConservative' placeholder='Conservative Results...' ></textarea>
+                <button type='roll' class='action-effect-reck-btn' name='roll_action_effect_reckless' title='send to chat' value='&{template:custom} {{title=@{character_name}}} {{subtitle=Action Card Results}} {{color=red}} {{Name=@{actionName}}} {{Stance=Reckless}} {{Effect=@{actionResultsReckless}}}'>></button>
+                <textarea name='attr_actionResultsReckless' placeholder='Reckless Results...' ></textarea>
+                <hr/>
+            </div>
+        </div>
+    </fieldset>
+</section>
+
+<section class='talents'>
+    <div>
+        <label>Career Sockets</label>
+        <fieldset class='repeating_sockets'>
+            <input type='checkbox' name='attr_socketCategory_lock' title='lock/unlock' checked/>
+            <input type='text' name='attr_socketCategory' readonly />
+            <select name='attr_socketCategory' class='socketCategory_select'>
+                <option>Category...</option>
+                <option>Faith</option>
+                <option>Focus</option>
+                <option>Invention</option>
+                <option>Oath</option>
+                <option>Order</option>
+                <option>Reputation</option>
+                <option>Tactic</option>
+                <option>Trick</option>
+                <option>Witchcraft</option>
+            </select>
+        </fieldset>
+        <hr/>
+        <label>Talents</label>        
+        <fieldset class='repeating_talents'>
+            <input type='hidden' value='0' class='talent-is-on-cooldown' name='attr_talent_cooldown' />
+            <input type='number' class='talent-cooldown' value='0' min='0' name='attr_talent_cooldown'/>
+            <input type='text' class='talent-name' name='attr_talent_name' placeholder='Name...' />
+            <select class='talent-category' name='attr_talent_category'>
+                <option>Category...</option>
+                <option>Faith</option>
+                <option>Focus</option>
+                <option>Invention</option>
+                <option>Oath</option>
+                <option>Order</option>
+                <option>Reputation</option>
+                <option>Tactic</option>
+                <option>Trick</option>
+                <option>Witchcraft</option>
+            </select>
+            <select class='talent-status' name='attr_talent_status'>
+                <option value='0'>Unused</option>
+                <option value='1'>Socketed</option>
+                <option value='2'>Party</option>
+            </select>
+            <input type='text' class='talent-effect' name='attr_talent_effect' placeholder='Effect...'/>
+        </fieldset>
+        <hr/>
+        <label>Abilities</label>
+        <fieldset class='repeating_abilities'>
+            <input type='text' class='ability-name' name='attr_ability_name' placeholder='Ability Name...' />
+            <input type='checkbox' name='attr_ability_on_cooldown' title='on cooldown' />
+            <input type='text' class='ability-effect' name='attr_ability_effect' placeholder='Effect...' />
+        </fieldset>
+    </div>
+</section>
+
+<section class='effects'>
+    <div>
+    <div>
+        <label>&#x1F621; Conditions</label>
+        <fieldset class='repeating_conditions'>
+            <input type='hidden' class='condition-is-on-cooldown' name='attr_condition_cooldown' />
+            <input type='number' class='condition-cooldown' value='0' min='0' name='attr_condition_cooldown'/>
+            <select class='condition-name' name='attr_condition_name'>
+                <option value='0' selected>(Ad Hoc Effect)</option>
+                <option value='1'>Blinded</option>
+                <option value='2'>Cowed</option>
+                <option value='3'>Demoralized</option>
+                <option value='4'>Energized</option>
+                <option value='5'>Entangled</option>
+                <option value='6'>Exposed</option>
+                <option value='7'>Frightened</option>
+                <option value='8'>Ill-Fortuned</option>
+                <option value='9'>Inspired</option>
+                <option value='10'>Intoxicated</option>
+                <option value='11'>Invigorated</option>
+                <option value='12'>Overwhelmed</option>
+                <option value='13'>Perplexed</option>
+                <option value='14'>Rattled</option>
+                <option value='15'>Shock</option>
+                <option value='16'>Sluggish</option>
+                <option value='17'>Staggered</option>
+                <option value='18'>Thunderstruck</option>
+                <option value='19'>Traumatised</option>
+                <option value='20'>Under the Weather</option>
+                <option value='21'>Weakened</option>
+            </select>
+            <select name='attr_condition_duration'>
+                <option value='0'>Duration...</option>
+                <option value='1' selected>Brief</option>
+                <option value='2'>Lingering</option>
+            </select>
+            <input type='text' class='condition-effects' name='attr_condition_effects' placeholder='Effect...'></textarea>
+        </fieldset>
+    </div>
+    <hr/>
+        <label>&#x2764;&#xFE0F;&#x200D;&#x1FA79; Critical Wounds</label>
+        <button type='action' class='btn' name='act_getcritical' title='roll random critical'>&#x1F3B2;</button>
+        <fieldset class='repeating_criticals'>
+            <input type='text' class='critical-name' name='attr_critical_name'/>
+            Severity: <input type='number' name='attr_critical_severity' placeholder='#'/>
+            First Aid: <input type='checkbox' name='attr_critical_first_aid' title='effect temporarily disabled'/>
+            <input type='text' class='critical-effects' name='attr_critical_effects' placeholder='Effect...'></textarea>
+        </fieldset>
+    </div>
+    <hr/>
+    <div>
+        <label>&#x1F635;&#x200D;&#x1F4AB; Insanities</label>
+        <button type='action' class='btn' name='act_getinsanity' title='roll random insanity'>&#x1F3B2;</button>
+        <fieldset class='repeating_insanities'>            
+            <input type='text' class='insanity-name' name='attr_insanity_name' placeholder='Name...'/>
+            <input type='text' class='insanity-traits' name='attr_insanity_traits' placeholder='Traits...'/>
+            Severity: <input type='number' name='attr_insanity_severity' placeholder='#'/>
+            Tokens: <input type='number' name='attr_insanity_intensity' placeholder='#'/> 
+            Permanent: <input type='checkbox' name='attr_insanity_permanent'/>
+            <input type='text' class='insanity-description' name='attr_insanity_description' placeholder='Description...'/>
+            <input type='text' class='insanity-effects' name='attr_insanity_effects' placeholder='Effects...'/>
+        </fieldset>
+    </div>
+    <hr/>
+    <div>
+        <label>&#x2622;&#xFE0F; Mutations</label>
+        <fieldset class='repeating_mutations'>
+            <input type='text' class='mutation-name' name='attr_mutation_name' placeholder='Name...'/>
+            <input type='text' class='mutation-traits' name='attr_mutation_traits' placeholder='Traits...'/>
+            Severity: <input type='number' name='attr_mutation_severity' placeholder='#'/>
+            <input type='text' class='mutation-description' name='attr_mutation_description' placeholder='Description...'/>
+            <input type='text' class='mutation-effects' name='attr_mutation_effects' placeholder='Effects...'/>
+        </fieldset>
+    </div>
+    <hr/>
+    <div>
+        <label>&#x1F922; Diseases</label>
+        <fieldset class='repeating_diseases'>
+            <input type='text' class='disease-name' name='attr_disease_name' placeholder='Name...'/>
+            <input type='text' class='disease-traits' name='attr_disease_traits' placeholder='Traits...'/>
+            <input type='text' class='disease-keyword' name='attr_disease_keyword' placeholder='Symptom Keywords...'/>
+            Severity: <input type='number' name='attr_disease_severity' placeholder='#'/>
+            <input type='text' class='disease-description' name='attr_disease_description' placeholder='Description...'/>
+            <input type='text' class='disease-effects' name='attr_disease_effects' placeholder='Effects...'/>
+        </fieldset>
+    </div>
+</section>
+
+<section class='equipment'>
+    <div class='grid-coins'>
+        <label>&#x1F7E1; Gold <span title='=1g'>(?)</span></label>
+        <span></span>
+        <label>&#x26AA; Silver <span title='=1/100g'>(?)</span></label>
+        <span></span>
+        <label>&#x1F7E0; Brass <span title='=1/2500g'>(?)</span></label>
+        <span></span>
+
+        <input type='number' value='0' min='0' name='attr_gold' readonly/>
+        <div>
+            <button type='action' class='btn' name='act_silvertogold' title='convert silver to gold'>&#x2B05;&#xFE0F;</button>
+            <button type='action' class='btn' name='act_goldtosilver' title='convert gold to silver'>&#x27A1;&#xFE0F;</button>
+        </div>
+        <input type='number' value='0' min='0' name='attr_silver' readonly/>
+        <div>
+            <button type='action' class='btn' name='act_brasstosilver' title='convert brass to silver'>&#x2B05;&#xFE0F;</button>
+            <button type='action' class='btn' name='act_silvertobrass' title='convert silver to brass'>&#x27A1;&#xFE0F;</button>
+        </div>
+        <input type='number' value='0' min='0' name='attr_brass' readonly/>
+        <button type='action' class='btn' name='act_addremovecoins' title='add/remove coins'>&#x1F4B0; +/-</button>
+
+        <input type='number' value='0' name='attr_gold_change'/>
+        <span></span>
+        <input type='number' value='0' name='attr_silver_change'/>
+        <span></span>
+        <input type='number' value='0' name='attr_brass_change'/>
+        <span></span>
+    </div>
+    <hr/>
+    <div class='grid-overview'>
+        <label>Capacity</label>
+        <input type='number' value='10' min='0' name='attr_capacity' readonly/>
+        <label>&#x1F3CB; Encumbrance</label>
+        <input type='hidden' class='encumbranceExceedsCapacity' name='attr_encumbranceExceedsCapacity'/>
+        <input type='number' value='0' min='0' name='attr_encumbrance' class='encumbrance' readonly/>
+    </div>
+    <hr/>
+    <div>
+        <label>&#x1F6E1;&#xFE0F; Armor</label>
+        <fieldset class='repeating_armor'>
+            <select class='armor-type' name='attr_armor_type'>
+                <option value='-1'>Type...</option>
+                <option value='-1' class='optgroup'>ARMORS</option>
+                <option value='0' class='option'>Natural Defenses</option>
+                <option value='1' class='option'>Cloth</option>
+                <option value='2' class='option'>Robes</option>
+                <option value='3' class='option'>Leather</option>
+                <option value='4' class='option'>Brigandine</option>
+                <option value='5' class='option'>Mail Shirt</option>
+                <option value='6' class='option'>Chainmail</option>
+                <option value='7' class='option'>Scale</option>
+                <option value='8' class='option'>Ulthuan Scale</option>
+                <option value='9' class='option'>Breastplate & Chain</option>
+                <option value='10' class='option'>Full Plate</option>
+                <option value='11' class='option'>Other Armor</option>
+                <option value='-1' class='optgroup'>SHIELDS</option>
+                <option value='12' class='option'>Buckler</option>
+                <option value='13' class='option'>Buckler, Spiked</option>
+                <option value='14' class='option'>Round/Kite Shield</option>
+                <option value='15' class='option'>Tower Shield</option>
+                <option value='16' class='option'>Other Shield</option>
+            </select>
+            <input type='text' class='armor-name' name='attr_armor_name' placeholder='Name...'/>
+            <label>Equip: <input type='checkbox' value='1' title='currently equipped' name='attr_armor_equipped' checked/></label>
+            <label>Damaged: <input type='checkbox' name='attr_armor_damaged'/></label>
+            <label>Defense: <input type='number' value='0' min='0' name='attr_armor_defense' /></label>
+            <label>Soak: <input type='number' value='0' min='0' name='attr_armor_soak'/></label>
+            <input type='checkbox' title='show/hide details' class='toggle-show'/><br/>
+            <div class='details'>
+                <textarea placeholder='Details...' name='attr_armor_details'></textarea>
+            </div>
+        </fieldset>
+    </div>
+    <hr/>
+    <div>
+        <label>&#x1F3F9; Weapons</label>
+        <fieldset class='repeating_weapons'>
+            <select class='weapon-type' name='attr_weapon_type'>
+                <option value='-1'>Type...</option>
+                <option value='36' class='option'>Improvised</option>
+                <option value='15' class='option'>Other</option>
+                <option value='-1' class='optgroup'>MELEE</option>
+                <option value='0' class='option'>Natural Attacks</option>
+                <option value='1' class='option'>Dagger</option>
+                <option value='2' class='option'>Flail</option>
+                <option value='3' class='option'>Gauntlet</option>
+                <option value='4' class='option'>Great Weapon</option>
+                <option value='5' class='option'>Halberd</option>
+                <option value='6' class='option'>Hand Weapon</option>
+                <option value='7' class='option'>Lance</option>
+                <option value='8' class='option'>Main Gauche</option>
+                <option value='9' class='option'>Morning Star</option>
+                <option value='10' class='option'>Quarter Staff</option>
+                <option value='11' class='option'>Rapier</option>
+                <option value='12' class='option'>Sabre</option>
+                <option value='13' class='option'>Spear</option>
+                <option value='14' class='option'>Unarmed</option>
+                <option value='-1' class='optgroup'>RANGED</option>
+                <option value='16' class='option'>Blunderbuss</option>
+                <option value='17' class='option'>Crossbow</option>
+                <option value='18' class='option'>Crossbow Pistol</option>
+                <option value='19' class='option'>Handgun</option>
+                <option value='20' class='option'>Hochland Long Rifle</option>
+                <option value='21' class='option'>Javelin</option>
+                <option value='22' class='option'>Lasso</option>
+                <option value='23' class='option'>Longbow</option>
+                <option value='24' class='option'>Net</option>
+                <option value='25' class='option'>Pistol</option>
+                <option value='26' class='option'>Repeater Crossbow</option>
+                <option value='27' class='option'>Repeater Handgun</option>
+                <option value='28' class='option'>Repeater Pistol</option>
+                <option value='29' class='option'>Shortbow</option>
+                <option value='30' class='option'>Sling</option>
+                <option value='31' class='option'>Staff Sling</option>
+                <option value='32' class='option'>Throwing Axe/Hammer</option>
+                <option value='33' class='option'>Throwing Dagger/Star</option>
+                <option value='34' class='option'>Whip</option>
+            </select>
+            <input type='text' class='weapon-name' name='attr_weapon_name' placeholder='Name...'/>
+            <label>Equip: <input type='checkbox' value='1' title='currently equipped' name='attr_weapon_equipped' checked/></label>
+            <label>Damaged: <input type='checkbox' name='attr_weapon_damaged'/></label>
+            <label>DR: <input type='number' value='0' min='0' name='attr_weapon_DR' /></label>
+            <label>CR: <input type='number' value='0' min='0' name='attr_weapon_CR'/></label>
+            <select class='weapon-range' name='attr_weapon_range'>
+                <option value='-1'>Max range...</option>
+                <option value='0'>Melee</option>
+                <option value='1'>Close</option>
+                <option value='2'>Medium</option>
+                <option value='3'>Long</option>
+            </select>
+            <input type='number' name='attr_weapon_ammo' placeholder='#'/>
+            <button type='roll' name='roll_weapon_chat' title='send to chat' value='&{template:custom} {{title=@{character_name}}} {{subtitle=@{weapon_name}}} {{color=brown}} {{=@{weapon_details}}}'>?</button>
+            <button type='roll' class='btn' value='&{template:custom} {{title=@{character_name}}} {{subtitle=damage vs. @{target|Target|token_name}}} {{color=orange}} {{Weapon/Attack=@{weapon_name}}} {{Type=@{weapon_group}}} {{Qualities=@{weapon_qualities}}} {{Attack Characteristic=@{roll_char_name}}} {{(+) Characteristic Rating=@{roll_char_value}}} {{(+) Damage Rating=@{weapon_DR}}} {{(+) Bonus Damage=?{Bonus Damage|0}}} {{(-) Target Soak Value=@{target|Target|soak}}} {{(-) Targets To Rating=@{target|Target|to}}} {{TOTAL DAMAGE=[[{0d1[roll] + @{roll_char_value}[char rating] + @{weapon_dr}[wpn DR] + ?{Bonus Damage}[bonus] - @{target|Target|soak}[trgt soak] - @{target|Target|to}[trgt to], 0d1+1[min 1]}k1]]}} {{Crit Rating=@{weapon_CR}}}' name='roll_weapon_damage'>Dmg</button>
+            <input type='checkbox' title='show/hide details' class='toggle-show'/><br/>
+            <div class='details'>
+                <select name='attr_weapon_group'>
+                    <option>Weapon group...</option>
+                    <option>Blackpowder</option>
+                    <option>Bow</option>
+                    <option>Cavalry</option>
+                    <option>Crossbow</option>
+                    <option>Fencing</option>
+                    <option>Flail</option>
+                    <option>Great Weapon</option>
+                    <option>Ordinary</option>
+                    <option>Polearm</option>
+                    <option>Sling</option>
+                    <option>Spear</option>
+                    <option>Staff</option>
+                    <option>Thrown</option>
+                    <option>Unarmed</option>
+                </select>
+                <input type='text' class='weapon-qualities' name='attr_weapon_qualities' placeholder='Weapon qualities...'/>
+                <textarea placeholder='Details...' name='attr_weapon_details'></textarea>
+            </div>
+        </fieldset>
+    </div>
+    <hr/>
+    <div>
+        <label>&#x1F3CB; Encumbrance</label>
+        <input type='hidden' value='0' name='attr_encpenalty'/>
+        <fieldset class='repeating_items'>
+            <input type='text' class='item-name' name='attr_item_name' placeholder='Item Name...'/>
+            <input type='hidden' name='attr_item_link'/>
+            <label>Equip: <input type='checkbox' value='1' title='currently equipped' name='attr_item_equipped' checked /></label>
+            <label>Damaged: <input type='checkbox' title='item damaged' name='attr_item_damaged'/></label>
+            <label>Craftsmanship: <select class='item-quality' name='attr_item_quality'>
+                <option>Poor</option>
+                <option selected>Average</option>
+                <option>Superior</option>
+            </select></label>
+            <label>Enc: <input type='number' value='0' min='0' name='attr_item_enc' /></label>
+            <label>Count: <input type='number' value='1' min='0' name='attr_item_count' /></label>
+            <input type='checkbox' title='show/hide details' class='toggle-show'/><br/>
+            <div class='details'>
+                <textarea placeholder='Details...' name='attr_item_details'></textarea>
+            </div>
+        </fieldset>
+    </div>
+</section>
+
+<section class='careers'>
+    <div>
+        <label>Current Career</label>
+        <img class='career-image' name='attr_career_image'/>
+    </div>
+    <hr/>
+    <div class='grid-overview'>
+        <label>Unspent Advances</label>
+        <input type='hidden' value='0' name='attr_advancesNegative' class='advancesNegative' />
+        <input type='number' value='0' min='0' name='attr_advances' class='advances' readonly/>
+    </div>
+    <br/>
+    <div>
+        <label>Career Advances</label>
+        <fieldset class='repeating_careerAdvances'>
+            <select name='attr_careerAdvanceType'>
+                <option value='0'>Career Advance Type...</option>
+                <option value='1'>Action</option>
+                <option value='2'>Characteristic</option>
+                <option value='3'>Conservative</option>
+                <option value='4'>Fortune</option>
+                <option value='5'>Reckless</option>
+                <option value='6'>Skill</option>
+                <option value='7'>Talent</option>
+                <option value='8'>Wound</option>
+                <option value='9'>Other</option>
+            </select>
+            <input type='text' name='attr_careerAdvanceNotes' placeholder='Notes...'/>
+            <input type='hidden' value='1' name='attr_careerAdvanceCost'/>
+        </fieldset>
+    </div>
+    <br/>
+    <div>
+        <label>Non-Career Advances</label>
+        <fieldset class='repeating_noncareerAdvances'>
+            <select name='attr_noncareerAdvanceType'>
+                <option value='0'>Career Advance Type...</option>
+                <option value='2'>Characteristic</option>
+                <option value='6'>Skill</option>
+                <option value='7'>Talent</option>
+                <option value='9'>Other</option>
+            </select>
+            <input type='text' name='attr_noncareerAdvanceNotes' placeholder='Notes...'/>
+            <input type='number' name='attr_noncareerAdvanceCost' placeholder='$...'/>
+        </fieldset>
+    </div>
+    <hr/>
+    <div class='grid-overview'>
+        <label>Initial Career</label>
+        <input type='text' name='attr_career_1_name'/>
+        <span></span>
+        <span></span>
+
+        <label>Creation Points</label>
+        <input type='number' value='25' name='attr_creationPoints' readonly/>
+        <label>Balance</label>
+        
+        <input type='hidden' value='1' name='attr_creationBalanceNotZero' class='creationBalanceNotZero' />
+        <input type='number' value='25' name='attr_creationBalance' class='creationBalance' readonly/>
+
+        <label>Wealth</label>
+        <select name='attr_creationWealth'>
+            <option value='0'>Broke</option>
+            <option value='1'>Poor</option>
+            <option value='2'>Comfortable</option>
+            <option value='3'>Affluent</option>
+        </select>
+        <label>Skills</label>
+        <select name='attr_creationSkills'>
+            <option value='0'>1</option>
+            <option value='1'>2</option>
+            <option value='2'>3 + 1 specialization</option>
+            <option value='3'>4 + 2 specialization</option>
+        </select>
+
+        <label>Talents</label>
+        <select name='attr_creationTalents'>
+            <option value='0'>0</option>
+            <option value='1'>1</option>
+            <option value='2'>2</option>
+            <option value='3'>3</option>
+        </select>
+        <label>Actions</label>
+        <select name='attr_creationActions'>
+            <option value='0'>1</option>
+            <option value='1'>2</option>
+            <option value='2'>3</option>
+            <option value='3'>4</option>
+        </select>
+    </div>
+    <br/>
+    <div>
+        <label>Characteristic Improvements</label>
+        <fieldset class='repeating_creationChars'>
+            <select name='attr_creationChar'>
+                <option>Characteristics...</option>
+                <option>Strength (St)</option>
+                <option>Toughness (To)</option>
+                <option>Agility (Ag)</option>
+                <option>Intelligence (Int)</option>
+                <option>Willpower (WP)</option>
+                <option>Fellowship (Fel)</option>
+            </select>
+            <select name='attr_creationCharIncrease'>
+                <option value='-1'>Increase...</option>
+                <option value='3'>From 2 to 3</option>
+                <option value='4'>From 3 to 4</option>
+                <option value='5'>From 4 to 5</option>
+            </select>
+        </fieldset>
+    </div>
+</section>
+
+<input type='hidden' name='attr_banner_action' value='[x](https://files.d20.io/images/240216164/eJ_5t2QOceZDGACZmtb9Mw/original.png?16291501135#.png)'/>
+
+<!-- Banner placeholders (see readme) -->
+<script type='text/worker'>
+/******************************************************/
+
+// GLOBAL CONSTANTS
+const CARRER_ADVANCE_WOUND = 8;
+const COLOR_CHECK_CHAR = 'blue';
+const COLOR_CHECK_INIT = 'black';
+const COLOR_CHECK_FEAR = 'gold';
+const COLOR_CHECK_SKILL = 'blue';
+const DEFAULT_CLASS_SHEET_IMAGE = 'https://files.d20.io/images/450487066/uiAszlE0bRlWroPkO-cpQA/original.webp?175371371555';
+const EMPTY_STRING = '';
+const ENC_STR_MULTI = 5;
+const RACE_DWARF = 2;
+const SELECT_VALUE_WEAPON_TYPE_GAUNTLET = 3;
+const SELECT_VALUE_WEAPON_RANGE_MELEE = 0;
+const STANCE_CONSERVATIVE = 'Conservative';
+const STANCE_RECKLESS = 'Reckless';
+const STANCE_COLOR_CONSERVATIVE = 'green';
+const STANCE_COLOR_RECKLESS = 'red';
+
+// WFRP3e Player's Guide Pgs 102-103
+const ARMORS = [
+    '',0,0,0,'','',
+    'Natural Defenses',0,0,0,'','Natural armor, such as leathery hide, bony plates, scales, etc.',
+    'Cloth',0,1,1,'','This is not armour per se but the benefit of wearing durable, practical clothing.',
+    'Robes',1,0,2,'','The voluminous robes of wizards and the garb of priests make landing a solid blow slightly more difficult. Still, counting on their protection in a fight is probably a dubious stratagem.',
+    'Leather',0,2,3,'','A full suit of leather armour provides some protection but is really little more than wearing yet more durable clothing. Still, leather is cheap and light and therefore it sees much use amongst archers, watchmen, and bandits. Leather includes a cap but does not have gauntlets.',
+    'Brigandine',1,1,5,'Gauntlet','A suit of heavy cloth sewn with metal plates, this type of armour has become largely obsolete in the Empire’s armies, but still sees some use outside the military. It includes a metal helm often in an outdated style, and has metal gauntlets.',
+    'Mail Shirt',1,2,4,'','Sometimes called a hauberk, this shirt of woven metal links offers some protection while not being particularly constricting. It includes neither a helm nor gauntlets.',
+    'Chainmail',0,3,6,'Gauntlet','Chainmail armour provides substantial protection, covering the wearer in interlocking mail links. It often features thick padding or light leather underneath for greater comfort and slightly more protection. A mail coif protects the head, and mail gauntlets are worn.',
+    'Scale',0,4,7,'Gauntlet','This type of armour dates from the days before plate armour was practical. Heavy metal scales are sewn onto a leather backing. This armour provides substantial protection versus the strongest of blows, but is very heavy and tiring to wear. It includes a metal skull cap and heavy scale-covered gauntlets.',
+    'Ulthuan Scale',1,3,5,'Gauntlet','This is more refined, elegantly crafted, and sturdier than the style of scale armour generally found in the Empire. Ulthuan scale armour is custom crafted for the high elf physique, offering the wearer greater flexibility, and the armour is much lighter than one would expect. Ulthuan scale armour has an encumbrance of 7 if worn by someone other than a high elf.',
+    'Breastplate & Chain',1,4,6,'Gauntlet','Instead of wearing a full of suit of plate, this is a less costly, lighter but more awkward compromise. A solid metal breast plate is worn over a suit of chainmail armour. A chain coif and mail gauntlets complete the suit. Wearing this armour is sometimes taken as a sign that you are a poor knight unable to afford proper plate.',
+    'Full Plate',1,5,8,'Gauntlet','The ultimate in protection, full plate encases the warrior in steel. Expensive and heavy, this armour is usually only worn by knights, nobles, and warriors of high station. Merely owning a suit of plate armour is a sign of great prestige. These suits are often ornate, decorated with a family crest or other symbols of personal allegiance.',
+    '',0,0,0,'','',
+    'Buckler',1,0,2,'','A buckler is a small shield, often used for fencing.',
+    'Spiked Buckler',1,0,3,'Spiked Buckler','A buckler is a small shield, often used for fencing. A spiked buckler can also be used as a gauntlet in melee.',
+    'Round/Kite Shield',1,1,4,'','A common warrior’s shield that comes in a variety of shapes and may be constructed of metal or wood. It may be used as an improvised weapon in extreme circumstances.',
+    'Tower Shield',2,1,5,'','A large defensive shield usually used in siege warfare to give cover to advancing troops. For some, it is considered too heavy or cumbersome to be wielded in long drawn out fights.',
+    '',0,0,0,'',''
+];
+const ARMORS_ITEMS_COUNT = 6;
+const ARMORS_ITEM_INDEX_NAME = 0;
+const ARMORS_ITEM_INDEX_DEFENSE = 1;
+const ARMORS_ITEM_INDEX_SOAK = 2;
+const ARMORS_ITEM_INDEX_ENC = 3;
+const ARMORS_ITEM_INDEX_GAUNTLET = 4;
+const ARMORS_ITEM_INDEX_DESCRIPTION = 5;
+
+// WFRP3e Player's Guide Pgs 98-101
+const WEAPONS = [
+    '',0,0,0,-1,'','','',
+    'Natural Attacks',0,0,0,0,'Unarmed','','Natural attacks, such as claws, teeth, etc.',
+    'Dagger',4,3,2,0,'Ordinary','Fast','A short stabbing knife or poniard, these weapons are ubiquitous throughout the Old World. They can be thrown (see throwing dagger below) but unless balanced, incur a misfortune die.\n\nFast: These weapons are generally easy to wield and agile. Attacks made with weapons with the fast quality gain: “\u{1F985} Place one fewer recharge token on this action”',
+    'Flail',7,3,6,0,'Flail','Slow, Vicious, Two- Handed','A zealot’s weapon sometimes used for self flagellation, a long wooden handle supports a tangled mass of heavy chain, spiked iron spheres, and wicked hooks. It is an awkward weapon that must be wielded two-handed, but when it lands a blow it inflicts horrendous wounds.\n\nSlow: These weapons are generally bulky and unwieldy. When an attack action with a slow weapon hits, one additional recharge token is placed on the action card.\n\nVicious: These weapons leave particularly grisly wounds. For each critical wound this weapon inflicts, draw two critical wound cards and select the one with the higher severity rating. If both cards have the same severity rating, the attacker chooses which critical wound to apply.\n\nTwo-Handed: These weapons need to be wielded with two hands to be effective. A character attempting to use a two-handed weapon with just one hand suffers an additional \u{2666}\u{FE0F} challenge die on all actions using that weapon, inflicts two fewer points of damage, and adds one additional recharge token to any related actions performed.',
+    'Gauntlet',4,4,0,0,'Unarmed','','These metal handcoverings do slightly more damage than a bare fist. If gauntlets are ever worn by themselves, they count as a light item.',
+    'Great Weapon',7,2,6,0,'Great Weapon','Two-Handed','Whether the long two-handed swords of the Imperial heavy infantry or the heavy axes of the elite dwarf warriors, the term great weapon refers to a broad class of armaments. Devastating when they hit and well-balanced for fighting, few wish to face an enemy wielding these large and terrifying killers.\n\nTwo-Handed: These weapons need to be wielded with two hands to be effective. A character attempting to use a two-handed weapon with just one hand suffers an additional \u{2666}\u{FE0F} challenge die on all actions using that weapon, inflicts two fewer points of damage, and adds one additional recharge token to any related actions performed.',
+    'Halberd',6,2,5,0,'Polearm','Special, Two-Handed','A heavy axe mounted at the end of the long haft, the halberd is a versatile weapon often used by militias and the town watch. Its default use is as a polearm, with the stats as shown. The wielder can perform a manoeuvre to change his grip and use the halberd as a spear, gaining the statistics for a standard spear, although it cannot be thrown.\n\nTwo-Handed: These weapons need to be wielded with two hands to be effective. A character attempting to use a two-handed weapon with just one hand suffers an additional \u{2666}\u{FE0F} challenge die on all actions using that weapon, inflicts two fewer points of damage, and adds one additional recharge token to any related actions performed.',
+    'Hand Weapon',5,3,3,0,'Ordinary','','This broad class encompasses swords, axes, picks, clubs, hammers, maces – in short, any weapon effectively wielded one-handed. From the elegant long swords of the elven infantry to the crude spiked clubs of dockside brawlers, all are encompassed in this class of weaponry. The mainstay of any fighting force, there is simply no more common weapon.',
+    'Lance',6,2,4,0,'Cavalry','Pierce 1, Special','A long, stout spear designed to be used by cavalry. It often has a flared cup near the handle for better control while mounted. If a mounted character armed with a lance is trained in Ride, add \u{2B1C} to his attack rolls. Awkward to use when not mounted, a lance loses all of its special qualities if wielded in such a manner, and performs as an improvised weapon.\n\nPierce X: Weapons with this quality are designed to punch through the target’s protection. When struck by a piercing weapon, the target’s soak value is reduced by the weapon’s pierce rating, to a minimum soak value of zero.',
+    'Main Gauche',4,4,2,0,'Fencing','Fast, Defensive','A slightly longer dagger designed to be used in the off hand to aid in parrying. It can be treated as an ordinary weapon rather than a fencing weapon, but loses its defensive quality as a consequence.\n\nFast: These weapons are generally easy to wield and agile. Attacks made with weapons with the fast quality gain: “\u{1F985} Place one fewer recharge token on this action”\n\nDefensive: When wielded in the off-hand, these weapons assist in parrying incoming blows. A defensive weapon adds an additional \u{2B1B} to an incoming melee attack when the wielding character parries.',
+    'Morning Star',6,3,4,0,'Flail','Slow, Special','A flail with one chain and ball making it far easier to control though less damaging. A morning star is difficult to block because it can wrap around shields. When using the Block or Parry action against a morning star, place one additional recharge counter on the Active Defence card used.\n\nSlow: These weapons are generally bulky and unwieldy. When an attack action with a slow weapon hits, one additional recharge token is placed on the action card.',
+    'Quarter Staff',4,4,3,-1,'Staff','Defensive','Little more than a long length of wood, this weapon can still be deadly in the hands of a trained specialist. When mastered, the quarter staff is capable of parrying and riposting almost faster than the eye can follow.\n\nDefensive: When wielded in the off-hand, these weapons assist in parrying incoming blows. A defensive weapon adds an additional \u{2B1B} to an incoming melee attack when the wielding character parries.',
+    'Rapier',5,3,3,0,'Fencing','Fast','The rapier is an elegant noble’s weapon. Fast and effective, it allows for dazzling displays of swordsmanship. The downside is that its reputation as a weapon of the upper class means it is often wildly overpriced.\n\nFast: These weapons are generally easy to wield and agile. Attacks made with weapons with the fast quality gain: “\u{1F985} Place one fewer recharge token on this action”',
+    'Sabre',5,3,3,0,'Cavalry','Special','The long, curved blade of a sabre is favoured among cavalry units, allowing their mount’s momentum to lend strength and power to the weapon’s slashes. If a mounted character armed with a sabre is trained in Ride, add \u{2B1C} to his attack rolls. A sabre functions as a hand weapon in the hands of a character on foot.',
+    'Spear',5,3,4,1,'Spear','Fast, Thrown, Unreliable 2','A long wooden haft with a pointed metal head, the spear is an ancient and versatile weapon. It can be wielded one-handed with a shield. It may also be wielded two-handed, increasing its damage rating by 1. It may also be effectively thrown up to close range.\n\nFast: These weapons are generally easy to wield and agile. Attacks made with weapons with the fast quality gain: “\u{1F985} Place one fewer recharge token on this action”\n\nThrown: When used to make a ranged attack, these weapons may have fortune dice associated with the attacker’s Strength added to the action pool instead of fortune dice associated with the attacker’s Agility. The attacker may also choose to use his Strength instead of Agility when determining damage with a thrown weapon.\n\nUnreliable X: These weapons are often experimental or otherwise not to be trusted. When a number of \u{1F52F} Chaos Stars equal to its Unreliable rating are generated, it breaks and is rendered unusable until it can be repaired. This is in addition to any other effects.',
+    'Unarmed',3,4,0,0,'Unarmed','','A punch, kick, or other natural stike, typical of humans, elves, and dwarves.',
+    '',0,0,0,-1,'','','',
+    'Blunderbuss',5,2,4,1,'Blackpowder','Blast, Reload, Two-Handed, Unreliable 2','The blunderbuss is a primitive, wide-barrelled version of the handgun. Firing a hail of shrapnel and shot, this is no marksman’s weapon. It can cut through large swathes of enemies if the blast is properly placed, but it is time-consuming to reload.\n\nBlast: This weapon is not so much aimed as simply pointed towards a group of enemies and unleashed. A weapon with the blast quality targets one engagement up to the weapon’s range. Everyone in the targeted engagement is subject to the effects of the attack. Blast attacks cannot be parried or blocked, but targets may choose to dodge. Rather than the normal dodge effect, each die an individual defender would normally contribute to the pool for dodging increases his soak value by 1 against the blast attack.\n\nReload: A weapon with the reload quality requires extra time to load and fire. The character must perform a special reload manoeuvre with this weapon before using it for an action or else the action check suffers an additional \u{1F52F} challenge die.\n\nTwo-Handed: These weapons need to be wielded with two hands to be effective. A character attempting to use a two-handed weapon with just one hand suffers an additional \u{1F52F} challenge die on all actions using that weapon, inflicts two fewer points of damage, and adds one additional recharge token to any related actions performed.\n\nUnreliable X: These weapons are often experimental or otherwise not to be trusted. It backfires or explodes if at least as many \u{1F52F} Chaos Star symbols are rolled equal to the item’s Unreliable rating. When this is triggered, the item inflicts wounds equal to its Unreliable rating to the wielder, bypassing the wielder’s soak value and Toughness. The weapon is unusable until repaired.',
+    'Crossbow',6,3,4,3,'Crossbow','Two-handed, Reload','Easier to use than the bow and more deadly, this weapon has the disadvantage of being slow to reload.\n\nTwo-Handed: These weapons need to be wielded with two hands to be effective. A character attempting to use a two-handed weapon with just one hand suffers an additional \u{1F52F} challenge die on all actions using that weapon, inflicts two fewer points of damage, and adds one additional recharge token to any related actions performed.\n\nReload: A weapon with the reload quality requires extra time to load and fire. The character must perform a special reload manoeuvre with this weapon before using it for an action or else the action check suffers an additional \u{1F52F} challenge die.',
+    'Crossbow Pistol',4,3,2,1,'Crossbow','Reload','This is a smaller, more compact version of the crossbow often used by assassins and tunnel fighters.\n\nReload: A weapon with the reload quality requires extra time to load and fire. The character must perform a special reload manoeuvre with this weapon before using it for an action or else the action check suffers an additional \u{1F52F} challenge die.',
+    'Handgun',6,2,4,2,'Blackpowder','Pierce 1, Reload, Two-Handed, Unreliable 2','Sometimes called the harquebus, this is the standard blackpowder weapon of the Empire. It takes two hands to wield. Every handgun is handmade by a gunsmith and no two are exactly alike. The firing systems in use include matchlock, wheellock, and flintlock types, with flintlock weapons being considered the superior examples.\n\nPierce X: Weapons with this quality are designed to punch through the target’s protection. When struck by a piercing weapon, the target’s soak value is reduced by the weapon’s pierce rating, to a minimum soak value of zero.\n\nReload: A weapon with the reload quality requires extra time to load and fire. The character must perform a special reload manoeuvre with this weapon before using it for an action or else the action check suffers an additional \u{1F52F} challenge die.\n\nTwo-Handed: These weapons need to be wielded with two hands to be effective. A character attempting to use a two-handed weapon with just one hand suffers an additional \u{1F52F} challenge die on all actions using that weapon, inflicts two fewer points of damage, and adds one additional recharge token to any related actions performed.\n\nUnreliable X: These weapons are often experimental or otherwise not to be trusted. It backfires or explodes if at least as many \u{1F52F} Chaos Star symbols are rolled equal to the item’s Unreliable rating. When this is triggered, the item inflicts wounds equal to its Unreliable rating to the wielder, bypassing the wielder’s soak value and Toughness. The weapon is unusable until repaired.',
+    'Hochland Long Rifle',6,2,5,3,'Blackpowder','Pierce 1, Reload, Two-Handed, Special, Unreliable 2','These magnificent pieces of craftsmanship are little seen outside of the armies of Hochland. The Hochland long rifle is a formidable long-ranged weapon with excellent accuracy. A superior craftsmanship Hochland long rifle loses the Unreliable quality. This weapon can fire at a target at extreme range by adding \u{1F52F} to the dice pool.\n\nPierce X: Weapons with this quality are designed to punch through the target’s protection. When struck by a piercing weapon, the target’s soak value is reduced by the weapon’s pierce rating, to a minimum soak value of zero.\n\nReload: A weapon with the reload quality requires extra time to load and fire. The character must perform a special reload manoeuvre with this weapon before using it for an action or else the action check suffers an additional \u{1F52F} challenge die.\n\nTwo-Handed: These weapons need to be wielded with two hands to be effective. A character attempting to use a two-handed weapon with just one hand suffers an additional \u{1F52F} challenge die on all actions using that weapon, inflicts two fewer points of damage, and adds one additional recharge token to any related actions performed.\n\nUnreliable X: These weapons are often experimental or otherwise not to be trusted. It backfires or explodes if at least as many \u{1F52F} Chaos Star symbols are rolled equal to the item’s Unreliable rating. When this is triggered, the item inflicts wounds equal to its Unreliable rating to the wielder, bypassing the wielder’s soak value and Toughness. The weapon is unusable until repaired.',
+    'Javelin',5,3,1,1,'Thrown','Thrown','The javelin is a short spear designed for throwing. Too flimsy to be used properly in melee combat, it counts as an improvised weapon when used in such a manner.\n\nThrown: When used to make a ranged attack, these weapons may have fortune dice associated with the attacker’s Strength added to the action pool instead of fortune dice associated with the attacker’s Agility. The attacker may also choose to use his Strength instead of Agility when determining damage with a thrown weapon.',
+    'Lasso',0,0,2,1,'Thrown','Entangling','A lasso is simply a length of rope employed to snare an opponent. The wielder may force an enemy ensnared by his lasso to be dragged into engagement with him by performing the Perform a Stunt action and passing an opposed Strength check versus the target. A character ensnared by a lasso can escape if he spends a manoeuvre and passes an Average (2d) Agility check.\n\nEntangling: A successful hit removes the target’s free manoeuvre on its next action. The target may still perform manoeuvres by suffering fatigue.',
+    'Longbow',5,3,4,3,'Bow','Pierce 1, Two-Handed, Special','A large and powerful version of the bow renowned both for its ability to pierce armour and the difficulty of mastering it. It is the main weapon of choice for the wood elves, but little used by the people of the Empire. This weapon can fire at a target at extreme range by adding \u{1F52F} to the dice pool.\n\nPierce X: Weapons with this quality are designed to punch through the target’s protection. When struck by a piercing weapon, the target’s soak value is reduced by the weapon’s pierce rating, to a minimum soak value of zero.\n\nTwo-Handed: These weapons need to be wielded with two hands to be effective. A character attempting to use a two-handed weapon with just one hand suffers an additional \u{1F52F} challenge die on all actions using that weapon, inflicts two fewer points of damage, and adds one additional recharge token to any related actions performed.',
+    'Net',0,0,3,1,'Thrown','Entangling','A net designed to entangle, confuse and delay an enemy. This also includes similar weapons such as bolas. While ensnared by a net, the only manoeuvre a subject can take is to remove the net, which does not require a check.\n\nEntangling: A successful hit removes the target’s free manoeuvre on its next action. The target may still perform manoeuvres by suffering fatigue.',
+    'Pistol',6,2,2,1,'Blackpowder','Pierce 1, Reload, Unreliable 2','The pistol is a smaller one-handed version of the handgun.\n\nPierce X: Weapons with this quality are designed to punch through the target’s protection. When struck by a piercing weapon, the target’s soak value is reduced by the weapon’s pierce rating, to a minimum soak value of zero.\n\nReload: A weapon with the reload quality requires extra time to load and fire. The character must perform a special reload manoeuvre with this weapon before using it for an action or else the action check suffers an additional \u{1F52F} challenge die.\n\nUnreliable X: These weapons are often experimental or otherwise not to be trusted. It backfires or explodes if at least as many \u{1F52F} Chaos Star symbols are rolled equal to the item’s Unreliable rating. When this is triggered, the item inflicts wounds equal to its Unreliable rating to the wielder, bypassing the wielder’s soak value and Toughness. The weapon is unusable until repaired.',
+    'Repeater Crossbow',4,3,4,2,'Crossbow','Special, Two-Handed','A standard crossbow with a complex firing mechanism and a gravity fed magazine that holds ten bolts. While the magazine is loaded, it is a free action to cock another bolt into place. Once the magazine is empty, it takes four manoeuvres to reload this complex device.\n\nTwo-Handed: These weapons need to be wielded with two hands to be effective. A character attempting to use a two-handed weapon with just one hand suffers an additional \u{1F52F} challenge die on all actions using that weapon, inflicts two fewer points of damage, and adds one additional recharge token to any related actions performed.',
+    'Repeater Handgun',6,2,5,2,'Blackpowder','Pierce 1, Special, Unreliable 1','A complex clockwork firearm with six barrels. The cutting edge of Imperial military technology, these devices are heavy, expensive, and notoriously unreliable. Once all six barrels are expended, it takes six manoeuvres to reload this weapon.\n\nPierce X: Weapons with this quality are designed to punch through the target’s protection. When struck by a piercing weapon, the target’s soak value is reduced by the weapon’s pierce rating, to a minimum soak value of zero.\n\nUnreliable X: These weapons are often experimental or otherwise not to be trusted. It backfires or explodes if at least as many \u{1F52F} Chaos Star symbols are rolled equal to the item’s Unreliable rating. When this is triggered, the item inflicts wounds equal to its Unreliable rating to the wielder, bypassing the wielder’s soak value and Toughness. The weapon is unusable until repaired.',
+    'Repeater Pistol',6,2,3,1,'Blackpowder','Pierce 1, Special, Unreliable 1','The pistol version of the Repeater Handgun.\n\nPierce X: Weapons with this quality are designed to punch through the target’s protection. When struck by a piercing weapon, the target’s soak value is reduced by the weapon’s pierce rating, to a minimum soak value of zero.\n\nUnreliable X: These weapons are often experimental or otherwise not to be trusted. It backfires or explodes if at least as many \u{1F52F} Chaos Star symbols are rolled equal to the item’s Unreliable rating. When this is triggered, the item inflicts wounds equal to its Unreliable rating to the wielder, bypassing the wielder’s soak value and Toughness. The weapon is unusable until repaired.',
+    'Shortbow',5,3,3,2,'Bow','Two-Handed','A smaller, cheaper, shorter ranged version of the bow intended for combat while mounted.\n\nTwo-Handed: These weapons need to be wielded with two hands to be effective. A character attempting to use a two-handed weapon with just one hand suffers an additional \u{1F52F} challenge die on all actions using that weapon, inflicts two fewer points of damage, and adds one additional recharge token to any related actions performed.',
+    'Sling',4,3,0,2,'Sling','Special','A simple yet deadly weapon, the sling is a strip of leather for hurling crafted bullets, rocks, or stones. Slings gain no benefit from being of superior craftsmanship. The sling’s values are based on using crafted bullets as ammunition, but stones can also be used. If normal stones are used, add \u{2B1B} to the attack roll.',
+    'Staff Sling',5,3,4,2,'Sling','Two-Handed','This is a short sling attached to a long pole, designed to hurl its projectiles at a greater range and with more power than a normal sling. This weapon can fire sling bullets at a target at long range by adding \u{1F52F} to the dice pool. It gains no benefit from being of superior craftsmanship. It can be used as a quarter staff in melee combat. The sling’s values are based on using crafted bullets as ammunition, but stones can also be used. If normal stones are used, add \u{2B1B} to the attack roll.\n\nTwo-Handed: These weapons need to be wielded with two hands to be effective. A character attempting to use a two-handed weapon with just one hand suffers an additional \u{1F52F} challenge die on all actions using that weapon, inflicts two fewer points of damage, and adds one additional recharge token to any related actions performed.',
+    'Throwing Axe/Hammer',5,3,3,1,'Thrown','Thrown','Axes or hammers balanced for throwing.\n\nThrown: When used to make a ranged attack, these weapons may have fortune dice associated with the attacker’s Strength added to the action pool instead of fortune dice associated with the attacker’s Agility. The attacker may also choose to use his Strength instead of Agility when determining damage with a thrown weapon.',
+    'Throwing Dagger/Star',4,4,1,1,'Thrown','Thrown','This includes any knife, dagger, shuriken, or dart specifically balanced to be thrown. In general, these count as improvised weapons if used in melee.\n\nThrown: When used to make a ranged attack, these weapons may have fortune dice associated with the attacker’s Strength added to the action pool instead of fortune dice associated with the attacker’s Agility. The attacker may also choose to use his Strength instead of Agility when determining damage with a thrown weapon.',
+    'Whip',3,5,3,1,'Thrown','Entangling','The whip is a cord of leather or braided rope sometimes tipped with a barb or hook. Though painful, the whip does little real damage but can entangle an opponent.\n\nEntangling: A successful hit removes the target’s free manoeuvre on its next action. The target may still perform manoeuvres by suffering fatigue.',
+    'Other',0,0,0,-1,'','','',
+    'Improvised',3,4,2,1,'Thrown','Thrown','Any miscellaneous, hand-held object used to strike an opponent, in melee or by throwing, not designed for this purpose.'
+];
+const WEAPONS_GAUNTLET_DR = 4;
+const WEAPONS_GAULTLET_CR = 4;
+const WEAPONS_GAUNTLET_GROUP = 'Unarmed';
+const WEAPONS_ITEMS_COUNT = 8;
+const WEAPONS_ITEM_INDEX_NAME = 0;
+const WEAPONS_ITEM_INDEX_DR = 1;
+const WEAPONS_ITEM_INDEX_CR = 2;
+const WEAPONS_ITEM_INDEX_ENC = 3;
+const WEAPONS_ITEM_INDEX_RANGE = 4;
+const WEAPONS_ITEM_INDEX_GROUP = 5;
+const WEAPONS_ITEM_INDEX_QUALITIES = 6;
+const WEAPONS_ITEM_INDEX_DESCRIPTION = 7;
+
+// ON START
+on('sheet:opened',function(){
+    getAttrs(['wounds','corruption','fortune','fortune_max','stanceDepthCons','stanceDepthReck','aggression_max','career_image'], function(values) {
+        const myWounds = parseInt(values.wounds) || 0;
+        const myCorruption = parseInt(values.corruption) || 0;
+        const myFortuneMax = parseInt(values.fortune_max) || 3;
+        const myFortune = parseInt(values.fortune);
+        const myStanceDepthCons = parseInt(values.stanceDepthCons) || 0;
+        const myStanceDepthReck = parseInt(values.stanceDepthReck) || 0;
+        const myAggressionMax = parseInt(values.aggression_max) || 0;
+        const myCareerImage = String(values.career_image) || DEFAULT_CLASS_SHEET_IMAGE;
+
+        const output = {};
+        output['wounds'] = myWounds;
+        output['corruption'] = myCorruption;
+        output['fortune_max'] = myFortuneMax;
+        output['fortune'] = myFortune >= 0 ? myFortune : myFortuneMax;
+        output['fortune_max'] = myFortuneMax;
+        output['stanceDepthCons'] = myStanceDepthCons;
+        output['stanceDepthReck'] = myStanceDepthReck;
+        output['aggression_max'] = myAggressionMax;
+        output['career_image'] = myCareerImage;
+        setAttrs(output);
+    });
+});
+
+// TAB CONTROLS
+const buttonlist = ['overview','characteristics','skills','actions','talents','effects','equipment','careers'];
+buttonlist.forEach(button => {
+    on(`clicked:${button}`, function() {
+        setAttrs({
+            sheetButtons: button,
+            sheetTab: button
+        });
+    });
+});
+
+// Helper funtion to return a section Id from its full name.
+function getId(repeatingItemName) {
+    const idStartPosition = repeatingItemName.indexOf('_',10) + 1;
+    // Set end position to the next '_' or end of string, if none found
+    const idEndPosition = repeatingItemName.indexOf('_',idStartPosition+1) != -1 ? repeatingItemName.indexOf('_',idStartPosition+1) : repeatingItemName.length;
+    const theID = repeatingItemName.substring(idStartPosition, idEndPosition);
+    return theID;
+};
+
+// Class field toggle
+on('clicked:toggle_lock_race_button', function(eventInfo) {
+    getAttrs(['toggle_lock_race_value'], function(values) {
+        const theToggleState = Number(values['toggle_lock_race_value']) || 0;
+
+        const output = {};
+        output['toggle_lock_race_value'] = (theToggleState == 0 ? 1 : 0);
+        setAttrs(output);
+    });
+});
+
+// Generate a random integer
+function getRandomInt(min, max) {
+  const minCeiled = Math.ceil(min);
+  const maxFloored = Math.floor(max);
+  return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled); // The maximum is exclusive and the minimum is inclusive
+}
+
+/******************************************************/
+
+// ACE reset
+on('clicked:reset_ace', function() { 
+    getAttrs(['aggression_max','cunning_max','expertise_max'], function(values) {        
+        const output = {};
+        output['aggression'] = parseInt(values.aggression_max) || 0;
+        output['cunning'] = parseInt(values.cunning_max) || 0;
+        output['expertise'] = parseInt(values.expertise_max) || 0;
+        setAttrs(output);
+    });
+});
+
+// ADVANCE points calculation, based on EXPERIENCE and ADVANCES
+on('change:experience change:repeating_careeradvances remove:repeating_careeradvances change:repeating_noncareeradvances:noncareeradvancecost remove:repeating_noncareeradvances', function(eventInfo) {
+    getAttrs(['experience'], function (values) {
+        const myExperience = parseInt(values.experience) || 0;
+        let totalCost = 0;
+
+        // Count the costs for career advances...
+        getSectionIDs('repeating_careerAdvances', function (ids) {
+            const careerFieldnames = [];
+            ids.forEach(id => {
+                careerFieldnames.push(`repeating_careerAdvances_${id}_careerAdvanceCost`);
+            });
+    
+            getAttrs([...careerFieldnames], function (values) {
+                ids.forEach(id => {
+                    totalCost += parseInt(values[`repeating_careerAdvances_${id}_careerAdvanceCost`]) || 0;
+                });
+                
+                // Then, count the cost for non-career advances...
+                getSectionIDs('repeating_noncareerAdvances', function (ids2) {
+                    const noncareerFieldnames = [];
+                    ids2.forEach(id2 => {
+                        noncareerFieldnames.push(`repeating_noncareerAdvances_${id2}_noncareerAdvanceCost`);
+                    });
+    
+                    getAttrs([...noncareerFieldnames], function (values) {
+                        ids2.forEach(id2 => {
+                            totalCost += parseInt(values[`repeating_noncareerAdvances_${id2}_noncareerAdvanceCost`]) || 0;
+                        });
+                        
+                        const output = {};
+                        const remainingPoints = myExperience - totalCost;
+                        output['advances'] = remainingPoints;
+                        output['advancesNegative'] = remainingPoints > 0 ? 2 : (remainingPoints < 0 ? 1 : 0);
+                        setAttrs(output);
+                    });
+                });
+            });
+        });
+    });
+});
+
+// AGGRESSION applied to dice pool
+on('clicked:use_aggression', function() { 
+    getAttrs(['aggression','numDiceFortune'], function(values) {
+        const myAggression = parseInt(values.aggression) || 0;
+        const myFortuneDice = parseInt(values.numDiceFortune) || 0;
+        
+        if (myAggression > 0 && myFortuneDice < 9) {
+            const output = {};
+            output['aggression'] = myAggression - 1;
+            output['numDiceFortune'] = myFortuneDice + 1;
+            setAttrs(output);
+        }
+    });
+});
+
+// ARMOR added
+on('change:repeating_armor:armor_type', function(eventInfo) {    
+    if (eventInfo.sourceType == 'player') {
+        const myArmorId = getId(eventInfo.sourceAttribute);
+        const myArmorIndex = parseInt(eventInfo.newValue) + 1;
+
+        const theGauntletName = ARMORS[myArmorIndex * ARMORS_ITEMS_COUNT + ARMORS_ITEM_INDEX_GAUNTLET];
+        const theArmorEnc = ARMORS[myArmorIndex * ARMORS_ITEMS_COUNT + ARMORS_ITEM_INDEX_ENC];
+
+        const output = {};
+
+        output[`repeating_armor_${myArmorId}_armor_name`] = ARMORS[myArmorIndex * ARMORS_ITEMS_COUNT];
+        output[`repeating_armor_${myArmorId}_armor_defense`] = ARMORS[myArmorIndex * ARMORS_ITEMS_COUNT + ARMORS_ITEM_INDEX_DEFENSE];
+        output[`repeating_armor_${myArmorId}_armor_soak`] = ARMORS[myArmorIndex * ARMORS_ITEMS_COUNT + ARMORS_ITEM_INDEX_SOAK];
+        output[`repeating_armor_${myArmorId}_armor_details`] = ARMORS[myArmorIndex * ARMORS_ITEMS_COUNT + ARMORS_ITEM_INDEX_DESCRIPTION];
+
+        if (theGauntletName) {
+            const aRowId = generateRowID();
+            output[`repeating_weapons_${aRowId}_weapon_type`] = SELECT_VALUE_WEAPON_TYPE_GAUNTLET;
+            output[`repeating_weapons_${aRowId}_weapon_name`] = theGauntletName;
+            output[`repeating_weapons_${aRowId}_weapon_DR`] = WEAPONS_GAUNTLET_DR;
+            output[`repeating_weapons_${aRowId}_weapon_CR`] = WEAPONS_GAUNTLET_DR;
+            output[`repeating_weapons_${aRowId}_weapon_range`] = SELECT_VALUE_WEAPON_RANGE_MELEE;
+            output[`repeating_weapons_${aRowId}_weapon_group`] = WEAPONS_GAUNTLET_GROUP;
+        }
+
+        if (theArmorEnc) {
+            const aRowId = generateRowID();
+            output[`repeating_items_${aRowId}_item_name`] = ARMORS[myArmorIndex * ARMORS_ITEMS_COUNT];
+            output[`repeating_items_${aRowId}_item_link`] = ARMORS[myArmorIndex * ARMORS_ITEMS_COUNT];
+            output[`repeating_items_${aRowId}_item_enc`] = theArmorEnc;
+            output[`repeating_items_${aRowId}_item_details`] = ARMORS[myArmorIndex * ARMORS_ITEMS_COUNT + ARMORS_ITEM_INDEX_DESCRIPTION];
+        }
+        setAttrs(output); 
+
+        if (theArmorEnc) updateItemEncumbrance('repeating_items', '_item_enc', '_item_count', '_item_equipped', 'encumbrance');
+    }
+});
+
+// ARMOR removed
+// When armor is removed, search the items and weapons lists and remove related
+on('remove:repeating_armor', function(eventInfo) {
+    const myArmorId = getId(eventInfo.sourceAttribute);
+    const myRemovedArmorValue = parseInt(eventInfo.removedInfo[`repeating_armor_${myArmorId}_armor_type`]) + 1;
+    const myRemovedArmorName = ARMORS[myRemovedArmorValue * ARMORS_ITEMS_COUNT];
+
+    getSectionIDs('repeating_items', function (ids) {
+        const itemFieldNames = [];
+
+        ids.forEach(id => {
+            itemFieldNames.push(`repeating_items_${id}_item_link`);
+        });
+
+        getAttrs([...itemFieldNames], function(values) {
+            ids.every(id => {
+                const anItemName = values[`repeating_items_${id}_item_link`];
+                const theRowId = getId(`repeating_items_${id}_item_link`);
+                if (anItemName === myRemovedArmorName) {
+                    removeRepeatingRow('repeating_items_' + theRowId);
+                    updateItemEncumbrance('repeating_items', '_item_enc', '_item_count', '_item_equipped', 'encumbrance');
+                    return false;
+                } else {
+                    return true;
+                }
+            });
+        });
+    });
+
+    getSectionIDs('repeating_weapons', function (ids) {
+        const weaponFieldTypes = [];
+
+        ids.forEach(id => {
+            weaponFieldTypes.push(`repeating_weapons_${id}_weapon_type`);
+        });
+
+        getAttrs([...weaponFieldTypes], function(values) {
+            ids.every(id => {
+                const aWeaponType = values[`repeating_weapons_${id}_weapon_type`];
+                const theRowId = getId(`repeating_weapons_${id}_weapon_type`);
+                if (aWeaponType == SELECT_VALUE_WEAPON_TYPE_GAUNTLET) {
+                    removeRepeatingRow('repeating_weapons_' + theRowId);
+                    return false;
+                } else {
+                    return true;
+                }
+            });
+        });
+    });
+});
+
+// CAPACITY calculation
+on('change:race change:st change:stFortune', function(eventInfo) {
+    getAttrs(['race','st','stFortune'], function(values) {
+        const myRace = parseInt(values.race) || 0;
+        const mySt = parseInt(values.st) || 0;
+        const myStFortune = parseInt(values.stFortune) || 0;
+
+        const output = {};
+        output['capacity'] = mySt * ENC_STR_MULTI + myStFortune + (myRace == RACE_DWARF ? 5 : 0);
+        setAttrs(output);
+    });
+});
+
+// CAREER changed
+on('change:career', function() {
+    getAttrs(['career'], function(values) {
+        const myCareer = String(values.career) || DEFAULT_CLASS_SHEET_IMAGE;
+        const output = {};
+        output['career_image'] = myCareer;
+        setAttrs(output);        
+    });
+});
+
+// CHARACTERISTIC dice pool calculations, based on STANCE
+on('change:stance change:st change:to change:ag change:int change:wp change:fel', function(eventInfo) {
+    getAttrs(['stance', 'st', 'to', 'ag', 'int', 'wp', 'fel'], function(values) {
+        const stance = parseInt(values.stance) || 0;
+        const st = parseInt(values.st) || 0;
+        const to = parseInt(values.to) || 0;
+        const ag = parseInt(values.ag) || 0;
+        const int = parseInt(values.int) || 0;
+        const wp = parseInt(values.wp) || 0;
+        const fel = parseInt(values.fel) || 0;
+
+        const output = {};
+        output['stChar'] = Math.max(0, (st - Math.abs(stance)));
+        output['stReck'] = (stance > 0 ? Math.min(stance, st) : 0);
+        output['stCons'] = (stance < 0 ? Math.min(Math.abs(stance), st) : 0);
+        output['toChar'] = Math.max(0, (to - Math.abs(stance)));
+        output['toReck'] = (stance > 0 ? Math.min(stance, to) : 0);
+        output['toCons'] = (stance < 0 ? Math.min(Math.abs(stance), to) : 0);
+        output['agChar'] = Math.max(0, (ag - Math.abs(stance)));
+        output['agReck'] = (stance > 0 ? Math.min(stance, ag) : 0);
+        output['agCons'] = (stance < 0 ? Math.min(Math.abs(stance), ag) : 0);
+        output['intChar'] = Math.max(0, (int - Math.abs(stance)));
+        output['intReck'] = (stance > 0 ? Math.min(stance, int) : 0);
+        output['intCons'] = (stance < 0 ? Math.min(Math.abs(stance), int) : 0);
+        output['wpChar'] = Math.max(0, (wp - Math.abs(stance)));
+        output['wpReck'] = (stance > 0 ? Math.min(stance, wp) : 0);
+        output['wpCons'] = (stance < 0 ? Math.min(Math.abs(stance), wp) : 0);
+        output['felChar'] = Math.max(0, (fel - Math.abs(stance)));
+        output['felReck'] = (stance > 0 ? Math.min(stance, fel) : 0);
+        output['felCons'] = (stance < 0 ? Math.min(Math.abs(stance), fel) : 0);
+        setAttrs(output);
+    });
+});
+
+// CHARACTERISTIC initial values, based on RACE selection
+on('change:race', function(eventInfo) {
+    getAttrs(['race','st','to','ag','int','wp','fel'], function(values) {
+        const myPreviousRace = parseInt(eventInfo.previousValue) || 0;
+        const myNewRace = parseInt(values.race) || 0;
+        const mySt = parseInt(values.st) || 0;
+        const myTo = parseInt(values.to) || 0;
+        const myAg = parseInt(values.ag) || 0;
+        const myInt = parseInt(values.int) || 0;
+        const myWP = parseInt(values.wp) || 0;
+        const myFel = parseInt(values.fel) || 0;
+
+        //WFRP3e Player's Handbook, Pg 36
+        const raceLabels = ['Other', 'Human', 'Dwarf', 'High Elf', 'Wood Elf'];
+        const baseStValues = [2,2,3,2,2];
+        const baseToValues = [2,2,3,2,2];
+        const baseAgValues = [2,2,2,3,3];
+        const baseIntValues = [2,2,2,3,2];
+        const baseWPValues = [2,2,2,2,3];
+        const baseFelValues = [2,2,2,2,2];
+
+        const output = {};
+        output['race_label'] = raceLabels[myNewRace];
+        output['st'] = mySt - baseStValues[myPreviousRace] + baseStValues[myNewRace];
+        output['to'] = myTo - baseToValues[myPreviousRace] + baseToValues[myNewRace];
+        output['ag'] = myAg - baseAgValues[myPreviousRace] + baseAgValues[myNewRace];
+        output['int'] = myInt - baseIntValues[myPreviousRace] + baseIntValues[myNewRace];
+        output['wp'] = myWP - baseWPValues[myPreviousRace] + baseWPValues[myNewRace];
+        output['fel'] = myFel - baseFelValues[myPreviousRace] + baseFelValues[myNewRace];
+        setAttrs(output);
+    });
+});
+
+// CHARACTERISTIC updates, due to FATIGUE
+on('change:fatigue change:st change:to change:ag', function(eventInfo) {
+    getAttrs(['fatigue', 'st', 'to', 'ag'], function(values) {
+        const fatigue = parseInt(values.fatigue) || 0;
+        const st = parseInt(values.st) || 0;
+        const to = parseInt(values.to) || 0;
+        const ag = parseInt(values.ag) || 0;
+
+        const output = {};
+        output['stExert'] = Math.max(0, fatigue - st);
+        output['toExert'] = Math.max(0, fatigue - to);
+        output['agExert'] = Math.max(0, fatigue - ag);
+        setAttrs(output);
+    });
+});
+
+// CHARACTERISTIC updates due to STRESS
+on('change:stress change:int change:wp change:fel', function(eventInfo) {
+    getAttrs(['stress', 'int', 'wp', 'fel'], function(values) {
+        const stress = parseInt(values.stress) || 0;
+        const int = parseInt(values.int) || 0;
+        const wp = parseInt(values.wp) || 0;
+        const fel = parseInt(values.fel) || 0;
+
+        const output = {};
+        output['intExert'] = Math.max(0, stress - int);
+        output['wpExert'] = Math.max(0, stress - wp);
+        output['felExert'] = Math.max(0, stress - fel);
+        setAttrs(output);
+    });
+});
+
+// CONDITIONS selection
+on('change:repeating_conditions:condition_name', function(eventInfo) {
+    getAttrs(['repeating_conditions_condition_name'], function(values) {
+        const myCondition = parseInt(values.repeating_conditions_condition_name) || 0;
+
+        const myConditionDurations = [0,2,1,2,1,2,1,2,1,2,2,2,1,1,1,2,1,1,2,2,2,1];
+        const myConditionCooldowns = [,,3,,3,,3,,3,,,,3,3,3,,3,3,,,,3];
+        const myConditionEffects = [
+            "",
+            "Any checks you perform that require the sense of sight gain \u{2666}\u{FE0F}.",
+            "You cannot convert characteristic dice into reckless dice.",
+            "Cancels the Inspired condition. Add \u{2B1B} to all skill checks.",
+            "Cancels the Sluggish condition. During your turn, you may perform 1 additional manoeuvre without suffering fatigue.",
+            "Suffer 1 additional fatigue when performing manoeuvres. When performing a physical action, suffer 2 fatigue.",
+            "Attackers targeting you add \u{2B1C} to their dice pool.",
+            "When engaged with a target that has a Fear or Terror Rating at the beginning of your turn, suffer 1 stress. While so engaged, you convert one less characteristic die into a stance die.",
+            "Suffer 1 stress each time you suffer 1 or more wounds.",
+            "Cancels Demoralised. Add \u{2B1C} to all skill checks.",
+            "Add \u{2B1B}\u{2B1B}\u{2B1C} to all checks.",
+            "During your End of Turn phase, you may remove one additional recharge token from any one of your currently recharging cards.",
+            "Add \u{2666}\u{FE0F} to checks based on physical characteristics.",
+            "Add \u{2666}\u{FE0F} to checks based on mental characteristics.",
+            "You cannot convert characteristic dice into conservative dice.",
+            "You may not recover stress while in Shock. Mental skill checks gain \u{2B1B}.",
+            "Cancels the Energised condition. Suffer 1 additional fatigue for each manoeuvre you perform during your turn.",
+            "Your stance is considered 1 step closer to neutral. Add 1 additional recharge token to any Active Defence you perform.",
+            "Remove an expertise die \u{1F7E8} from your dice pool before each check. When you are dealt damage, you are dealt +1 damage.",
+            "Add \u{2666}\u{FE0F} to initiative checks. You may not use the first hero marker on the initiative track unless it is the only hero marker there.",
+            "Whenever you would suffer 1 fatigue, suffer 2 fatigue instead.",
+            "Add \u{2B1B}\u{2B1B} to Strength checks. Attacks using Strength inflict -2 damage."
+        ];
+
+        const output = {};
+        output['repeating_actions_condition_cooldown'] = myConditionCooldowns[myCondition];
+        output['repeating_actions_condition_duration'] = myConditionDurations[myCondition];
+        output['repeating_actions_condition_effects'] = myConditionEffects[myCondition];
+        setAttrs(output);
+    });
+});
+
+// CORRUPTION threshold calculation
+on('change:race change:to', function(eventInfo) {
+    getAttrs(['race', 'to'], function(values) {
+        const myRace = parseInt(values.race) || 0;
+        const myTo = parseInt(values.to) || 0;
+
+        const baseValues = [0,5,10,10,10]; //WFRP3e Player's Handbook, Pgs 29-32
+
+        const output = {};
+        output['corruption_max'] = baseValues[myRace] + myTo;
+        setAttrs(output);
+    });
+});
+
+// CORRUPTION threshold exceeded
+on('change:corruption change:corruption_max', function(eventInfo) {
+    getAttrs(['corruption','corruption_max',], function(values) {
+        const myCorruption = parseInt(values.corruption) || 0;
+        const myCorruptionMax = parseInt(values.corruption_max) || 0;
+
+        const output = {};
+        output['corruptionExceedsThreshold'] = ((myCorruption > myCorruptionMax) ? 1 : 0);
+        setAttrs(output);
+    });
+});
+
+// CREATION BALANCE calculation, based on creation selections
+on('change:creationPoints change:creationWealth change:creationSkills change:creationTalents change:creationActions change:repeating_creationChars:creationCharIncrease remove:repeating_creationChars', function(eventInfo) {
+    getSectionIDs('repeating_creationChars', function (ids) {
+        const creationCharFieldnames = [];
+
+        ids.forEach(id => {
+            creationCharFieldnames.push(`repeating_creationChars_${id}_creationCharIncrease`);
+        });
+
+        getAttrs([...creationCharFieldnames,'creationPoints','creationWealth','creationSkills','creationTalents','creationActions'], function(values) {
+            const myCreationPoints = parseInt(values.creationPoints) || 0;
+            const myCreationWealth = parseInt(values.creationWealth) || 0;
+            const myCreationSkills = parseInt(values.creationSkills) || 0;
+            const myCreationTalents = parseInt(values.creationTalents) || 0;
+            const myCreationActions = parseInt(values.creationActions) || 0;
+
+            const output = {};
+            let totalCharCosts = 0;
+            ids.forEach(id => {
+                const charCost = parseInt(values[`repeating_creationChars_${id}_creationCharIncrease`]);
+                totalCharCosts += charCost;
+            });
+            const creationPointsBalance = myCreationPoints - myCreationWealth - myCreationSkills - myCreationTalents - myCreationActions - totalCharCosts;
+            output['creationBalance'] = creationPointsBalance;
+            output['creationBalanceNotZero'] = creationPointsBalance != 0 ? 1 : 0;
+            setAttrs(output);
+        });
+    });
+});
+
+// CREATION POINTS calculation, based on race selection
+on('change:race', function(eventInfo) {
+    getAttrs(['race'], function(values) {
+        const myRace = parseInt(values.race) || 0;
+
+        const creationPoints = [0,25,20,20,20]; //WFRP3e Player's Handbook, Pg 36
+
+        const output = {};
+        output['creationPoints'] = creationPoints[myRace];
+        setAttrs(output);
+    });
+});
+
+// CRITICAL WOUNDS icon
+on('change:repeating_criticals remove:repeating_criticals', function(eventInfo) {
+    getSectionIDs('repeating_criticals', function (ids) {
+        const criticalFieldnames = [];
+
+        ids.forEach(id => {
+            criticalFieldnames.push(`repeating_armor_${id}_critical_name`);
+        });
+
+        const output = {};
+        output['has_crit'] = criticalFieldnames.length;
+        setAttrs(output);
+    });
+});
+
+// Random CRITICAL
+on('clicked:getcritical', function(eventInfo) {
+    const myRoll = getRandomInt(1, 101);
+    const aRowId = generateRowID();
+
+    const output = {};
+    switch (myRoll) {
+        case 1:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Aches and Pains';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 2;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "At the end of each encounter, or after a full night’s rest, you recover 1 less stress and 1 less fatigue than normal.";
+            break;
+        case 2:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Aches and Pains';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 3;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "At the end of each encounter, or after a full night’s rest, you recover 1 less stress and 1 less fatigue than normal.";
+            break;
+        case 3:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Aggravated Wound';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 2;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "Your stance is considered one space closer to neutral.";
+            break;
+        case 4:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Aggravated Wound';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 3;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "Your stance is considered one space closer to neutral.";
+            break;
+        case 5:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Annoying Injury';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 3;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "After you perform an Active Defence action, add 1 additional recharge token to that card.";
+            break;
+        case 6:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Blood in the Eyes';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 2;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "When you receive this wound, the GM may place a number of recharge tokens equal to the number of critical wounds you have on any combination of your action cards.";
+            break;
+        case 7:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Blow to the Head';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 3;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "When you acquire this critical wound, suffer 1 stress. Add \u{2B1B} to Intelligence checks.";
+            break;
+        case 8:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Broken Nose';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 3;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "Add \u{2B1B} to your Social actions.";
+            break;
+        case 9: case 10:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Broken Rib';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 2;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "Each time you suffer a critical wound, suffer 1 normal wound.";
+            break;
+        case 11: case 12: case 13: case 14:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Concussion';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 1;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "Add \u{2B1B} to all your checks while you have any cards recharging. If you ever acquire two Concussions, you collapse unconscious until one of them is healed.";
+            break;
+        case 15: case 16:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Concussion';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 2;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "Add \u{2B1B} to all your checks while you have any cards recharging. If you ever acquire two Concussions, you collapse unconscious until one of them is healed.";
+            break;
+        case 17: case 18:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Constant Pain';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 1;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "Whenever you suffer stress, suffer 1 fatigue.";
+            break;
+        case 19: case 20:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Crushing Blow';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 3;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "When you acquire this critical wound, suffer 1 fatigue. Add \u{2B1B} to Toughness checks.";
+            break;
+        case 21: case 22:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Deep Wound';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 5;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "This wound has no special effect aside from its high severity.";
+            break;
+        case 23:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Disfiguring Scar';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 2;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "Add \u{2B1B} to all Fellowship checks. Add \u{2B1C} to Intimidation checks.";
+            break;
+        case 24:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Dislocated Shoulder';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 3;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "You inflict -2 damage with Melee Attacks and Ranged Attacks.";
+            break;
+        case 25:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Disoriented';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 2;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "Your mental checks gain: '\u{1F480}: Suffer 1 stress.'";
+            break;
+        case 26:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Distracting Injury';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 2;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "Suffer 1 stress each time you adjust your stance to a position further away from the neutral space on your stance meter.";
+            break;
+        case 27:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Exposed Weakness';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 2;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "Reduce your Soak Value by 1.";
+            break;
+        case 28:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Exposed Weakness';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 3;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "Reduce your Soak Value by 1.";
+            break;
+        case 29: case 30:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Festering Wound';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 0;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "Until this critical wound is healed, its Severity Rating increases by 1 each day, to a maximum Severity of 5.";
+            break; 
+        case 31: case 32: case 33: case 34: case 35: case 36:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Flesh Wound';
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "The Severity Rating of this critical wound is equal to the number of Flesh Wounds affecting you.";
+            break; 
+        case 37:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Grievous Injury';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 4;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "After you perform an Active Defence action, add 1 additional recharge token to that card.";
+            break; 
+        case 38:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Gruseome Bruise';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 3;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "When you acquire this critical wound, suffer 1 stress. Add \u{2B1B} to Fellowship checks.";
+            break; 
+        case 39: case 40:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Hideous Injury';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 2;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "The Severity Rating of every critical wound affecting you increases by 1.";
+            break; 
+        case 41:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Horrible Gash';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 3;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "When you acquire this critical wound, suffer 1 fatigue. Add \u{2B1B} to Agility checks.";
+            break; 
+        case 42: case 43:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Internal Bleeding';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 3;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "Your Melee Attacks and Ranged Attacks gain: '\u{1F52F}: Suffer 1 wound.'";
+            break; 
+        case 44: case 45:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Low Blow';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 2;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "Whenever you suffer one or more wounds, the GM may add or remove one recharge token from one of your currently recharging cards.";
+            break; 
+        case 46:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Mangled Eye';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 4;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "One of your eyes is badly damaged (GM’s choice). Add \u{2B1B}\u{2B1B} to all your checks requiring vision.";
+            break; 
+        case 47:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Mangled Limb';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 2;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "Your Strength and Agility are reduced by 1. The damaged limb (GM’s choice) does not function properly until this critical wound is healed. Add \u{2666}\u{FE0F} to all checks requiring use of the limb.";
+            break; 
+        case 48:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Mangled Limb';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 3;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "Your Strength and Agility are reduced by 1. The damaged limb (GM’s choice) does not function properly until this critical wound is healed. Add \u{2666}\u{FE0F} to all checks requiring use of the limb.";
+            break; 
+        case 49: case 50: case 51: case 52: case 53: case 54:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Minor Nuisance';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 2;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "Add \u{2B1B} to RANDOM_CHARACTERISTIC checks.";
+            break; 
+        case 55: case 56: case 57: case 58: case 59: case 60:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Minor Trauma';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 3;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "Add \u{2B1B} to RANDOM_CHARACTERISTIC checks.";
+            break;  
+        case 61: case 62:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Nagging Injury';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 2;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "After you perform an Active Defence action, add 1 additional recharge token to that card.";
+            break; 
+        case 63:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Painful Blow';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 2;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "Your physical checks gain: '\u{1F480}: The GM may add or remove one recharge token from one of your recharging cards.'";
+            break; 
+        case 64: case 65:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Painful Injury';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 2;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "Whenever you suffer a critical wound, suffer 1 stress and 1 fatigue.";
+            break; 
+        case 66:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Pulled Muscle';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 2;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "Add \u{2B1B}\u{2B1B} to initiative checks.";
+            break; 
+        case 67:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Pulled Muscle';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 3;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "When you acquire this critical wound, suffer 1 fatigue. Add \u{2B1B} to Strength checks.";
+            break; 
+        case 68:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Ringing Blow';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 2;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "Whenever you suffer stress, suffer 1 additional stress.";
+            break; 
+        case 69:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Ringing Skull';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 2;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "During your End of Turn phase: The GM must add or remove one recharge token from one of your recharging action cards. Lose 1 power. Lose 1 favour.";
+            break; 
+        case 70:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Ringing Skull';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 3;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "During your End of Turn phase: The GM must add or remove one recharge token from one of your recharging action cards. Lose 1 power. Lose 1 favour.";
+            break; 
+        case 71:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Ringing Skull';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 4;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "During your End of Turn phase: The GM must add or remove one recharge token from one of your recharging action cards. Lose 1 power. Lose 1 favour.";
+            break; 
+        case 72:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Ruptured Spleen';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 2;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "You count as having an extra point of fatigue while you are affected by this critical wound.";
+            break; 
+        case 73:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Ruptured Spleen';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 3;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "You count as having an extra point of fatigue while you are affected by this critical wound.";
+            break;
+        case 74:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Seething Pain';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 2;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "If your character does not rely on power or favour, suffer 1 fatigue when this wound is acquired. Otherwise, whenever you generate power or favour, you generate 1 less power or favour.";
+            break; 
+        case 75: case 76:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Severe Sprain';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 2;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "Your physical checks gain: '\u{1F480}: Suffer 1 fatigue.'";
+            break; 
+        case 77:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Short of Breath';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 2;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "Suffer 1 fatigue each time you use an Active Defence.";
+            break; 
+        case 78:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Short of Breath';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 3;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "Suffer 1 fatigue each time you use an Active Defence.";
+            break; 
+        case 79:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Sickening Blow';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 2;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "You count as having an extra point of stress while you are affected by this critical wound.";
+            break; 
+        case 80:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Sickening Blow';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 3;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "You count as having an extra point of stress while you are affected by this critical wound.";
+            break;
+        case 81:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Smashed Fingers';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 2;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "The fingers on one of your hands (GM’s choice) have been smashed. Add \u{2B1B}\u{2B1B} to all your checks made with that hand – including attacks made wielding a two-handed weapon.";
+            break; 
+        case 82: case 83:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Smashed Limb';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 2;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "Suffer 1 additional fatigue each time you perform a movement manoeuvre.";
+            break; 
+        case 84: case 85:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Spitting Teeth';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 2;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "When you receive this critical wound, you immediately suffer a number of additional wounds equal to the highest Severity Rating among all the critical wounds you are suffering from.";
+            break; 
+        case 86: case 87:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Swimming Vision';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 3;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "Add \u{2B1B} to Ranged Attacks and Observation checks which involve the sense of sight.";
+            break; 
+        case 88:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Traumatic Blow';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 2;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "Add \u{2666}\u{FE0F} to checks made to resist Fear or Terror.";
+            break; 
+        case 89: case 90:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Twisted Joint';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 2;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "You do not gain a free manoeuvre on your turn.";
+            break; 
+        case 91:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Weeping Sore';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 2;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "You may not recover fatigue or stress during the rally step. If left untreated for a day, this wound’s severity increases to 3.";
+            break; 
+        case 92:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Worrisome Blow';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 3;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "When you acquire this critical wound, suffer 1 stress. Add \u{2B1B} to Willpower checks.";
+            break; 
+        case 93: case 94:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Wrenched Back';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 1;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "Your Melee Attacks and Ranged Attacks gain: '\u{1F480}: Suffer 1 fatigue.'";
+            break; 
+        case 95:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Dizzying Blow';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 2;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "Your mental checks gain: '\u{1F480}: The GM may add or remove one recharge token to one of your recharging cards.'";
+            break;
+        case 96:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Exhausting Blow';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 2;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "Whenever you suffer fatigue, suffer 1 additional fatigue.";
+            break;
+        case 97:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Fade to Black';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 2;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "When you receive this wound, suffer fatigue equal to its severity.";
+            break; 
+        case 98:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Fade to Black';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 3;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "When you receive this wound, suffer fatigue equal to its severity.";
+            break; 
+        case 99:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Fade to Black';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 4;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "When you receive this wound, suffer fatigue equal to its severity.";
+            break; 
+        case 100:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Mortal Wound';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 4;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "You may not recover from any other critical wounds while you are affected by this critical wound.";
+            break;
+        case 101:
+            output[`repeating_criticals_${aRowId}_critical_name`] = 'Punch Drunk';
+            output[`repeating_criticals_${aRowId}_critical_severity`] = 2;
+            output[`repeating_criticals_${aRowId}_critical_effects`] = "If your character does not rely on power or favour, suffer 1 fatigue when this wound is acquired. Otherwise, whenever you generate power or favour, you generate 1 less power or favour.";
+            break; 
+    }
+    setAttrs(output);
+});
+
+// CUNNING applied to dice pool
+on('clicked:use_cunning', function() { 
+    getAttrs(['cunning','numDiceFortune'], function(values) {
+        const myCunning = parseInt(values.cunning) || 0;
+        const myFortuneDice = parseInt(values.numDiceFortune) || 0;
+        
+        if (myCunning > 0 && myFortuneDice < 9) {
+            const output = {};
+            output['cunning'] = myCunning - 1;
+            output['numDiceFortune'] = myFortuneDice + 1;
+            setAttrs(output);
+        }
+    });
+});
+
+// CURRENCY changes (add/remove)
+on('clicked:addremovecoins', function() {
+    getAttrs(['gold','gold_change','silver','silver_change','brass','brass_change'], function(values) {
+        myGold = parseInt(values.gold) || 0;
+        mySilver = parseInt(values.silver) || 0;
+        myBrass = parseInt(values.brass) || 0;
+        myGoldChange = parseInt(values.gold_change) || 0;
+        mySilverChange = parseInt(values.silver_change) || 0;
+        myBrassChange = parseInt(values.brass_change) || 0;
+
+        const myNewGold = myGold + myGoldChange >= 0 ? myGold + myGoldChange : myGold;
+        const myNewSilver = mySilver + mySilverChange >= 0 ? mySilver + mySilverChange : mySilver;
+        const myNewBrass = myBrass + myBrassChange >= 0 ? myBrass + myBrassChange : myBrass;
+
+        const myNewGoldChange = myGold + myGoldChange >= 0 ? 0 : myGoldChange;
+        const myNewSilverChange = mySilver + mySilverChange >= 0 ? 0 : mySilverChange;
+        const myNewBrassChange = myBrass + myBrassChange >= 0 ? 0 : myBrassChange;
+
+        const output = {};
+        output['gold'] = myNewGold;
+        output['silver'] = myNewSilver;
+        output['brass'] = myNewBrass;
+        output['gold_change'] = myNewGoldChange;
+        output['silver_change'] = myNewSilverChange;
+        output['brass_change'] = myNewBrassChange;
+        setAttrs(output);
+    });
+});
+
+// CURRENCY conversions
+on('clicked:goldtosilver', function() { convertCurrency('gold', 'silver', 0, 100); });
+on('clicked:silvertogold', function() { convertCurrency('silver', 'gold', 1, 100); });
+on('clicked:silvertobrass', function() { convertCurrency('silver', 'brass', 0, 25); });
+on('clicked:brasstosilver', function() { convertCurrency('brass', 'silver', 1, 25); });
+
+function convertCurrency(fromType, toType, isUpward = 0, conversionRate = 0) {
+    getAttrs([fromType, toType], function(values) {
+        const fromTypeAmount = parseInt(values[fromType]) || 0;
+        const toTypeAmount = parseInt(values[toType]) || 0;
+
+        const myConversionRate = isUpward ? conversionRate : 1 / conversionRate;
+
+        const newFromTypeAmount = fromTypeAmount - (fromTypeAmount >= myConversionRate ? isUpward ? myConversionRate : 1 : 0);
+        const newToTypeAmount = toTypeAmount + (fromTypeAmount >= myConversionRate ? isUpward ? 1 : conversionRate : 0);
+
+        const output = {};
+        output[fromType] = newFromTypeAmount;
+        output[toType] = newToTypeAmount;
+        setAttrs(output);
+    });
+}
+
+// DEFENSE calculation
+on('change:repeating_armor:armor_equipped change:repeating_armor:armor_defense remove:repeating_armor', function(eventInfo) {
+    getSectionIDs('repeating_armor', function (ids) {
+        const equippedFieldnames = [];
+        const defenseFieldnames = [];
+
+        ids.forEach(id => {
+            equippedFieldnames.push(`repeating_armor_${id}_armor_equipped`);
+            defenseFieldnames.push(`repeating_armor_${id}_armor_defense`);
+        });
+
+        getAttrs([...equippedFieldnames, ...defenseFieldnames], function (values) {
+            const output = {};
+            let totalDefense = 0;
+            ids.forEach(id => {
+                const defenseValue = values[`repeating_armor_${id}_armor_equipped`] == 1 ? parseInt(values[`repeating_armor_${id}_armor_defense`]) : 0;
+                totalDefense += defenseValue;
+            });
+            output['defense'] = totalDefense;
+            setAttrs(output);
+        });
+    });
+});
+
+// DISEASE count / status
+on('change:repeating_diseases:disease_name remove:repeating_diseases', function(eventInfo) {
+    getSectionIDs('repeating_diseases', function (ids) {
+        const diseaseCharFieldnames = [];
+
+        ids.forEach(id => {
+            diseaseCharFieldnames.push(`repeating_diseases_${id}_disease_name`);
+        });
+
+        const output = {};
+        output['diseased'] = diseaseCharFieldnames.length > 0 ? 1 : 0;
+        setAttrs(output);
+    });
+});
+
+// ECONOMIC TIER calculation
+on('change:creationWealth', function(eventInfo) {
+    getAttrs(['creationWealth',], function(values) {
+        const myWealth = parseInt(values.creationWealth) || 0;
+
+        const tiers = ['Brass','Brass','Silver','Gold']; //WFRP3e Player's Handbook, Pg 37
+
+        const output = {};
+        output['tier'] = tiers[myWealth];
+        setAttrs(output);
+    });
+});
+
+// ENCUMBRANCE calculation event handler and function call
+on('change:repeating_items:item_enc change:repeating_items:item_count change:repeating_items:item_equipped remove:repeating_items change:race', function(eventInfo) {
+    if (eventInfo.sourceType == 'player') updateItemEncumbrance(
+        'repeating_items', 
+        '_item_enc',
+        '_item_count',
+        '_item_equipped',
+        'encumbrance'
+        );
+});
+
+// ENCUMBRANCE calculation
+function updateItemEncumbrance(
+    repeatingName, 
+    encPropName,
+    countPropName,
+    equippedPropName,
+    outputName) {
+    getSectionIDs(repeatingName, function (ids) {
+        const encFieldnames = [];
+        const countFieldnames = [];
+        const equippedFieldnames = [];
+        ids.forEach(id => {
+            encFieldnames.push(`${repeatingName}_${id}${encPropName}`);
+            countFieldnames.push(`${repeatingName}_${id}${countPropName}`);
+            equippedFieldnames.push(`${repeatingName}_${id}${equippedPropName}`);
+        });
+        
+        getAttrs([...encFieldnames, ...countFieldnames, ...equippedFieldnames,'race'], function (values) {
+            const myRace = parseInt(values.race) || 0;
+            const output = {};
+            let totalEnc = 0;
+            ids.forEach(id => {
+                const itemEnc = parseFloat(values[`${repeatingName}_${id}${encPropName}`]);
+                const itemCount = parseFloat(values[`${repeatingName}_${id}${countPropName}`])||0;
+                const equipped = parseInt(values[`${repeatingName}_${id}${equippedPropName}`]);
+
+                totalEnc += equipped == 1 ? itemEnc * itemCount : 0;
+            });
+            output[outputName] = totalEnc;
+            setAttrs(output);
+        });
+    });
+};
+
+// ENCUMBRANCE exceeds CAPACITY
+on('change:capacity change:encumbrance', function(eventInfo) {
+    getAttrs(['st', 'capacity', 'encumbrance'], function(values) {
+        const mySt = parseInt(values.st) || 0;
+        const myCapacity = parseFloat(values.capacity) || 0;
+        const myEncumbrance = parseFloat(values.encumbrance) || 0;
+
+        const myCapEncDiff = Math.max(myEncumbrance - myCapacity,0);
+
+        const output = {};
+        output['encpenalty'] = myCapEncDiff;
+        output['encumbranceExceedsCapacity'] = myCapEncDiff >= mySt ? 2 : myCapEncDiff > 0 ? 1 : 0;
+        setAttrs(output);
+    });
+});
+
+// EXPERTISE applied to dice pool
+on('clicked:use_expertise', function() { 
+    getAttrs(['expertise','numDiceExpertise'], function(values) {
+        const myExpertise = parseInt(values.expertise) || 0;
+        const myExpertiseDice = parseInt(values.numDiceExpertise) || 0;
+        
+        if (myExpertise > 0 && myExpertiseDice < 9) {
+            const output = {};
+            output['expertise'] = myExpertise - 1;
+            output['numDiceExpertise'] = myExpertiseDice + 1;
+            setAttrs(output);
+        }
+    });
+});
+
+// FATIGUE calculation
+on('change:fatigue change:st change:to change:ag', function(eventInfo) {
+    getAttrs(['fatigue','st','to','ag'], function(values) {
+        const myFatigue = parseInt(values.fatigue) || 0;
+        const mySt = parseInt(values.st) || 0;
+        const myTo = parseInt(values.to) || 0;
+        const myAg = parseInt(values.ag) || 0;
+
+        const output = {};
+        output['fatigue_max'] = myTo * 2;
+        output['stIsFatigued'] = myFatigue > mySt ? 1 : 0;
+        output['toIsFatigued'] = myFatigue > myTo ? 1 : 0;
+        output['agIsFatigued'] = myFatigue > myAg ? 1 : 0;
+        output['fatigueExceedsCapacity'] = ((myFatigue > (myTo * 2)) ? 2 : (myFatigue > mySt || myFatigue > myTo || myFatigue > myAg) ? 1 : 0);
+        setAttrs(output);
+    });
+});
+
+// FAVOUR calculations
+on('change:wp', function(eventInfo) {
+    getAttrs(['wp'], function(values) {
+        const myWP = parseInt(values.wp) || 0;
+
+        const output = {};
+        output['favour'] = output['favour_equilibrium'] = myWP;
+        output['favour_max'] = myWP * 2;
+        setAttrs(output);
+    });
+});
+
+// FORTUNE applied to dice pool
+on('clicked:use_fortune', function() { 
+    getAttrs(['fortune','numDiceFortune'], function(values) {
+        const myFortune = parseInt(values.fortune) || 0;
+        const myFortuneDice = parseInt(values.numDiceFortune) || 0;
+        
+        if (myFortune > 0 && myFortuneDice < 9) {
+            const output = {};
+            output['fortune'] = myFortune - 1;
+            output['numDiceFortune'] = myFortuneDice + 1;
+            setAttrs(output);
+        }
+    });
+});
+
+// FORTUNE maximum exceeded
+on('change:fortune change:fortune_max', function(eventInfo) {
+    getAttrs(['fortune','fortune_max'], function(values) {
+        const myFortune = parseInt(values.fortune) || 0;
+        const myFortuneMax = parseInt(values.fortune_max) || 0;
+
+        const output = {};
+        output['fortuneExceedsMax'] = ((myFortune > myFortuneMax) ? 1 : 0);
+        setAttrs(output);
+    });
+});
+
+// Random INSANITY
+on('clicked:getinsanity', function(eventInfo) {
+    const myRoll = getRandomInt(1, 92);
+    const aRowId = generateRowID();
+
+    const output = {};
+    switch (myRoll) {
+        case 1: case 2: case 3:
+            output[`repeating_insanities_${aRowId}_insanity_name`] = 'Agoraphobia';
+            output[`repeating_insanities_${aRowId}_insanity_traits`] = 'Enigma, Trauma';
+            output[`repeating_insanities_${aRowId}_insanity_severity`] = 2;
+            output[`repeating_insanities_${aRowId}_insanity_description`] = 'The stinking mass of humanity pressing around you… You have to get someplace quiet and safe!';
+            output[`repeating_insanities_${aRowId}_insanity_effects`] = 'If you end your turn in an engagement with 5 or more characters, suffer 1 stress.';
+            break;
+        case 4: case 5:
+            output[`repeating_insanities_${aRowId}_insanity_name`] = 'Breathless Anxiety';
+            output[`repeating_insanities_${aRowId}_insanity_traits`] = 'Supernatural, Violence';
+            output[`repeating_insanities_${aRowId}_insanity_severity`] = 2;
+            output[`repeating_insanities_${aRowId}_insanity_description`] = 'Focus. Breathe. This is no time to fall apart. You’re getting light-headed. Did it just grow darker in here?';
+            output[`repeating_insanities_${aRowId}_insanity_effects`] = 'You suffer 1 additional fatigue for each extra manoeuvre you perform during your turn.';
+            break;
+        case 6: case 7:
+            output[`repeating_insanities_${aRowId}_insanity_name`] = 'Catatonia';
+            output[`repeating_insanities_${aRowId}_insanity_traits`] = 'Chaos, Enigma';
+            output[`repeating_insanities_${aRowId}_insanity_severity`] = 1;
+            output[`repeating_insanities_${aRowId}_insanity_description`] = 'You retreat into yourself, your senses trying to shut out the world. Others find you distant, cold, and unresponsive.';
+            output[`repeating_insanities_${aRowId}_insanity_effects`] = 'At the end of your turn, move the tracking token on your Stance meter two spaces towards the neutral stance.';
+            break;
+        case 8: case 9:
+            output[`repeating_insanities_${aRowId}_insanity_name`] = 'Delusions of Grandeur';
+            output[`repeating_insanities_${aRowId}_insanity_traits`] = 'Enigma, Trauma';
+            output[`repeating_insanities_${aRowId}_insanity_severity`] = 1;
+            output[`repeating_insanities_${aRowId}_insanity_description`] = 'Do not presume to tell me your thoughts! You are unworthy of my attention. I am superior! In every way and every manner!';
+            output[`repeating_insanities_${aRowId}_insanity_effects`] = 'All of your failed skill checks gain: \u{1F480}: Suffer 1 stress.';
+            break;
+        case 10: case 11:
+            output[`repeating_insanities_${aRowId}_insanity_name`] = 'Dizzying Delirium';
+            output[`repeating_insanities_${aRowId}_insanity_traits`] = 'Enigma, Trauma';
+            output[`repeating_insanities_${aRowId}_insanity_severity`] = 3;
+            output[`repeating_insanities_${aRowId}_insanity_description`] = 'Sounds change timbre and your vision swims. It seems almost anything can trigger a fit.';
+            output[`repeating_insanities_${aRowId}_insanity_effects`] = 'Whenever you use an action card with a recharge rating (except one with the Ongoing trait), add one additional recharge token to the card.';
+            break;
+        case 12: case 13:
+            output[`repeating_insanities_${aRowId}_insanity_name`] = 'Don’t Leave Me!';
+            output[`repeating_insanities_${aRowId}_insanity_traits`] = 'Enigma, Violence';
+            output[`repeating_insanities_${aRowId}_insanity_severity`] = 2;
+            output[`repeating_insanities_${aRowId}_insanity_description`] = 'The most terrifying thing in the world is being alone. You must never be separated from your friends and allies!';
+            output[`repeating_insanities_${aRowId}_insanity_effects`] = 'If you end your turn with no allies within close range, suffer 1 stress.';
+            break;
+        case 14: case 15:
+            output[`repeating_insanities_${aRowId}_insanity_name`] = 'Dreadful Insight';
+            output[`repeating_insanities_${aRowId}_insanity_traits`] = 'Chaos, Supernatural';
+            output[`repeating_insanities_${aRowId}_insanity_severity`] = 2;
+            output[`repeating_insanities_${aRowId}_insanity_description`] = 'You’ve seen a terrible glimpse of things to come, and each time a new revelation proves true, your dread increases…';
+            output[`repeating_insanities_${aRowId}_insanity_effects`] = 'Each time you pass a mental check, suffer 1 stress.';
+            break;
+        case 16: case 17:
+            output[`repeating_insanities_${aRowId}_insanity_name`] = 'Dry Heaves, The';
+            output[`repeating_insanities_${aRowId}_insanity_traits`] = 'Supernatural, Trauma';
+            output[`repeating_insanities_${aRowId}_insanity_severity`] = 2;
+            output[`repeating_insanities_${aRowId}_insanity_description`] = 'Sometimes you see it again, and then the bile comes bubbling up…or worse, it doesn’t, and you just retch.';
+            output[`repeating_insanities_${aRowId}_insanity_effects`] = 'When you suffer 1 or more stress, suffer 1 fatigue as well.';
+            break;
+        case 18: case 19: case 20:
+            output[`repeating_insanities_${aRowId}_insanity_name`] = 'Fading Memories';
+            output[`repeating_insanities_${aRowId}_insanity_traits`] = 'Supernatural, Trauma';
+            output[`repeating_insanities_${aRowId}_insanity_severity`] = 1;
+            output[`repeating_insanities_${aRowId}_insanity_description`] = 'Mercifully, you find it difficult to remember the precise details of that awful event. Unfortunately, you find it difficult to remember much of anything.';
+            output[`repeating_insanities_${aRowId}_insanity_effects`] = 'Add \u{2B1B} to Intelligence checks.';
+            break;
+        case 21: case 22:
+            output[`repeating_insanities_${aRowId}_insanity_name`] = 'Faltering Steps';
+            output[`repeating_insanities_${aRowId}_insanity_traits`] = 'Trauma, Violence';
+            output[`repeating_insanities_${aRowId}_insanity_severity`] = 2;
+            output[`repeating_insanities_${aRowId}_insanity_description`] = 'I don’t want to be a bother, but could you– oh, never mind, it was a bad idea anyway.';
+            output[`repeating_insanities_${aRowId}_insanity_effects`] = 'You suffer 1 additional stress for each extra space you move the activation token on your Stance meter at the beginning of your turn.';
+            break;
+        case 23: case 24:
+            output[`repeating_insanities_${aRowId}_insanity_name`] = 'Fragile Nerves';
+            output[`repeating_insanities_${aRowId}_insanity_traits`] = 'Chaos, Trauma';
+            output[`repeating_insanities_${aRowId}_insanity_severity`] = 1;
+            output[`repeating_insanities_${aRowId}_insanity_description`] = 'You’ve seen too many nasty things and could really use a little peace and quiet, but it never stops. It never, ever stops. It’s just one thing after another…';
+            output[`repeating_insanities_${aRowId}_insanity_effects`] = 'Add \u{2B1B} to Discipline, Intimidate, and Leadership checks you make.';
+            break;
+        case 25: case 26:
+            output[`repeating_insanities_${aRowId}_insanity_name`] = 'Gibbering Terrors';
+            output[`repeating_insanities_${aRowId}_insanity_traits`] = 'Supernatural, Violence';
+            output[`repeating_insanities_${aRowId}_insanity_severity`] = 3;
+            output[`repeating_insanities_${aRowId}_insanity_description`] = 'Shallya have mercy! Oh gods, we’re all going to die and I’m going to die last! I’m going to have to watch you all die!';
+            output[`repeating_insanities_${aRowId}_insanity_effects`] = 'Whenever you suffer 1 or more stress, suffer 1 additional stress.';
+            break;
+        case 27: case 28: case 29:
+            output[`repeating_insanities_${aRowId}_insanity_name`] = 'Gold Lust';
+            output[`repeating_insanities_${aRowId}_insanity_traits`] = 'Dwarf, Enigma';
+            output[`repeating_insanities_${aRowId}_insanity_severity`] = 4;
+            output[`repeating_insanities_${aRowId}_insanity_description`] = 'I must have it ... I must have it all! Glorious, wonderful gold. More, more!';
+            output[`repeating_insanities_${aRowId}_insanity_effects`] = 'Add \u{2666}\u{FE0F} to all checks to haggle and trade, and to Social actions where gold and riches are at stake.';
+            break;
+        case 30: case 31:
+            output[`repeating_insanities_${aRowId}_insanity_name`] = 'Growing Apathy';
+            output[`repeating_insanities_${aRowId}_insanity_traits`] = 'Chaos, Trauma';
+            output[`repeating_insanities_${aRowId}_insanity_severity`] = 3;
+            output[`repeating_insanities_${aRowId}_insanity_description`] = 'What’s the point? Chaos is inevitable and terrible things will happen no matter what you do...';
+            output[`repeating_insanities_${aRowId}_insanity_effects`] = 'Whenever you fail a physical check, suffer 1 fatigue.';
+            break;
+        case 32: case 33:
+            output[`repeating_insanities_${aRowId}_insanity_name`] = 'Irrational Compulsion';
+            output[`repeating_insanities_${aRowId}_insanity_traits`] = 'Chaos, Violence';
+            output[`repeating_insanities_${aRowId}_insanity_severity`] = 3;
+            output[`repeating_insanities_${aRowId}_insanity_description`] = 'Blood for the Blood God! Skulls for the Skull –what was I saying?';
+            output[`repeating_insanities_${aRowId}_insanity_effects`] = 'At the end of any round of combat you are involved in, if you did not attack an ally or enemy within close range, suffer 1 stress.';
+            break;
+        case 34: case 35: case 36:
+            output[`repeating_insanities_${aRowId}_insanity_name`] = 'Khaine’s Spite';
+            output[`repeating_insanities_${aRowId}_insanity_traits`] = 'Elf, Enigma';
+            output[`repeating_insanities_${aRowId}_insanity_severity`] = 4;
+            output[`repeating_insanities_${aRowId}_insanity_description`] = 'You do not understand the anger, the hatred, that I must keep checked, lest it be unleashed upon you and spell your doom!';
+            output[`repeating_insanities_${aRowId}_insanity_effects`] = 'Your Social actions suffer \u{2B1B} equal to the depth of your current stance.';
+            break;
+        case 37: case 38:
+            output[`repeating_insanities_${aRowId}_insanity_name`] = 'Lack of Confidence';
+            output[`repeating_insanities_${aRowId}_insanity_traits`] = 'Enigma, Trauma';
+            output[`repeating_insanities_${aRowId}_insanity_severity`] = 1;
+            output[`repeating_insanities_${aRowId}_insanity_description`] = 'You’re fairly certain you used to be able to do these things but you’re less and less certain as time goes on…';
+            output[`repeating_insanities_${aRowId}_insanity_effects`] = 'Add \u{2B1B} to any check you make in which the dice pool includes at least one expertise die \u{1F7E8}.';
+            break;
+        case 39: case 40: case 41:
+            output[`repeating_insanities_${aRowId}_insanity_name`] = 'Lethargy';
+            output[`repeating_insanities_${aRowId}_insanity_traits`] = 'Trauma, Violence';
+            output[`repeating_insanities_${aRowId}_insanity_severity`] = 2;
+            output[`repeating_insanities_${aRowId}_insanity_description`] = 'Perhaps I’ll just stay in this chair for now. It’s so comfortable and I can’t seem to keep my eyes open. Go on without me...I’ll just rest right here for a bit.';
+            output[`repeating_insanities_${aRowId}_insanity_effects`] = 'Add \u{2B1B} to Strength checks.';
+            break;
+        case 42: case 43:
+            output[`repeating_insanities_${aRowId}_insanity_name`] = 'Manic Fervour';
+            output[`repeating_insanities_${aRowId}_insanity_traits`] = 'Chaos, Trauma';
+            output[`repeating_insanities_${aRowId}_insanity_severity`] = 2;
+            output[`repeating_insanities_${aRowId}_insanity_description`] = 'You feel great! There’s no challenge that you can’t handle! You can’t sit still; you must keep moving!';
+            output[`repeating_insanities_${aRowId}_insanity_effects`] = 'Each time you pass a physical check, suffer 1 fatigue.';
+            break;
+        case 44: case 45: case 46:
+            output[`repeating_insanities_${aRowId}_insanity_name`] = 'Mental Mutation';
+            output[`repeating_insanities_${aRowId}_insanity_traits`] = 'Chaos, Violence';
+            output[`repeating_insanities_${aRowId}_insanity_severity`] = 2;
+            output[`repeating_insanities_${aRowId}_insanity_description`] = 'Obviously something is wrong with your body. You can’t see it, but sometimes you can feel it lurking inside you. It’s only a matter of time before it happens…';
+            output[`repeating_insanities_${aRowId}_insanity_effects`] = 'When fatigued or distressed, add twice the normal number of \u{2B1B} to your dice pools.';
+            break;
+        case 47: case 48: case 49:
+            output[`repeating_insanities_${aRowId}_insanity_name`] = 'Mounting Tension';
+            output[`repeating_insanities_${aRowId}_insanity_traits`] = 'Supernatural, Enigma';
+            output[`repeating_insanities_${aRowId}_insanity_severity`] = 3;
+            output[`repeating_insanities_${aRowId}_insanity_description`] = 'Moment by moment, the threat comes closer. It’s always lurking, just outside the corner of your vision.';
+            output[`repeating_insanities_${aRowId}_insanity_effects`] = 'Whenever you suffer one or more wounds, suffer 1 stress.';
+            break;
+        case 50: case 51: case 52:
+            output[`repeating_insanities_${aRowId}_insanity_name`] = 'Nagging Doubts';
+            output[`repeating_insanities_${aRowId}_insanity_traits`] = 'Chaos, Supernatural';
+            output[`repeating_insanities_${aRowId}_insanity_severity`] = 2;
+            output[`repeating_insanities_${aRowId}_insanity_description`] = 'The plan is flawed. This can only end in disaster, and it will be all my fault.';
+            output[`repeating_insanities_${aRowId}_insanity_effects`] = 'Whenever you fail a mental check, suffer 1 stress.';
+            break;
+        case 53: case 54: case 55:
+            output[`repeating_insanities_${aRowId}_insanity_name`] = 'Omens of Doom';
+            output[`repeating_insanities_${aRowId}_insanity_traits`] = 'Chaos, Enigma';
+            output[`repeating_insanities_${aRowId}_insanity_severity`] = 3;
+            output[`repeating_insanities_${aRowId}_insanity_description`] = 'Your dreams are plagued by terrible visions of the future. Not useful visions. Just the horrific, mindshattering ones.';
+            output[`repeating_insanities_${aRowId}_insanity_effects`] = 'Each time you wake up from a rest, suffer 2 stress.';
+            break;
+        case 56: case 57: case 58:
+            output[`repeating_insanities_${aRowId}_insanity_name`] = 'Oppressive Fear';
+            output[`repeating_insanities_${aRowId}_insanity_traits`] = 'Chaos, Violence';
+            output[`repeating_insanities_${aRowId}_insanity_severity`] = 3;
+            output[`repeating_insanities_${aRowId}_insanity_description`] = 'The world is full of things that are trying to kill you. Eventually one of them is going to succeed.';
+            output[`repeating_insanities_${aRowId}_insanity_effects`] = 'Whenever you suffer one or more wounds, suffer 1 fatigue.';
+            break;
+        case 59: case 60:
+            output[`repeating_insanities_${aRowId}_insanity_name`] = 'Paranoia';
+            output[`repeating_insanities_${aRowId}_insanity_traits`] = 'Chaos, Enigma';
+            output[`repeating_insanities_${aRowId}_insanity_severity`] = 3;
+            output[`repeating_insanities_${aRowId}_insanity_description`] = 'You’ve read between the lines. You know what’s going on. Your friends are traitors, out to get you. But you’ll show them…';
+            output[`repeating_insanities_${aRowId}_insanity_effects`] = 'Whenever your group’s Party Tension increases, you must spend 1 fortune point or the group’s Party Tension increases by 1.';
+            break;
+        case 61: case 62: case 63:
+            output[`repeating_insanities_${aRowId}_insanity_name`] = 'Reclusion';
+            output[`repeating_insanities_${aRowId}_insanity_traits`] = 'Any Race, Enigma';
+            output[`repeating_insanities_${aRowId}_insanity_severity`] = 4;
+            output[`repeating_insanities_${aRowId}_insanity_description`] = 'I can do it by myself. I don’t need your help. I don’t need anyone’s help.';
+            output[`repeating_insanities_${aRowId}_insanity_effects`] = 'You cannot benefit from the Assist manoeuvre or from fortune dice provided by allies. Performing the Assist manoeuvre to aid another character causes 1 stress.';
+            break;
+        case 64: case 65:
+            output[`repeating_insanities_${aRowId}_insanity_name`] = 'Rotting Body';
+            output[`repeating_insanities_${aRowId}_insanity_traits`] = 'Supernatural, Violence';
+            output[`repeating_insanities_${aRowId}_insanity_severity`] = 1;
+            output[`repeating_insanities_${aRowId}_insanity_description`] = 'Everyone claims that you look fine, that you don’t smell of rotten flesh, and your body is not mouldering. But you know better.';
+            output[`repeating_insanities_${aRowId}_insanity_effects`] = 'Your physical checks gain: \u{1F480} Suffer 1 fatigue.';
+            break;
+        case 66: case 67:
+            output[`repeating_insanities_${aRowId}_insanity_name`] = 'Solipsism';
+            output[`repeating_insanities_${aRowId}_insanity_traits`] = 'Enigma, Supernatural';
+            output[`repeating_insanities_${aRowId}_insanity_severity`] = 3;
+            output[`repeating_insanities_${aRowId}_insanity_description`] = 'You’re no longer convinced that anything besides yourself truly exists.';
+            output[`repeating_insanities_${aRowId}_insanity_effects`] = 'Add \u{2B1B} to your dice pool on all actions that target characters aside from yourself.';
+            break;
+        case 68: case 69: case 70:
+            output[`repeating_insanities_${aRowId}_insanity_name`] = 'Shakes, The';
+            output[`repeating_insanities_${aRowId}_insanity_traits`] = 'Chaos, Violence';
+            output[`repeating_insanities_${aRowId}_insanity_severity`] = 1;
+            output[`repeating_insanities_${aRowId}_insanity_description`] = 'Ignore the trembling, you’re fine. You don’t think about it anymore. You simply need help doing things sometimes. Shallya please, when will this shaking stop…?';
+            output[`repeating_insanities_${aRowId}_insanity_effects`] = 'Add \u{2B1B} to Agility checks.';
+            break;
+        case 71: case 72: case 73:
+            output[`repeating_insanities_${aRowId}_insanity_name`] = 'Temerity';
+            output[`repeating_insanities_${aRowId}_insanity_traits`] = 'Elf, Enigma';
+            output[`repeating_insanities_${aRowId}_insanity_severity`] = 2;
+            output[`repeating_insanities_${aRowId}_insanity_description`] = 'How dare you question me! I have decades – nay, centuries – more experience than you do!';
+            output[`repeating_insanities_${aRowId}_insanity_effects`] = 'Whenever you suffer 1 or more stress, party tension increases by 1.';
+            break;
+        case 74: case 75: case 76:
+            output[`repeating_insanities_${aRowId}_insanity_name`] = 'Terrifying Visions';
+            output[`repeating_insanities_${aRowId}_insanity_traits`] = 'Enigma, Supernatural';
+            output[`repeating_insanities_${aRowId}_insanity_severity`] = 3;
+            output[`repeating_insanities_${aRowId}_insanity_description`] = 'When you sleep, you see awful visions, terrifying things that should not and cannot be…';
+            output[`repeating_insanities_${aRowId}_insanity_effects`] = 'At the end of each encounter, or after a full night’s rest, you recover 1 less stress and 1 less fatigue than normal.';
+            break;
+        case 77: case 78: case 79:
+            output[`repeating_insanities_${aRowId}_insanity_name`] = 'Trepidation';
+            output[`repeating_insanities_${aRowId}_insanity_traits`] = 'Supernatural, Violence';
+            output[`repeating_insanities_${aRowId}_insanity_severity`] = 1;
+            output[`repeating_insanities_${aRowId}_insanity_description`] = 'You’re terrified of acting, afraid of doing the wrong thing. Everything you do always seems to turn out wrong.';
+            output[`repeating_insanities_${aRowId}_insanity_effects`] = 'You do not gain a free manoeuvre on your turn.';
+            break;
+        case 80: case 81: case 82:
+            output[`repeating_insanities_${aRowId}_insanity_name`] = 'Unhinged';
+            output[`repeating_insanities_${aRowId}_insanity_traits`] = 'Enigma, Supernatural';
+            output[`repeating_insanities_${aRowId}_insanity_severity`] = 2;
+            output[`repeating_insanities_${aRowId}_insanity_description`] = 'The world is slowly unravelling around you. Well, not as slowly as it once was...';
+            output[`repeating_insanities_${aRowId}_insanity_effects`] = 'The Severity Value of all your other insanities is increased by 1.';
+            break;
+        case 83: case 84: case 85:
+            output[`repeating_insanities_${aRowId}_insanity_name`] = 'Unnatural Cravings';
+            output[`repeating_insanities_${aRowId}_insanity_traits`] = 'Enigma, Supernatural';
+            output[`repeating_insanities_${aRowId}_insanity_severity`] = 2;
+            output[`repeating_insanities_${aRowId}_insanity_description`] = 'So many tempting choices... A small bite won’t hurt anyone. A tiny sip, just to see what it’s like. Mmm...I wonder what he tastes like.';
+            output[`repeating_insanities_${aRowId}_insanity_effects`] = 'Your mental checks gain: \u{1F480} Suffer 1 stress.';
+            break;
+        case 86: case 87: case 88:
+            output[`repeating_insanities_${aRowId}_insanity_name`] = 'Unresolved Grudge';
+            output[`repeating_insanities_${aRowId}_insanity_traits`] = 'Dwarf, Enigma';
+            output[`repeating_insanities_${aRowId}_insanity_severity`] = 2;
+            output[`repeating_insanities_${aRowId}_insanity_description`] = 'I shall never forget this sleight, foul cur. I must cleanse this stain on my honour!';
+            output[`repeating_insanities_${aRowId}_insanity_effects`] = 'Actions that do not target a hostile or known enemy gain \u{2B1B}.';
+            break;
+        case 89: case 90:
+            output[`repeating_insanities_${aRowId}_insanity_name`] = 'Xenophobia';
+            output[`repeating_insanities_${aRowId}_insanity_traits`] = 'Any Race, Enigma';
+            output[`repeating_insanities_${aRowId}_insanity_severity`] = 3;
+            output[`repeating_insanities_${aRowId}_insanity_description`] = 'You can’t trust them. Any of them. They’re not like us.';
+            output[`repeating_insanities_${aRowId}_insanity_effects`] = 'Your Social actions and Fellowship skill checks suffer \u{2666}\u{FE0F} whenever dealing with a member of a different race.';
+            break;
+        case 91: case 92:
+            output[`repeating_insanities_${aRowId}_insanity_name`] = 'Yellow Streak';
+            output[`repeating_insanities_${aRowId}_insanity_traits`] = 'Trauma, Violence';
+            output[`repeating_insanities_${aRowId}_insanity_severity`] = 2;
+            output[`repeating_insanities_${aRowId}_insanity_description`] = 'Some call you a coward... You are just acutely aware of the dangers that constantly surround you.';
+            output[`repeating_insanities_${aRowId}_insanity_effects`] = 'If you end your turn in an engagement where your allies are outnumbered by enemies, suffer 1 stress and 1 fatigue.';
+            break;
+    }
+    setAttrs(output);
+});
+
+// POWER calculations
+on('change:wp', function(eventInfo) {
+    getAttrs(['wp'], function(values) {
+        const myWP = parseInt(values.wp) || 0;
+
+        const output = {};
+        output['power'] = output['power_equilibrium'] = myWP;
+        output['power_max'] = myWP * 2;
+        setAttrs(output);
+    });
+});
+
+// RANK calculation
+on('change:experience', function(eventInfo) {
+    getAttrs(['experience'], function(values) {
+        const myExperience = parseInt(values.experience) || 0;
+
+        const output = {};
+        output['rank'] = Math.trunc(myExperience / 10) + 1;
+        setAttrs(output);
+    });
+});
+
+// SKILL characteristic roll settings
+on('change:repeating_skills:skillChar', function(eventInfo) {
+    getAttrs(['repeating_skills_skillChar'], function(values) {
+        const theChar = parseInt(values.repeating_skills_skillChar) || 0;
+
+        const charStrings = ['','St','To','Ag','Int','WP','Fel']; //WFRP3e Player's Handbook, Pg 17
+        const charRolls = ['ERROR: characteristic not set','@{skillRollSt}','@{skillRollTo}','@{skillRollAg}','@{skillRollInt}','@{skillRollWP}','@{skillRollFel}'];
+
+        const output = {};
+        output['repeating_skills_skillCharString'] = charStrings[theChar];
+        output['repeating_skills_skillCharRoll'] = charRolls[theChar];
+        setAttrs(output);
+    });
+});
+
+// SOAK calculation
+on('change:repeating_armor:armor_equipped change:repeating_armor:armor_soak remove:repeating_armor', function(eventInfo) {
+    getSectionIDs('repeating_armor', function (ids) {
+        const equippedFieldnames = [];
+        const soakFieldnames = [];
+
+        ids.forEach(id => {
+            equippedFieldnames.push(`repeating_armor_${id}_armor_equipped`);
+            soakFieldnames.push(`repeating_armor_${id}_armor_soak`);
+        });
+
+        getAttrs([...equippedFieldnames, ...soakFieldnames], function (values) {
+            const output = {};
+            let totalSoak = 0;
+            ids.forEach(id => {
+                const soakValue = values[`repeating_armor_${id}_armor_equipped`] == 1 ? parseInt(values[`repeating_armor_${id}_armor_soak`]) : 0;
+                totalSoak += soakValue;
+            });
+            output['soak'] = totalSoak;
+            setAttrs(output);
+        });
+    });
+});
+
+// STANCE CURRENT calculation
+on('change:stance', function(eventInfo) {
+    getAttrs(['stance','stanceDominant'], function(values) {
+        const myStance = parseInt(values.stance) || 0;
+        const myDominantStance = values['stanceDominant'];
+
+        const output = {};
+        output['stanceColor'] = (myStance > 0 ? STANCE_COLOR_RECKLESS : myStance < 0 ? STANCE_COLOR_CONSERVATIVE : myDominantStance == STANCE_RECKLESS ? STANCE_COLOR_RECKLESS : STANCE_COLOR_CONSERVATIVE);
+        output['stanceCurrent'] = (myStance > 0 ? STANCE_RECKLESS : myStance < 0 ? STANCE_CONSERVATIVE : myDominantStance);
+        setAttrs(output);
+    });
+});
+
+// STANCE is displayed (or not)
+on('change:stanceDepthCons change:stanceDepthReck', function(eventInfo) {
+    getAttrs(['stanceDepthCons','stanceDepthReck'], function(values) {
+        const myStanceDepthCons = parseInt(values.stanceDepthCons) || 0;
+        const myStanceDepthReck = parseInt(values.stanceDepthReck) || 0;
+
+        const output = {};
+        for (var i = 1; i < 6; i++) {
+            output['stanceIsHiddenC' + i] = (i > myStanceDepthCons ? 1 : 0);
+            output['stanceIsHiddenR' + i] = (i > myStanceDepthReck ? 1 : 0);
+        }
+        setAttrs(output);
+    });
+});
+
+// STRESS calculation
+on('change:stress change:int change:wp change:fel', function(eventInfo) {
+    getAttrs(['stress','int','wp','fel'], function(values) {
+        const myStress = parseInt(values.stress) || 0;
+        const myInt = parseInt(values.int) || 0;
+        const myWP = parseInt(values.wp) || 0;
+        const myFel = parseInt(values.fel) || 0;
+
+        const output = {};
+        output['stress_max'] = myWP * 2;
+        output['intIsDistressed'] = myStress > myInt ? 1 : 0;
+        output['wpIsDistressed'] = myStress > myWP ? 1 : 0;
+        output['felIsDistressed'] = myStress > myFel ? 1 : 0;
+        output['on_edge'] = myStress > myWP ? 1 : 0;
+        output['stressExceedsCapacity'] = ((myStress > (myWP * 2)) ? 2 : (myStress > myInt || myStress > myWP || myStress > myFel) ? 1 : 0);
+        setAttrs(output);
+    });
+});
+
+// WEAPON added
+on('change:repeating_weapons:weapon_type', function(eventInfo) {
+    if (eventInfo.sourceType == 'player') {
+        const myWeaponId = getId(eventInfo.sourceAttribute);
+        const myWeaponIndex = parseInt(eventInfo.newValue) + 1;
+        const theWeaponName = WEAPONS[myWeaponIndex * WEAPONS_ITEMS_COUNT];
+
+        const output = {};
+        output[`repeating_weapons_${myWeaponId}_weapon_name`] = theWeaponName;
+        output[`repeating_weapons_${myWeaponId}_weapon_DR`] = WEAPONS[myWeaponIndex * WEAPONS_ITEMS_COUNT + WEAPONS_ITEM_INDEX_DR];
+        output[`repeating_weapons_${myWeaponId}_weapon_CR`] = WEAPONS[myWeaponIndex * WEAPONS_ITEMS_COUNT + WEAPONS_ITEM_INDEX_CR];
+        output[`repeating_weapons_${myWeaponId}_weapon_range`] = WEAPONS[myWeaponIndex * WEAPONS_ITEMS_COUNT + WEAPONS_ITEM_INDEX_RANGE];
+        output[`repeating_weapons_${myWeaponId}_weapon_group`] = WEAPONS[myWeaponIndex * WEAPONS_ITEMS_COUNT + WEAPONS_ITEM_INDEX_GROUP];
+        output[`repeating_weapons_${myWeaponId}_weapon_qualities`] = WEAPONS[myWeaponIndex * WEAPONS_ITEMS_COUNT + WEAPONS_ITEM_INDEX_QUALITIES];
+        output[`repeating_weapons_${myWeaponId}_weapon_details`] = WEAPONS[myWeaponIndex * WEAPONS_ITEMS_COUNT + WEAPONS_ITEM_INDEX_DESCRIPTION];
+
+        const isItem = theWeaponName != 'Unarmed' && 
+            theWeaponName != 'Other' && 
+            theWeaponName != 'Improvised' && 
+            theWeaponName != '' &&
+            theWeaponName != 'Natural Attacks' ? 1 : 0;
+
+        if (isItem) {
+            const aRowId = generateRowID();
+            output[`repeating_items_${aRowId}_item_name`] = WEAPONS[myWeaponIndex * WEAPONS_ITEMS_COUNT];
+            output[`repeating_items_${aRowId}_item_link`] = WEAPONS[myWeaponIndex * WEAPONS_ITEMS_COUNT];
+            output[`repeating_items_${aRowId}_item_enc`] = WEAPONS[myWeaponIndex * WEAPONS_ITEMS_COUNT + WEAPONS_ITEM_INDEX_ENC];
+            output[`repeating_items_${aRowId}_item_details`] = WEAPONS[myWeaponIndex * WEAPONS_ITEMS_COUNT + WEAPONS_ITEM_INDEX_DESCRIPTION];
+        }
+        setAttrs(output); 
+
+        if (isItem) updateItemEncumbrance('repeating_items', '_item_enc', '_item_count', '_item_equipped', 'encumbrance');
+    }
+});
+
+// WEAPON removed
+// When a weapon is removed, search the items list and remove related
+on('remove:repeating_weapons', function(eventInfo) {
+    const myWeaponId = getId(eventInfo.sourceAttribute);
+    const myRemovedWeaponValue = parseInt(eventInfo.removedInfo[`repeating_weapons_${myWeaponId}_weapon_type`]) + 1;
+    const myRemovedWeaponName = WEAPONS[myRemovedWeaponValue * WEAPONS_ITEMS_COUNT];
+
+    getSectionIDs('repeating_items', function (ids) {
+        const itemFieldNames = [];
+
+        ids.forEach(id => {
+            itemFieldNames.push(`repeating_items_${id}_item_link`);
+        });
+
+        getAttrs([...itemFieldNames], function(values) {
+            ids.every(id => {
+                const anItemName = values[`repeating_items_${id}_item_link`];
+                const theRowId = getId(`repeating_items_${id}_item_link`);
+                if (anItemName === myRemovedWeaponName) {
+                    removeRepeatingRow('repeating_items_' + theRowId);
+                    updateItemEncumbrance('repeating_items', '_item_enc', '_item_count', '_item_equipped', 'encumbrance');
+                    return false;
+                } else {
+                    return true;
+                }
+            });
+        });
+    });
+});
+
+// WFRP clear dice pool
+on('clicked:clear_seed', function() { clearPool(); });
+on('change:stance', function() { clearPool(); });
+
+function clearPool(theReason = '') {
+    const output = {};
+    output['roll_reason'] = theReason;
+    output['numDiceCharacteristic'] = output['numDiceConservative'] = output['numDiceReckless'] = output['numDiceExpertise'] = output['numDiceChallenge'] = output['numDiceMisfortune'] = output['numDiceFortune'] = 0;
+    setAttrs(output);
+};
+
+// WFRP presets based on ACTION
+on('clicked:repeating_actions:actionseed', function(eventInfo) { 
+    const myID = getId(eventInfo.sourceAttribute);
+
+    getAttrs(['stanceColor',`repeating_actions_${myID}_actionName`,`repeating_actions_${myID}_actionSkill`,`repeating_actions_${myID}_actionChar`], function(values) {
+        const myStanceColor = String(values.stanceColor || '');
+        const myName = String(values[`repeating_actions_${myID}_actionName`] || '');
+        const mySkill = String(values[`repeating_actions_${myID}_actionSkill`] || '');
+        const myChar = String(values[`repeating_actions_${myID}_actionChar`].toLowerCase() || '');
+
+        if (mySkill == '' || myChar == '') {
+            clearPool('No Check Required');
+        } else {
+            getAttrs([`${mySkill}Exp`], function(values) {
+                const myExp = parseInt(values[`${mySkill}Exp`]) || 0;
+
+                seedDice(myChar, `${myName}: ${mySkill} (${myChar}) check`, myStanceColor, myExp);
+            });
+        }
+    });    
+});
+
+// WFRP presets based on CHARACTERISTIC
+on('clicked:stCheck', function() { seedDice('st', 'Strength check', COLOR_CHECK_CHAR); });
+on('clicked:toCheck', function() { seedDice('to', 'Toughness check', COLOR_CHECK_CHAR); });
+on('clicked:agCheck', function() { seedDice('ag', 'Agility check', COLOR_CHECK_CHAR); });
+on('clicked:intCheck', function() { seedDice('int', 'Intelligence check', COLOR_CHECK_CHAR); });
+on('clicked:wpCheck', function() { seedDice('wp', 'Willpower check', COLOR_CHECK_CHAR); });
+on('clicked:felCheck', function() { seedDice('fel', 'Fellowship check', COLOR_CHECK_CHAR); });
+
+on('clicked:init_ag_check', function() { seedDice('ag', 'Initiative (Ag) check', COLOR_CHECK_INIT); });
+on('clicked:init_fel_check', function() { seedDice('fel', 'Initiative (Fel) check', COLOR_CHECK_INIT); });
+
+on('clicked:fear_check', function() { seedFear('Fear (Discipline) check'); });
+on('clicked:terror_check', function() { seedFear('Terror (Discipline) check'); });
+
+// WFRP presets based on SKILL
+on('clicked:athleticsCheck', function() { seedSkill('Athletics'); });
+on('clicked:charmCheck', function() { seedSkill('Charm'); });
+on('clicked:ballisticsCheck', function() { seedSkill('Ballistics'); });
+on('clicked:disciplineCheck', function() { seedSkill('Discipline'); });
+on('clicked:coordinationCheck', function() { seedSkill('Coordination'); });
+on('clicked:firstaidCheck', function() { seedSkill('First Aid'); });
+on('clicked:intimidateCheck', function() { seedSkill('Intimidate'); });
+on('clicked:folkloreCheck', function() { seedSkill('Folklore'); });
+on('clicked:resilienceCheck', function() { seedSkill('Resilience'); });
+on('clicked:guileCheck', function() { seedSkill('Guile'); });
+on('clicked:rideCheck', function() { seedSkill('Ride'); });
+on('clicked:intuitionCheck', function() { seedSkill('Intuition'); });
+on('clicked:skulduggeryCheck', function() { seedSkill('Skulduggery'); });
+on('clicked:leadershipCheck', function() { seedSkill('Leadership'); });
+on('clicked:stealthCheck', function() { seedSkill('Stealth'); });
+on('clicked:natureloreCheck', function() { seedSkill('Nature Lore'); });
+on('clicked:weaponsCheck', function() { seedSkill('Weapons'); });
+on('clicked:observationCheck', function() { seedSkill('Observation'); });
+on('clicked:animalhandlingCheck', function() { seedSkill('Animal Handling'); });
+on('clicked:channellingCheck', function() { seedSkill('Channelling'); });
+on('clicked:educationCheck', function() { seedSkill('Education'); });
+on('clicked:invocationCheck', function() { seedSkill('Invocation'); });
+on('clicked:mysticalsightCheck', function() { seedSkill('Mystical Sight'); });
+on('clicked:medicineCheck', function() { seedSkill('Medicine'); });
+on('clicked:pietyCheck', function() { seedSkill('Piety'); });
+on('clicked:spellcraftCheck', function() { seedSkill('Spellcraft'); });
+on('clicked:tradecraftCheck', function() { seedSkill('Tradecraft'); });
+
+// WFRP helper function to SEED DICE
+function seedDice(theChar, theReason, theColor, theExpValue = 0) {
+    getAttrs([`${theChar}Char`,`${theChar}Reck`,`${theChar}Cons`,`${theChar}Exert`,`${theChar}Fortune`,'encpenalty'], function(values) {
+        const myCharDice = parseInt(values[`${theChar}Char`]) || 0;
+        const myConsDice = parseInt(values[`${theChar}Cons`]) || 0;
+        const myReckDice = parseInt(values[`${theChar}Reck`]) || 0;
+        const myFortuneDice = parseInt(values[`${theChar}Fortune`]) || 0;
+        const myExertionPenalty = parseInt(values[`${theChar}Exert`]) || 0;
+        const myCheckIsPhysical = (theChar == 'st' || theChar == 'to' || theChar == 'ag') ? true : false;
+        const myEncPenalty = myCheckIsPhysical ? parseInt(values.encpenalty) || 0 : 0;
+
+        const output = {};
+        output['roll_reason'] = theReason;
+        output['roll_char_name'] = theChar;
+        output['roll_char_value'] = '@{' + theChar + '}';
+        output['roll_color'] = theColor;
+        output['numDiceCharacteristic'] = myCharDice;
+        output['numDiceConservative'] = myConsDice;
+        output['numDiceReckless'] = myReckDice;
+        output['numDiceExpertise'] = theExpValue;
+        output['numDiceChallenge'] = 0;
+        output['numDiceMisfortune'] = (myExertionPenalty + myEncPenalty);
+        output['numDiceFortune'] = myFortuneDice
+        setAttrs(output);
+    });
+};
+
+//WFRP helper function to manage FEAR and TERROR
+function seedFear(theReason) {
+    getAttrs(['disciplineExp'], function(values) {
+        const theExpValue = parseInt(values.disciplineExp) || 0;
+
+        seedDice('wp', theReason, COLOR_CHECK_FEAR, theExpValue);
+    });
+};
+
+//WFRP helper function to manage SKILL CHARACTERISTIC
+function seedSkill(theSkill) {
+    // ...Var = ensure params are reduced to their var names
+    const theSkillVar = theSkill.toLowerCase().replaceAll(' ',''); // ensure string is reduced to its var name
+    getAttrs([`${theSkillVar}Char`,`${theSkillVar}CharDefault`,`${theSkillVar}Exp`], function(values) {
+        const theChar = String(values[`${theSkillVar}Char`]);
+        const theCharVar = String(values[`${theSkillVar}Char`].toLowerCase());
+        const theCharDefault = String(values[`${theSkillVar}CharDefault`]);
+        const theExpValue = values[`${theSkillVar}Exp`];
+
+        if (theExpValue != '') {
+            seedDice(theCharVar, `${theSkill} (${theChar}) check`, COLOR_CHECK_SKILL, theExpValue);
+        } else {
+            clearPool('Skill Not Trained');
+        }
+
+        const output = {};
+        output[`${theSkillVar}Char`] = theCharDefault;
+        setAttrs(output);
+    });
+};
+
+// WOUNDS threshold exceeded
+on('change:wounds change:wounds_max', function(eventInfo) {
+    getAttrs(['wounds','wounds_max',], function(values) {
+        const myWounds = parseInt(values.wounds) || 0;
+        const myWoundsMax = parseInt(values.wounds_max) || 0;
+
+        const output = {};
+        output['woundsExceedsThreshold'] = ((myWounds > myWoundsMax) ? 1 : 0);
+        setAttrs(output);
+    });
+});
+
+// WOUNDS threshold calculation
+on('change:race change:to change:repeating_careeradvances:careeradvancetype remove:repeating_careeradvances', function(eventInfo) {
+    getAttrs(['race', 'to'], function(values) {
+        const myRace = parseInt(values.race) || 0;
+        const myTo = parseInt(values.to) || 0;
+
+        const baseValues = [0,9,10,8,8]; //WFRP3e Player's Handbook, Pgs 29-32
+
+        getSectionIDs('repeating_careerAdvances', function (ids) {
+            const careerFieldnames = [];
+            ids.forEach(id => {
+                careerFieldnames.push(`repeating_careerAdvances_${id}_careerAdvanceType`);
+            });
+    
+            getAttrs([...careerFieldnames], function (values) {
+                let woundAdvances = 0;
+
+                ids.forEach(id => {
+                    if (parseInt(values[`repeating_careerAdvances_${id}_careerAdvanceType`]) || 0 == CARRER_ADVANCE_WOUND) woundAdvances++;
+                });
+
+                const output = {};
+                output['wounds_max'] = baseValues[myRace] + myTo + woundAdvances;
+                setAttrs(output);
+            });
+        });
+    });
+});
+</script>
+
+<rolltemplate class="sheet-rolltemplate-custom">
+    <div class="sheet-container sheet-color-{{color}}">
+        <div class="sheet-header">
+            {{#title}}<div class="sheet-title">{{title}}</div>{{/title}}
+            {{#subtitle}}<div class="sheet-subtitle">{{subtitle}}</div>{{/subtitle}}
+        </div>
+        <div class="sheet-content">
+            {{#allprops() title subtitle color}}
+                <div class="sheet-key">{{key}}</div>
+                <div class="sheet-value">{{value}}</div>
+            {{/allprops() title subtitle color}}
+
+            {{#desc}}
+                <div class="sheet-desc">{{desc}}</div>
+            {{/desc}}
+        </div>
+    </div>
+</rolltemplate>
+
+<rolltemplate class="sheet-rolltemplate-menu">
+    <div class="sheet-container sheet-color-{{color}}">
+         <div class="sheet-header">
+            {{#title}}<div class="sheet-title">{{title}}</div>{{/title}}
+            {{#subtitle}}<div class="sheet-subtitle">{{subtitle}}</div>{{/subtitle}}
+        </div>
+         <div class="sheet-content">
+            {{#allprops() title subtitle desc color}}
+                <div class="sheet-key">{{key}}</div>
+                <div class="sheet-value">{{value}}</div>
+            {{/allprops() title subtitle desc color}}
+            {{#desc}}
+                <div class="sheet-desc">{{desc}}</div>
+            {{/desc}}
+        </div>
+    </div>
+</rolltemplate>
