@@ -1,404 +1,623 @@
-<!-- General Information -->
-<div class="divGeneralInfo">
-    <table>
-        <tr>            
-            <td class="label">Class/Model:</td>
-            <td><input type="text" name="attr_shipClass" style="width:100%;"/></td>            
-            <td class="label">Faction:</td>
-            <td>
-                <select name="attr_shipFaction">
-                    <option value="(undefined)">select...</option>
-                    <option value="UFP">Federation</option>
-                    <option value="KE">Klingon</option>
-                    <option value="RSE">Romulan</option>
-                    <option value="GA">Gorn</option>
-                    <option value="OC">Orion</option>
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td class="label">Superstructure: </td>
-            <td>
-                <input class="current" name="attr_sup" type="number"  min="0" max="200" value="0"/> out of
-                <input name="attr_sup_max" type="number" min="1" max="200" value="1"/>
-            </td>
-            <td class="label">Damage Chart:</td>
-            <td>
-                <select name="attr_damageChart">
-                    <option value="0">select...</option>
-                    <option value="A">A</option>
-                    <option value="B">B</option>
-                    <option value="C">C</option>
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td colspan="3"></td>
-            <td>
-                <button type="roll" value="Identifying @{character_name}, moving at a speed of [[floor(@{pwr2Move} * @{mpr2} / @{mpr1})]]."> Identify</button>
-            </td>
-        </tr>
-    </table>
-</div>
+<div>
+    <h1><span name='attr_character_name'></span></h1> 
+    <!-------------------------------------------------------->
+    <div class='grid-3col'>
+        <span>
+            <span name='attr_class'></span>
+            <span name='attr_type'></span>
+        </span>
+        <span>
+            <label>Size:</label>
+            <span name='attr_size'></span>
+        </span>
+        <span>
+            <label>D / WDF / CE:</label>
+            <input type='number' class='w5' name='attr_defense' min='0' step='.1' value='0'/>
+            /
+            <input type='number' class='w5' name='attr_wdf' min='0' step='.1' value='0'/>
+            /
+            <span name='attr_ce'>0</span>
+        </span>
+    </div>
 
-<!-- Engines and Movement -->
-<div class="divEngines">
-    <table class="header">
-        <tr>
-            <td>----- Engines and Movement -----</td>
-        </tr>
-    </table>
-    <table>
-        <tr>
-            <td class="label">Port Warp Engine:</td>
-            <td>
-                <input class="current" name="attr_pwrSource1" type="number" min="0" max="50"/> out of
-                <input name="attr_pwrSource1_max" type="number" min="1" max="50" value="0"/>
-            </td>
-            <td class="label">Max Safe Warp:</td>
-            <td colspan="3">
-                <input type="number" min="0" max="14" name="attr_warpMSCS" value="0"/> on SC:
-                <select name="attr_warpMSCSStress">
-                    <option value="0">n/a</option>
-                    <option value="a">A</option>
-                    <option value="b">B</option>
-                    <option value="c">C</option>
-                    <option value="d">D</option>
-                    <option value="e">E</option>
-                    <option value="f">F</option>
-                    <option value="g">G</option>
-                    <option value="h">H</option>
-                    <option value="i">I</option>
-                    <option value="j">J</option>
-                    <option value="k">K</option>
-                    <option value="l">L</option>
-                    <option value="m">M</option>
-                    <option value="n">N</option>
-                    <option value="o">O</option>
-                    <option value="p">P</option>
-                    <option value="q">Q</option>
-                    <option value="r">R</option>
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td class="label">Starboard Warp Engine:</td>
-            <td>
-                <input class="current" name="attr_pwrSource2" type="number" min="0" max="50" value="0"/> out of
-                <input name="attr_pwrSource2_max" type="number" min="1" max="50" value="0"/>
-            </td>
-            <td class="label">Max Emergency Warp:</td>
-            <td colspan="3">
-                <input type="number" min="0" max="14" name="attr_warpEmergency" value="0"/> on SC:
-                <select name="attr_warpEmergencyStress">
-                    <option value="0">n/a</option>
-                    <option value="a">A</option>
-                    <option value="b">B</option>
-                    <option value="c">C</option>
-                    <option value="d">D</option>
-                    <option value="e">E</option>
-                    <option value="f">F</option>
-                    <option value="g">G</option>
-                    <option value="h">H</option>
-                    <option value="i">I</option>
-                    <option value="j">J</option>
-                    <option value="k">K</option>
-                    <option value="l">L</option>
-                    <option value="m">M</option>
-                    <option value="n">N</option>
-                    <option value="o">O</option>
-                    <option value="p">P</option>
-                    <option value="q">Q</option>
-                    <option value="r">R</option>
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td class="label">Impulse Engine:</td>
-            <td>
-                <input class="current" name="attr_pwrSource3" type="number" min="0" max="50" value="0"/> out of
-                <input name="attr_pwrSource3_max" type="number" min="1" max="50" value="0"/>
-            </td>
-            <td class="label">Movement Point Ratio:</td>
-            <td colspan="3"><input type="number" min="1" max="6" name="attr_mpr1" value="1"/> / <input type="number" min="1" max="6" name="attr_mpr2" value="1"/></td>
-        </tr>
-        <tr>
-            <td class="labelBold">Total Power Currently Available:</td>
-            <td>
-                <input class="current" name="attr_pwrTotal" type="number" readonly="true">
-            </td>
-            <td class="labelBold">Current Movement:</td>
-            <td colspan="3">
-                <input class="movement" type="number" name="attr_mp_max_copy" value="@{mp_max}" disabled="true"/>
-                - <input class="current" type="number" min="0" name="attr_mp_used" value="0"/>
-                = <input class="current" type="number" name="attr_mp_now" value="(@{mp_max_copy} - @{mp_used})" disabled="true"/>
-            </td>
-        </tr>
-    </table>
-</div>
+    <!-------------------------------------------------------->
+    <h2>Damage Control</h2>
 
-<!-- Power Allocation -->
-<div class="divAllocation">
-    <table class="header">
-        <tr>
-            <td>----- Power Allocation -----</td>
-        </tr>
-    </table>
-    <table>
-        <tr>
-            <td class="label">Power to Movement:</td>
-            <td><input class="movement" type="number" min="0" max="80" value="0" name="attr_pwr2Move"/></td>
-            <td class="label">Power to Shields:</td>
-            <td><input class="shields" type="number" min="0" max="80" value="0" name="attr_pwr2Shields"/></td>
-            <td class="label">Power to Weapons:</td>
-            <td><input class="weapons" type="number" name="attr_pwr2Weapons01" readonly="true"/></td>
-        </tr>
-        <tr>
-            <td class="label">Movement Points Available:</td>
-            <td><input class="movement" type="number" name="attr_mp_max" value="floor(@{pwr2Move} * @{mpr2} / @{mpr1})" disabled="true"/></td>
-            <td class="label">Shield Points Available:</td>
-            <td><input class="shields" type="number" name="attr_sp_max" value="floor(@{pwr2Shields} * @{spr2} / @{spr1})" disabled="true"/></td>
-            <td class="label">Current Turn:</td>
-            <td><input type="number" min="0" value="0" name="attr_currentTurn"/></td>
-        </tr>
-    </table>
-</div>
+    <div class='grid-3col'>
+        <span>
+            <label>Sup:</label>
+            <input type='hidden' class='hp-status' name='attr_hp_status' value='0'/>
+            <input type='number' class='hp' name='attr_hp' min='0' value='0'/> / <span name='attr_hp_max'></span>
+        </span>
 
-<!-- Shield Data -->
-<div class="divShields">
-    <table class="header">
-        <tr>
-            <td>----- Shield Data -----</td>
-        </tr>
-    </table>
-    <table>
-        <tr>
-            <td class="label">Maximum Shield Power:</td>
-            <td><input type="number" min="0" max="20" value="1" name="attr_shieldsMax"/></td>
-            <td class="label">Shield Point Ratio:</td>
-            <td><input type="number" min="1" max="2" name="attr_spr1" value="1"/> / <input type="number" min="1" max="4" name="attr_spr2" value="1"/></td>
-        </tr>
-        <tr>
-            <td class="label">FP:</td>
-            <td colspan="3">
-                <input class="shields" type="number" min="0" max="20" value="0" name="attr_shieldFP"/>
-                - <input class="current" type="number" min="0" max="20" value="0" name="attr_shieldFP_dmg"/>
-                = <input class="current" type="number" name="attr_shieldFP_now" value="@{shieldFP} - @{shieldFP_dmg}" disabled="true"/>
-                | <input type="checkbox" name="attr_shieldFPDamaged"/> damaged
-            </td>
-        </tr>
-        <tr>
-            <td class="label">Fwd:</td>
-            <td colspan="3">
-                <input class="shields" type="number" min="0" max="20" value="0" name="attr_shieldFwd"/>
-                - <input class="current" type="number" min="0" max="20" value="0" name="attr_shieldFwd_dmg"/>
-                = <input class="current" type="number" name="attr_shieldFwd_now" value="@{shieldFwd} - @{shieldFwd_dmg}" disabled="true"/>
-                | <input type="checkbox" name="attr_shieldFwdDamaged"/> damaged
-            </td>
-        </tr>
-        <tr>
-            <td class="label">FS:</td>
-            <td colspan="3">
-                <input class="shields" type="number" min="0" max="20" value="0" name="attr_shieldFS"/>
-                - <input class="current" type="number" min="0" max="20" value="0" name="attr_shieldFS_dmg"/>
-                = <input class="current" type="number" name="attr_shieldFS_now" value="@{shieldFS} - @{shieldFS_dmg}" disabled="true"/>
-                | <input type="checkbox" name="attr_shieldFSDamaged"/> damaged
-            </td>
-        </tr>
-        <tr>
-            <td class="label">AP:</td>
-            <td colspan="3">
-                <input class="shields" type="number" min="0" max="20" value="0" name="attr_shieldAP"/>
-                - <input class="current" type="number" min="0" max="20" value="0" name="attr_shieldAP_dmg"/>
-                = <input class="current" type="number" name="attr_shieldAP_now" value="@{shieldAP} - @{shieldAP_dmg}" disabled="true"/>
-                | <input type="checkbox" name="attr_shieldAPDamaged"/> damaged
-            </td>
-        </tr>
-        <tr>
-            <td class="label">Aft:</td>
-            <td colspan="3">
-                <input class="shields" type="number" min="0" max="20" value="0" name="attr_shieldAft"/>
-                - <input class="current" type="number" min="0" max="20" value="0" name="attr_shieldAft_dmg"/>
-                = <input class="current" type="number" name="attr_shieldAft_now" value="@{shieldAft} - @{shieldAft_dmg}" disabled="true"/>
-                | <input type="checkbox" name="attr_shieldAftDamaged"/> damaged
-            </td>
-        </tr>
-        <tr>
-            <td class="label">AS:</td>
-            <td colspan="3">
-                <input class="shields" type="number" min="0" max="20" value="0" name="attr_shieldAS"/>
-                - <input class="current" type="number" min="0" max="20" value="0" name="attr_shieldAS_dmg"/>
-                = <input class="current" type="number" name="attr_shieldAS_now" value="@{shieldAS} - @{shieldAS_dmg}" disabled="true"/>
-                | <input type="checkbox" name="attr_shieldASDamaged"/> damaged
-            </td>
-        </tr>
-        <tr>
-            <td class="label">Shield Points Remaining:</td>
-            <td>
-                <input class="shields" type="number" name="attr_spTotal" value="@{sp_max} - @{shieldFP} - @{shieldFwd} - @{shieldFS} - @{shieldAP} - @{shieldAft} - @{shieldAS}" disabled="true"/>
-            </td>
-        </tr>
-    </table>
-</div>
+        <span>
+            <label>Crew:</label>
+            <span >
+                <input type='number' class='w5' name='attr_crew' value='0' min='0'/>
+                /
+                <span name='attr_crew_max'></span>
+            </span>
+        </span>
+        <span>
+            <label>Damage Chart:</label>
+            <span name='attr_dmg_chart'></span>
+        </span>
+    </div>
 
-<!-- Weapons Data -->
-<div class="divWeapons">
-    <table class="header">
-        <tr>
-            <td>----- Weapons Data -----</td>
-        </tr>
-    </table>
-    <table>
-        <tr>
-            <td>
-                Weapon Power Available: 
-                <input class="weapons" type="number" name="attr_pwr2Weapons02" readonly="true"/> - 
-                <input class="current" type="number" name="attr_pwr2WeaponsAllocated" readonly="true"/> = 
-                <input class="weapons" type="number" name="attr_pwr2WeaponsRemaining" value="@{pwr2Weapons02} - @{pwr2WeaponsAllocated}" disabled="true"/>
-            </td>
-        </tr>
-    </table>
-    <fieldset class="repeating_weapons">
-        <table class="tblWeapon">
-            <tr>
-                <td style="text-align: left; background-color:#bbb;">
-                    DMG <input type="checkbox" name="attr_wpnDamaged"/>
-                    <select name="attr_wpnType" style="width: 235px;" >
-                        <option value="0"></option>
-                        <option value="Distruptor">Disruptor</option>
-                        <option value="Phaser">Phaser</option>
-                        <option value="Plasma">Plasma</option>
-                        <option value="Photon Torpedo">Photon Torpedo</option>
-                    </select>
-                    x <input type="number" min="1" max="4" value="0" name="attr_wpnNum"/>
-                    Firing Arcs: <select name="attr_wpnArc">
-                        <option value="0"></option>
-                        <option value="F">F</option>
-                        <option value="FP">FP</option>
-                        <option value="FS">FS</option>
-                        <option value="P">P</option>
-                        <option value="S">S</option>
-                        <option value="A">A</option>
-                        <option value="AP">AP</option>
-                        <option value="AS">AS</option>
-                        <option value="FPS">FPS</option>
-                        <option value="APS">APS</option>
-                        <option value="FPA">FPA</option>
-                        <option value="FSA">FSA</option>
-                    </select>
-                    Firing Chart: <select name="attr_wpnChart">
-                        <option value="0"></option>
-                        <option value="a">A</option>
-                        <option value="b">B</option>
-                        <option value="c">C</option>
-                        <option value="d">D</option>
-                        <option value="e">E</option>
-                        <option value="f">F</option>
-                        <option value="g">G</option>
-                        <option value="h">H</option>
-                        <option value="i">I</option>
-                        <option value="j">J</option>
-                        <option value="k">K</option>
-                        <option value="l">L</option>
-                        <option value="m">M</option>
-                        <option value="n">N</option>
-                        <option value="o">O</option>
-                        <option value="p">P</option>
-                        <option value="q">Q</option>
-                        <option value="r">R</option>
-                        <option value="s">S</option>
-                        <option value="t">T</option>
-                        <option value="u">U</option>
-                        <option value="v">V</option>
-                        <option value="w">W</option>
-                        <option value="x">X</option>
-                        <option value="y">Y</option>
-                    </select>
-                    Maximum Range: <input type="number" min="1" max="24" value="1" name="attr_wpnRange"/>
-                </td>
-            </tr><tr>
-                <td style="text-align: left; background-color:#bbb;">
-                    Current Charge: <input class="weapons" type="number" min="0" max="20" name="attr_wpnCharge" value="0"/>
-                    Maximum: <input type="number" min="1" name="attr_wpnChargeMax" value="1"/>
-                    Damage Modifiers: <input class="wpnModifiers" type="text" name="attr_wpnMods"/>
-                    Fired <input type="checkbox" name="attr_wpnFired"/>
-                    <button type="roll" value="/roll 1d10<?{Required To-Hit} @{character_name} is firing @{wpnType} x@{wpnNum} at @{wpnCharge} power with the following damage modifiers: @{wpnMods}..."></button>
-                </td>
-            </tr>
-        </table>
+    <!-------------------------------------------------------->
+    <h2>Power Allocation</h2>
+    <div class='grid-tpa'>
+        <label>Current TPA:</label> 
+        <span><span name='attr_tpa'></span> / <span name='attr_tpa_max'></span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+
+        <label>To Movement:</label>
+        <input type='number' name='attr_tpa_movement' min='0' value='0'/>
+        <span><label>MPR:</label> <span name='attr_mpr_1'></span>/<span name='attr_mpr_2'></span></span>
+        <span>
+            <label>MP by Phase:</label> 
+            <input type='hidden' name='attr_mp'/>
+            <span name='attr_mp1'></span> | <span name='attr_mp2'></span> | <span name='attr_mp3'></span>
+        </span>
+        <span></span>
+        <span>
+            <label>Remaining:</label> 
+            <input type='hidden' class='mp-remaining-status' name='attr_mp_remaining_status'/>
+            <input type='number' class='mp-remaining' name='attr_mp_remaining' value='0' readonly/>
+        </span>
+
+        <label>To Weapons:</label>
+        <input type='number' name='attr_tpa_weapons' min='0' value='0'/>
+        <span><label>To Beams:</label> <span name='attr_wp_beam'></span></span>
+        <span><label>To Missiles:</label> <span name='attr_wp_missile'></span></span>
+        <span></span>
+        <span>
+            <label>Remaining:</label>
+            <input type='hidden' class='wp-remaining-status' name='attr_wp_remaining_status'/>
+            <input type='number' class='wp-remaining' name='attr_wp_remaining' value='0' readonly/>
+        </span>
+
+        <label>To Shields:</label>
+        <input type='number' name='attr_tpa_shields' min='0' value='0'/>
+        <span><label>SPR:</label> <span name='attr_spr_1'></span>/<span name='attr_spr_2'></span></span>
+        <span><label>SP:</label> <span name='attr_sp'></span></span>
+        <span><label>Max:</label> <span name='attr_shield_max'></span></span>
+        <span>
+            <label>Remaining:</label>
+            <input type='hidden' class='sp-remaining-status' name='attr_sp_remaining_status'/>
+            <input type='number' class='sp-remaining' name='attr_sp_remaining' value='0' readonly/>
+        </span>
+
+        <label>Unallocated TPA:</label>
+        <input type='hidden' class='tpa-remaining-status' name='attr_tpa_remaining_status'/>
+        <input type='number' class='tpa-remaining' name='attr_tpa_remaining'  value='0' readonly/>
+        <span class='shields'>
+            <label>f/p:</label>
+            <input type='hidden' class='shield-1-status' name='attr_shield_1_status'/>
+            <input type='number' class='shield-1' name='attr_shield_1' min='0' max='16' value='0' title='Shield #1 (f/p)'/>
+            <label>fwd:</label>
+            <input type='hidden' class='shield-2-status' name='attr_shield_2_status'/>
+            <input type='number' class='shield-2' name='attr_shield_2' min='0' max='16' value='0' title='Shield #2 (fwd)'/>
+            <label>f/s:</label>
+            <input type='hidden' class='shield-3-status' name='attr_shield_3_status'/>
+            <input type='number' class='shield-3' name='attr_shield_3' min='0' max='16' value='0' title='Shield #3 (f/s)'/>
+            <label>a/s:</label>
+            <input type='hidden' class='shield-4-status' name='attr_shield_4_status'/>
+            <input type='number' class='shield-4' name='attr_shield_4' min='0' max='16' value='0' title='Shield #4 (a/s)'/>
+            <label>aft</label>
+            <input type='hidden' class='shield-5-status' name='attr_shield_5_status'/>
+            <input type='number' class='shield-5' name='attr_shield_5' min='0' max='16' value='0' title='Shield #5 (aft)'/>
+            <label>a/p:</label>
+            <input type='hidden' class='shield-6-status' name='attr_shield_6_status'/>
+            <input type='number' class='shield-6' name='attr_shield_6' min='0' max='16' value='0' title='Shield #6 (a/p)'/>
+        </span>        
+    </div>
+
+    <!-------------------------------------------------------->
+    <h2>Fire Control</h2>
+
+    <h4>Beam Weapons</h4>
+    <fieldset class='repeating_beams'>
+        <input type='text' class='w10' name='attr_beam_type' placeholder='Type...' title='type/model'/>
+        <select class='w7' name='attr_beam_arcs' title='firing arcs'>
+            <option value='0' selected>Arc</option>
+            <option value='1'>f</option>
+            <option value='2'>f/p</option>
+            <option value='3'>f/s</option>
+            <option value='4'>f/p/s</option>
+            <option value='5'>a</option>
+            <option value='6'>a/p</option>
+            <option value='7'>a/s</option>
+            <option value='8'>a/p/s</option>
+            <option value='9'>p</option>
+            <option value='10'>s</option>
+        </select>
+        <select class='w7' name='attr_beam_chart' title='firing chart'>
+            <option value='0' selected>Chart</option>
+            <option value='1'>A</option>
+            <option value='2'>B</option>
+            <option value='3'>C</option>
+            <option value='4'>D</option>
+            <option value='5'>E</option>
+            <option value='6'>F</option>
+            <option value='7'>G</option>
+            <option value='8'>H</option>
+            <option value='9'>I</option>
+            <option value='10'>J</option>
+            <option value='11'>K</option>
+            <option value='12'>L</option>
+            <option value='13'>M</option>
+            <option value='14'>N</option>
+            <option value='15'>O</option>
+            <option value='16'>P</option>
+            <option value='17'>Q</option>
+            <option value='18'>R</option>
+            <option value='19'>S</option>
+            <option value='20'>T</option>
+            <option value='21'>U</option>
+            <option value='22'>V</option>
+            <option value='23'>W</option>
+            <option value='24'>X</option>
+            <option value='25'>Y</option>
+        </select>
+        <select class='w3' name='attr_beam_bank' title='bank #'>
+            <option selected></option>
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+            <option>6</option>
+            <option>7</option>
+            <option>8</option>
+            <option>9</option>
+        </select>
+        pwr: <input type='hidden' class='beam-power-status' name='attr_beam_power_status'/>
+        <input type='number' class='beam-power' name='attr_beam_power' min='0' max='10' value='0' title='current power'/>
+        /
+        <input type='number' name='attr_beam_power_max' min='0' max='10' value='0' title='max power'/>
+        +3: <input type='number' name='attr_beam_bonus_3' min='0' max='24' value='0' title='+3 dmg bonus max range...'/>
+        +2: <input type='number' name='attr_beam_bonus_2' min='0' max='24' value='0' title='+2 dmg bonus max range...'/>
+        +1: <input type='number' name='attr_beam_bonus_1' min='0' max='24' value='0' title='+1 dmg bonus max range...'/>
     </fieldset>
-</div>
+    
+    <h4>Missile Weapons</h4>
+    <fieldset class='repeating_missiles'>
+        <input type='text' class='w10' name='attr_missile_type' placeholder='Type...' title='type/model'/>
+        <select class='w7' name='attr_missile_arcs' title='firing arcs'>
+            <option value='0' selected>Firing Arcs...</option>
+            <option value='1'>f</option>
+            <option value='2'>f/p</option>
+            <option value='3'>f/s</option>
+            <option value='4'>f/p/s</option>
+            <option value='5'>a</option>
+            <option value='6'>a/p</option>
+            <option value='7'>a/s</option>
+            <option value='8'>a/p/s</option>
+            <option value='9'>p</option>
+            <option value='10'>s</option>
+        </select>
+        <select class='w7' name='attr_missile_chart' title='firing chart'>
+            <option value='0' selected>Firing Chart...</option>
+            <option value='1'>A</option>
+            <option value='2'>B</option>
+            <option value='3'>C</option>
+            <option value='4'>D</option>
+            <option value='5'>E</option>
+            <option value='6'>F</option>
+            <option value='7'>G</option>
+            <option value='8'>H</option>
+            <option value='9'>I</option>
+            <option value='10'>J</option>
+            <option value='11'>K</option>
+            <option value='12'>L</option>
+            <option value='13'>M</option>
+            <option value='14'>N</option>
+            <option value='15'>O</option>
+            <option value='16'>P</option>
+            <option value='17'>Q</option>
+            <option value='18'>R</option>
+            <option value='19'>S</option>
+            <option value='20'>T</option>
+            <option value='21'>U</option>
+            <option value='22'>V</option>
+            <option value='23'>W</option>
+            <option value='24'>X</option>
+            <option value='25'>Y</option>
+        </select>
+        <input type='number' name='attr_missile_power' min='1' max='4' value='1' title='power to arm'/>
+        arm: 
+        <input type='checkbox' class='missile-armed' value='1' name='attr_missile_armed' title='arm weapon'/>
+        =
+        <input type='number' name='attr_missile_damage' min='1' max='20' value='1' title='missile damage'/>
+    </fieldset>
+    <hr/>
 
-<script type="text/worker">
+    <!-------------------------------------------------------->
+    <h2>Construction Data</h2> 
 
-    on("change:pwrSource1 change:pwrSource2 change:pwrSource3 change:pwr2Move change:pwr2Shields", function(eventInfo) {
-        updatePowerInfo();
+    <div class='grid-3col'>
+        <span>
+            <label>Fleet:</label>
+            <select name='attr_fleet'>
+                <option selected>Select...</option>
+                <option value='1'>United Federation of Planets</option>
+                <option value='2'>Klingon Empire</option>
+            </select>
+        </span>
+
+        <span>
+            <label>Class:</label>
+            <input type='text' name='attr_class' placeholder='Class...'/>
+        </span>
+
+        <span>
+            <label>Type:</label>
+            <input type='text' name='attr_type' placeholder='Type...'/>
+        </span>
+
+        <span>
+            <label>Date Entering Service:</label>
+            <input type='text' class='w10' name='attr_date' placeholder='Date...'/>
+        </span>
+
+        <span>
+            <label>Number Constructed:</label>
+            <input type='number' class='w7' name='attr_num' min='0'/>
+        </span>
+
+        <span>
+            <label>Control Computer Type:</label>
+            <input type='text' class='w7' name='attr_computer'/>
+        </span>
+    </div>
+    <hr/>
+
+    <!-------------------------------------------------------->
+    <h2>Hull Data</h2>
+    <div class='grid-6col'>
+        <label>Superstructure (hp):</label>
+        <input type='number' class='w7' name='attr_hp_max' min='0' value='0'/>
+        
+        <label>Damage Chart:</label>
+        <select class='w7' name='attr_dmg_chart'>
+            <option value='0' selected>Select...</option>
+            <option>A</option>
+            <option>B</option>
+            <option>C</option>
+        </select>
+
+        <label>Mass (mt):</label>
+        <input type='number' class='w7' name='attr_mass' min='0' max='999999' value='0'/>
+
+        <label>Length (m):</label>
+        <input type='number' class='w7' name='attr_length' min='0'/>
+
+        <label>Width (m):</label>
+        <input type='number' class='w7' name='attr_width' min='0'/>
+        
+        <label>Height (m):</label>
+        <input type='number' class='w7' name='attr_height' min='0'/>
+        
+        <label>Cargo Units (SCU):</label>
+        <input type='number' class='w7' name='attr_scu' min='0' value='0'/>
+
+        <label>Cargo Capacity:</label>
+        <span name='attr_scu_cap'></span>
+
+        <label>Cargo Transporters:</label>
+        <input type='number' class='w7' name='attr_scu_trans' min='0' value='0'></span>
+    </div>
+    <hr/>
+
+    <!-------------------------------------------------------->
+    <h2>Crew Data</h2>
+    <div class='grid-6col'>
+        <label>Crew:</label>
+        <input type='number' class='w7' name='attr_crew_max' min='0' value='0'/>
+        
+        <label>Passengers/Troops:</label>
+        <input type='number' class='w7' name='attr_troops_max' min='0' value='0'/>
+
+        <label>Shuttlecraft:</label>
+        <input type='number' class='w7' name='attr_shuttlecraft_max' min='0' value='0'/>
+
+        <label>Transporters:</label>
+        <input type='number' class='w7' name='attr_trans_standard' min='0' value='0'/>
+
+        <label>Combat:</label>
+        <input type='number' class='w7' name='attr_trans_combat' min='0' value='0'/>
+
+        <label>Emergency:</label>
+        <input type='number' class='w7' name='attr_trans_emergency' min='0' value='0'/>
+
+    </div>
+    <hr/>
+
+    <!-------------------------------------------------------->
+    <h2>Engineering Data</h2>
+    <div class='grid-3col'>
+        <span>
+            <label>MPR: </label>
+            <input type='number' class='w3' name='attr_mpr_1' min='1' max='6' value='1'/>
+            /
+            <input type='number' class='w3' name='attr_mpr_2' min='1' max='2' value='1'/>
+        </span>
+        <span>
+            <label>Warp Speeds:</label>
+            <input type='number' class='w3' name='attr_warp_1' min='0' value='0'/>
+            /
+            <input type='number' class='w3' name='attr_warp_2' min='0' value='0'/>
+        </span>
+        <span>
+            <label>Stress Charts:</label>
+            <input type='text' class='w3' name='attr_stress_1' maxlength='1'/>
+            /            
+            <input type='text' class='w3' name='attr_stress_2' maxlength='1'/> 
+        </span>
+
+        <span>
+            <label>SPR: </label>
+            <input type='number' class='w3' name='attr_spr_1' min='1' max='2' value='1'/>
+            /        
+            <input type='number' class='w3' name='attr_spr_2' min='1' max='6' value='1'/>
+        </span>
+        <span>
+            <label>Shield Type:</label>
+            <input type='text' class='w10' name='attr_shield_type'/>
+        </span>
+        <span>
+            <label>Max Shield Power:</label>
+            <input type='number' name='attr_shield_max' min='0' max='16' value='0'/>
+        </span> 
+    </div>
+
+    <h4>Engines</h4>
+    <fieldset class='repeating_engines'>
+        <input type='text' class='w10' name='attr_engine_model' placeholder='Model...' title='model'/>
+        <select class='w10' name='attr_engine_type'>
+            <option value='0' selected>Type...</option>
+            <option value='1'>Impulse</option>
+            <option value='2'>Warp</option>
+        </select>
+        <select class='w10' name='attr_engine_location'>
+            <option value='0' selected>Location...</option>
+            <option value='1'>Centerline</option>
+            <option value='2'>Port</option>
+            <option value='3'>Starboard</option>
+        </select>
+        Power: 
+        <input type='hidden' class='engine-power-status' name='attr_engine_power_status' value='0'/>
+        <input type='number' class='engine-power' name='attr_engine_power' min='0' value='0'/> / <input type='number' name='attr_engine_power_max' min='0' value='0'/>
+    </fieldset>
+
+<script type='text/worker'>
+// HELPER: Format large numbers with commas
+function formatNumber(value) {
+    value = value.replace(/\D/g, '');
+    return value.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+// Calculate the ship's CARGO CAPACITY
+on('change:scu', function(eventInfo) {
+    getAttrs(['scu'], function(values) {
+        const theSCU = parseInt(values['scu']) || 0;
+
+        const theSCUCap = formatNumber(String(theSCU * 50));
+
+        const output = {};
+        output['scu_cap'] = `${theSCUCap} mt`;
+        setAttrs(output);
     });
-    
-    on("change:repeating_weapons:wpnCharge change:repeating_weapons:wpnNum", function(eventInfo) {
-        updateWeaponsInfo();
+});
+
+// Calculate the ship's COMBAT EFFICIENCY
+on('change:defense change:wdf', function(eventInfo) {
+    getAttrs(['defense', 'wdf'], function(values) {
+        const theD = parseInt(values['defense']) || 0;
+        const theWDF = parseInt(values['wdf']) || 0;
+
+        const theCE = theD * theWDF / 100;
+
+        const output = {};
+        output['ce'] = theCE;
+        setAttrs(output);
     });
-    
-    on("remove:repeating_weapons", function(eventInfo) {
-         updateWeaponsInfo();
+});
+
+// Calculate the MOVEMENT POINTS available
+on('change:tpa_movement change:mpr_1 change:mpr_2', function(eventInfo) {
+    getAttrs(['tpa_movement', 'mpr_1', 'mpr_2'], function(values) {
+        const myPower = parseInt(values['tpa_movement']) || 0;
+        const myRatio = (parseInt(values['mpr_1']) || 1) / (parseInt(values['mpr_2']) || 1);
+
+        const myPoints = Math.floor(myPower / myRatio);
+        const myMP01 = Math.floor(myPoints / 3) + Math.floor((myPoints % 3) / 2); // phase 1
+        const myMP02 = Math.floor(myPoints / 3) + (myPoints % 3 == 1 ? 1 : 0); // phase 2
+        const myMP03 = Math.floor(myPoints / 3) + Math.floor((myPoints % 3) / 2); // phase 3
+        const myPowerRemaining = myPower % myRatio;
+
+        const output = {};
+        output['mp'] = myPoints;
+        output['mp1'] = myMP01;
+        output['mp2'] = myMP02;
+        output['mp3'] = myMP03;
+        output['mp_remaining'] = myPowerRemaining;
+        output['mp_remaining_status'] = myPower != 0 && (myPowerRemaining < 0 ? 1 : (myPowerRemaining > 0 ? 2 : 0));
+        setAttrs(output);
     });
-    
-    on("change:currentTurn", function(eventInfo) {
-        resetForm();
+});
+
+// Calculate the SHIELD POINTS and TPA remaining
+on('change:tpa_shields change:spr_1 change:spr_2 change:shield_1 change:shield_2 change:shield_3 change:shield_4 change:shield_5 change:shield_6', function(eventInfo) {
+    getAttrs(['tpa_shields', 'spr_1', 'spr_2', 'shield_max', 'shield_1', 'shield_2', 'shield_3', 'shield_4', 'shield_5', 'shield_6'], function(values) {
+        const myTPA = parseInt(values['tpa_shields']) || 0;
+        const mySPR = (parseInt(values['spr_1']) || 1) / (parseInt(values['spr_2']) || 1);
+        const mySPMax = parseInt(values['shield_max']) || 0;
+        const myShield01 = parseInt(values['shield_1']) || 0;
+        const myShield02 = parseInt(values['shield_2']) || 0;
+        const myShield03 = parseInt(values['shield_3']) || 0;
+        const myShield04 = parseInt(values['shield_4']) || 0;
+        const myShield05 = parseInt(values['shield_5']) || 0;
+        const myShield06 = parseInt(values['shield_6']) || 0;
+
+        const mySP = Math.floor(myTPA / mySPR);
+        const myTPARemaining = mySP - myShield01 - myShield02 - myShield03 - myShield04 - myShield05 - myShield06;
+
+        const output = {};
+        output['sp'] = mySP;
+        output['sp_remaining'] = myTPARemaining;
+        output['sp_remaining_status'] = myTPA != 0 && (myTPARemaining < 0 ? 1 : (myTPARemaining > 0 ? 2 : 0));
+        output['shield_1_status'] = myShield01 > mySPMax ? 1 : myShield01 == 0 ? 2 : 0;
+        output['shield_2_status'] = myShield02 > mySPMax ? 1 : myShield02 == 0 ? 2 : 0;
+        output['shield_3_status'] = myShield03 > mySPMax ? 1 : myShield03 == 0 ? 2 : 0;
+        output['shield_4_status'] = myShield04 > mySPMax ? 1 : myShield04 == 0 ? 2 : 0;
+        output['shield_5_status'] = myShield05 > mySPMax ? 1 : myShield05 == 0 ? 2 : 0;
+        output['shield_6_status'] = myShield06 > mySPMax ? 1 : myShield06 == 0 ? 2 : 0;
+        setAttrs(output);
     });
-    
-    var resetForm = function() {
-        setAttrs({
-            "mp_used": 0,
-            "pwr2Move": 0,
-            "shieldFP_dmg": 0,
-            "shieldFwd_dmg": 0,
-            "shieldFS_dmg": 0,
-            "shieldAP_dmg": 0,
-            "shieldAft_dmg": 0,
-            "shieldAS_dmg": 0
+});
+
+// Format the ship's mass and display SIZE class
+on('change:mass', function(eventInfo) {
+    getAttrs(['mass'], function(values) {
+        const myMass = parseInt(values['mass']) || 0;
+        const myFormattedMass = formatNumber(String(myMass));
+
+        const mySizes = [0,'I',5000,'II',15000,'III',25000,'IV',40000,'V',60000,'VI',80000,'VII',100000,'VIII',120000,'IX',140000,'X',160000,'XI',180000,'XII',210000,'XIII',240000,'XIV',300000,'XV',350000,'XVI',400000,'XVII',450000,'XVIII',500000,'XIX',600000,'XX',700000];
+        let i = 0;
+        do {
+            i += 2;
+        } while (myMass > mySizes[i]);      
+
+        const output = {};
+        output['size'] = `${myFormattedMass} mt (${mySizes[i-1]})`;
+        setAttrs(output);
+    });
+});
+
+// Update ship's current SUPERSTRUCTURE status
+on('change:hp', function(eventInfo) {
+    getAttrs(['hp', 'hp_max'], function(values) {
+        const myHP = parseInt(values['hp']) || 0;  
+        const myHPMax = parseInt(values['hp_max']) || 0;  
+
+        const output = {};
+        output['hp_status'] = myHP < 1 ? 1 : myHP < (myHPMax / 2) ? 2 : 0;
+        setAttrs(output);
+    });
+});
+
+// Calculate the ship's TPA values
+on('change:repeating_engines:engine_power change:repeating_engines:engine_power_max remove:repeating_engines', function(eventInfo) {
+    getSectionIDs('repeating_engines', function (ids) {
+        const Fieldnames = [];
+        ids.forEach(id => {
+            Fieldnames.push(`repeating_engines_${id}_engine_power`);
+            Fieldnames.push(`repeating_engines_${id}_engine_power_max`);
         });
-        getSectionIDs("repeating_weapons", function(idarray) {
-            for(var i=0; i < idarray.length; i++) {
-                var attrs = {};
-                attrs['repeating_weapons_' + idarray[i] + '_wpnCharge'] = idarray[i];
-                setAttrs(attrs);
-            }          
-        });        
-    };
-    
-    var updatePowerInfo = function() {
-        getAttrs(["pwrSource1", "pwrSource2", "pwrSource3", "pwrTotal", "pwr2Move", "pwr2Shields"], function(vals) {
-            var totalPowerAvailable 
-                = parseInt(vals["pwrSource1"], 10)
-                + parseInt(vals["pwrSource2"], 10)
-                + parseInt(vals["pwrSource3"], 10);
-            var powerToWeapons 
-                = totalPowerAvailable
-                - parseInt(vals["pwr2Move"], 10)
-                - parseInt(vals["pwr2Shields"], 10);
-            setAttrs({
-                    "pwrTotal" : totalPowerAvailable,
-                    "pwr2Weapons01": powerToWeapons,
-                    "pwr2Weapons02": powerToWeapons
+        
+        getAttrs([...Fieldnames], function (values) {
+            let theTPA = 0;
+            let theTPAMax = 0;
+            const output = {};
+            ids.forEach(id => {
+                const theEnginePower = parseFloat(values[`repeating_engines_${id}_engine_power`]) || 0;
+                const theEnginePowerMax = parseFloat(values[`repeating_engines_${id}_engine_power_max`]) || 0;
+                
+                theTPA += theEnginePower;
+                theTPAMax += theEnginePowerMax
+
+                output[`repeating_engines_${id}_engine_power_status`] = ((theEnginePower > theEnginePowerMax) || (theEnginePower == 0)) ? 1 : theEnginePower < theEnginePowerMax ? 2 : 0;
             });
+            output['tpa'] = theTPA;
+            output['tpa_max'] = theTPAMax;
+            setAttrs(output);
         });
-    };
-    
-    var updateWeaponsInfo = function() {
-        getSectionIDs(["repeating_weapons"], function(idarray) {
-            var weaponChargeArray = idarray.map(function(rowID) { return 'repeating_weapons_' + rowID + '_wpnCharge'; });
-            var weaponNumArray = idarray.map(function(rowID) { return 'repeating_weapons_' + rowID + '_wpnNum'; });
-            var weaponArray = weaponChargeArray.concat(weaponNumArray);
-            getAttrs(weaponArray, function(values) {
-                var total = i = 0;
-                for(; i < weaponArray.length/2; i++) {
-                    var subtotal = parseInt(values[weaponArray[i]] || 0) * parseInt(values[weaponArray[i + weaponArray.length/2]] || 0)
-                    total += subtotal;
-                }
-                setAttrs({ 'pwr2WeaponsAllocated': total });
-            })
+    });
+});
+
+// Calculate the ship's TPA remaining
+on('change:tpa change:tpa_movement change:tpa_weapons change:tpa_shields', function(eventInfo) {
+    getAttrs(['tpa', 'tpa_movement', 'tpa_weapons', 'tpa_shields'], function(values) {
+        const theTPA = parseInt(values['tpa']) || 0;
+        const theTPAMovement = parseInt(values['tpa_movement']) || 0;
+        const theTPAWeapons = parseInt(values['tpa_weapons']) || 0;
+        const theTPAShields = parseInt(values['tpa_shields']) || 0;
+
+        const theTPARemaining = theTPA - theTPAMovement - theTPAWeapons - theTPAShields;
+
+        const output = {};
+        output['tpa_remaining'] = theTPARemaining;
+        output['tpa_remaining_status'] = (theTPARemaining < 0 ? 1 : (theTPARemaining > 0 ? 2 : 0));
+        setAttrs(output);
+    });
+});
+
+// Calculate the WEAPONS TPA remaining
+on('change:tpa_weapons change:wp_beam change:wp_missile', function(eventInfo) {
+    getAttrs(['tpa_weapons', 'wp_beam', 'wp_missile'], function(values) {
+        const myTPA = parseInt(values['tpa_weapons']) || 0;
+        const myBeamTPA = parseInt(values['wp_beam']) || 0;
+        const myMissileTPA = parseInt(values['wp_missile']) || 0;
+
+        const myTPARemaining = myTPA - myBeamTPA - myMissileTPA;
+
+        const output = {};
+        output['wp_remaining'] = myTPARemaining;
+        output['wp_remaining_status'] = myTPA != 0 && (myTPARemaining < 0 ? 1 : (myTPARemaining > 0 ? 2 : 0));
+        setAttrs(output);
+    });
+});
+
+// Calculate the power allocated to WEAPONS, BEAM
+on('change:repeating_beams:beam_power change:repeating_beams:beam_power_max remove:repeating_beams', function(eventInfo) {
+    getSectionIDs('repeating_beams', function (ids) {
+        const BeamFieldnames = [];
+        ids.forEach(id => {
+            BeamFieldnames.push(`repeating_beams_${id}_beam_power`);
+            BeamFieldnames.push(`repeating_beams_${id}_beam_power_max`);
         });
-    };
+        
+        getAttrs([...BeamFieldnames], function (values) {
+            let totalPowerToBeams = 0;
+            const output = {};
+            ids.forEach(id => {
+                const theBeamPower = parseFloat(values[`repeating_beams_${id}_beam_power`]) || 0;
+                const theBeamPowerMax = parseFloat(values[`repeating_beams_${id}_beam_power_max`]) || 0;
+                totalPowerToBeams += theBeamPower;
+
+                output[`repeating_beams_${id}_beam_power_status`] = (theBeamPowerMax - theBeamPower) < 0 ? 1 : (theBeamPower > 0 ? 2 : 0);
+            });
+            output['wp_beam'] = totalPowerToBeams;
+            setAttrs(output);
+        });
+    });
+});
+
+// Calculate the power allocated to WEAPONS, MISSILE
+on('change:repeating_missiles:missile_armed change:repeating_missiles:missile_power remove:repeating_missiles', function(eventInfo) {
+    getSectionIDs('repeating_missiles', function (ids) {
+        const MissileFieldnames = [];
+        ids.forEach(id => {
+            MissileFieldnames.push(`repeating_missiles_${id}_missile_armed`);
+            MissileFieldnames.push(`repeating_missiles_${id}_missile_power`);
+        });
+        
+        getAttrs([...MissileFieldnames], function (values) {
+            let totalPowerToMissiles = 0;
+            const output = {};
+            ids.forEach(id => {
+                const theMissilePower = (parseFloat(values[`repeating_missiles_${id}_missile_armed`]) || 0) * (parseFloat(values[`repeating_missiles_${id}_missile_power`]) || 0);
+                totalPowerToMissiles += theMissilePower;
+            });
+            output['wp_missile'] = totalPowerToMissiles;
+            setAttrs(output);
+        });
+    });
+});
 
 </script>

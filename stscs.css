@@ -1,4 +1,140 @@
 .ui-dialog .charsheet * {
+    font-size: 1.0em;
 }
-.ui-dialog .charsheet {
+
+.ui-dialog .charsheet div.grid-3col {
+    align-items: center;
+    display: grid;
+    grid-template-columns: [first] repeat(3, 1fr) [last];
+    row-gap: 5px;
+}
+
+.ui-dialog .charsheet div.grid-6col {
+    align-items: center;
+    display: grid;
+    grid-template-columns: [first] repeat(6, 1fr) [last];
+    row-gap: 5px;
+}
+
+.ui-dialog .charsheet div.grid-tpa {
+    align-items: center;
+    display: grid;
+    grid-template-columns: [first] 15% [second] 10% [third] 20% [fourth] 20% [fifth] 20% [sixth] 15% [last];
+    row-gap: 5px;
+}
+
+.ui-dialog .charsheet span.shields {
+    grid-column: 3 / 7;
+}
+
+.ui-dialog .charsheet div.power-allocation {
+    align-items: center;
+    display: grid;
+    grid-template-columns: [first] 20% [second] auto [third] 15% [last];
+    row-gap: 5px;
+}
+
+.ui-dialog .charsheet div {
+    display: inline-block;
+    padding-bottom: 5px;
+    width: 100%;
+}
+
+.ui-dialog .charsheet h1 {
+    font-size: 1.8em;
+}
+.ui-dialog .charsheet h2 {
+    font-size: 1.6em;
+}
+.ui-dialog .charsheet h3 {
+    font-size: 1.4em;
+}
+.ui-dialog .charsheet h4 {
+    font-size: 1.2em;
+}
+
+.ui-dialog .charsheet input {
+    background-color: transparent;
+}
+.ui-dialog .charsheet input[readonly] {
+    background-color: whitesmoke;
+}
+
+.ui-dialog .charsheet label {
+    display: inline;
+    font-weight: normal;
+    margin: 0px;
+    padding-right: 0px;
+}
+
+.ui-dialog .charsheet select {
+    margin: 0px;
+}
+
+.ui-dialog .charsheet .big { 
+    font-size: 2em;
+}
+
+.ui-dialog .charsheet .emphasis { 
+    font-weight: bold;
+}
+
+.ui-dialog .charsheet .w3 {
+    width: 36px !important; /*override r20 class*/
+}
+.ui-dialog .charsheet .w5 {
+    width: 50px !important; /*override r20 class*/
+}
+.ui-dialog .charsheet .w7 {
+    width: 70px !important; /*override r20 class*/
+}
+.ui-dialog .charsheet .w10 {
+    width: 100px !important; /*override r20 class*/
+}
+
+.ui-dialog .charsheet .beam-power-status[value='2'] ~ .beam-power,
+.ui-dialog .charsheet .engine-power-status[value='0'] ~ .engine-power,
+.ui-dialog .charsheet .mp-remaining-status[value='0'] ~ .mp-remaining,
+.ui-dialog .charsheet .sp-remaining-status[value='0'] ~ .sp-remaining,
+.ui-dialog .charsheet .tpa-remaining-status[value='0'] ~ .tpa-remaining,
+.ui-dialog .charsheet .wp-remaining-status[value='0'] ~ .wp-remaining {
+    background-color: palegreen;
+    border-color: forestgreen;
+    color: forestgreen;
+}
+
+.ui-dialog .charsheet .beam-power-status[value='1'] ~ .beam-power,
+.ui-dialog .charsheet .engine-power-status[value='1'] ~ .engine-power,
+.ui-dialog .charsheet .hp-status[value='1'] ~ .hp,
+.ui-dialog .charsheet .mp-remaining-status[value='1'] ~ .mp-remaining,
+.ui-dialog .charsheet .shield-1-status[value='1'] ~ .shield-1,
+.ui-dialog .charsheet .shield-2-status[value='1'] ~ .shield-2,
+.ui-dialog .charsheet .shield-3-status[value='1'] ~ .shield-3,
+.ui-dialog .charsheet .shield-4-status[value='1'] ~ .shield-4,
+.ui-dialog .charsheet .shield-5-status[value='1'] ~ .shield-5,
+.ui-dialog .charsheet .shield-6-status[value='1'] ~ .shield-6,
+.ui-dialog .charsheet .sp-remaining-status[value='1'] ~ .sp-remaining,
+.ui-dialog .charsheet .tpa-remaining-status[value='1'] ~ .tpa-remaining,
+.ui-dialog .charsheet .wp-remaining-status[value='1'] ~ .wp-remaining {
+    background-color: lightpink; 
+    border-color: red;
+    color: red;
+}
+
+.ui-dialog .charsheet .beam-power-status[value='0'] ~ .beam-power,
+.ui-dialog .charsheet .engine-power-status[value='2'] ~ .engine-power,
+.ui-dialog .charsheet .hp-status[value='2'] ~ .hp,
+.ui-dialog .charsheet .mp-remaining-status[value='2'] ~ .mp-remaining,
+.ui-dialog .charsheet .shield-1-status[value='2'] ~ .shield-1,
+.ui-dialog .charsheet .shield-2-status[value='2'] ~ .shield-2,
+.ui-dialog .charsheet .shield-3-status[value='2'] ~ .shield-3,
+.ui-dialog .charsheet .shield-4-status[value='2'] ~ .shield-4,
+.ui-dialog .charsheet .shield-5-status[value='2'] ~ .shield-5,
+.ui-dialog .charsheet .shield-6-status[value='2'] ~ .shield-6,
+.ui-dialog .charsheet .sp-remaining-status[value='2'] ~ .sp-remaining,
+.ui-dialog .charsheet .tpa-remaining-status[value='2'] ~ .tpa-remaining,
+.ui-dialog .charsheet .wp-remaining-status[value='2'] ~ .wp-remaining {
+    background-color: lemonchiffon; 
+    border-color: coral;
+    color: coral;
 }
