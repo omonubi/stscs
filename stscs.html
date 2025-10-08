@@ -52,7 +52,9 @@
         <span></span>
         <span></span>
         <span></span>
-        <span></span>
+        <span>
+            <button type='action' class='btn' name='act_tpa_reset'>Reset All</button>
+        </span>
 
         <label>To Movement:</label>
         <input type='number' name='attr_tpa_movement' min='0' value='0'/>
@@ -113,7 +115,34 @@
             <label>a/p:</label>
             <input type='hidden' class='shield-6-status' name='attr_shield_6_status'/>
             <input type='number' class='shield-6' name='attr_shield_6' min='0' max='16' value='0' title='Shield #6 (a/p)'/>
-        </span>        
+        </span>
+        <span></span>
+
+        <span></span>
+        <span></span>
+        <span class='shields'>
+            <label>f/p:</label>
+            <input type='hidden' class='shield-1c-status' name='attr_shield_1c_status'/>
+            <input type='number' class='shield-1c' name='attr_shield_1c' min='0' max='16' value='0' title='Shield #1 (f/p)'/>
+            <label>fwd:</label>
+            <input type='hidden' class='shield-2c-status' name='attr_shield_2c_status'/>
+            <input type='number' class='shield-2c' name='attr_shield_2c' min='0' max='16' value='0' title='Shield #2 (fwd)'/>
+            <label>f/s:</label>
+            <input type='hidden' class='shield-3c-status' name='attr_shield_3c_status'/>
+            <input type='number' class='shield-3c' name='attr_shield_3c' min='0' max='16' value='0' title='Shield #3 (f/s)'/>
+            <label>a/s:</label>
+            <input type='hidden' class='shield-4c-status' name='attr_shield_4c_status'/>
+            <input type='number' class='shield-4c' name='attr_shield_4c' min='0' max='16' value='0' title='Shield #4 (a/s)'/>
+            <label>aft</label>
+            <input type='hidden' class='shield-5c-status' name='attr_shield_5c_status'/>
+            <input type='number' class='shield-5c' name='attr_shield_5c' min='0' max='16' value='0' title='Shield #5 (aft)'/>
+            <label>a/p:</label>
+            <input type='hidden' class='shield-6c-status' name='attr_shield_6c_status'/>
+            <input type='number' class='shield-6c' name='attr_shield_6c' min='0' max='16' value='0' title='Shield #6 (a/p)'/>
+        </span>
+        <span>
+            <button type='action' class='btn' name='act_shield_energize'>Re-Energize</button>
+        </span>
     </div>
 
     <!-------------------------------------------------------->
@@ -121,118 +150,90 @@
 
     <h4>Beam Weapons</h4>
     <fieldset class='repeating_beams'>
-        <input type='text' class='w10' name='attr_beam_type' placeholder='Type...' title='type/model'/>
-        <select class='w7' name='attr_beam_arcs' title='firing arcs'>
-            <option value='0' selected>Arc</option>
-            <option value='1'>f</option>
-            <option value='2'>f/p</option>
-            <option value='3'>f/s</option>
-            <option value='4'>f/p/s</option>
-            <option value='5'>a</option>
-            <option value='6'>a/p</option>
-            <option value='7'>a/s</option>
-            <option value='8'>a/p/s</option>
-            <option value='9'>p</option>
-            <option value='10'>s</option>
-        </select>
-        <select class='w7' name='attr_beam_chart' title='firing chart'>
+        <input type='checkbox' name='attr_beam_targeted' value='1' title='weapon targeted'/>
+        <input type='checkbox' class='fired' name='attr_beam_fired' value='1' title='weapon fired' readonly/>
+        <input type='checkbox' class='damaged' name='attr_beam_damaged' value='1' title='weapon damaged'/>
+        <input type='text' class='w10' name='attr_beam_name' placeholder='# Name (arcs)...'/>
+        <input type='number' name='attr_beam_range' min='0' max='24' value='0' title='max range'/>
+        <select class='w5' name='attr_beam_chart' title='firing chart'>
             <option value='0' selected>Chart</option>
-            <option value='1'>A</option>
-            <option value='2'>B</option>
-            <option value='3'>C</option>
-            <option value='4'>D</option>
-            <option value='5'>E</option>
-            <option value='6'>F</option>
-            <option value='7'>G</option>
-            <option value='8'>H</option>
-            <option value='9'>I</option>
-            <option value='10'>J</option>
-            <option value='11'>K</option>
-            <option value='12'>L</option>
-            <option value='13'>M</option>
-            <option value='14'>N</option>
-            <option value='15'>O</option>
-            <option value='16'>P</option>
-            <option value='17'>Q</option>
-            <option value='18'>R</option>
-            <option value='19'>S</option>
-            <option value='20'>T</option>
-            <option value='21'>U</option>
-            <option value='22'>V</option>
-            <option value='23'>W</option>
-            <option value='24'>X</option>
-            <option value='25'>Y</option>
-        </select>
-        <select class='w3' name='attr_beam_bank' title='bank #'>
-            <option selected></option>
-            <option>1</option>
-            <option>2</option>
-            <option>3</option>
-            <option>4</option>
-            <option>5</option>
-            <option>6</option>
-            <option>7</option>
-            <option>8</option>
-            <option>9</option>
+            <option>A</option>
+            <option>B</option>
+            <option>C</option>
+            <option>D</option>
+            <option>E</option>
+            <option>F</option>
+            <option>G</option>
+            <option>H</option>
+            <option>I</option>
+            <option>J</option>
+            <option>K</option>
+            <option>L</option>
+            <option>M</option>
+            <option>N</option>
+            <option>O</option>
+            <option>P</option>
+            <option>Q</option>
+            <option>R</option>
+            <option>S</option>
+            <option>T</option>
+            <option>U</option>
+            <option>V</option>
+            <option>W</option>
+            <option>X</option>
+            <option>Y</option>
         </select>
         pwr: <input type='hidden' class='beam-power-status' name='attr_beam_power_status'/>
         <input type='number' class='beam-power' name='attr_beam_power' min='0' max='10' value='0' title='current power'/>
         /
         <input type='number' name='attr_beam_power_max' min='0' max='10' value='0' title='max power'/>
-        +3: <input type='number' name='attr_beam_bonus_3' min='0' max='24' value='0' title='+3 dmg bonus max range...'/>
-        +2: <input type='number' name='attr_beam_bonus_2' min='0' max='24' value='0' title='+2 dmg bonus max range...'/>
-        +1: <input type='number' name='attr_beam_bonus_1' min='0' max='24' value='0' title='+1 dmg bonus max range...'/>
+        +3: <input type='text' class='w5' name='attr_beam_bonus_3' value='-' title='+3 dmg bonus max range...'/>
+        +2: <input type='text' class='w5' name='attr_beam_bonus_2' value='-' title='+2 dmg bonus max range...'/>
+        +1: <input type='text' class='w5' name='attr_beam_bonus_1' value='-' title='+1 dmg bonus max range...'/>
+        <button type='action' class='btn' name='act_beam-fire'>Fire</button>
     </fieldset>
     
     <h4>Missile Weapons</h4>
     <fieldset class='repeating_missiles'>
-        <input type='text' class='w10' name='attr_missile_type' placeholder='Type...' title='type/model'/>
-        <select class='w7' name='attr_missile_arcs' title='firing arcs'>
-            <option value='0' selected>Firing Arcs...</option>
-            <option value='1'>f</option>
-            <option value='2'>f/p</option>
-            <option value='3'>f/s</option>
-            <option value='4'>f/p/s</option>
-            <option value='5'>a</option>
-            <option value='6'>a/p</option>
-            <option value='7'>a/s</option>
-            <option value='8'>a/p/s</option>
-            <option value='9'>p</option>
-            <option value='10'>s</option>
-        </select>
-        <select class='w7' name='attr_missile_chart' title='firing chart'>
+        <input type='checkbox' name='attr_missile_targeted' value='1' title='weapon targeted'/>
+        <input type='checkbox' class='fired' name='attr_missile_fired' value='1' title='weapon fired' readonly/>
+        <input type='checkbox' class='damaged' name='attr_missile_damaged' value='1' title='weapon damaged'/>
+        <input type='text' class='w10' name='attr_missile_name' placeholder='# Name (arcs)...'/>
+        <input type='number' name='attr_missile_range' min='0' max='24' value='0' title='max range'/>
+        <select class='w5' name='attr_missile_chart' title='firing chart'>
             <option value='0' selected>Firing Chart...</option>
-            <option value='1'>A</option>
-            <option value='2'>B</option>
-            <option value='3'>C</option>
-            <option value='4'>D</option>
-            <option value='5'>E</option>
-            <option value='6'>F</option>
-            <option value='7'>G</option>
-            <option value='8'>H</option>
-            <option value='9'>I</option>
-            <option value='10'>J</option>
-            <option value='11'>K</option>
-            <option value='12'>L</option>
-            <option value='13'>M</option>
-            <option value='14'>N</option>
-            <option value='15'>O</option>
-            <option value='16'>P</option>
-            <option value='17'>Q</option>
-            <option value='18'>R</option>
-            <option value='19'>S</option>
-            <option value='20'>T</option>
-            <option value='21'>U</option>
-            <option value='22'>V</option>
-            <option value='23'>W</option>
-            <option value='24'>X</option>
-            <option value='25'>Y</option>
+            <option>A</option>
+            <option>B</option>
+            <option>C</option>
+            <option>D</option>
+            <option>E</option>
+            <option>F</option>
+            <option>G</option>
+            <option>H</option>
+            <option>I</option>
+            <option>J</option>
+            <option>K</option>
+            <option>L</option>
+            <option>M</option>
+            <option>N</option>
+            <option>O</option>
+            <option>P</option>
+            <option>Q</option>
+            <option>R</option>
+            <option>S</option>
+            <option>T</option>
+            <option>U</option>
+            <option>V</option>
+            <option>W</option>
+            <option>X</option>
+            <option>Y</option>
         </select>
         <input type='number' name='attr_missile_power' min='1' max='4' value='1' title='power to arm'/>
         arm: 
         <input type='checkbox' class='missile-armed' value='1' name='attr_missile_armed' title='arm weapon'/>
         =
         <input type='number' name='attr_missile_damage' min='1' max='20' value='1' title='missile damage'/>
+        <button type='action' class='btn' name='act_missile-fire'>Fire</button>
     </fieldset>
     <hr/>
 
@@ -394,6 +395,10 @@
         <input type='number' class='engine-power' name='attr_engine_power' min='0' value='0'/> / <input type='number' name='attr_engine_power_max' min='0' value='0'/>
     </fieldset>
 
+<!-- Banner placeholders (see readme) -->
+<input type='hidden' name='attr_banner_firebeam' value='[x](https://files.d20.io/images/459374797/BrLK7l69a5n4Mfomy8M4GA/original.png)'/>
+<input type='hidden' name='attr_banner_firemissile' value='[x](https://files.d20.io/images/459155112/hNZ9AQX33_kJr7InoxYVbA/original.png)'/>
+
 <script type='text/worker'>
 // HELPER: Format large numbers with commas
 function formatNumber(value) {
@@ -451,12 +456,11 @@ on('change:tpa_movement change:mpr_1 change:mpr_2', function(eventInfo) {
     });
 });
 
-// Calculate the SHIELD POINTS and TPA remaining
+// Calculate the allocated SHIELD POINTS and TPA remaining
 on('change:tpa_shields change:spr_1 change:spr_2 change:shield_1 change:shield_2 change:shield_3 change:shield_4 change:shield_5 change:shield_6', function(eventInfo) {
-    getAttrs(['tpa_shields', 'spr_1', 'spr_2', 'shield_max', 'shield_1', 'shield_2', 'shield_3', 'shield_4', 'shield_5', 'shield_6'], function(values) {
+    getAttrs(['tpa_shields', 'spr_1', 'spr_2', 'shield_1', 'shield_2', 'shield_3', 'shield_4', 'shield_5', 'shield_6'], function(values) {
         const myTPA = parseInt(values['tpa_shields']) || 0;
         const mySPR = (parseInt(values['spr_1']) || 1) / (parseInt(values['spr_2']) || 1);
-        const mySPMax = parseInt(values['shield_max']) || 0;
         const myShield01 = parseInt(values['shield_1']) || 0;
         const myShield02 = parseInt(values['shield_2']) || 0;
         const myShield03 = parseInt(values['shield_3']) || 0;
@@ -470,13 +474,158 @@ on('change:tpa_shields change:spr_1 change:spr_2 change:shield_1 change:shield_2
         const output = {};
         output['sp'] = mySP;
         output['sp_remaining'] = myTPARemaining;
-        output['sp_remaining_status'] = myTPA != 0 && (myTPARemaining < 0 ? 1 : (myTPARemaining > 0 ? 2 : 0));
-        output['shield_1_status'] = myShield01 > mySPMax ? 1 : myShield01 == 0 ? 2 : 0;
-        output['shield_2_status'] = myShield02 > mySPMax ? 1 : myShield02 == 0 ? 2 : 0;
-        output['shield_3_status'] = myShield03 > mySPMax ? 1 : myShield03 == 0 ? 2 : 0;
-        output['shield_4_status'] = myShield04 > mySPMax ? 1 : myShield04 == 0 ? 2 : 0;
-        output['shield_5_status'] = myShield05 > mySPMax ? 1 : myShield05 == 0 ? 2 : 0;
-        output['shield_6_status'] = myShield06 > mySPMax ? 1 : myShield06 == 0 ? 2 : 0;
+        output['sp_remaining_status'] = (myTPA != 0 || myTPARemaining != 0) && (myTPARemaining < 0 ? 1 : (myTPARemaining > 0 ? 2 : 0));
+        setAttrs(output);
+    });
+});
+
+// Update the status of SHIELD POINT, ALLOCATED
+on('change:shield_1 change:shield_max', function(eventInfo) {
+    getAttrs(['shield_1', 'shield_max'], function(values) {
+        const myShield = parseInt(values['shield_1']) || 0;
+        const myShieldMax = parseInt(values['shield_max']) || 0;
+
+        const output = {};
+        output['shield_1_status'] = myShield > myShieldMax ? 1 : myShield == 0 ? 2 : 0;
+        output['shield_1c'] = myShield; // When allocation changes, reset & update current
+        setAttrs(output);
+    });
+});
+on('change:shield_2 change:shield_max', function(eventInfo) {
+    getAttrs(['shield_2', 'shield_max'], function(values) {
+        const myShield = parseInt(values['shield_2']) || 0;
+        const myShieldMax = parseInt(values['shield_max']) || 0;
+
+        const output = {};
+        output['shield_2_status'] = myShield > myShieldMax ? 1 : myShield == 0 ? 2 : 0;
+        output['shield_2c'] = myShield; // When allocation changes, reset & update current
+        setAttrs(output);
+    });
+});
+on('change:shield_3 change:shield_max', function(eventInfo) {
+    getAttrs(['shield_3', 'shield_max'], function(values) {
+        const myShield = parseInt(values['shield_3']) || 0;
+        const myShieldMax = parseInt(values['shield_max']) || 0;
+
+        const output = {};
+        output['shield_3_status'] = myShield > myShieldMax ? 1 : myShield == 0 ? 2 : 0;
+        output['shield_3c'] = myShield; // When allocation changes, reset & update current
+        setAttrs(output);
+    });
+});
+on('change:shield_4 change:shield_max', function(eventInfo) {
+    getAttrs(['shield_4', 'shield_max'], function(values) {
+        const myShield = parseInt(values['shield_4']) || 0;
+        const myShieldMax = parseInt(values['shield_max']) || 0;
+
+        const output = {};
+        output['shield_4_status'] = myShield > myShieldMax ? 1 : myShield == 0 ? 2 : 0;
+        output['shield_4c'] = myShield; // When allocation changes, reset & update current
+        setAttrs(output);
+    });
+});
+on('change:shield_5 change:shield_max', function(eventInfo) {
+    getAttrs(['shield_5', 'shield_max'], function(values) {
+        const myShield = parseInt(values['shield_5']) || 0;
+        const myShieldMax = parseInt(values['shield_max']) || 0;
+
+        const output = {};
+        output['shield_5_status'] = myShield > myShieldMax ? 1 : myShield == 0 ? 2 : 0;
+        output['shield_5c'] = myShield; // When allocation changes, reset & update current
+        setAttrs(output);
+    });
+});
+on('change:shield_6 change:shield_max', function(eventInfo) {
+    getAttrs(['shield_6', 'shield_max'], function(values) {
+        const myShield = parseInt(values['shield_6']) || 0;
+        const myShieldMax = parseInt(values['shield_max']) || 0;
+
+        const output = {};
+        output['shield_6_status'] = myShield > myShieldMax ? 1 : myShield == 0 ? 2 : 0;
+        output['shield_6c'] = myShield; // When allocation changes, reset & update current
+        setAttrs(output);
+    });
+});
+
+// Update the status of SHIELD POINTS, CURRENT
+on('change:shield_1c', function(eventInfo) {
+    getAttrs(['shield_1', 'shield_1c'], function(values) {
+        const myShield = parseInt(values['shield_1']) || 0;
+        const myShieldCurrent = parseInt(values['shield_1c']) || 0;
+
+        const output = {};
+        output['shield_1c_status'] = myShieldCurrent > myShield || myShieldCurrent == 0 ? 1 : myShieldCurrent == myShield ? 0 : 2;
+        setAttrs(output);
+    });
+});
+on('change:shield_2c', function(eventInfo) {
+    getAttrs(['shield_2', 'shield_2c'], function(values) {
+        const myShield = parseInt(values['shield_2']) || 0;
+        const myShieldCurrent = parseInt(values['shield_2c']) || 0;
+
+        const output = {};
+        output['shield_2c_status'] = myShieldCurrent > myShield || myShieldCurrent == 0 ? 1 : myShieldCurrent == myShield ? 0 : 2;
+        setAttrs(output);
+    });
+});
+on('change:shield_3c', function(eventInfo) {
+    getAttrs(['shield_3', 'shield_3c'], function(values) {
+        const myShield = parseInt(values['shield_3']) || 0;
+        const myShieldCurrent = parseInt(values['shield_3c']) || 0;
+
+        const output = {};
+        output['shield_3c_status'] = myShieldCurrent > myShield || myShieldCurrent == 0 ? 1 : myShieldCurrent == myShield ? 0 : 2;
+        setAttrs(output);
+    });
+});
+on('change:shield_4c', function(eventInfo) {
+    getAttrs(['shield_4', 'shield_4c'], function(values) {
+        const myShield = parseInt(values['shield_4']) || 0;
+        const myShieldCurrent = parseInt(values['shield_4c']) || 0;
+
+        const output = {};
+        output['shield_4c_status'] = myShieldCurrent > myShield || myShieldCurrent == 0 ? 1 : myShieldCurrent == myShield ? 0 : 2;
+        setAttrs(output);
+    });
+});
+on('change:shield_5c', function(eventInfo) {
+    getAttrs(['shield_5', 'shield_5c'], function(values) {
+        const myShield = parseInt(values['shield_5']) || 0;
+        const myShieldCurrent = parseInt(values['shield_5c']) || 0;
+
+        const output = {};
+        output['shield_5c_status'] = myShieldCurrent > myShield || myShieldCurrent == 0 ? 1 : myShieldCurrent == myShield ? 0 : 2;
+        setAttrs(output);
+    });
+});
+on('change:shield_6c', function(eventInfo) {
+    getAttrs(['shield_6', 'shield_6c'], function(values) {
+        const myShield = parseInt(values['shield_6']) || 0;
+        const myShieldCurrent = parseInt(values['shield_6c']) || 0;
+
+        const output = {};
+        output['shield_6c_status'] = myShieldCurrent > myShield || myShieldCurrent == 0 ? 1 : myShieldCurrent == myShield ? 0 : 2;
+        setAttrs(output);
+    });
+});
+
+// Re-energize SHIELDS
+on('clicked:shield_energize', function(eventInfo) {
+    getAttrs(['shield_1', 'shield_2', 'shield_3', 'shield_4', 'shield_5', 'shield_6'], function(values) {
+        const myShield01 = parseInt(values['shield_1']) || 0;
+        const myShield02 = parseInt(values['shield_2']) || 0;
+        const myShield03 = parseInt(values['shield_3']) || 0;
+        const myShield04 = parseInt(values['shield_4']) || 0;
+        const myShield05 = parseInt(values['shield_5']) || 0;
+        const myShield06 = parseInt(values['shield_6']) || 0;
+
+        const output = {};
+        output['shield_1c'] = myShield01;
+        output['shield_2c'] = myShield02;
+        output['shield_3c'] = myShield03;
+        output['shield_4c'] = myShield04;
+        output['shield_5c'] = myShield05;
+        output['shield_6c'] = myShield06;
         setAttrs(output);
     });
 });
@@ -557,6 +706,53 @@ on('change:tpa change:tpa_movement change:tpa_weapons change:tpa_shields', funct
     });
 });
 
+// Reset the vessel's TPA allocation.
+on('clicked:tpa_reset', function(eventInfo) {
+
+    getSectionIDs('repeating_beams', function (ids) {
+        const Fieldnames = [];
+        ids.forEach(id => {
+            Fieldnames.push(`repeating_beams_${id}_beam_targeted`);
+        });
+        
+        getAttrs([...Fieldnames], function (values) {
+            const output = {};
+            ids.forEach(id => {
+                output[`repeating_beams_${id}_beam_targeted`] = 0;
+                output[`repeating_beams_${id}_beam_fired`] = 0;
+                output[`repeating_beams_${id}_beam_power`] = 0;
+            });
+            output['wp_beam'] = 0;
+            setAttrs(output);
+        });
+    });
+
+    getSectionIDs('repeating_missiles', function (ids) {
+        const Fieldnames = [];
+        ids.forEach(id => {
+            Fieldnames.push(`repeating_missiles_${id}_missile-armed`);
+        });
+        
+        getAttrs([...Fieldnames], function (values) {
+            const output = {};
+            ids.forEach(id => {
+                output[`repeating_missiles_${id}_missile_targeted`] = 0;
+                output[`repeating_missiles_${id}_missile_fired`] = 0;
+                output[`repeating_missiles_${id}_missile_armed`] = 0;
+            });
+            output['wp_missile'] = 0;
+            setAttrs(output);
+        });
+    });
+
+    const output = {};
+    output['shield_1'] = output['shield_2'] = output['shield_3'] = output['shield_4'] = output['shield_5'] = output['shield_6'] = 0
+    output['tpa_movement'] = 0;
+    output['tpa_weapons'] = 0;
+    output['tpa_shields'] = 0;
+    setAttrs(output);
+});
+
 // Calculate the WEAPONS TPA remaining
 on('change:tpa_weapons change:wp_beam change:wp_missile', function(eventInfo) {
     getAttrs(['tpa_weapons', 'wp_beam', 'wp_missile'], function(values) {
@@ -568,8 +764,88 @@ on('change:tpa_weapons change:wp_beam change:wp_missile', function(eventInfo) {
 
         const output = {};
         output['wp_remaining'] = myTPARemaining;
-        output['wp_remaining_status'] = myTPA != 0 && (myTPARemaining < 0 ? 1 : (myTPARemaining > 0 ? 2 : 0));
+        output['wp_remaining_status'] = (myTPA != 0 || myTPARemaining != 0) && (myTPARemaining < 0 ? 1 : (myTPARemaining > 0 ? 2 : 0));
         setAttrs(output);
+    });
+});
+
+// Fire a beam WEAPON
+on('clicked:repeating_beams:beam-fire', () => {
+    getAttrs(['repeating_beams_beam_bonus_1', 'repeating_beams_beam_bonus_2', 'repeating_beams_beam_bonus_3', 'repeating_beams_beam_chart', 'repeating_beams_beam_damaged', 'repeating_beams_beam_fired', 'repeating_beams_beam_name', 'repeating_beams_beam_power', 'repeating_beams_beam_range', 'repeating_beams_beam_targeted'], function(values) {
+        const myBonus01 = values['repeating_beams_beam_bonus_1'];
+        const myBonus02 = values['repeating_beams_beam_bonus_2'];
+        const myBonus03 = values['repeating_beams_beam_bonus_3'];
+        const myWeaponDamaged = parseInt(values['repeating_beams_beam_damaged']) || 0;
+        const myPower = parseInt(values['repeating_beams_beam_power']) ||0;
+        const myWeaponFired = parseInt(values['repeating_beams_beam_fired']) || 0;
+        const myWeaponName = values['repeating_beams_beam_name'];
+        const myWeaponTargeted = parseInt(values['repeating_beams_beam_targeted']) || 0;
+
+        const output = {};
+
+        if (myWeaponDamaged == 1) {
+            startRoll(`&{template:custom} {{title=**@{character_name}**}} {{subtitle=Beam Weapon Attack}} {{Weapon=${myWeaponName}}} {{Error=**Weapon Is Damaged**}}`, roll => {
+              finishRoll(roll.rollId);
+            });
+        } else if (myPower == 0) {
+            startRoll(`&{template:custom} {{title=**@{character_name}**}} {{subtitle=Beam Weapon Attack}} {{Weapon=${myWeaponName}}} {{Error=**Weapon Not Charged**}}`, roll => {
+              finishRoll(roll.rollId);
+            });
+        } else if (myWeaponFired == 1) {
+            startRoll(`&{template:custom} {{title=**@{character_name}**}} {{subtitle=Beam Weapon Attack}} {{Weapon=${myWeaponName}}} {{Error=**Weapon Already Fired**}}`, roll => {
+              finishRoll(roll.rollId);
+            }); 
+        } else if (myWeaponTargeted == 0) {
+            startRoll(`&{template:custom} {{title=**@{character_name}**}} {{subtitle=Beam Weapon Attack}} {{Weapon=${myWeaponName}}} {{Error=**Weapon Not Targetted**}}`, roll => {
+              finishRoll(roll.rollId);
+            });             
+        } else {
+            startRoll(`&{template:custom} {{color=red}} {{title=@{banner_firebeam} **@{character_name}**}} {{subtitle=Beam Weapon Attack}} {{Weapon=${myWeaponName}}} {{Power/Damage=${myPower}}} {{+3 dmg @ ranges=${myBonus03}}} {{+2 dmg @ ranges=${myBonus02}}} {{+1 dmg @ ranges=${myBonus01}}} {{Target=@{target|Target01|character_name}}} {{@ Range=?{Range?|24}}} {{To-Hit=[[?{To-Hit?|1}]] or less}} {{Roll=[[1d10cs>11cf<0]]}}`, roll => {
+              finishRoll(roll.rollId);
+            });
+            output['repeating_beams_beam_fired'] = 1;
+        }
+
+        setAttrs(output); 
+    });
+});
+
+// Fire a missile WEAPON
+on('clicked:repeating_missiles:missile-fire', () => {
+    getAttrs(['repeating_missiles_missile_armed', 'repeating_missiles_missile_chart', 'repeating_missiles_missile_damage', 'repeating_missiles_missile_damaged', 'repeating_missiles_missile_fired', 'repeating_missiles_missile_name', 'repeating_missiles_missile_power', 'repeating_missiles_missile_range', 'repeating_missiles_missile_targeted'], function(values) {
+        const myWeaponDamaged = parseInt(values['repeating_missiles_missile_damaged']) || 0;
+        const myWeaponArmed = parseInt(values['repeating_missiles_missile_armed']) ||0;
+        const myDamage = parseInt(values['repeating_missiles_missile_damage']) ||0;
+        const myWeaponFired = parseInt(values['repeating_missiles_missile_fired']) || 0;
+        const myWeaponName = values['repeating_missiles_missile_name'];
+        const myWeaponTargeted = parseInt(values['repeating_missiles_missile_targeted']) || 0;
+
+        const output = {};
+
+        if (myWeaponDamaged == 1) {
+            startRoll(`&{template:custom} {{title=**@{character_name}**}} {{subtitle=Missile Weapon Attack}} {{Weapon=${myWeaponName}}} {{Error=**Weapon Is Damaged**}}`, roll => {
+              finishRoll(roll.rollId);
+            });
+        } else if (myWeaponArmed == 0) {
+            startRoll(`&{template:custom} {{title=**@{character_name}**}} {{subtitle=Missile Weapon Attack}} {{Weapon=${myWeaponName}}} {{Error=**Weapon Not Armed**}}`, roll => {
+              finishRoll(roll.rollId);
+            });
+        } else if (myWeaponFired == 1) {
+            startRoll(`&{template:custom} {{title=**@{character_name}**}} {{subtitle=Missile Weapon Attack}} {{Weapon=${myWeaponName}}} {{Error=**Weapon Already Fired**}}`, roll => {
+              finishRoll(roll.rollId);
+            }); 
+        } else if (myWeaponTargeted == 0) {
+            startRoll(`&{template:custom} {{title=**@{character_name}**}} {{subtitle=Missile Weapon Attack}} {{Weapon=${myWeaponName}}} {{Error=**Weapon Not Targetted**}}`, roll => {
+              finishRoll(roll.rollId);
+            });             
+        } else {
+            startRoll(`&{template:custom} {{color=red}} {{title=@{banner_firemissile} **@{character_name}**}} {{subtitle=Missile Weapon Attack}} {{Weapon=${myWeaponName}}} {{Damage=${myDamage}}} {{Target=@{target|Target01|character_name}}} {{@ Range=?{Range?|24}}} {{To-Hit=[[?{To-Hit?|1}]] or less}} {{Roll=[[1d10cs>11cf<0]]}}`, roll => {
+              finishRoll(roll.rollId);
+            });
+            output['repeating_missiles_missile_fired'] = 1;
+        }
+
+        setAttrs(output); 
     });
 });
 
@@ -621,3 +897,50 @@ on('change:repeating_missiles:missile_armed change:repeating_missiles:missile_po
 });
 
 </script>
+
+<rolltemplate class="sheet-rolltemplate-custom">
+    <div class="sheet-container sheet-color-{{color}}">
+      <div class="sheet-header">
+        {{#title}}<div class="sheet-title">{{title}}</div>{{/title}}
+        {{#subtitle}}<div class="sheet-subtitle">{{subtitle}}</div>{{/subtitle}}
+      </div>
+
+      <div class="sheet-content">
+        {{#allprops() title subtitle color}}
+        <div class="sheet-key">{{key}}</div>
+        <div class="sheet-value">{{value}}</div>
+        {{/allprops() title subtitle color}}
+
+        {{#^rollGreater() Roll To-Hit}}
+        <div class="sheet-key">Result</div>
+        <div class="sheet-value"><span class="success">Hit!</span></div>
+        {{/^rollGreater() Roll To-Hit}}
+
+        {{#rollGreater() Roll To-Hit}}
+        <div class="sheet-key">Result</div>
+        <div class="sheet-value"><span class="failure">Miss!</span></div>
+        {{/rollGreater() Roll To-Hit}}
+
+        {{#desc}}<div class="sheet-desc">{{desc}}</div>{{/desc}}
+      </div>
+    </div>
+</rolltemplate>
+
+
+<rolltemplate class="sheet-rolltemplate-menu">
+    <div class="sheet-container sheet-color-{{color}}">
+         <div class="sheet-header">
+            {{#title}}<div class="sheet-title">{{title}}</div>{{/title}}
+            {{#subtitle}}<div class="sheet-subtitle">{{subtitle}}</div>{{/subtitle}}
+        </div>
+         <div class="sheet-content">
+            {{#allprops() title subtitle desc color}}
+                <div class="sheet-key">{{key}}</div>
+                <div class="sheet-value">{{value}}</div>
+            {{/allprops() title subtitle desc color}}
+            {{#desc}}
+                <div class="sheet-desc">{{desc}}</div>
+            {{/desc}}
+        </div>
+    </div>
+</rolltemplate>

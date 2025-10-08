@@ -23,8 +23,28 @@
     row-gap: 5px;
 }
 
-.ui-dialog .charsheet span.shields {
-    grid-column: 3 / 7;
+.ui-dialog .charsheet div.grid-tpa span.shields {
+    grid-column: 3 / 6;
+}
+
+.ui-dialog .charsheet button.btn {
+  background-image: linear-gradient(white, lightgray);
+  border-color: black;
+  color: black;
+  font-size: 0.9em;
+  padding: 1px 10px;
+}
+.ui-dialog .charsheet button.btn::before {
+  content: '';
+}
+.ui-dialog .charsheet button.btn:hover {
+  background-color: lightgray;
+}
+
+.ui-dialog .charsheet div {
+    display: inline-block;
+    padding-bottom: 5px;
+    width: 100%;
 }
 
 .ui-dialog .charsheet div.power-allocation {
@@ -32,12 +52,6 @@
     display: grid;
     grid-template-columns: [first] 20% [second] auto [third] 15% [last];
     row-gap: 5px;
-}
-
-.ui-dialog .charsheet div {
-    display: inline-block;
-    padding-bottom: 5px;
-    width: 100%;
 }
 
 .ui-dialog .charsheet h1 {
@@ -56,7 +70,17 @@
 .ui-dialog .charsheet input {
     background-color: transparent;
 }
-.ui-dialog .charsheet input[readonly] {
+.ui-dialog .charsheet input[type="checkbox"].damaged {
+  accent-color: crimson;
+}
+.ui-dialog .charsheet input[type="checkbox"].missile-armed {
+  accent-color: palegreen;
+}
+.ui-dialog .charsheet input[type="checkbox"][readonly].fired {
+    pointer-events: none;
+    opacity: 0.5;
+}
+.ui-dialog .charsheet input[type="number"][readonly] {
     background-color: whitesmoke;
 }
 
@@ -95,6 +119,12 @@
 .ui-dialog .charsheet .beam-power-status[value='2'] ~ .beam-power,
 .ui-dialog .charsheet .engine-power-status[value='0'] ~ .engine-power,
 .ui-dialog .charsheet .mp-remaining-status[value='0'] ~ .mp-remaining,
+.ui-dialog .charsheet .shield-1c-status[value='0'] ~ .shield-1c,
+.ui-dialog .charsheet .shield-2c-status[value='0'] ~ .shield-2c,
+.ui-dialog .charsheet .shield-3c-status[value='0'] ~ .shield-3c,
+.ui-dialog .charsheet .shield-4c-status[value='0'] ~ .shield-4c,
+.ui-dialog .charsheet .shield-5c-status[value='0'] ~ .shield-5c,
+.ui-dialog .charsheet .shield-6c-status[value='0'] ~ .shield-6c,
 .ui-dialog .charsheet .sp-remaining-status[value='0'] ~ .sp-remaining,
 .ui-dialog .charsheet .tpa-remaining-status[value='0'] ~ .tpa-remaining,
 .ui-dialog .charsheet .wp-remaining-status[value='0'] ~ .wp-remaining {
@@ -113,6 +143,12 @@
 .ui-dialog .charsheet .shield-4-status[value='1'] ~ .shield-4,
 .ui-dialog .charsheet .shield-5-status[value='1'] ~ .shield-5,
 .ui-dialog .charsheet .shield-6-status[value='1'] ~ .shield-6,
+.ui-dialog .charsheet .shield-1c-status[value='1'] ~ .shield-1c,
+.ui-dialog .charsheet .shield-2c-status[value='1'] ~ .shield-2c,
+.ui-dialog .charsheet .shield-3c-status[value='1'] ~ .shield-3c,
+.ui-dialog .charsheet .shield-4c-status[value='1'] ~ .shield-4c,
+.ui-dialog .charsheet .shield-5c-status[value='1'] ~ .shield-5c,
+.ui-dialog .charsheet .shield-6c-status[value='1'] ~ .shield-6c,
 .ui-dialog .charsheet .sp-remaining-status[value='1'] ~ .sp-remaining,
 .ui-dialog .charsheet .tpa-remaining-status[value='1'] ~ .tpa-remaining,
 .ui-dialog .charsheet .wp-remaining-status[value='1'] ~ .wp-remaining {
@@ -131,10 +167,164 @@
 .ui-dialog .charsheet .shield-4-status[value='2'] ~ .shield-4,
 .ui-dialog .charsheet .shield-5-status[value='2'] ~ .shield-5,
 .ui-dialog .charsheet .shield-6-status[value='2'] ~ .shield-6,
+.ui-dialog .charsheet .shield-1c-status[value='2'] ~ .shield-1c,
+.ui-dialog .charsheet .shield-2c-status[value='2'] ~ .shield-2c,
+.ui-dialog .charsheet .shield-3c-status[value='2'] ~ .shield-3c,
+.ui-dialog .charsheet .shield-4c-status[value='2'] ~ .shield-4c,
+.ui-dialog .charsheet .shield-5c-status[value='2'] ~ .shield-5c,
+.ui-dialog .charsheet .shield-6c-status[value='2'] ~ .shield-6c,
 .ui-dialog .charsheet .sp-remaining-status[value='2'] ~ .sp-remaining,
 .ui-dialog .charsheet .tpa-remaining-status[value='2'] ~ .tpa-remaining,
 .ui-dialog .charsheet .wp-remaining-status[value='2'] ~ .wp-remaining {
     background-color: lemonchiffon; 
     border-color: coral;
     color: coral;
+}
+
+/**************** ROLL TEMPLATES****************/
+.sheet-rolltemplate-custom,
+.sheet-rolltemplate-menu {
+  margin-left: -37px;
+}
+.withoutavatars .sheet-rolltemplate-custom,
+.withoutavatars .sheet-rolltemplate-menu {
+  margin-left: -7px;
+}
+
+.sheet-rolltemplate-custom .sheet-container,
+.sheet-rolltemplate-menu .sheet-container {
+  border: 1px solid;
+  /* by default, the border is the same color as the header. You can change this here, e.g. to black */
+  border-color: var(--header-bg-color);
+}
+
+/* Header formatting - title and subtitle */
+.sheet-rolltemplate-custom .sheet-header,
+.sheet-rolltemplate-menu .sheet-header {
+  background-image: var(--header-bg-image);
+  background-color: var(--header-bg-color);
+  /* change text-align to center to center the header text */
+  text-align: left;
+  color: var(--header-text-color);
+  padding: 5px;
+}
+.sheet-rolltemplate-custom .sheet-title,
+.sheet-rolltemplate-menu .sheet-title {
+  font-size:1.1em;
+  text-align: center;
+}
+.sheet-rolltemplate-custom .sheet-subtitle,
+.sheet-rolltemplate-menu .sheet-subtitle {
+  font-size:.9em;
+  text-align: center;
+}
+
+/* example colors */
+.sheet-rolltemplate-custom .sheet-container,
+.sheet-rolltemplate-menu .sheet-container {
+  /* this is the default color */
+  --header-bg-color:dimgray;
+  --header-text-color: #FFF;
+}
+.sheet-rolltemplate-custom .sheet-container.sheet-color-black,
+.sheet-rolltemplate-menu .sheet-container.sheet-color-black {
+  --header-bg-color: black;
+  --header-text-color: #FFF;
+}
+.sheet-rolltemplate-custom .sheet-container.sheet-color-brown,
+.sheet-rolltemplate-menu .sheet-container.sheet-color-brown {
+  --header-bg-color: sienna;
+  --header-text-color: #FFF;
+}
+.sheet-rolltemplate-custom .sheet-container.sheet-color-blue,
+.sheet-rolltemplate-menu .sheet-container.sheet-color-blue {
+  --header-bg-color: darkslateblue;
+  --header-text-color: #FFF;
+}
+.sheet-rolltemplate-custom .sheet-container.sheet-color-gold,
+.sheet-rolltemplate-menu .sheet-container.sheet-color-gold {
+  --header-bg-color: gold;
+  --header-text-color: #000;
+}
+.sheet-rolltemplate-custom .sheet-container.sheet-color-green,
+.sheet-rolltemplate-menu .sheet-container.sheet-color-green {
+  --header-bg-color: darkolivegreen;
+  --header-text-color: #FFF;
+}
+.sheet-rolltemplate-custom .sheet-container.sheet-color-orange,
+.sheet-rolltemplate-menu .sheet-container.sheet-color-orange {
+  --header-bg-color: darkorange;
+  --header-text-color: #000;
+}
+.sheet-rolltemplate-custom .sheet-container.sheet-color-red,
+.sheet-rolltemplate-menu .sheet-container.sheet-color-red {
+  --header-bg-color: maroon;
+  --header-text-color: #FFF;
+}
+
+/* Success/Failure colors*/
+.sheet-rolltemplate-custom .sheet-success {
+  color: green;
+  font-weight: bold;
+}
+.sheet-rolltemplate-custom .sheet-failure {
+  color: red;
+  font-weight: bold;
+}
+  
+/* Allprops part */
+.sheet-rolltemplate-custom .sheet-content,
+.sheet-rolltemplate-menu .sheet-content {
+  display: grid;
+  background: #FFF;
+  /* Header formatting - modify the column layout below */
+  grid-template-columns: auto auto;
+  /* Line height to match default roll template */
+  line-height:1.4em;
+}
+.sheet-rolltemplate-custom .sheet-content > div,
+.sheet-rolltemplate-menu .sheet-content > div {
+  padding: 5px;
+}
+  
+/* Left column */
+.sheet-rolltemplate-custom .sheet-content .sheet-key,
+.sheet-rolltemplate-menu .sheet-content .sheet-key {
+  font-weight: bold;
+  padding-right: 10px;
+  text-align: right;
+}
+  
+/* Empty rule, use this if you want to change the right column 
+.sheet-rolltemplate-custom .sheet-value {
+}
+*/
+  
+/* Make even-numbered rows grey */
+.sheet-rolltemplate-custom .sheet-content div:nth-child(4n+3),
+.sheet-rolltemplate-custom .sheet-content div:nth-child(4n) {
+  background:#EEE;
+}
+  
+/* Description field */
+.sheet-rolltemplate-custom .sheet-desc,
+.sheet-rolltemplate-menu .sheet-desc {
+  grid-column: span 2;
+  padding: 5px;
+  text-align: center;
+}
+
+/* Chat menu styles */
+.sheet-rolltemplate-custom a[href^='!'],.sheet-rolltemplate-custom a[href^='~'],
+.sheet-rolltemplate-menu a[href^='!'],.sheet-rolltemplate-menu a[href^='~'] {
+  background-color:transparent;
+  border:0;
+  color:#3f8aa6;
+  display:inline;
+  font-weight: bold;
+  padding: 0
+}
+
+.sheet-rolltemplate-custom .sheet-desc {
+  text-align: left;
 }
