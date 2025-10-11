@@ -19,6 +19,7 @@
             <span name='attr_ce'>0</span>
         </span>
     </div>
+    <hr/>
 
     <!-------------------------------------------------------->
     <h2>Damage Control</h2>
@@ -42,60 +43,139 @@
             <label>Damage Chart:</label>
             <span name='attr_dmg_chart'></span>
         </span>
+
+    <h4 class='span-grid'>Engines</h4>
+    <fieldset class='repeating_engines'>
+        <input type='text' class='w10' name='attr_engine_model' placeholder='Model...' title='model'/>
+        <select class='w10' name='attr_engine_type'>
+            <option value='0' selected>Type...</option>
+            <option value='1'>Impulse</option>
+            <option value='2'>Warp</option>
+        </select>
+        <select class='w10' name='attr_engine_location'>
+            <option value='0' selected>Location...</option>
+            <option value='1'>Centerline</option>
+            <option value='2'>Port</option>
+            <option value='3'>Starboard</option>
+        </select>
+        Power: 
+        <input type='hidden' class='engine-power-status' name='attr_engine_power_status' value='0'/>
+        <input type='number' class='engine-power' name='attr_engine_power' min='0' value='0'/> / <input type='number' name='attr_engine_power_max' min='0' value='0'/>
+    </fieldset>
     </div>
+    <hr/>
 
     <!-------------------------------------------------------->
-    <h2>Power Allocation</h2>
-    <div class='grid-tpa'>
-        <label>Current TPA:</label> 
-        <span><span name='attr_tpa'></span> / <span name='attr_tpa_max'></span></span>
-        <span></span>
-        <span></span>
-        <span></span>
+    <h2>Total Power Available</h2>
+    <div class='grid-3col'>
         <span>
-            <button type='action' class='btn' name='act_tpa_reset'>Reset All</button>
+            <label>TPA:</label> 
+            <span name='attr_tpa'></span> / <span name='attr_tpa_max'></span>
         </span>
+        <span>
+            <button type='action' class='btn' name='act_tpa_reset'>Reset TPA</button>
+        </span>
+        <span>
+            <label>TPA Unallocated:</label>
+            <input type='hidden' class='tpa-remaining-status' name='attr_tpa_remaining_status'/>
+            <input type='number' class='tpa-remaining' name='attr_tpa_remaining'  value='0' readonly/>
+        </span>
+        
+        <span>
+            <label>TPA to Movement:</label>
+            <input type='number' class='em' name='attr_tpa_movement' min='0' value='0'/>
+        </span>
+        <span>
+            <label>TPA to Shields:</label>
+            <input type='number' class='em' name='attr_tpa_shields' min='0' value='0'/>
+        </span>
+        <span>
+            <label>TPA to Weapons:</label>
+            <input type='number' class='em' name='attr_tpa_weapons' min='0' value='0'/>
+        </span>
+    </div>
+    <hr/>
 
-        <label>To Movement:</label>
-        <input type='number' name='attr_tpa_movement' min='0' value='0'/>
-        <span><label>MPR:</label> <span name='attr_mpr_1'></span>/<span name='attr_mpr_2'></span></span>
+    <!-------------------------------------------------------->
+    <h2>Helm Control</h2>
+    <div class='grid-3col'>
+        <span>
+            <label>TPA to Movement:</label>
+            <input type='number' class='em' name='attr_tpa_movement' min='0' value='0'/>
+        </span>
         <span>
             <label>MP by Phase:</label> 
             <input type='hidden' name='attr_mp'/>
             <span name='attr_mp1'></span> | <span name='attr_mp2'></span> | <span name='attr_mp3'></span>
         </span>
-        <span></span>
         <span>
-            <label>Remaining:</label> 
+            <label>TPA Remaining:</label> 
             <input type='hidden' class='mp-remaining-status' name='attr_mp_remaining_status'/>
             <input type='number' class='mp-remaining' name='attr_mp_remaining' value='0' readonly/>
         </span>
-
-        <label>To Weapons:</label>
-        <input type='number' name='attr_tpa_weapons' min='0' value='0'/>
-        <span><label>To Beams:</label> <span name='attr_wp_beam'></span></span>
-        <span><label>To Missiles:</label> <span name='attr_wp_missile'></span></span>
-        <span></span>
+        
         <span>
-            <label>Remaining:</label>
-            <input type='hidden' class='wp-remaining-status' name='attr_wp_remaining_status'/>
-            <input type='number' class='wp-remaining' name='attr_wp_remaining' value='0' readonly/>
+            <label>MPR: </label>
+            <input type='number' class='w3' name='attr_mpr_1' min='1' max='6' value='1'/>
+            /
+            <input type='number' class='w3' name='attr_mpr_2' min='1' max='2' value='1'/>
         </span>
-
-        <label>To Shields:</label>
-        <input type='number' name='attr_tpa_shields' min='0' value='0'/>
-        <span><label>SPR:</label> <span name='attr_spr_1'></span>/<span name='attr_spr_2'></span></span>
-        <span><label>SP:</label> <span name='attr_sp'></span></span>
-        <span><label>Max:</label> <span name='attr_shield_max'></span></span>
         <span>
-            <label>Remaining:</label>
+            <label>Warp Speeds:</label>
+            <input type='number' class='w3' name='attr_warp_1' min='0' value='0'/>
+            /
+            <input type='number' class='w3' name='attr_warp_2' min='0' value='0'/>
+        </span>
+        <span>
+            <label>Stress Charts:</label>
+            <input type='text' class='w3' name='attr_stress_1' maxlength='1'/>
+            /            
+            <input type='text' class='w3' name='attr_stress_2' maxlength='1'/> 
+        </span>
+    </div>
+    <hr/>
+
+    <!-------------------------------------------------------->
+    <h2>Shield Control</h2>
+    <div class='grid-3col'>
+        <span>
+            <label>TPA to Shields:</label>
+            <input type='number' class='em' name='attr_tpa_shields' min='0' value='0'/>
+        </span>
+        <span>
+                <label>Shield Points:</label> <span name='attr_sp'></span>
+        </span>
+        <span>
+            <label>TPA Remaining:</label>
             <input type='hidden' class='sp-remaining-status' name='attr_sp_remaining_status'/>
             <input type='number' class='sp-remaining' name='attr_sp_remaining' value='0' readonly/>
         </span>
 
-        <label>Unallocated TPA:</label>
-        <input type='hidden' class='tpa-remaining-status' name='attr_tpa_remaining_status'/>
-        <input type='number' class='tpa-remaining' name='attr_tpa_remaining'  value='0' readonly/>
+        <span>
+            <label>SPR: </label>
+            <input type='number' class='w3' name='attr_spr_1' min='1' max='2' value='1'/>
+            /        
+            <input type='number' class='w3' name='attr_spr_2' min='1' max='6' value='1'/>
+        </span>
+        <span>
+            <label>Shield Type:</label>
+            <input type='text' class='w10' name='attr_shield_type'/>
+        </span>
+        <span>
+            <label>Max Shield Power:</label>
+            <input type='number' name='attr_shield_max' min='0' max='16' value='0'/>
+        </span> 
+
+        <span class='shields'>
+            <input type='checkbox' class='damaged' name='attr_shield_1_damaged' value='1' title='generator damaged'/>
+            <input type='checkbox' class='damaged' name='attr_shield_2_damaged' value='1' title='generator damaged'/>
+            <input type='checkbox' class='damaged' name='attr_shield_3_damaged' value='1' title='generator damaged'/>
+            <input type='checkbox' class='damaged' name='attr_shield_4_damaged' value='1' title='generator damaged'/>
+            <input type='checkbox' class='damaged' name='attr_shield_5_damaged' value='1' title='generator damaged'/>
+            <input type='checkbox' class='damaged' name='attr_shield_6_damaged' value='1' title='generator damaged'/>
+        </span>
+        <span></span>
+        
         <span class='shields'>
             <label>f/p:</label>
             <input type='hidden' class='shield-1-status' name='attr_shield_1_status'/>
@@ -118,8 +198,6 @@
         </span>
         <span></span>
 
-        <span></span>
-        <span></span>
         <span class='shields'>
             <label>f/p:</label>
             <input type='hidden' class='shield-1c-status' name='attr_shield_1c_status'/>
@@ -144,14 +222,26 @@
             <button type='action' class='btn' name='act_shield_energize'>Re-Energize</button>
         </span>
     </div>
+    <hr/>
 
     <!-------------------------------------------------------->
     <h2>Fire Control</h2>
+    <div class='grid-3col'>
+        <span>
+            <label>TPA to Weapons:</label>
+            <input type='number' class='em' name='attr_tpa_weapons' min='0' value='0'/>
+        </span>
+        <span></span>
+        <span>
+            <label>TPA Remaining:</label>
+            <input type='hidden' class='wp-remaining-status' name='attr_wp_remaining_status'/>
+            <input type='number' class='wp-remaining' name='attr_wp_remaining' value='0' readonly/>
+        </span>
 
-    <h4>Beam Weapons</h4>
+    <h4 class='span-grid'>Beam Weapons</h4>
     <fieldset class='repeating_beams'>
-        <input type='checkbox' name='attr_beam_targeted' value='1' title='weapon targeted'/>
-        <input type='checkbox' class='fired' name='attr_beam_fired' value='1' title='weapon fired' readonly/>
+        <input type='checkbox' class='targeted' name='attr_beam_targeted' value='1' title='weapon targeted'/>
+        <input type='checkbox' class='fired' name='attr_beam_fired' value='1' title='weapon fired'/>
         <input type='checkbox' class='damaged' name='attr_beam_damaged' value='1' title='weapon damaged'/>
         <input type='text' class='w10' name='attr_beam_name' placeholder='# Name (arcs)...'/>
         <input type='number' name='attr_beam_range' min='0' max='24' value='0' title='max range'/>
@@ -183,7 +273,7 @@
             <option>X</option>
             <option>Y</option>
         </select>
-        pwr: <input type='hidden' class='beam-power-status' name='attr_beam_power_status'/>
+        TPA: <input type='hidden' class='beam-power-status' name='attr_beam_power_status'/>
         <input type='number' class='beam-power' name='attr_beam_power' min='0' max='10' value='0' title='current power'/>
         /
         <input type='number' name='attr_beam_power_max' min='0' max='10' value='0' title='max power'/>
@@ -193,10 +283,10 @@
         <button type='action' class='btn' name='act_beam-fire'>Fire</button>
     </fieldset>
     
-    <h4>Missile Weapons</h4>
+    <h4 class='span-grid'>Missile Weapons</h4>
     <fieldset class='repeating_missiles'>
-        <input type='checkbox' name='attr_missile_targeted' value='1' title='weapon targeted'/>
-        <input type='checkbox' class='fired' name='attr_missile_fired' value='1' title='weapon fired' readonly/>
+        <input type='checkbox' class='targeted' name='attr_missile_targeted' value='1' title='weapon targeted'/>
+        <input type='checkbox' class='fired' name='attr_missile_fired' value='1' title='weapon fired'/>
         <input type='checkbox' class='damaged' name='attr_missile_damaged' value='1' title='weapon damaged'/>
         <input type='text' class='w10' name='attr_missile_name' placeholder='# Name (arcs)...'/>
         <input type='number' name='attr_missile_range' min='0' max='24' value='0' title='max range'/>
@@ -228,13 +318,14 @@
             <option>X</option>
             <option>Y</option>
         </select>
-        <input type='number' name='attr_missile_power' min='1' max='4' value='1' title='power to arm'/>
-        arm: 
+        TPA to arm: <input type='number' name='attr_missile_power' min='1' max='4' value='1' title='power to arm'/>
+        Arm: <input type='hidden' class='missile-armed-status' name='attr_missile_armed_status'/>
         <input type='checkbox' class='missile-armed' value='1' name='attr_missile_armed' title='arm weapon'/>
         =
         <input type='number' name='attr_missile_damage' min='1' max='20' value='1' title='missile damage'/>
         <button type='action' class='btn' name='act_missile-fire'>Fire</button>
     </fieldset>
+    </div>
     <hr/>
 
     <!-------------------------------------------------------->
@@ -336,64 +427,6 @@
         <input type='number' class='w7' name='attr_trans_emergency' min='0' value='0'/>
 
     </div>
-    <hr/>
-
-    <!-------------------------------------------------------->
-    <h2>Engineering Data</h2>
-    <div class='grid-3col'>
-        <span>
-            <label>MPR: </label>
-            <input type='number' class='w3' name='attr_mpr_1' min='1' max='6' value='1'/>
-            /
-            <input type='number' class='w3' name='attr_mpr_2' min='1' max='2' value='1'/>
-        </span>
-        <span>
-            <label>Warp Speeds:</label>
-            <input type='number' class='w3' name='attr_warp_1' min='0' value='0'/>
-            /
-            <input type='number' class='w3' name='attr_warp_2' min='0' value='0'/>
-        </span>
-        <span>
-            <label>Stress Charts:</label>
-            <input type='text' class='w3' name='attr_stress_1' maxlength='1'/>
-            /            
-            <input type='text' class='w3' name='attr_stress_2' maxlength='1'/> 
-        </span>
-
-        <span>
-            <label>SPR: </label>
-            <input type='number' class='w3' name='attr_spr_1' min='1' max='2' value='1'/>
-            /        
-            <input type='number' class='w3' name='attr_spr_2' min='1' max='6' value='1'/>
-        </span>
-        <span>
-            <label>Shield Type:</label>
-            <input type='text' class='w10' name='attr_shield_type'/>
-        </span>
-        <span>
-            <label>Max Shield Power:</label>
-            <input type='number' name='attr_shield_max' min='0' max='16' value='0'/>
-        </span> 
-    </div>
-
-    <h4>Engines</h4>
-    <fieldset class='repeating_engines'>
-        <input type='text' class='w10' name='attr_engine_model' placeholder='Model...' title='model'/>
-        <select class='w10' name='attr_engine_type'>
-            <option value='0' selected>Type...</option>
-            <option value='1'>Impulse</option>
-            <option value='2'>Warp</option>
-        </select>
-        <select class='w10' name='attr_engine_location'>
-            <option value='0' selected>Location...</option>
-            <option value='1'>Centerline</option>
-            <option value='2'>Port</option>
-            <option value='3'>Starboard</option>
-        </select>
-        Power: 
-        <input type='hidden' class='engine-power-status' name='attr_engine_power_status' value='0'/>
-        <input type='number' class='engine-power' name='attr_engine_power' min='0' value='0'/> / <input type='number' name='attr_engine_power_max' min='0' value='0'/>
-    </fieldset>
 
 <!-- Banner placeholders (see readme) -->
 <input type='hidden' name='attr_banner_firebeam' value='[x](https://files.d20.io/images/459374797/BrLK7l69a5n4Mfomy8M4GA/original.png)'/>
@@ -436,22 +469,22 @@ on('change:defense change:wdf', function(eventInfo) {
 // Calculate the MOVEMENT POINTS available
 on('change:tpa_movement change:mpr_1 change:mpr_2', function(eventInfo) {
     getAttrs(['tpa_movement', 'mpr_1', 'mpr_2'], function(values) {
-        const myPower = parseInt(values['tpa_movement']) || 0;
-        const myRatio = (parseInt(values['mpr_1']) || 1) / (parseInt(values['mpr_2']) || 1);
+        const thePower = parseInt(values['tpa_movement']) || 0;
+        const theRatio = (parseInt(values['mpr_1']) || 1) / (parseInt(values['mpr_2']) || 1);
 
-        const myPoints = Math.floor(myPower / myRatio);
-        const myMP01 = Math.floor(myPoints / 3) + Math.floor((myPoints % 3) / 2); // phase 1
-        const myMP02 = Math.floor(myPoints / 3) + (myPoints % 3 == 1 ? 1 : 0); // phase 2
-        const myMP03 = Math.floor(myPoints / 3) + Math.floor((myPoints % 3) / 2); // phase 3
-        const myPowerRemaining = myPower % myRatio;
+        const thePoints = Math.floor(thePower / theRatio);
+        const theMP01 = Math.floor(thePoints / 3) + Math.floor((thePoints % 3) / 2); // phase 1
+        const theMP02 = Math.floor(thePoints / 3) + (thePoints % 3 == 1 ? 1 : 0); // phase 2
+        const theMP03 = Math.floor(thePoints / 3) + Math.floor((thePoints % 3) / 2); // phase 3
+        const thePowerRemaining = thePower % theRatio;
 
         const output = {};
-        output['mp'] = myPoints;
-        output['mp1'] = myMP01;
-        output['mp2'] = myMP02;
-        output['mp3'] = myMP03;
-        output['mp_remaining'] = myPowerRemaining;
-        output['mp_remaining_status'] = myPower != 0 && (myPowerRemaining < 0 ? 1 : (myPowerRemaining > 0 ? 2 : 0));
+        output['mp'] = thePoints * 100;
+        output['mp1'] = theMP01;
+        output['mp2'] = theMP02;
+        output['mp3'] = theMP03;
+        output['mp_remaining'] = thePowerRemaining;
+        output['mp_remaining_status'] = thePower != 0 && (thePowerRemaining < 0 ? 1 : (thePowerRemaining > 0 ? 2 : 0));
         setAttrs(output);
     });
 });
@@ -459,90 +492,96 @@ on('change:tpa_movement change:mpr_1 change:mpr_2', function(eventInfo) {
 // Calculate the allocated SHIELD POINTS and TPA remaining
 on('change:tpa_shields change:spr_1 change:spr_2 change:shield_1 change:shield_2 change:shield_3 change:shield_4 change:shield_5 change:shield_6', function(eventInfo) {
     getAttrs(['tpa_shields', 'spr_1', 'spr_2', 'shield_1', 'shield_2', 'shield_3', 'shield_4', 'shield_5', 'shield_6'], function(values) {
-        const myTPA = parseInt(values['tpa_shields']) || 0;
-        const mySPR = (parseInt(values['spr_1']) || 1) / (parseInt(values['spr_2']) || 1);
-        const myShield01 = parseInt(values['shield_1']) || 0;
-        const myShield02 = parseInt(values['shield_2']) || 0;
-        const myShield03 = parseInt(values['shield_3']) || 0;
-        const myShield04 = parseInt(values['shield_4']) || 0;
-        const myShield05 = parseInt(values['shield_5']) || 0;
-        const myShield06 = parseInt(values['shield_6']) || 0;
+        const theTPA = parseInt(values['tpa_shields']) || 0;
+        const theSPR = (parseInt(values['spr_1']) || 1) / (parseInt(values['spr_2']) || 1);
+        const theShield01 = parseInt(values['shield_1']) || 0;
+        const theShield02 = parseInt(values['shield_2']) || 0;
+        const theShield03 = parseInt(values['shield_3']) || 0;
+        const theShield04 = parseInt(values['shield_4']) || 0;
+        const theShield05 = parseInt(values['shield_5']) || 0;
+        const theShield06 = parseInt(values['shield_6']) || 0;
 
-        const mySP = Math.floor(myTPA / mySPR);
-        const myTPARemaining = mySP - myShield01 - myShield02 - myShield03 - myShield04 - myShield05 - myShield06;
+        const theSP = Math.floor(theTPA / theSPR);
+        const theTPARemaining = theTPA - theShield01 * theSPR - theShield02 * theSPR - theShield03 * theSPR - theShield04 * theSPR - theShield05 * theSPR - theShield06 * theSPR;
 
         const output = {};
-        output['sp'] = mySP;
-        output['sp_remaining'] = myTPARemaining;
-        output['sp_remaining_status'] = (myTPA != 0 || myTPARemaining != 0) && (myTPARemaining < 0 ? 1 : (myTPARemaining > 0 ? 2 : 0));
+        output['sp'] = theSP;
+        output['sp_remaining'] = theTPARemaining;
+        output['sp_remaining_status'] = (theTPA != 0 || theTPARemaining != 0) && (theTPARemaining < 0 ? 1 : (theTPARemaining > 0 ? 2 : 0));
         setAttrs(output);
     });
 });
 
 // Update the status of SHIELD POINT, ALLOCATED
-on('change:shield_1 change:shield_max', function(eventInfo) {
-    getAttrs(['shield_1', 'shield_max'], function(values) {
-        const myShield = parseInt(values['shield_1']) || 0;
-        const myShieldMax = parseInt(values['shield_max']) || 0;
+on('change:shield_1 change:shield_1_damaged change:shield_max', function(eventInfo) {
+    getAttrs(['shield_1', 'shield_1_damaged', 'shield_max'], function(values) {
+        const theShield = parseInt(values['shield_1']) || 0;
+        const theShieldIsDamaged = parseInt(values['shield_1_damaged']) || 0;
+        const theShieldMax = parseInt(values['shield_max']) || 0;
 
         const output = {};
-        output['shield_1_status'] = myShield > myShieldMax ? 1 : myShield == 0 ? 2 : 0;
-        output['shield_1c'] = myShield; // When allocation changes, reset & update current
+        output['shield_1_status'] = theShield > theShieldMax || theShieldIsDamaged ? 1 : theShield == 0 ? 2 : 0;
+        output['shield_1c'] = theShieldIsDamaged ? 0 : theShield; // When allocation changes, reset & update current
         setAttrs(output);
     });
 });
-on('change:shield_2 change:shield_max', function(eventInfo) {
-    getAttrs(['shield_2', 'shield_max'], function(values) {
-        const myShield = parseInt(values['shield_2']) || 0;
-        const myShieldMax = parseInt(values['shield_max']) || 0;
+on('change:shield_2 change:shield_2_damaged change:shield_max', function(eventInfo) {
+    getAttrs(['shield_2', 'shield_2_damaged', 'shield_max'], function(values) {
+        const theShield = parseInt(values['shield_2']) || 0;
+        const theShieldIsDamaged = parseInt(values['shield_2_damaged']) || 0;
+        const theShieldMax = parseInt(values['shield_max']) || 0;
 
         const output = {};
-        output['shield_2_status'] = myShield > myShieldMax ? 1 : myShield == 0 ? 2 : 0;
-        output['shield_2c'] = myShield; // When allocation changes, reset & update current
+        output['shield_2_status'] = theShield > theShieldMax || theShieldIsDamaged ? 1 : theShield == 0 ? 2 : 0;
+        output['shield_2c'] = theShieldIsDamaged ? 0 : theShield; // When allocation changes, reset & update current
         setAttrs(output);
     });
 });
-on('change:shield_3 change:shield_max', function(eventInfo) {
-    getAttrs(['shield_3', 'shield_max'], function(values) {
-        const myShield = parseInt(values['shield_3']) || 0;
-        const myShieldMax = parseInt(values['shield_max']) || 0;
+on('change:shield_3 change:shield_3_damaged change:shield_max', function(eventInfo) {
+    getAttrs(['shield_3', 'shield_3_damaged', 'shield_max'], function(values) {
+        const theShield = parseInt(values['shield_3']) || 0;
+        const theShieldIsDamaged = parseInt(values['shield_3_damaged']) || 0;
+        const theShieldMax = parseInt(values['shield_max']) || 0;
 
         const output = {};
-        output['shield_3_status'] = myShield > myShieldMax ? 1 : myShield == 0 ? 2 : 0;
-        output['shield_3c'] = myShield; // When allocation changes, reset & update current
+        output['shield_3_status'] = theShield > theShieldMax || theShieldIsDamaged ? 1 : theShield == 0 ? 2 : 0;
+        output['shield_3c'] = theShieldIsDamaged ? 0 : theShield; // When allocation changes, reset & update current
         setAttrs(output);
     });
 });
-on('change:shield_4 change:shield_max', function(eventInfo) {
-    getAttrs(['shield_4', 'shield_max'], function(values) {
-        const myShield = parseInt(values['shield_4']) || 0;
-        const myShieldMax = parseInt(values['shield_max']) || 0;
+on('change:shield_4 change:shield_4_damaged change:shield_max', function(eventInfo) {
+    getAttrs(['shield_4', 'shield_4_damaged', 'shield_max'], function(values) {
+        const theShield = parseInt(values['shield_4']) || 0;
+        const theShieldIsDamaged = parseInt(values['shield_4_damaged']) || 0;
+        const theShieldMax = parseInt(values['shield_max']) || 0;
 
         const output = {};
-        output['shield_4_status'] = myShield > myShieldMax ? 1 : myShield == 0 ? 2 : 0;
-        output['shield_4c'] = myShield; // When allocation changes, reset & update current
+        output['shield_4_status'] = theShield > theShieldMax || theShieldIsDamaged ? 1 : theShield == 0 ? 2 : 0;
+        output['shield_4c'] = theShieldIsDamaged ? 0 : theShieldIsDamaged ? 0 : theShield; // When allocation changes, reset & update current
         setAttrs(output);
     });
 });
-on('change:shield_5 change:shield_max', function(eventInfo) {
-    getAttrs(['shield_5', 'shield_max'], function(values) {
-        const myShield = parseInt(values['shield_5']) || 0;
-        const myShieldMax = parseInt(values['shield_max']) || 0;
+on('change:shield_5 change:shield_5_damaged change:shield_max', function(eventInfo) {
+    getAttrs(['shield_5', 'shield_5_damaged', 'shield_max'], function(values) {
+        const theShield = parseInt(values['shield_5']) || 0;
+        const theShieldIsDamaged = parseInt(values['shield_5_damaged']) || 0;
+        const theShieldMax = parseInt(values['shield_max']) || 0;
 
         const output = {};
-        output['shield_5_status'] = myShield > myShieldMax ? 1 : myShield == 0 ? 2 : 0;
-        output['shield_5c'] = myShield; // When allocation changes, reset & update current
+        output['shield_5_status'] = theShield > theShieldMax || theShieldIsDamaged ? 1 : theShield == 0 ? 2 : 0;
+        output['shield_5c'] = theShieldIsDamaged ? 0 : theShield; // When allocation changes, reset & update current
         setAttrs(output);
     });
 });
-on('change:shield_6 change:shield_max', function(eventInfo) {
-    getAttrs(['shield_6', 'shield_max'], function(values) {
-        const myShield = parseInt(values['shield_6']) || 0;
-        const myShieldMax = parseInt(values['shield_max']) || 0;
+on('change:shield_6 change:shield_6_damaged change:shield_max', function(eventInfo) {
+    getAttrs(['shield_6', 'shield_6_damaged', 'shield_max'], function(values) {
+        const theShield = parseInt(values['shield_6']) || 0;
+        const theShieldIsDamaged = parseInt(values['shield_6_damaged']) || 0;
+        const theShieldMax = parseInt(values['shield_max']) || 0;
 
         const output = {};
-        output['shield_6_status'] = myShield > myShieldMax ? 1 : myShield == 0 ? 2 : 0;
-        output['shield_6c'] = myShield; // When allocation changes, reset & update current
+        output['shield_6_status'] = theShield > theShieldMax || theShieldIsDamaged ? 1 : theShield == 0 ? 2 : 0;
+        output['shield_6c'] = theShieldIsDamaged ? 0 : theShield; // When allocation changes, reset & update current
         setAttrs(output);
     });
 });
@@ -550,82 +589,88 @@ on('change:shield_6 change:shield_max', function(eventInfo) {
 // Update the status of SHIELD POINTS, CURRENT
 on('change:shield_1c', function(eventInfo) {
     getAttrs(['shield_1', 'shield_1c'], function(values) {
-        const myShield = parseInt(values['shield_1']) || 0;
-        const myShieldCurrent = parseInt(values['shield_1c']) || 0;
+        const theShield = parseInt(values['shield_1']) || 0;
+        const theShieldCurrent = parseInt(values['shield_1c']) || 0;
 
         const output = {};
-        output['shield_1c_status'] = myShieldCurrent > myShield || myShieldCurrent == 0 ? 1 : myShieldCurrent == myShield ? 0 : 2;
+        output['shield_1c_status'] = theShieldCurrent > theShield || theShieldCurrent == 0 ? 1 : theShieldCurrent == theShield ? 0 : 2;
         setAttrs(output);
     });
 });
 on('change:shield_2c', function(eventInfo) {
     getAttrs(['shield_2', 'shield_2c'], function(values) {
-        const myShield = parseInt(values['shield_2']) || 0;
-        const myShieldCurrent = parseInt(values['shield_2c']) || 0;
+        const theShield = parseInt(values['shield_2']) || 0;
+        const theShieldCurrent = parseInt(values['shield_2c']) || 0;
 
         const output = {};
-        output['shield_2c_status'] = myShieldCurrent > myShield || myShieldCurrent == 0 ? 1 : myShieldCurrent == myShield ? 0 : 2;
+        output['shield_2c_status'] = theShieldCurrent > theShield || theShieldCurrent == 0 ? 1 : theShieldCurrent == theShield ? 0 : 2;
         setAttrs(output);
     });
 });
 on('change:shield_3c', function(eventInfo) {
     getAttrs(['shield_3', 'shield_3c'], function(values) {
-        const myShield = parseInt(values['shield_3']) || 0;
-        const myShieldCurrent = parseInt(values['shield_3c']) || 0;
+        const theShield = parseInt(values['shield_3']) || 0;
+        const theShieldCurrent = parseInt(values['shield_3c']) || 0;
 
         const output = {};
-        output['shield_3c_status'] = myShieldCurrent > myShield || myShieldCurrent == 0 ? 1 : myShieldCurrent == myShield ? 0 : 2;
+        output['shield_3c_status'] = theShieldCurrent > theShield || theShieldCurrent == 0 ? 1 : theShieldCurrent == theShield ? 0 : 2;
         setAttrs(output);
     });
 });
 on('change:shield_4c', function(eventInfo) {
     getAttrs(['shield_4', 'shield_4c'], function(values) {
-        const myShield = parseInt(values['shield_4']) || 0;
-        const myShieldCurrent = parseInt(values['shield_4c']) || 0;
+        const theShield = parseInt(values['shield_4']) || 0;
+        const theShieldCurrent = parseInt(values['shield_4c']) || 0;
 
         const output = {};
-        output['shield_4c_status'] = myShieldCurrent > myShield || myShieldCurrent == 0 ? 1 : myShieldCurrent == myShield ? 0 : 2;
+        output['shield_4c_status'] = theShieldCurrent > theShield || theShieldCurrent == 0 ? 1 : theShieldCurrent == theShield ? 0 : 2;
         setAttrs(output);
     });
 });
 on('change:shield_5c', function(eventInfo) {
     getAttrs(['shield_5', 'shield_5c'], function(values) {
-        const myShield = parseInt(values['shield_5']) || 0;
-        const myShieldCurrent = parseInt(values['shield_5c']) || 0;
+        const theShield = parseInt(values['shield_5']) || 0;
+        const theShieldCurrent = parseInt(values['shield_5c']) || 0;
 
         const output = {};
-        output['shield_5c_status'] = myShieldCurrent > myShield || myShieldCurrent == 0 ? 1 : myShieldCurrent == myShield ? 0 : 2;
+        output['shield_5c_status'] = theShieldCurrent > theShield || theShieldCurrent == 0 ? 1 : theShieldCurrent == theShield ? 0 : 2;
         setAttrs(output);
     });
 });
 on('change:shield_6c', function(eventInfo) {
     getAttrs(['shield_6', 'shield_6c'], function(values) {
-        const myShield = parseInt(values['shield_6']) || 0;
-        const myShieldCurrent = parseInt(values['shield_6c']) || 0;
+        const theShield = parseInt(values['shield_6']) || 0;
+        const theShieldCurrent = parseInt(values['shield_6c']) || 0;
 
         const output = {};
-        output['shield_6c_status'] = myShieldCurrent > myShield || myShieldCurrent == 0 ? 1 : myShieldCurrent == myShield ? 0 : 2;
+        output['shield_6c_status'] = theShieldCurrent > theShield || theShieldCurrent == 0 ? 1 : theShieldCurrent == theShield ? 0 : 2;
         setAttrs(output);
     });
 });
 
 // Re-energize SHIELDS
 on('clicked:shield_energize', function(eventInfo) {
-    getAttrs(['shield_1', 'shield_2', 'shield_3', 'shield_4', 'shield_5', 'shield_6'], function(values) {
-        const myShield01 = parseInt(values['shield_1']) || 0;
-        const myShield02 = parseInt(values['shield_2']) || 0;
-        const myShield03 = parseInt(values['shield_3']) || 0;
-        const myShield04 = parseInt(values['shield_4']) || 0;
-        const myShield05 = parseInt(values['shield_5']) || 0;
-        const myShield06 = parseInt(values['shield_6']) || 0;
+    getAttrs(['shield_1', 'shield_2', 'shield_3', 'shield_4', 'shield_5', 'shield_6', 'shield_1_damaged', 'shield_2_damaged', 'shield_3_damaged', 'shield_4_damaged', 'shield_5_damaged', 'shield_6_damaged'], function(values) {
+        const theShield01 = parseInt(values['shield_1']) || 0;
+        const theShield02 = parseInt(values['shield_2']) || 0;
+        const theShield03 = parseInt(values['shield_3']) || 0;
+        const theShield04 = parseInt(values['shield_4']) || 0;
+        const theShield05 = parseInt(values['shield_5']) || 0;
+        const theShield06 = parseInt(values['shield_6']) || 0;
+        const theShield01IsDamaged = parseInt(values['shield_1_damaged']) || 0;
+        const theShield02IsDamaged = parseInt(values['shield_2_damaged']) || 0;
+        const theShield03IsDamaged = parseInt(values['shield_3_damaged']) || 0;
+        const theShield04IsDamaged = parseInt(values['shield_4_damaged']) || 0;
+        const theShield05IsDamaged = parseInt(values['shield_5_damaged']) || 0;
+        const theShield06IsDamaged = parseInt(values['shield_6_damaged']) || 0;
 
         const output = {};
-        output['shield_1c'] = myShield01;
-        output['shield_2c'] = myShield02;
-        output['shield_3c'] = myShield03;
-        output['shield_4c'] = myShield04;
-        output['shield_5c'] = myShield05;
-        output['shield_6c'] = myShield06;
+        output['shield_1c'] = theShield01IsDamaged ? 0 : theShield01;
+        output['shield_2c'] = theShield02IsDamaged ? 0 : theShield02;
+        output['shield_3c'] = theShield03IsDamaged ? 0 : theShield03;
+        output['shield_4c'] = theShield04IsDamaged ? 0 : theShield04;
+        output['shield_5c'] = theShield05IsDamaged ? 0 : theShield05;
+        output['shield_6c'] = theShield06IsDamaged ? 0 : theShield06;
         setAttrs(output);
     });
 });
@@ -633,17 +678,17 @@ on('clicked:shield_energize', function(eventInfo) {
 // Format the ship's mass and display SIZE class
 on('change:mass', function(eventInfo) {
     getAttrs(['mass'], function(values) {
-        const myMass = parseInt(values['mass']) || 0;
-        const myFormattedMass = formatNumber(String(myMass));
+        const theMass = parseInt(values['mass']) || 0;
+        const theFormattedMass = formatNumber(String(theMass));
 
-        const mySizes = [0,'I',5000,'II',15000,'III',25000,'IV',40000,'V',60000,'VI',80000,'VII',100000,'VIII',120000,'IX',140000,'X',160000,'XI',180000,'XII',210000,'XIII',240000,'XIV',300000,'XV',350000,'XVI',400000,'XVII',450000,'XVIII',500000,'XIX',600000,'XX',700000];
+        const theSizes = [0,'I',5000,'II',15000,'III',25000,'IV',40000,'V',60000,'VI',80000,'VII',100000,'VIII',120000,'IX',140000,'X',160000,'XI',180000,'XII',210000,'XIII',240000,'XIV',300000,'XV',350000,'XVI',400000,'XVII',450000,'XVIII',500000,'XIX',600000,'XX',700000];
         let i = 0;
         do {
             i += 2;
-        } while (myMass > mySizes[i]);      
+        } while (theMass > theSizes[i]);      
 
         const output = {};
-        output['size'] = `${myFormattedMass} mt (${mySizes[i-1]})`;
+        output['size'] = `${theFormattedMass} mt (${theSizes[i-1]})`;
         setAttrs(output);
     });
 });
@@ -651,11 +696,11 @@ on('change:mass', function(eventInfo) {
 // Update ship's current SUPERSTRUCTURE status
 on('change:hp', function(eventInfo) {
     getAttrs(['hp', 'hp_max'], function(values) {
-        const myHP = parseInt(values['hp']) || 0;  
-        const myHPMax = parseInt(values['hp_max']) || 0;  
+        const theHP = parseInt(values['hp']) || 0;  
+        const theHPMax = parseInt(values['hp_max']) || 0;  
 
         const output = {};
-        output['hp_status'] = myHP < 1 ? 1 : myHP < (myHPMax / 2) ? 2 : 0;
+        output['hp_status'] = theHP < (theHPMax / 2) || theHP > theHPMax ? 1 : theHP < theHPMax ? 2 : 0;
         setAttrs(output);
     });
 });
@@ -756,51 +801,77 @@ on('clicked:tpa_reset', function(eventInfo) {
 // Calculate the WEAPONS TPA remaining
 on('change:tpa_weapons change:wp_beam change:wp_missile', function(eventInfo) {
     getAttrs(['tpa_weapons', 'wp_beam', 'wp_missile'], function(values) {
-        const myTPA = parseInt(values['tpa_weapons']) || 0;
-        const myBeamTPA = parseInt(values['wp_beam']) || 0;
-        const myMissileTPA = parseInt(values['wp_missile']) || 0;
+        const theTPA = parseInt(values['tpa_weapons']) || 0;
+        const theBeamTPA = parseInt(values['wp_beam']) || 0;
+        const theMissileTPA = parseInt(values['wp_missile']) || 0;
 
-        const myTPARemaining = myTPA - myBeamTPA - myMissileTPA;
+        const theTPARemaining = theTPA - theBeamTPA - theMissileTPA;
 
         const output = {};
-        output['wp_remaining'] = myTPARemaining;
-        output['wp_remaining_status'] = (myTPA != 0 || myTPARemaining != 0) && (myTPARemaining < 0 ? 1 : (myTPARemaining > 0 ? 2 : 0));
+        output['wp_remaining'] = theTPARemaining;
+        output['wp_remaining_status'] = (theTPA != 0 || theTPARemaining != 0) && (theTPARemaining < 0 ? 1 : (theTPARemaining > 0 ? 2 : 0));
         setAttrs(output);
+    });
+});
+
+// Ensure a DAMAGED WEAPON cannot be TARGETED
+on('change:repeating_beams:beam_targeted', function(eventInfo) {
+    getAttrs(['repeating_beams_beam_targeted', 'repeating_beams_beam_damaged'], function(values) {
+        const theBeamIsTargeted = parseInt(values['repeating_beams_beam_targeted']) || 0;
+        const theBeamIsDamaged = parseInt(values['repeating_beams_beam_damaged']) || 0;
+
+        if (theBeamIsTargeted == 1 && theBeamIsDamaged) {
+            const output = {};
+            output['repeating_beams_beam_targeted'] = 0;
+            setAttrs(output);
+        }
+    });
+});
+on('change:repeating_missiles:missile_targeted', function(eventInfo) {
+    getAttrs(['repeating_missiles_missile_targeted', 'repeating_missiles_missile_damaged'], function(values) {
+        const theMissileIsTargeted = parseInt(values['repeating_missiles_missile_targeted']) || 0;
+        const theMissileIsDamaged = parseInt(values['repeating_missiles_missile_damaged']) || 0;
+
+        if (theMissileIsTargeted == 1 && theMissileIsDamaged) {
+            const output = {};
+            output['repeating_missiles_missile_targeted'] = 0;
+            setAttrs(output);
+        }
     });
 });
 
 // Fire a beam WEAPON
 on('clicked:repeating_beams:beam-fire', () => {
     getAttrs(['repeating_beams_beam_bonus_1', 'repeating_beams_beam_bonus_2', 'repeating_beams_beam_bonus_3', 'repeating_beams_beam_chart', 'repeating_beams_beam_damaged', 'repeating_beams_beam_fired', 'repeating_beams_beam_name', 'repeating_beams_beam_power', 'repeating_beams_beam_range', 'repeating_beams_beam_targeted'], function(values) {
-        const myBonus01 = values['repeating_beams_beam_bonus_1'];
-        const myBonus02 = values['repeating_beams_beam_bonus_2'];
-        const myBonus03 = values['repeating_beams_beam_bonus_3'];
-        const myWeaponDamaged = parseInt(values['repeating_beams_beam_damaged']) || 0;
-        const myPower = parseInt(values['repeating_beams_beam_power']) ||0;
-        const myWeaponFired = parseInt(values['repeating_beams_beam_fired']) || 0;
-        const myWeaponName = values['repeating_beams_beam_name'];
-        const myWeaponTargeted = parseInt(values['repeating_beams_beam_targeted']) || 0;
+        const theBonus01 = values['repeating_beams_beam_bonus_1'];
+        const theBonus02 = values['repeating_beams_beam_bonus_2'];
+        const theBonus03 = values['repeating_beams_beam_bonus_3'];
+        const theWeaponIsDamaged = parseInt(values['repeating_beams_beam_damaged']) || 0;
+        const theWeaponIsPowered = parseInt(values['repeating_beams_beam_power']) ||0;
+        const theWeaponWasAlreadyFired = parseInt(values['repeating_beams_beam_fired']) || 0;
+        const theWeaponName = values['repeating_beams_beam_name'];
+        const theWeaponIsTargeted = parseInt(values['repeating_beams_beam_targeted']) || 0;
 
         const output = {};
 
-        if (myWeaponDamaged == 1) {
-            startRoll(`&{template:custom} {{title=**@{character_name}**}} {{subtitle=Beam Weapon Attack}} {{Weapon=${myWeaponName}}} {{Error=**Weapon Is Damaged**}}`, roll => {
+        if (theWeaponIsDamaged && !theWeaponIsTargeted) {
+            startRoll(`&{template:custom} {{title=**@{character_name}**}} {{subtitle=Beam Weapon Attack}} {{Weapon=${theWeaponName}}} {{Error=**Weapon Is Damaged**}}`, roll => {
               finishRoll(roll.rollId);
             });
-        } else if (myPower == 0) {
-            startRoll(`&{template:custom} {{title=**@{character_name}**}} {{subtitle=Beam Weapon Attack}} {{Weapon=${myWeaponName}}} {{Error=**Weapon Not Charged**}}`, roll => {
+        } else if (!theWeaponIsPowered) {
+            startRoll(`&{template:custom} {{title=**@{character_name}**}} {{subtitle=Beam Weapon Attack}} {{Weapon=${theWeaponName}}} {{Error=**Weapon Not Charged**}}`, roll => {
               finishRoll(roll.rollId);
             });
-        } else if (myWeaponFired == 1) {
-            startRoll(`&{template:custom} {{title=**@{character_name}**}} {{subtitle=Beam Weapon Attack}} {{Weapon=${myWeaponName}}} {{Error=**Weapon Already Fired**}}`, roll => {
+        } else if (theWeaponWasAlreadyFired) {
+            startRoll(`&{template:custom} {{title=**@{character_name}**}} {{subtitle=Beam Weapon Attack}} {{Weapon=${theWeaponName}}} {{Error=**Weapon Already Fired**}}`, roll => {
               finishRoll(roll.rollId);
             }); 
-        } else if (myWeaponTargeted == 0) {
-            startRoll(`&{template:custom} {{title=**@{character_name}**}} {{subtitle=Beam Weapon Attack}} {{Weapon=${myWeaponName}}} {{Error=**Weapon Not Targetted**}}`, roll => {
+        } else if (!theWeaponIsTargeted) {
+            startRoll(`&{template:custom} {{title=**@{character_name}**}} {{subtitle=Beam Weapon Attack}} {{Weapon=${theWeaponName}}} {{Error=**Weapon Not Targetted**}}`, roll => {
               finishRoll(roll.rollId);
             });             
         } else {
-            startRoll(`&{template:custom} {{color=red}} {{title=@{banner_firebeam} **@{character_name}**}} {{subtitle=Beam Weapon Attack}} {{Weapon=${myWeaponName}}} {{Power/Damage=${myPower}}} {{+3 dmg @ ranges=${myBonus03}}} {{+2 dmg @ ranges=${myBonus02}}} {{+1 dmg @ ranges=${myBonus01}}} {{Target=@{target|Target01|character_name}}} {{@ Range=?{Range?|24}}} {{To-Hit=[[?{To-Hit?|1}]] or less}} {{Roll=[[1d10cs>11cf<0]]}}`, roll => {
+            startRoll(`&{template:custom} {{color=red}} {{title=@{banner_firebeam} **@{character_name}**}} {{subtitle=Beam Weapon Attack}} {{Weapon=${theWeaponName}}} {{Power/Damage=${theWeaponIsPowered}}} {{+3 dmg @ ranges=${theBonus03}}} {{+2 dmg @ ranges=${theBonus02}}} {{+1 dmg @ ranges=${theBonus01}}} {{Target=@{target|Target|character_name}}} {{@ Range=?{Range?|24}}} {{To-Hit=[[?{To-Hit?|1}]] or less}} {{Roll=[[1d10cs>11cf<0]]}} {{Location=[[1t[DLBasic]]]}}`, roll => {
               finishRoll(roll.rollId);
             });
             output['repeating_beams_beam_fired'] = 1;
@@ -813,33 +884,33 @@ on('clicked:repeating_beams:beam-fire', () => {
 // Fire a missile WEAPON
 on('clicked:repeating_missiles:missile-fire', () => {
     getAttrs(['repeating_missiles_missile_armed', 'repeating_missiles_missile_chart', 'repeating_missiles_missile_damage', 'repeating_missiles_missile_damaged', 'repeating_missiles_missile_fired', 'repeating_missiles_missile_name', 'repeating_missiles_missile_power', 'repeating_missiles_missile_range', 'repeating_missiles_missile_targeted'], function(values) {
-        const myWeaponDamaged = parseInt(values['repeating_missiles_missile_damaged']) || 0;
-        const myWeaponArmed = parseInt(values['repeating_missiles_missile_armed']) ||0;
-        const myDamage = parseInt(values['repeating_missiles_missile_damage']) ||0;
-        const myWeaponFired = parseInt(values['repeating_missiles_missile_fired']) || 0;
-        const myWeaponName = values['repeating_missiles_missile_name'];
-        const myWeaponTargeted = parseInt(values['repeating_missiles_missile_targeted']) || 0;
+        const theWeaponDamaged = parseInt(values['repeating_missiles_missile_damaged']) || 0;
+        const theWeaponArmed = parseInt(values['repeating_missiles_missile_armed']) ||0;
+        const theDamage = parseInt(values['repeating_missiles_missile_damage']) ||0;
+        const theWeaponFired = parseInt(values['repeating_missiles_missile_fired']) || 0;
+        const theWeaponName = values['repeating_missiles_missile_name'];
+        const theWeaponTargeted = parseInt(values['repeating_missiles_missile_targeted']) || 0;
 
         const output = {};
 
-        if (myWeaponDamaged == 1) {
-            startRoll(`&{template:custom} {{title=**@{character_name}**}} {{subtitle=Missile Weapon Attack}} {{Weapon=${myWeaponName}}} {{Error=**Weapon Is Damaged**}}`, roll => {
+        if (theWeaponDamaged == 1) {
+            startRoll(`&{template:custom} {{title=**@{character_name}**}} {{subtitle=Missile Weapon Attack}} {{Weapon=${theWeaponName}}} {{Error=**Weapon Is Damaged**}}`, roll => {
               finishRoll(roll.rollId);
             });
-        } else if (myWeaponArmed == 0) {
-            startRoll(`&{template:custom} {{title=**@{character_name}**}} {{subtitle=Missile Weapon Attack}} {{Weapon=${myWeaponName}}} {{Error=**Weapon Not Armed**}}`, roll => {
+        } else if (theWeaponArmed == 0) {
+            startRoll(`&{template:custom} {{title=**@{character_name}**}} {{subtitle=Missile Weapon Attack}} {{Weapon=${theWeaponName}}} {{Error=**Weapon Not Armed**}}`, roll => {
               finishRoll(roll.rollId);
             });
-        } else if (myWeaponFired == 1) {
-            startRoll(`&{template:custom} {{title=**@{character_name}**}} {{subtitle=Missile Weapon Attack}} {{Weapon=${myWeaponName}}} {{Error=**Weapon Already Fired**}}`, roll => {
+        } else if (theWeaponFired == 1) {
+            startRoll(`&{template:custom} {{title=**@{character_name}**}} {{subtitle=Missile Weapon Attack}} {{Weapon=${theWeaponName}}} {{Error=**Weapon Already Fired**}}`, roll => {
               finishRoll(roll.rollId);
             }); 
-        } else if (myWeaponTargeted == 0) {
-            startRoll(`&{template:custom} {{title=**@{character_name}**}} {{subtitle=Missile Weapon Attack}} {{Weapon=${myWeaponName}}} {{Error=**Weapon Not Targetted**}}`, roll => {
+        } else if (theWeaponTargeted == 0) {
+            startRoll(`&{template:custom} {{title=**@{character_name}**}} {{subtitle=Missile Weapon Attack}} {{Weapon=${theWeaponName}}} {{Error=**Weapon Not Targetted**}}`, roll => {
               finishRoll(roll.rollId);
             });             
         } else {
-            startRoll(`&{template:custom} {{color=red}} {{title=@{banner_firemissile} **@{character_name}**}} {{subtitle=Missile Weapon Attack}} {{Weapon=${myWeaponName}}} {{Damage=${myDamage}}} {{Target=@{target|Target01|character_name}}} {{@ Range=?{Range?|24}}} {{To-Hit=[[?{To-Hit?|1}]] or less}} {{Roll=[[1d10cs>11cf<0]]}}`, roll => {
+            startRoll(`&{template:custom} {{color=red}} {{title=@{banner_firemissile} **@{character_name}**}} {{subtitle=Missile Weapon Attack}} {{Weapon=${theWeaponName}}} {{Damage=${theDamage}}} {{Target=@{target|Target|character_name}}} {{@ Range=?{Range?|24}}} {{To-Hit=[[?{To-Hit?|1}]] or less}} {{Roll=[[1d10cs>11cf<0]]}} {{Location=[[1t[DLBasic]]]}}`, roll => {
               finishRoll(roll.rollId);
             });
             output['repeating_missiles_missile_fired'] = 1;
@@ -850,23 +921,25 @@ on('clicked:repeating_missiles:missile-fire', () => {
 });
 
 // Calculate the power allocated to WEAPONS, BEAM
-on('change:repeating_beams:beam_power change:repeating_beams:beam_power_max remove:repeating_beams', function(eventInfo) {
+on('change:repeating_beams:beam_damaged change:repeating_beams:beam_power change:repeating_beams:beam_power_max remove:repeating_beams', function(eventInfo) {
     getSectionIDs('repeating_beams', function (ids) {
-        const BeamFieldnames = [];
+        const Fieldnames = [];
         ids.forEach(id => {
-            BeamFieldnames.push(`repeating_beams_${id}_beam_power`);
-            BeamFieldnames.push(`repeating_beams_${id}_beam_power_max`);
+            Fieldnames.push(`repeating_beams_${id}_beam_damaged`);
+            Fieldnames.push(`repeating_beams_${id}_beam_power`);
+            Fieldnames.push(`repeating_beams_${id}_beam_power_max`);
         });
         
-        getAttrs([...BeamFieldnames], function (values) {
+        getAttrs([...Fieldnames], function (values) {
             let totalPowerToBeams = 0;
             const output = {};
             ids.forEach(id => {
-                const theBeamPower = parseFloat(values[`repeating_beams_${id}_beam_power`]) || 0;
-                const theBeamPowerMax = parseFloat(values[`repeating_beams_${id}_beam_power_max`]) || 0;
-                totalPowerToBeams += theBeamPower;
+                const theBeamIsDamaged = parseInt(values[`repeating_beams_${id}_beam_damaged`]) || 0;
+                const theBeamPower = parseInt(values[`repeating_beams_${id}_beam_power`]) || 0;
+                const theBeamPowerMax = parseInt(values[`repeating_beams_${id}_beam_power_max`]) || 0;
+                totalPowerToBeams += theBeamIsDamaged == 0 ? theBeamPower : 0;
 
-                output[`repeating_beams_${id}_beam_power_status`] = (theBeamPowerMax - theBeamPower) < 0 ? 1 : (theBeamPower > 0 ? 2 : 0);
+                output[`repeating_beams_${id}_beam_power_status`] = theBeamIsDamaged == 1 ? 1 : (theBeamPowerMax - theBeamPower) < 0 ? 1 : (theBeamPower > 0 ? 2 : 0);
             });
             output['wp_beam'] = totalPowerToBeams;
             setAttrs(output);
@@ -875,20 +948,24 @@ on('change:repeating_beams:beam_power change:repeating_beams:beam_power_max remo
 });
 
 // Calculate the power allocated to WEAPONS, MISSILE
-on('change:repeating_missiles:missile_armed change:repeating_missiles:missile_power remove:repeating_missiles', function(eventInfo) {
+on('change:repeating_missiles:missile_damaged change:repeating_missiles:missile_armed change:repeating_missiles:missile_power remove:repeating_missiles', function(eventInfo) {
     getSectionIDs('repeating_missiles', function (ids) {
-        const MissileFieldnames = [];
+        const Fieldnames = [];
         ids.forEach(id => {
-            MissileFieldnames.push(`repeating_missiles_${id}_missile_armed`);
-            MissileFieldnames.push(`repeating_missiles_${id}_missile_power`);
+            Fieldnames.push(`repeating_missiles_${id}_missile_damaged`);
+            Fieldnames.push(`repeating_missiles_${id}_missile_armed`);
+            Fieldnames.push(`repeating_missiles_${id}_missile_power`);
         });
         
-        getAttrs([...MissileFieldnames], function (values) {
+        getAttrs([...Fieldnames], function (values) {
             let totalPowerToMissiles = 0;
             const output = {};
             ids.forEach(id => {
-                const theMissilePower = (parseFloat(values[`repeating_missiles_${id}_missile_armed`]) || 0) * (parseFloat(values[`repeating_missiles_${id}_missile_power`]) || 0);
-                totalPowerToMissiles += theMissilePower;
+                const theMissileIsDamaged = parseInt(values[`repeating_missiles_${id}_missile_damaged`]) || 0;
+                const theMissilePower = (parseInt(values[`repeating_missiles_${id}_missile_armed`]) || 0) * (parseInt(values[`repeating_missiles_${id}_missile_power`]) || 0);
+                totalPowerToMissiles += theMissileIsDamaged == 0 ? theMissilePower : 0;
+
+                output[`repeating_missiles_${id}_missile_armed_status`] = theMissileIsDamaged == 1 ? 1 : 0;
             });
             output['wp_missile'] = totalPowerToMissiles;
             setAttrs(output);
@@ -906,14 +983,18 @@ on('change:repeating_missiles:missile_armed change:repeating_missiles:missile_po
       </div>
 
       <div class="sheet-content">
-        {{#allprops() title subtitle color}}
+        {{#allprops() title subtitle color Location}}
         <div class="sheet-key">{{key}}</div>
         <div class="sheet-value">{{value}}</div>
-        {{/allprops() title subtitle color}}
+        {{/allprops() title subtitle color Location}}
 
         {{#^rollGreater() Roll To-Hit}}
         <div class="sheet-key">Result</div>
         <div class="sheet-value"><span class="success">Hit!</span></div>
+        {{#Location}}
+            <div class="sheet-key">Location</div>
+            <div class="sheet-value">{{Location}}</div>
+        {{/Location}}
         {{/^rollGreater() Roll To-Hit}}
 
         {{#rollGreater() Roll To-Hit}}

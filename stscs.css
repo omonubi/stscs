@@ -1,30 +1,51 @@
 .ui-dialog .charsheet * {
-    font-size: 1.0em;
+  font-size: 1.0em;
 }
 
 .ui-dialog .charsheet div.grid-3col {
-    align-items: center;
-    display: grid;
-    grid-template-columns: [first] repeat(3, 1fr) [last];
-    row-gap: 5px;
+  align-items: center;
+  background-color: gainsboro;
+  border-radius: 10px;
+  display: grid;
+  grid-template-columns: [first] repeat(3, 1fr) [last];
+  padding: 5px;
+  row-gap: 5px;
 }
 
 .ui-dialog .charsheet div.grid-6col {
-    align-items: center;
-    display: grid;
-    grid-template-columns: [first] repeat(6, 1fr) [last];
-    row-gap: 5px;
+  align-items: center;
+  background-color: gainsboro;
+  border-radius: 10px;
+  display: grid;
+  grid-template-columns: [first] repeat(6, 1fr) [last];
+  padding: 5px;
+  row-gap: 5px;
 }
 
 .ui-dialog .charsheet div.grid-tpa {
-    align-items: center;
-    display: grid;
-    grid-template-columns: [first] 15% [second] 10% [third] 20% [fourth] 20% [fifth] 20% [sixth] 15% [last];
-    row-gap: 5px;
+  align-items: center;
+  display: grid;
+  grid-template-columns: [first] 15% [second] 10% [third] 20% [fourth] 20% [fifth] 20% [sixth] 15% [last];
+  row-gap: 5px;
 }
 
-.ui-dialog .charsheet div.grid-tpa span.shields {
-    grid-column: 3 / 6;
+.ui-dialog .charsheet .repcontainer {
+  display: block;
+}
+.ui-dialog .charsheet .repcontainer,
+.ui-dialog .charsheet .repcontrol,
+.ui-dialog .charsheet .span-grid {
+  grid-column: 1 / 4;
+}
+
+.ui-dialog .charsheet .repcontrol button {
+  background: gainsboro !important;
+  border-color: gainsboro !important;
+  color: gray !important;
+}
+
+.ui-dialog .charsheet span.shields {
+  grid-column: 1 / 3;
 }
 
 .ui-dialog .charsheet button.btn {
@@ -42,82 +63,105 @@
 }
 
 .ui-dialog .charsheet div {
-    display: inline-block;
-    padding-bottom: 5px;
-    width: 100%;
+  display: inline-block;
+  padding-bottom: 5px;
+  width: 100%;
 }
 
 .ui-dialog .charsheet div.power-allocation {
-    align-items: center;
-    display: grid;
-    grid-template-columns: [first] 20% [second] auto [third] 15% [last];
-    row-gap: 5px;
+  align-items: center;
+  display: grid;
+  grid-template-columns: [first] 20% [second] auto [third] 15% [last];
+  row-gap: 5px;
 }
 
 .ui-dialog .charsheet h1 {
-    font-size: 1.8em;
+  font-size: 1.8em;
 }
 .ui-dialog .charsheet h2 {
-    font-size: 1.6em;
+  font-size: 1.6em;
 }
 .ui-dialog .charsheet h3 {
-    font-size: 1.4em;
+  font-size: 1.4em;
 }
 .ui-dialog .charsheet h4 {
-    font-size: 1.2em;
+  font-size: 1.2em;
+}
+
+.ui-dialog .charsheet hr {
+  margin: 15px 0px 5px 0px;
 }
 
 .ui-dialog .charsheet input {
-    background-color: transparent;
+  background-color: transparent;
+}
+.ui-dialog .charsheet input.em {
+  background-color: white;
 }
 .ui-dialog .charsheet input[type="checkbox"].damaged {
   accent-color: crimson;
 }
-.ui-dialog .charsheet input[type="checkbox"].missile-armed {
-  accent-color: palegreen;
+.ui-dialog .charsheet input[type="checkbox"].targeted {
+  accent-color: blue;
 }
 .ui-dialog .charsheet input[type="checkbox"][readonly].fired {
-    pointer-events: none;
-    opacity: 0.5;
+  pointer-events: none;
+  opacity: 0.5;
 }
 .ui-dialog .charsheet input[type="number"][readonly] {
-    background-color: whitesmoke;
+  background-color: whitesmoke;
 }
 
 .ui-dialog .charsheet label {
-    display: inline;
-    font-weight: normal;
-    margin: 0px;
-    padding-right: 0px;
+  display: inline;
+  font-weight: normal;
+  margin: 0px;
+  padding-right: 0px;
 }
 
 .ui-dialog .charsheet select {
-    margin: 0px;
+  background-color: gainsboro;
+  margin: 0px;
+}
+
+.ui-dialog .charsheet span.shields input[type="checkbox"].damaged {
+  accent-color: crimson;
+  margin-left: 40px;
+  margin-right: 15.5px;
 }
 
 .ui-dialog .charsheet .big { 
-    font-size: 2em;
+  font-size: 2em;
 }
 
 .ui-dialog .charsheet .emphasis { 
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .ui-dialog .charsheet .w3 {
-    width: 36px !important; /*override r20 class*/
+  width: 36px !important; /*override r20 class*/
 }
 .ui-dialog .charsheet .w5 {
-    width: 50px !important; /*override r20 class*/
+  width: 50px !important; /*override r20 class*/
 }
 .ui-dialog .charsheet .w7 {
-    width: 70px !important; /*override r20 class*/
+  width: 70px !important; /*override r20 class*/
 }
 .ui-dialog .charsheet .w10 {
-    width: 100px !important; /*override r20 class*/
+  width: 100px !important; /*override r20 class*/
+}
+
+.ui-dialog .charsheet .missile-armed-status[value="0"] ~ input[type="checkbox"].missile-armed {
+  accent-color: palegreen;
+}
+.ui-dialog .charsheet .missile-armed-status[value="1"] ~ input[type="checkbox"].missile-armed {
+  accent-color: lightpink;
 }
 
 .ui-dialog .charsheet .beam-power-status[value='2'] ~ .beam-power,
 .ui-dialog .charsheet .engine-power-status[value='0'] ~ .engine-power,
+.ui-dialog .charsheet .hp-status[value='0'] ~ .hp,
+.ui-dialog .charsheet .missile-arm-status[value='0'] ~ .missile-armed,
 .ui-dialog .charsheet .mp-remaining-status[value='0'] ~ .mp-remaining,
 .ui-dialog .charsheet .shield-1c-status[value='0'] ~ .shield-1c,
 .ui-dialog .charsheet .shield-2c-status[value='0'] ~ .shield-2c,
@@ -128,14 +172,16 @@
 .ui-dialog .charsheet .sp-remaining-status[value='0'] ~ .sp-remaining,
 .ui-dialog .charsheet .tpa-remaining-status[value='0'] ~ .tpa-remaining,
 .ui-dialog .charsheet .wp-remaining-status[value='0'] ~ .wp-remaining {
-    background-color: palegreen;
-    border-color: forestgreen;
-    color: forestgreen;
+  accent-color: palegreen;
+  background-color: palegreen;
+  border-color: forestgreen;
+  color: forestgreen;
 }
 
 .ui-dialog .charsheet .beam-power-status[value='1'] ~ .beam-power,
 .ui-dialog .charsheet .engine-power-status[value='1'] ~ .engine-power,
 .ui-dialog .charsheet .hp-status[value='1'] ~ .hp,
+.ui-dialog .charsheet .missile-arm-status[value='1'] ~ .missile-armed,
 .ui-dialog .charsheet .mp-remaining-status[value='1'] ~ .mp-remaining,
 .ui-dialog .charsheet .shield-1-status[value='1'] ~ .shield-1,
 .ui-dialog .charsheet .shield-2-status[value='1'] ~ .shield-2,
@@ -152,9 +198,10 @@
 .ui-dialog .charsheet .sp-remaining-status[value='1'] ~ .sp-remaining,
 .ui-dialog .charsheet .tpa-remaining-status[value='1'] ~ .tpa-remaining,
 .ui-dialog .charsheet .wp-remaining-status[value='1'] ~ .wp-remaining {
-    background-color: lightpink; 
-    border-color: red;
-    color: red;
+  accent-color: lightpink;
+  background-color: lightpink; 
+  border-color: red;
+  color: red;
 }
 
 .ui-dialog .charsheet .beam-power-status[value='0'] ~ .beam-power,
@@ -176,9 +223,9 @@
 .ui-dialog .charsheet .sp-remaining-status[value='2'] ~ .sp-remaining,
 .ui-dialog .charsheet .tpa-remaining-status[value='2'] ~ .tpa-remaining,
 .ui-dialog .charsheet .wp-remaining-status[value='2'] ~ .wp-remaining {
-    background-color: lemonchiffon; 
-    border-color: coral;
-    color: coral;
+  background-color: lemonchiffon; 
+  border-color: coral;
+  color: coral;
 }
 
 /**************** ROLL TEMPLATES****************/
