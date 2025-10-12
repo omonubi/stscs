@@ -244,7 +244,6 @@
         <input type='checkbox' class='fired' name='attr_beam_fired' value='1' title='weapon fired'/>
         <input type='checkbox' class='damaged' name='attr_beam_damaged' value='1' title='weapon damaged'/>
         <input type='text' class='w10' name='attr_beam_name' placeholder='# Name (arcs)...'/>
-        <input type='number' name='attr_beam_range' min='0' max='24' value='0' title='max range'/>
         <select class='w5' name='attr_beam_chart' title='firing chart'>
             <option value='0' selected>Chart</option>
             <option>A</option>
@@ -289,7 +288,6 @@
         <input type='checkbox' class='fired' name='attr_missile_fired' value='1' title='weapon fired'/>
         <input type='checkbox' class='damaged' name='attr_missile_damaged' value='1' title='weapon damaged'/>
         <input type='text' class='w10' name='attr_missile_name' placeholder='# Name (arcs)...'/>
-        <input type='number' name='attr_missile_range' min='0' max='24' value='0' title='max range'/>
         <select class='w5' name='attr_missile_chart' title='firing chart'>
             <option value='0' selected>Firing Chart...</option>
             <option>A</option>
@@ -842,7 +840,7 @@ on('change:repeating_missiles:missile_targeted', function(eventInfo) {
 
 // Fire a beam WEAPON
 on('clicked:repeating_beams:beam-fire', () => {
-    getAttrs(['repeating_beams_beam_bonus_1', 'repeating_beams_beam_bonus_2', 'repeating_beams_beam_bonus_3', 'repeating_beams_beam_chart', 'repeating_beams_beam_damaged', 'repeating_beams_beam_fired', 'repeating_beams_beam_name', 'repeating_beams_beam_power', 'repeating_beams_beam_range', 'repeating_beams_beam_targeted'], function(values) {
+    getAttrs(['repeating_beams_beam_bonus_1', 'repeating_beams_beam_bonus_2', 'repeating_beams_beam_bonus_3', 'repeating_beams_beam_damaged', 'repeating_beams_beam_fired', 'repeating_beams_beam_name', 'repeating_beams_beam_power', 'repeating_beams_beam_targeted'], function(values) {
         const theBonus01 = values['repeating_beams_beam_bonus_1'];
         const theBonus02 = values['repeating_beams_beam_bonus_2'];
         const theBonus03 = values['repeating_beams_beam_bonus_3'];
@@ -883,7 +881,7 @@ on('clicked:repeating_beams:beam-fire', () => {
 
 // Fire a missile WEAPON
 on('clicked:repeating_missiles:missile-fire', () => {
-    getAttrs(['repeating_missiles_missile_armed', 'repeating_missiles_missile_chart', 'repeating_missiles_missile_damage', 'repeating_missiles_missile_damaged', 'repeating_missiles_missile_fired', 'repeating_missiles_missile_name', 'repeating_missiles_missile_power', 'repeating_missiles_missile_range', 'repeating_missiles_missile_targeted'], function(values) {
+    getAttrs(['repeating_missiles_missile_armed', 'repeating_missiles_missile_damage', 'repeating_missiles_missile_damaged', 'repeating_missiles_missile_fired', 'repeating_missiles_missile_name', 'repeating_missiles_missile_targeted'], function(values) {
         const theWeaponDamaged = parseInt(values['repeating_missiles_missile_damaged']) || 0;
         const theWeaponArmed = parseInt(values['repeating_missiles_missile_armed']) ||0;
         const theDamage = parseInt(values['repeating_missiles_missile_damage']) ||0;
