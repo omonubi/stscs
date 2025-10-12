@@ -44,10 +44,6 @@
   color: gray !important;
 }
 
-.ui-dialog .charsheet span.shields {
-  grid-column: 1 / 3;
-}
-
 .ui-dialog .charsheet button.btn {
   background-image: linear-gradient(white, lightgray);
   border-color: black;
@@ -124,7 +120,13 @@
   margin: 0px;
 }
 
-.ui-dialog .charsheet span.shields input[type="checkbox"].damaged {
+.ui-dialog .charsheet span.shields-allocated,
+.ui-dialog .charsheet span.shields-current,
+.ui-dialog .charsheet span.shields-damaged {
+  grid-column: 1 / 3;
+}
+
+.ui-dialog .charsheet span.shields-damaged input[type="checkbox"].damaged {
   accent-color: crimson;
   margin-left: 40px;
   margin-right: 15.5px;
@@ -149,6 +151,20 @@
 }
 .ui-dialog .charsheet .w10 {
   width: 100px !important; /*override r20 class*/
+}
+
+/**************** CONDITIONAL STYLES ****************/
+.ui-dialog .charsheet .shields-allocated-status[value='0'] ~ .shields-allocated,
+.ui-dialog .charsheet .shields-allocated-status[value='0'] ~ .shields-allocated-buttons,
+.ui-dialog .charsheet .shields-current-status[value='0'] ~ .shields-current,
+.ui-dialog .charsheet .shields-current-status[value='0'] ~ .shields-current-buttons {
+  display: none;
+}
+.ui-dialog .charsheet .shields-allocated-status[value='1'] ~ .shields-allocated,
+.ui-dialog .charsheet .shields-allocated-status[value='1'] ~ .shields-allocated-buttons,
+.ui-dialog .charsheet .shields-current-status[value='1'] ~ .shields-current,
+.ui-dialog .charsheet .shields-current-status[value='1'] ~ .shields-current-buttons {
+  display: inline-block;
 }
 
 .ui-dialog .charsheet .missile-armed-status[value="0"] ~ input[type="checkbox"].missile-armed {
@@ -228,7 +244,7 @@
   color: coral;
 }
 
-/**************** ROLL TEMPLATES****************/
+/**************** ROLL TEMPLATES ****************/
 .sheet-rolltemplate-custom,
 .sheet-rolltemplate-menu {
   margin-left: -37px;

@@ -26,7 +26,7 @@
 
     <div class='grid-3col'>
         <span>
-            <label>Sup:</label>
+            <label>Hull Points:</label>
             <input type='hidden' class='hp-status' name='attr_hp_status' value='0'/>
             <input type='number' class='hp' name='attr_hp' min='0' value='0'/> / <span name='attr_hp_max'></span>
         </span>
@@ -166,7 +166,7 @@
             <input type='number' name='attr_shield_max' min='0' max='16' value='0'/>
         </span> 
 
-        <span class='shields'>
+        <span class='shields-damaged'>
             <input type='checkbox' class='damaged' name='attr_shield_1_damaged' value='1' title='generator damaged'/>
             <input type='checkbox' class='damaged' name='attr_shield_2_damaged' value='1' title='generator damaged'/>
             <input type='checkbox' class='damaged' name='attr_shield_3_damaged' value='1' title='generator damaged'/>
@@ -176,7 +176,8 @@
         </span>
         <span></span>
         
-        <span class='shields'>
+        <input type='hidden' class='shields-allocated-status' name='attr_shields_allocated_status' value='1'/>
+        <span class='shields-allocated'>
             <label>f/p:</label>
             <input type='hidden' class='shield-1-status' name='attr_shield_1_status'/>
             <input type='number' class='shield-1' name='attr_shield_1' min='0' max='16' value='0' title='Shield #1 (f/p)'/>
@@ -196,9 +197,13 @@
             <input type='hidden' class='shield-6-status' name='attr_shield_6_status'/>
             <input type='number' class='shield-6' name='attr_shield_6' min='0' max='16' value='0' title='Shield #6 (a/p)'/>
         </span>
-        <span></span>
+        <input type='hidden' class='shields-allocated-status' name='attr_shields_allocated_status' value='1'/>
+        <span class='shields-allocated-buttons'>
+            <button type='action' class='btn' name='act_shield_commit'>Commit TPA</button>
+        </span>
 
-        <span class='shields'>
+        <input type='hidden' class='shields-current-status' name='attr_shields_current_status' value='0'/>
+        <span class='shields-current'>
             <label>f/p:</label>
             <input type='hidden' class='shield-1c-status' name='attr_shield_1c_status'/>
             <input type='number' class='shield-1c' name='attr_shield_1c' min='0' max='16' value='0' title='Shield #1 (f/p)'/>
@@ -218,8 +223,9 @@
             <input type='hidden' class='shield-6c-status' name='attr_shield_6c_status'/>
             <input type='number' class='shield-6c' name='attr_shield_6c' min='0' max='16' value='0' title='Shield #6 (a/p)'/>
         </span>
-        <span>
-            <button type='action' class='btn' name='act_shield_energize'>Re-Energize</button>
+        <input type='hidden' class='shields-current-status' name='attr_shields_current_status' value='0'/>
+        <span class='shields-current-buttons'>
+            <button type='action' class='btn' name='act_shield_reenergize'>Re-Energize</button>
         </span>
     </div>
     <hr/>
@@ -369,7 +375,7 @@
     <!-------------------------------------------------------->
     <h2>Hull Data</h2>
     <div class='grid-6col'>
-        <label>Superstructure (hp):</label>
+        <label>Hull Points:</label>
         <input type='number' class='w7' name='attr_hp_max' min='0' value='0'/>
         
         <label>Damage Chart:</label>
@@ -646,8 +652,17 @@ on('change:shield_6c', function(eventInfo) {
     });
 });
 
+// Commit TPA to SHIELDS (switch from allocation to energized)
+on('clicked:shield_commit', function(eventInfo) {
+    const output = {};
+    output['shields_allocated_status'] = 0;
+    output['shields_current_status'] = 1;
+    setAttrs(output);
+});
+
+
 // Re-energize SHIELDS
-on('clicked:shield_energize', function(eventInfo) {
+on('clicked:shield_reenergize', function(eventInfo) {
     getAttrs(['shield_1', 'shield_2', 'shield_3', 'shield_4', 'shield_5', 'shield_6', 'shield_1_damaged', 'shield_2_damaged', 'shield_3_damaged', 'shield_4_damaged', 'shield_5_damaged', 'shield_6_damaged'], function(values) {
         const theShield01 = parseInt(values['shield_1']) || 0;
         const theShield02 = parseInt(values['shield_2']) || 0;
@@ -790,6 +805,8 @@ on('clicked:tpa_reset', function(eventInfo) {
 
     const output = {};
     output['shield_1'] = output['shield_2'] = output['shield_3'] = output['shield_4'] = output['shield_5'] = output['shield_6'] = 0
+    output['shields_allocated_status'] = 1;
+    output['shields_current_status'] = 0;
     output['tpa_movement'] = 0;
     output['tpa_weapons'] = 0;
     output['tpa_shields'] = 0;
@@ -814,11 +831,13 @@ on('change:tpa_weapons change:wp_beam change:wp_missile', function(eventInfo) {
 
 // Ensure a DAMAGED WEAPON cannot be TARGETED
 on('change:repeating_beams:beam_targeted', function(eventInfo) {
-    getAttrs(['repeating_beams_beam_targeted', 'repeating_beams_beam_damaged'], function(values) {
+    getAttrs(['repeating_beams_beam_targeted', 'repeating_beams_beam_damaged', 'repeating_beams_beam_power'], function(values) {
         const theBeamIsTargeted = parseInt(values['repeating_beams_beam_targeted']) || 0;
         const theBeamIsDamaged = parseInt(values['repeating_beams_beam_damaged']) || 0;
+        const theBeamIsPowered = parseInt(values['repeating_beams_beam_power']) || 0;
 
-        if (theBeamIsTargeted == 1 && theBeamIsDamaged) {
+        if ((theBeamIsTargeted == 1 && theBeamIsDamaged) || 
+        (theBeamIsTargeted && !theBeamIsPowered)) {
             const output = {};
             output['repeating_beams_beam_targeted'] = 0;
             setAttrs(output);
@@ -826,11 +845,13 @@ on('change:repeating_beams:beam_targeted', function(eventInfo) {
     });
 });
 on('change:repeating_missiles:missile_targeted', function(eventInfo) {
-    getAttrs(['repeating_missiles_missile_targeted', 'repeating_missiles_missile_damaged'], function(values) {
+    getAttrs(['repeating_missiles_missile_targeted', 'repeating_missiles_missile_damaged', 'repeating_missiles_missile_armed'], function(values) {
         const theMissileIsTargeted = parseInt(values['repeating_missiles_missile_targeted']) || 0;
         const theMissileIsDamaged = parseInt(values['repeating_missiles_missile_damaged']) || 0;
+        const theMissileIsArmed = parseInt(values['repeating_missiles_missile_armed']) || 0;
 
-        if (theMissileIsTargeted == 1 && theMissileIsDamaged) {
+        if ((theMissileIsTargeted == 1 && theMissileIsDamaged) || 
+        (theMissileIsTargeted && !theMissileIsArmed)) {
             const output = {};
             output['repeating_missiles_missile_targeted'] = 0;
             setAttrs(output);
