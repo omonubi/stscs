@@ -431,6 +431,14 @@
         <input type='number' class='w7' name='attr_trans_emergency' min='0' value='0'/>
 
     </div>
+    <hr/>
+
+    <!-------------------------------------------------------->
+    <h2>Maintenance</h2>
+    <div class='grid-3col'>
+        <p class='span-grid'>Do not use these controls during battle:</p>
+        <button type='action' class='btn' name='act_repair'>Repair Vessel</button>
+    </div>
 
 <!-- Banner placeholders (see readme) -->
 <input type='hidden' name='attr_banner_firebeam' value='[x](https://files.d20.io/images/459374797/BrLK7l69a5n4Mfomy8M4GA/original.png)'/>
@@ -491,6 +499,72 @@ on('change:tpa_movement change:mpr_1 change:mpr_2', function(eventInfo) {
         output['mp_remaining_status'] = thePower != 0 && (thePowerRemaining < 0 ? 1 : (thePowerRemaining > 0 ? 2 : 0));
         setAttrs(output);
     });
+});
+
+// REPAIR the vessel after combat
+on('clicked:repair', function(eventInfo) {
+    getSectionIDs('repeating_engines', function (ids) {
+        const Fieldnames = [];
+        ids.forEach(id => {
+            Fieldnames.push(`repeating_engines_${id}_engine_power_max`);
+        });
+        
+        getAttrs([...Fieldnames], function (values) {
+            const output = {};
+            ids.forEach(id => {
+                output[`repeating_engines_${id}_engine_power`] = values[`repeating_engines_${id}_engine_power_max`];
+            });
+            setAttrs(output);
+        });
+    });
+
+    getSectionIDs('repeating_beams', function (ids) {
+        const Fieldnames = [];
+        ids.forEach(id => {
+            Fieldnames.push(`repeating_beams_${id}_beam_damaged`);
+        });
+        
+        getAttrs([...Fieldnames], function (values) {
+            const output = {};
+            ids.forEach(id => {
+                output[`repeating_beams_${id}_beam_damaged`] = 0;
+            });
+            setAttrs(output);
+        });
+    });
+
+    getSectionIDs('repeating_missiles', function (ids) {
+        const Fieldnames = [];
+        ids.forEach(id => {
+            Fieldnames.push(`repeating_missiles_${id}_missile-damaged`);
+        });
+        
+        getAttrs([...Fieldnames], function (values) {
+            const output = {};
+            ids.forEach(id => {
+                output[`repeating_missiles_${id}_missile_damaged`] = 0;
+            });
+            setAttrs(output);
+        });
+    });
+
+    getAttrs(['hp_max', 'crew_max'], function(values) {
+        const theHpMax = parseInt(values['hp_max']) || 0;
+        const theCrewMax = parseInt(values['crew_max']) || 0;
+
+        const output = {};
+        output['hp'] = theHpMax;
+        output['crew'] = theCrewMax;
+        output['shield_1_damaged'] = 0;
+        output['shield_2_damaged'] = 0;
+        output['shield_3_damaged'] = 0;
+        output['shield_4_damaged'] = 0;
+        output['shield_5_damaged'] = 0;
+        output['shield_6_damaged'] = 0;
+        setAttrs(output);
+    });
+
+    resetTPA();
 });
 
 // Calculate the allocated SHIELD POINTS and TPA remaining
@@ -766,7 +840,9 @@ on('change:tpa change:tpa_movement change:tpa_weapons change:tpa_shields', funct
 
 // Reset the vessel's TPA allocation.
 on('clicked:tpa_reset', function(eventInfo) {
-
+    resetTPA();
+});
+function resetTPA() {
     getSectionIDs('repeating_beams', function (ids) {
         const Fieldnames = [];
         ids.forEach(id => {
@@ -811,7 +887,7 @@ on('clicked:tpa_reset', function(eventInfo) {
     output['tpa_weapons'] = 0;
     output['tpa_shields'] = 0;
     setAttrs(output);
-});
+}
 
 // Calculate the WEAPONS TPA remaining
 on('change:tpa_weapons change:wp_beam change:wp_missile', function(eventInfo) {
