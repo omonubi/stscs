@@ -153,6 +153,14 @@
   width: 100px !important; /*override r20 class*/
 }
 
+/**************** ALERT INDICATORS ****************/
+.ui-dialog .charsheet .impulse-power-status[value='0'] ~ .no-impulse-power {
+  display: none;
+}
+.ui-dialog .charsheet .impulse-power-status[value='1'] ~ .no-impulse-power {
+  display: inline-block;
+}
+
 /**************** CONDITIONAL STYLES ****************/
 .ui-dialog .charsheet .shields-allocated-status[value='0'] ~ .shields-allocated,
 .ui-dialog .charsheet .shields-allocated-status[value='0'] ~ .shields-allocated-buttons,
@@ -212,7 +220,7 @@
 .ui-dialog .charsheet .shield-5c-status[value='1'] ~ .shield-5c,
 .ui-dialog .charsheet .shield-6c-status[value='1'] ~ .shield-6c,
 .ui-dialog .charsheet .sp-remaining-status[value='1'] ~ .sp-remaining,
-.ui-dialog .charsheet .tpa-remaining-status[value='1'] ~ .tpa-remaining,
+.ui-dialog .charsheet .wf-status[value='1'] ~ input.em,
 .ui-dialog .charsheet .wp-remaining-status[value='1'] ~ .wp-remaining {
   accent-color: lightpink;
   background-color: lightpink; 
@@ -238,6 +246,7 @@
 .ui-dialog .charsheet .shield-6c-status[value='2'] ~ .shield-6c,
 .ui-dialog .charsheet .sp-remaining-status[value='2'] ~ .sp-remaining,
 .ui-dialog .charsheet .tpa-remaining-status[value='2'] ~ .tpa-remaining,
+.ui-dialog .charsheet .wf-status[value='2'] ~ input.em,
 .ui-dialog .charsheet .wp-remaining-status[value='2'] ~ .wp-remaining {
   background-color: lemonchiffon; 
   border-color: coral;

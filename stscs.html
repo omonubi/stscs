@@ -98,41 +98,64 @@
 
     <!-------------------------------------------------------->
     <h2>Helm Control</h2>
-    <div class='grid-3col'>
+    <div class='grid-6col'>
+
+        <label>TPA to Movement:</label>
+        <input type='number' class='em' name='attr_tpa_movement' min='0' value='0'/>
+        <span></span>
+        <span></span>
+        <label>TPA Remaining:</label> 
+        <input type='hidden' class='mp-remaining-status' name='attr_mp_remaining_status'/>
+        <input type='number' class='mp-remaining' name='attr_mp_remaining' value='0' readonly/>
+
+        <label>Movement Point Ratio: </label>
         <span>
-            <label>TPA to Movement:</label>
-            <input type='number' class='em' name='attr_tpa_movement' min='0' value='0'/>
-        </span>
-        <span>
-            <label>MP by Phase:</label> 
-            <input type='hidden' name='attr_mp'/>
-            <input type='hidden' name='attr_ta'/>
-            <span name='attr_mp1'></span> | <span name='attr_mp2'></span> | <span name='attr_mp3'></span>
-        </span>
-        <span>
-            <label>TPA Remaining:</label> 
-            <input type='hidden' class='mp-remaining-status' name='attr_mp_remaining_status'/>
-            <input type='number' class='mp-remaining' name='attr_mp_remaining' value='0' readonly/>
-        </span>
-        
-        <span>
-            <label>MPR: </label>
             <input type='number' class='w3' name='attr_mpr_1' min='1' max='6' value='1'/>
             /
             <input type='number' class='w3' name='attr_mpr_2' min='1' max='2' value='1'/>
         </span>
+        <label>Movement Points:</label>
         <span>
-            <label>Warp Speeds:</label>
-            <input type='number' class='w3' name='attr_warp_1' min='0' value='0'/>
+            <input type='number' name='attr_mp'/>
+            <input type='hidden' class='impulse-power-status' name='attr_impulse_power_status' value='0'/>
+            <span class='no-impulse-power' title='no impulse power = max 1'>&#x1F534;</span>
+        </span>
+        <label>MP by Phase:</label> 
+        <input type='hidden' name='attr_ta'/>
+        <span>
+            <span name='attr_mp1'></span> | <span name='attr_mp2'></span> | <span name='attr_mp3'></span>
+        </span>
+
+        <h4>Warp Speed</h4>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+
+        <label>Current Warp Factor:</label>
+        <input type='hidden' class='wf-status' name='attr_wf_status'/>
+        <input type='number' class='em' name='attr_wf' min='0' max='12' value='0'/>
+        <label>Cruise Warp Factor:</label>
+        <span>
+            <input type='number' name='attr_wf_cruise' min='0' value='0'/>
             /
-            <input type='number' class='w3' name='attr_warp_2' min='0' value='0'/>
+            <input type='number' name='attr_wf_cruise_max' min='0' value='0'/>
         </span>
+        <label>Max Warp Factor:</label>
         <span>
-            <label>Stress Charts:</label>
-            <input type='text' class='w3' name='attr_stress_1' maxlength='1'/>
-            /            
-            <input type='text' class='w3' name='attr_stress_2' maxlength='1'/> 
+            <input type='number' name='attr_wf_emergency' min='0' value='0'/>
+            /                
+            <input type='number' name='attr_wf_emergency_max' min='0' value='0'/>
         </span>
+
+        <span></span>
+        <span></span>
+        <label>Cruise Stress Chart:</label>
+        <input type='text' class='w3' name='attr_stress_cruise' maxlength='1'/>
+        <label>Max Stress Chart:</label>
+        <input type='text' class='w3' name='attr_stress_emergency' maxlength='1'/> 
+
     </div>
     <hr/>
 
@@ -446,6 +469,9 @@
 <input type='hidden' name='attr_banner_firemissile' value='[x](https://files.d20.io/images/459155112/hNZ9AQX33_kJr7InoxYVbA/original.png)'/>
 
 <script type='text/worker'>
+const ENGINE_TYPE_IMPULSE = 1;
+const ENGINE_TYPE_WARP = 2;
+
 // HELPER: Format large numbers with commas
 function formatNumber(value) {
     value = value.replace(/\D/g, '');
@@ -476,6 +502,30 @@ on('change:defense change:wdf', function(eventInfo) {
         const output = {};
         output['ce'] = theCE;
         setAttrs(output);
+    });
+});
+
+// Determine IMPULSE power status indicator
+on('change:repeating_engines:engine_power', function(eventInfo) {
+    getSectionIDs('repeating_engines', function (ids) {
+        const Fieldnames = [];
+        ids.forEach(id => {
+            Fieldnames.push(`repeating_engines_${id}_engine_type`);
+            Fieldnames.push(`repeating_engines_${id}_engine_power`);
+        });
+        
+        getAttrs([...Fieldnames], function (values) {
+            let totalImpulsePower = 0;
+            const output = {};
+            ids.forEach(id => {
+                if (values[`repeating_engines_${id}_engine_type`] == ENGINE_TYPE_IMPULSE) {
+                    const theEnginePower = parseInt(values[`repeating_engines_${id}_engine_power`]) || 0;
+                    totalImpulsePower += theEnginePower;
+                }
+            });
+            output['impulse_power_status'] = totalImpulsePower == 0 ? 1 : 0;
+            setAttrs(output);
+        });
     });
 });
 
@@ -808,8 +858,8 @@ on('change:repeating_engines:engine_power change:repeating_engines:engine_power_
             let theTPAMax = 0;
             const output = {};
             ids.forEach(id => {
-                const theEnginePower = parseFloat(values[`repeating_engines_${id}_engine_power`]) || 0;
-                const theEnginePowerMax = parseFloat(values[`repeating_engines_${id}_engine_power_max`]) || 0;
+                const theEnginePower = parseInt(values[`repeating_engines_${id}_engine_power`]) || 0;
+                const theEnginePowerMax = parseInt(values[`repeating_engines_${id}_engine_power_max`]) || 0;
                 
                 theTPA += theEnginePower;
                 theTPAMax += theEnginePowerMax
@@ -890,6 +940,50 @@ function resetTPA() {
     output['tpa_shields'] = 0;
     setAttrs(output);
 }
+
+// Set WARP FACTOR status indicator
+on('change:wf change:wf_cruise change:wf_emergency', function(eventInfo) {
+    getAttrs(['wf', 'wf_cruise', 'wf_emergency'], function(values) {
+        const theWF = parseInt(values['wf']) || 0;
+        const theWFCruise = parseInt(values['wf_cruise']) || 0;
+        const theWFEmergency = parseInt(values['wf_emergency']) || 0;
+
+        const output = {};
+        output['wf_status'] = theWF > theWFEmergency ? 1 : theWF > theWFCruise ? 2 : 0;
+        setAttrs(output);
+    });
+});
+
+// Determine current WARP FACTOR maximums
+on('change:repeating_engines:engine_power change:wf_cruise_max change:wf_emergency_max', function(eventInfo) {
+    getSectionIDs('repeating_engines', function (ids) {
+        const Fieldnames = [];
+        ids.forEach(id => {
+            Fieldnames.push(`repeating_engines_${id}_engine_type`);
+            Fieldnames.push(`repeating_engines_${id}_engine_power`);
+            Fieldnames.push(`repeating_engines_${id}_engine_power_max`);
+        });
+        
+        getAttrs([...Fieldnames, 'wf_cruise_max', 'wf_emergency_max'], function (values) {
+            const theWFCruiseMax = parseInt(values['wf_cruise_max']) || 0;
+            const theWFEmergencyMax = parseInt(values['wf_emergency_max']) || 0;
+
+            let theLowestPowerRatio = 1; // By default, 100%
+            const output = {};
+            ids.forEach(id => {
+                if (values[`repeating_engines_${id}_engine_type`] == ENGINE_TYPE_WARP) {
+                    const theEnginePower = parseInt(values[`repeating_engines_${id}_engine_power`]) || 0;
+                    const theEnginePowerMax = parseInt(values[`repeating_engines_${id}_engine_power_max`]) || 0;
+                    const thisEnginesRatio = theEnginePower / theEnginePowerMax;
+                    if (thisEnginesRatio < theLowestPowerRatio) theLowestPowerRatio = thisEnginesRatio;
+                }
+            });
+            output['wf_cruise'] = Math.round(theWFCruiseMax * theLowestPowerRatio);
+            output['wf_emergency'] = Math.round(theWFEmergencyMax * theLowestPowerRatio);
+            setAttrs(output);
+        });
+    });
+});
 
 // Calculate the WEAPONS TPA remaining
 on('change:tpa_weapons change:wp_beam change:wp_missile', function(eventInfo) {
