@@ -18,6 +18,26 @@
             /
             <span name='attr_ce'>0</span>
         </span>
+
+        <span>
+            <label>Captain:</label>
+            <input type='text' name='attr_capname' placeholder='name...'/>
+        </span>
+        <span>
+            <label>Crew:</label>
+            <span >
+                <input type='number' class='w5' name='attr_crew' value='0' min='0'/>
+                /
+                <span name='attr_crew_max'></span>
+            </span>
+        </span>
+        <span>
+            <label>Ratings (Cap | Crew):</label>
+            <input type='number' name='attr_caprating' min='48' value='60'/>
+            |            
+            <input type='number' name='attr_crewrating' min='27' value='40'/>
+        </span>
+        <span></span>
     </div>
     <hr/>
 
@@ -28,18 +48,14 @@
         <label>Hull Points:</label>
         <span>
             <input type='hidden' class='hp-status' name='attr_hp_status' value='0'/>
-            <input type='number' class='hp' name='attr_hp' min='0' value='0'/>
+            <input type='number' class='hp' name='attr_hp' value='0'/>
             /
             <span name='attr_hp_max'></span>
         </span>
-        <label>Crew:</label>
-        <span >
-            <input type='number' class='w5' name='attr_crew' value='0' min='0'/>
-            /
-            <span name='attr_crew_max'></span>
-        </span>
         <label>Damage Chart:</label>
         <span name='attr_dmg_chart'></span>
+        <span></span>
+        <span></span>
 
     <h4 class='span-grid'>Engines</h4>
     <div class='span-grid'>
