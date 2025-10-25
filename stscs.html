@@ -1103,49 +1103,71 @@ on('change:tpa_weapons change:wp_beam change:wp_missile', function(eventInfo) {
 });
 
 // WEAPON TARGETING
-on('clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target', (event) => {
+on('clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target', async (event) => {
     const match = event.sourceAttribute.match(/repeating_(?<section>.+?)_(?<rowID>.+?)_(?<buttonName>.+)/);
     const { section, rowID, buttonName } = match?.groups || {};
     const row = `repeating_${section}_${rowID}`;
 
-    getAttrs([`${row}_name`, `${row}_chart`, `${row}_maxrange`, `${row}_power`, `${row}_damaged`],async (attributes) => {
-        const wpnName = attributes[`${row}_name`];
-        const wpnChart = attributes[`${row}_chart`];
-        const wpnMaxRange = parseInt(attributes[`${row}_maxrange`]) ||0;
-        const wpnIsPowered = parseInt(attributes[`${row}_power`]) ||0;
-        const wpnIsDamaged = parseInt(attributes[`${row}_damaged`]) || 0;
+    const attributes = await getAttrsAsync([
+        `${row}_name`, `${row}_chart`, `${row}_maxrange`, `${row}_power`, `${row}_damaged`
+    ]);
 
-        const output = {};
-        // Clear previous values
-        output[`${row}_target_name`] = '';
-        output[`${row}_target_distance`] = 0;
-        output[`${row}_target_tohit`] = '0%';
-        output[`${row}_btn-fire_status`] = 0;
+    const wpnName = attributes[`${row}_name`];
+    const wpnChart = attributes[`${row}_chart`];
+    const wpnMaxRange = parseInt(attributes[`${row}_maxrange`]) || 0;
+    const wpnIsPowered = parseInt(attributes[`${row}_power`]) || 0;
+    const wpnIsDamaged = parseInt(attributes[`${row}_damaged`]) || 0;
 
-        // Get additional values from player...
-        const wpnTargetName = await extractChatData('@{target|token_name}');
-        const wpnTargetDistance = +(await extractChatData('?{How far|1}')) || 0;
+    // Get target input
+    const wpnTargetName = await extractChatData('@{target|token_name}');
+    const wpnTargetDistance = +(await extractChatData('?{How far|1}')) || 0;
+    const wpnTargetToHit = getToHit(wpnChart, wpnTargetDistance);
+    const wpnTargetToHitStr = `${wpnTargetToHit * 10}%`;
 
-        const wpnTargetToHit = getToHit(wpnChart, wpnTargetDistance);
-        const wpnTargetToHitStr = `${wpnTargetToHit * 10}%`;
+    // Get all matching banked weapons
+    const bankedRows = [];
+    const nameRoot = wpnName.match(/#\d+/);
+    if (nameRoot) {
+        const ids = await getSectionIDsAsync(`repeating_${section}`);
+        const fieldnames = ids.map(id => `repeating_${section}_${id}_name`);
+        const values = await getAttrsAsync(fieldnames);
 
-        if (!wpnTargetToHit) {
-            startRoll(`&{template:custom} {{title=**@{character_name}**}} {{subtitle=Target Out of Range}} {{Weapon=${wpnName}}} {{Max Range=${wpnMaxRange} hexes}} {{Target=${wpnTargetName}}} {{Distance=${wpnTargetDistance} hexes}}`, roll => {
-            finishRoll(roll.rollId);
-            });
-        } else {
-            startRoll(`&{template:custom} {{title=**@{character_name}**}} {{subtitle=Weapon Targeted}} {{color=green}} {{Weapon=${wpnName}}} {{Target=${wpnTargetName}}} {{Distance=${wpnTargetDistance} hexes}} {{Firing Chart=${wpnChart}}} {{Chance To-Hit=${wpnTargetToHitStr}}}`, roll => {
-            finishRoll(roll.rollId);
-            });
+        ids.forEach(id => {
+            const name = values[`repeating_${section}_${id}_name`];
+            if (name && name.match(nameRoot)) {
+                bankedRows.push(id);
+            }
+        });
+    } else {
+        bankedRows.push(rowID); // Not banked — just target self
+    }
 
-            output[`${row}_target_name`] = wpnTargetName;
-            output[`${row}_target_distance`] = wpnTargetDistance;
-            output[`${row}_target_tohit`] = wpnTargetToHit;
-            output[`${row}_btn-fire_status`] = 1;
-        }   
-        setAttrs(output);
-    });
-});
+    const output = {};
+    const weaponNames = [];
+
+    for (const id of bankedRows) {
+        const targetRow = `repeating_${section}_${id}`;
+        const power = parseInt((await getAttrsAsync([`${targetRow}_power`]))[`${targetRow}_power`]) || 0;
+
+        // Skip if not powered
+        if (power === 0) continue;
+
+        weaponNames.push(attributes[`${row}_name`] || 'Unknown Weapon');
+        output[`${targetRow}_target_name`] = wpnTargetName;
+        output[`${targetRow}_target_distance`] = wpnTargetDistance;
+        output[`${targetRow}_target_tohit`] = wpnTargetToHit;
+        output[`${targetRow}_btn-fire_status`] = wpnTargetToHit ? 1 : 0;
+    }   
+
+    // Roll result
+    if (!wpnTargetToHit) {
+        startRoll(`&{template:custom} {{title=**@{character_name}**}} {{subtitle=Target Out of Range}} {{Weapon=${wpnName}}} {{Max Range=${wpnMaxRange} hexes}} {{Target=${wpnTargetName}}} {{Distance=${wpnTargetDistance} hexes}}`, roll => finishRoll(roll.rollId));
+    } else {
+        startRoll(`&{template:custom} {{title=**@{character_name}**}} {{subtitle=Weapons Targeted}} {{color=green}} {{Weapons=${weaponNames.join('\\n')}}} {{Target=${wpnTargetName}}} {{Distance=${wpnTargetDistance} hexes}} {{Firing Chart=${wpnChart}}} {{Chance To-Hit=${wpnTargetToHitStr}}}`, roll => finishRoll(roll.rollId));
+    }
+
+    await setAttrsAsync(output);
+});   
 const extractChatData = async (query) => {
     query = await startRoll(`!{{target=[[0[response=${query}]]]}}`);
     finishRoll(query.rollId);
@@ -1188,43 +1210,96 @@ function getToHit (chart, distance) {
 }
 
 // WEAPON FIRING
-on('clicked:repeating_beams:btn-fire clicked:repeating_missiles:btn-fire', (event) => {
+on('clicked:repeating_beams:btn-fire clicked:repeating_missiles:btn-fire', async (event) => {
     const match = event.sourceAttribute.match(/repeating_(?<section>.+?)_(?<rowID>.+?)_(?<buttonName>.+)/);
     const { section, rowID, buttonName } = match?.groups || {};
     const row = `repeating_${section}_${rowID}`;
 
-    getAttrs([`${row}_name`, `${row}_armed`, `${row}_power`, `${row}_power_max`, `${row}_bonus_3`, `${row}_bonus_2`, `${row}_bonus_1`, `${row}_target_name`, `${row}_target_distance`, `${row}_target_tohit`],async (attributes) => {
-        const wpnName = attributes[`${row}_name`];
-        const wpnArmed = parseInt(attributes[`${row}_armed`]) ||0;
-        const wpnPower = parseInt(attributes[`${row}_power`]) ||0;
-        const wpnPowerMax = parseInt(attributes[`${row}_power_max`]) ||0;
-        const wpnBonus3 = parseInt(attributes[`${row}_bonus_3`]) ||0;
-        const wpnBonus2 = parseInt(attributes[`${row}_bonus_2`]) ||0;
-        const wpnBonus1 = parseInt(attributes[`${row}_bonus_1`]) ||0;
-        const targetName = attributes[`${row}_target_name`];
-        const targetDistance = parseInt(attributes[`${row}_target_distance`]) ||0;
-        const targetToHit = parseInt(attributes[`${row}_target_tohit`]) ||0;
-        
-        const wpnIsOCLaser = wpnPower > wpnPowerMax ? 1 : 0; // If an overcharged laser...
-        const wpnIsMissile = wpnArmed;
-        const wpnPowerDischarge = wpnIsOCLaser ? Math.floor(wpnPower / 2) : wpnPower;
-        const totalDamage = wpnPowerDischarge + (targetDistance <= wpnBonus3 ? 3 : targetDistance <= wpnBonus2 ? 2 : targetDistance <= wpnBonus1 ? 1 : 0);
+    const attributes = await getAttrsAsync([
+        `${row}_name`, `${row}_armed`, `${row}_power`, `${row}_power_max`,
+        `${row}_bonus_3`, `${row}_bonus_2`, `${row}_bonus_1`,
+        `${row}_target_name`, `${row}_target_distance`, `${row}_target_tohit`
+    ]);
 
-        startRoll(`&{template:custom} {{title=@{banner_fire${section}} **@{character_name}**}} {{subtitle=Weapon Fired}} {{color=red}} {{Weapon=${wpnName}}} {{Target=${targetName}}} {{To-Hit=[[${targetToHit}]] or less}} {{Roll=[[1d10cs>11cf<0]]}} {{Damage=${totalDamage}}} {{Location=[[1t[DLBasic]]]}}`, roll => {
-            finishRoll(roll.rollId);
+    const wpnName = attributes[`${row}_name`];
+    const wpnBankName = wpnName.match(/#\d+\w+/);
+    const targetName = attributes[`${row}_target_name`];
+    const targetDistance = parseInt(attributes[`${row}_target_distance`]) || 0;
+    const targetToHit = parseInt(attributes[`${row}_target_tohit`]) || 0;
+
+    // Get all matching banked weapons or default to single weapon
+    const bankedRows = [];
+    if (wpnBankName) {
+        const nameRoot = wpnName.match(/#\d+/);
+        const ids = await getSectionIDsAsync(`repeating_${section}`);
+        const fieldnames = ids.map(id => `repeating_${section}_${id}_name`);
+        const values = await getAttrsAsync(fieldnames);
+
+        ids.forEach(id => {
+            const name = values[`repeating_${section}_${id}_name`];
+            if (name && name.match(nameRoot)) {
+                bankedRows.push(id);
+            }
         });
+    } else {
+        // Not in a bank — fire just this weapon
+        bankedRows.push(rowID);
+    }
 
+    const damageList = [];
+    const weaponNames = [];
+
+    for (const id of bankedRows) {
+        const rowAttrs = await getAttrsAsync([
+            `repeating_${section}_${id}_name`,
+            `repeating_${section}_${id}_power`, `repeating_${section}_${id}_power_max`,
+            `repeating_${section}_${id}_bonus_3`, `repeating_${section}_${id}_bonus_2`, `repeating_${section}_${id}_bonus_1`,
+            `repeating_${section}_${id}_armed`,
+            `repeating_${section}_${id}_target_name`, `repeating_${section}_${id}_target_tohit`
+        ]);
+
+        const wpnName = rowAttrs[`repeating_${section}_${id}_name`];
+        const power = parseInt(rowAttrs[`repeating_${section}_${id}_power`]) || 0;
+        const powerMax = parseInt(rowAttrs[`repeating_${section}_${id}_power_max`]) || 0;
+        const bonus3 = parseInt(rowAttrs[`repeating_${section}_${id}_bonus_3`]) || 0;
+        const bonus2 = parseInt(rowAttrs[`repeating_${section}_${id}_bonus_2`]) || 0;
+        const bonus1 = parseInt(rowAttrs[`repeating_${section}_${id}_bonus_1`]) || 0;
+        const armed = parseInt(rowAttrs[`repeating_${section}_${id}_armed`]) || 0;
+        const targetName = rowAttrs[`repeating_${section}_${id}_target_name`];
+        const targetToHit = parseInt(rowAttrs[`repeating_${section}_${id}_target_tohit`]) || 0;
+
+        // Skip if not targeted
+        if (!targetName || !targetToHit) continue;
+
+        const isOCLaser = armed ? 0 : (power > powerMax ? 1 : 0);
+        const powerDischarge = isOCLaser ? Math.floor(power / 2) : power;
+        const totalDamage = powerDischarge + (
+            targetDistance <= bonus3 ? 3 :
+            targetDistance <= bonus2 ? 2 :
+            targetDistance <= bonus1 ? 1 : 0
+        );
+
+        weaponNames.push(wpnName);
+        damageList.push(totalDamage);
+
+        // Reset weapon state
         const output = {};
-        if (!wpnIsMissile) output[`${row}_power`] = wpnIsOCLaser ? wpnPowerDischarge : 0;
-        output[`${row}_armed`] = 0;
-        output[`${row}_btn-target_status`] = wpnIsOCLaser ? 1 : 0;
-        output[`${row}_btn-fire_status`] = 0;
-        output[`${row}_target_name`] = '';
-        output[`${row}_target_distance`] = 0;
-        output[`${row}_target_tohit`] = 0;
-        setAttrs(output);
+        if (!armed) output[`repeating_${section}_${id}_power`] = isOCLaser ? powerDischarge : 0;
+        output[`repeating_${section}_${id}_armed`] = 0;
+        output[`repeating_${section}_${id}_btn-target_status`] = isOCLaser ? 1 : 0;
+        output[`repeating_${section}_${id}_btn-fire_status`] = 0;
+        output[`repeating_${section}_${id}_target_name`] = '';
+        output[`repeating_${section}_${id}_target_distance`] = 0;
+        output[`repeating_${section}_${id}_target_tohit`] = 0;
+        await setAttrsAsync(output);
+    }   
+
+        // Single roll with all weapons and damages
+        startRoll(
+            `&{template:custom} {{title=@{banner_fire${section}} **@{character_name}**}} {{subtitle=Weapons Fired}} {{color=red}} {{Weapons=${weaponNames.join('\\n')}}} {{Target=${targetName}}} {{To-Hit=[[${targetToHit}]] or less}} {{Roll=[[1d10cs>11cf<0]]}} {{Damage=${damageList.join(', ')}}} {{Location=[[1t[DLBasic]]]}}`,
+            roll => finishRoll(roll.rollId)
+        );
     });
-});
 
 // WEAPON POWER (BEAM) ALLOCATION calculations
 on('change:repeating_beams:name change:repeating_beams:damaged change:repeating_beams:power change:repeating_beams:power_max remove:repeating_beams', function(eventInfo) {
@@ -1288,6 +1363,85 @@ on('change:repeating_missiles:damaged change:repeating_missiles:armed change:rep
         });
     });
 });
+
+/****************************/
+function isRunningOnServer() { return self.dispatchEvent == undefined; }
+function setActiveCharacterId(charId){
+    var oldAcid=getActiveCharacterId();
+    var msg={"id":"0", "type":"setActiveCharacter", "data":charId};
+    
+    if(isRunningOnServer()==false){ //if in a browser, use "dispatchEvent" to process the message
+        var ev = new CustomEvent("message");
+        ev.data=msg; 
+        self.dispatchEvent(ev);
+    }else{ //otherwise, use the API (server) message processor, "onmessage"
+        self.onmessage({data:msg});
+    }
+    return oldAcid; //return what the value used to be, so calling code can be a little cleaner 
+} 
+var _sIn=setInterval;
+setInterval=function(callback, timeout){
+    var acid=getActiveCharacterId();
+    _sIn(
+        function(){
+            var prevAcid=setActiveCharacterId(acid);
+            callback();
+            setActiveCharacterId(prevAcid);
+        }
+    ,timeout);
+}
+var _sto=setTimeout
+setTimeout=function(callback, timeout){
+    var acid=getActiveCharacterId();
+    _sto(
+        function(){
+            var prevAcid=setActiveCharacterId(acid);
+            callback();
+            setActiveCharacterId(prevAcid);
+        }
+    ,timeout);
+}
+function getAttrsAsync(props){
+    var acid=getActiveCharacterId(); //save the current activeCharacterID in case it has changed when the promise runs 
+    var prevAcid=null;               //local variable defined here, because it needs to be shared across the promise callbacks defined below
+    return new Promise((resolve,reject)=>{
+            prevAcid=setActiveCharacterId(acid);  //in case the activeCharacterId has changed, restore it to what we were expecting and save the current value to restore later
+            try{
+                getAttrs(props,(values)=>{  resolve(values); }); 
+            }
+            catch{ reject(); }
+    }).finally(()=>{
+        setActiveCharacterId(prevAcid); //restore activeCharcterId to what it was when the promise first ran
+    });
+}
+//use the same pattern for each of the following...
+function setAttrsAsync(propObj, options){
+    var acid=getActiveCharacterId(); 
+    var prevAcid=null;               
+    return new Promise((resolve,reject)=>{
+            prevAcid=setActiveCharacterId(acid);  
+            try{
+                setAttrs(propObj,options,(values)=>{ resolve(values); });
+            }
+            catch{ reject(); }
+    }).finally(()=>{
+        setActiveCharacterId(prevAcid); 
+    });
+}
+
+function getSectionIDsAsync(sectionName){
+    var acid = getActiveCharacterId(); 
+    var prevAcid=null;               
+    return new Promise((resolve,reject)=>{
+            prevAcid = setActiveCharacterId(acid);  
+            try{
+                getSectionIDs(sectionName,(values)=>{ resolve(values); });
+            }
+            catch{ reject(); }
+    }).finally(()=>{
+        setActiveCharacterId(prevAcid); 
+    });
+}
 
 </script>
 
