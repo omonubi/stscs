@@ -57,30 +57,30 @@
         <span></span>
         <span></span>
 
-    <h4 class='span-grid'>Engines</h4>
-    <div class='span-grid'>
-        <label style='padding-left: 32px;'>Model</label>
-        <label style='padding-left: 42px;'>Type</label>
-        <label style='padding-left: 70px;'>Location</label>
-        <label style='padding-left: 46px;'>Power</label>
-        <label style='padding-left: 22px;'>Max</label>
-    </div>
-    <fieldset class='repeating_engines'>
-        <input type='text' class='w10' name='attr_engine_model' placeholder='model...'/>
-        <select class='w10' name='attr_engine_type'>
-            <option value='0' selected>select...</option>
-            <option value='1'>Impulse</option>
-            <option value='2'>Warp</option>
-        </select>
-        <select class='w10' name='attr_engine_location'>
-            <option value='0' selected>select...</option>
-            <option value='1'>Centerline</option>
-            <option value='2'>Port</option>
-            <option value='3'>Starboard</option>
-        </select>
-        <input type='hidden' class='engine-power-status' name='attr_engine_power_status' value='0'/>
-        <input type='number' class='engine-power' name='attr_engine_power' min='0' value='0'/> / <input type='number' name='attr_engine_power_max' min='0' value='0'/>
-    </fieldset>
+        <h4 class='span-grid'>Engines</h4>
+        <div class='span-grid'>
+            <label style='padding-left: 32px;'>Model</label>
+            <label style='padding-left: 42px;'>Type</label>
+            <label style='padding-left: 70px;'>Location</label>
+            <label style='padding-left: 46px;'>Power</label>
+            <label style='padding-left: 22px;'>Max</label>
+        </div>
+        <fieldset class='repeating_engines'>
+            <input type='text' class='w10' name='attr_engine_model' placeholder='model...'/>
+            <select class='w10' name='attr_engine_type'>
+                <option value='0' selected>select...</option>
+                <option value='1'>Impulse</option>
+                <option value='2'>Warp</option>
+            </select>
+            <select class='w10' name='attr_engine_location'>
+                <option value='0' selected>select...</option>
+                <option value='1'>Centerline</option>
+                <option value='2'>Port</option>
+                <option value='3'>Starboard</option>
+            </select>
+            <input type='hidden' class='engine-power-status' name='attr_engine_power_status' value='0'/>
+            <input type='number' class='engine-power' name='attr_engine_power' min='0' value='0'/> / <input type='number' name='attr_engine_power_full' min='0' value='0'/>
+        </fieldset>
     </div>
     <hr/>
 
@@ -94,13 +94,18 @@
         <label>TPA Unallocated:</label>
         <input type='hidden' class='tpa-remaining-status' name='attr_tpa_remaining_status'/>
         <input type='number' class='tpa-remaining' name='attr_tpa_remaining'  value='0' readonly/>
-        
+
         <label>TPA to Movement:</label>
         <input type='number' class='em' name='attr_tpa_movement' min='0' value='0'/>
         <label>TPA to Shields:</label>
         <input type='number' class='em' name='attr_tpa_shields' min='0' value='0'/>
         <label>TPA to Weapons:</label>
         <input type='number' class='em' name='attr_tpa_weapons' min='0' value='0'/>
+                
+        <label>TPA to Warp:</label>
+        <input type='number' name='attr_tpa_warp' min='0' value='0' readonly/>
+        <span></span>
+        <span></span>
     </div>
     <hr/>
 
@@ -141,29 +146,38 @@
         <span></span>
         <span></span>
 
-        <label>Current Warp Factor:</label>
-        <input type='hidden' class='wf-status' name='attr_wf_status'/>
-        <input type='number' class='em' name='attr_wf' min='0' max='12' value='0'/>
-        <label>Cruise Warp Factor:</label>
+        <label>TPA to Warp:</label>
+        <input type='number' name='attr_tpa_warp' min='0' value='0' readonly/>
+        <label>Warp Factor Ratio:</label>
+        <input type='hidden' name='attr_wfr_jump'/>
+        <input type='hidden' name='attr_wfr_cruise'/>
         <span>
-            <input type='number' name='attr_wf_cruise' min='0' value='0'/>
+            <input type='number' class='w3' name='attr_wfr_1' value='0' readonly/>
             /
-            <input type='number' name='attr_wf_cruise_max' min='0' value='0'/>
+            <input type='number' class='w3' name='attr_wfr_2' value='1' readonly/>
         </span>
-        <label>Max Warp Factor:</label>
+        <span></span>
+        <span></span>
+
+        <label>Current Warp Factor</label>
+        <input type='hidden' class='wf-current-status' name='attr_wf_current_status'/>
+        <input type='number' class='wf-current' min='0' value='0' name='attr_wf_current' readonly/>
+        <label>Desired Warp Factor</label>
+        <input type='hidden' class='wf-desired-status' name='attr_wf_desired_status'/>
+        <input type='number' class='em' min='0' value='0' name='attr_wf_desired'/>
+        <button type='action' class='btn' name='act_jump'>Update: Phase 3 ONLY</button>
+        <span></span>
+
+        <label>Safe Cruise WF:</label>
+        <input type='number' class='w5' name='attr_wf_cruise' min='0' value='0'/>
+        <label>Emergency WF:</label>
+        <input type='number' class='w5' name='attr_wf_emergency' min='0' value='0'/>
+        <label>Stress Charts:</label>
         <span>
-            <input type='number' name='attr_wf_emergency' min='0' value='0'/>
-            /                
-            <input type='number' name='attr_wf_emergency_max' min='0' value='0'/>
+            <input type='text' class='w5' name='attr_stress_cruise' maxlength='1'/>
+            /
+            <input type='text' class='w5' name='attr_stress_emergency' maxlength='1'/> 
         </span>
-
-        <span></span>
-        <span></span>
-        <label>Cruise Stress Chart:</label>
-        <input type='text' class='w3' name='attr_stress_cruise' maxlength='1'/>
-        <label>Max Stress Chart:</label>
-        <input type='text' class='w3' name='attr_stress_emergency' maxlength='1'/> 
-
     </div>
     <hr/>
 
@@ -222,7 +236,7 @@
         </span>
         <input type='hidden' class='shields-allocated-status' name='attr_shields_allocated_status' value='1'/>
         <span class='shields-allocated-buttons'>
-            <button type='action' class='btn' name='act_shield_commit'>COMMIT</button>
+            <button type='action' class='btn' name='act_shield_commit'>Commit Allocation</button>
         </span>
 
         <input type='hidden' class='shields-current-status' name='attr_shields_current_status' value='0'/>
@@ -499,13 +513,14 @@
     <!-------------------------------------------------------->
     <h2>Maintenance</h2>
     <div class='grid-3col'>
-        <p class='span-grid'>Do not use these controls during battle:</p>
-        <button type='action' class='btn' name='act_repair'>Repair Vessel</button>
+        <p class='span-grid'><strong>Do not use these controls during battle!</strong></p>
+        <button type='action' class='btn' name='act_repair'>Repair/Reset Vessel</button>
     </div>
 
 <!-- Banner placeholders (see readme) -->
 <input type='hidden' name='attr_banner_firebeams' value='[x](https://files.d20.io/images/459374797/BrLK7l69a5n4Mfomy8M4GA/original.png)'/>
 <input type='hidden' name='attr_banner_firemissiles' value='[x](https://files.d20.io/images/459155112/hNZ9AQX33_kJr7InoxYVbA/original.png)'/>
+<input type='hidden' name='attr_banner_warp' value='[x](https://files.d20.io/images/461519720/yapt5OaNN9fy0m-b2HhVaQ/original.png)'/>
 
 <script type='text/worker'>
 const ENGINE_TYPE_IMPULSE = 1;
@@ -598,13 +613,13 @@ on('clicked:repair', function(eventInfo) {
     getSectionIDs('repeating_engines', function (ids) {
         const Fieldnames = [];
         ids.forEach(id => {
-            Fieldnames.push(`repeating_engines_${id}_engine_power_max`);
+            Fieldnames.push(`repeating_engines_${id}_engine_power_full`);
         });
         
         getAttrs([...Fieldnames], function (values) {
             const output = {};
             ids.forEach(id => {
-                output[`repeating_engines_${id}_engine_power`] = values[`repeating_engines_${id}_engine_power_max`];
+                output[`repeating_engines_${id}_engine_power`] = values[`repeating_engines_${id}_engine_power_full`];
             });
             setAttrs(output);
         });
@@ -656,6 +671,8 @@ on('clicked:repair', function(eventInfo) {
         output['shield_4_damaged'] = 0;
         output['shield_5_damaged'] = 0;
         output['shield_6_damaged'] = 0;
+        output['wf_current'] = 0;
+        output['wf_desired'] = 0;
         setAttrs(output);
     });
 
@@ -888,12 +905,12 @@ on('change:hp', function(eventInfo) {
 });
 
 // TOTAL POWER AVAILABLE calculation
-on('change:repeating_engines:engine_power change:repeating_engines:engine_power_max remove:repeating_engines', function(eventInfo) {
+on('change:repeating_engines:engine_power change:repeating_engines:engine_power_full remove:repeating_engines', function(eventInfo) {
     getSectionIDs('repeating_engines', function (ids) {
         const Fieldnames = [];
         ids.forEach(id => {
             Fieldnames.push(`repeating_engines_${id}_engine_power`);
-            Fieldnames.push(`repeating_engines_${id}_engine_power_max`);
+            Fieldnames.push(`repeating_engines_${id}_engine_power_full`);
         });
         
         getAttrs([...Fieldnames], function (values) {
@@ -902,7 +919,7 @@ on('change:repeating_engines:engine_power change:repeating_engines:engine_power_
             const output = {};
             ids.forEach(id => {
                 const enginePower = parseInt(values[`repeating_engines_${id}_engine_power`]) || 0;
-                const enginePowerMax = parseInt(values[`repeating_engines_${id}_engine_power_max`]) || 0;
+                const enginePowerMax = parseInt(values[`repeating_engines_${id}_engine_power_full`]) || 0;
                 
                 tpa += enginePower;
                 tpaMax += enginePowerMax
@@ -917,14 +934,15 @@ on('change:repeating_engines:engine_power change:repeating_engines:engine_power_
 });
 
 // TOTAL POWER AVAILABLE remaining calculation
-on('change:tpa change:tpa_movement change:tpa_weapons change:tpa_shields', function(eventInfo) {
-    getAttrs(['tpa', 'tpa_movement', 'tpa_weapons', 'tpa_shields'], function(values) {
+on('change:tpa change:tpa_movement change:tpa_warp change:tpa_weapons change:tpa_shields', function(eventInfo) {
+    getAttrs(['tpa', 'tpa_movement', 'tpa_warp', 'tpa_weapons', 'tpa_shields'], function(values) {
         const tpa = parseInt(values['tpa']) || 0;
         const tpaToMovement = parseInt(values['tpa_movement']) || 0;
+        const tpaToWarp = parseInt(values['tpa_warp']) || 0;
         const tpaToWeapons = parseInt(values['tpa_weapons']) || 0;
         const tpaToShields = parseInt(values['tpa_shields']) || 0;
 
-        const tpaRemaining = tpa - tpaToMovement - tpaToWeapons - tpaToShields;
+        const tpaRemaining = tpa - tpaToMovement - tpaToWarp - tpaToWeapons - tpaToShields;
 
         const output = {};
         output['tpa_remaining'] = tpaRemaining;
@@ -933,7 +951,7 @@ on('change:tpa change:tpa_movement change:tpa_weapons change:tpa_shields', funct
     });
 });
 
-// TOTAL POWER AVAILABLE rest
+// TOTAL POWER AVAILABLE reset
 on('clicked:tpa_reset', function(eventInfo) {
     resetTPA();
 });
@@ -992,48 +1010,77 @@ function resetTPA() {
     setAttrs(output);
 }
 
-// WARP FACTOR status indicators
-on('change:wf change:wf_cruise change:wf_emergency', function(eventInfo) {
-    getAttrs(['wf', 'wf_cruise', 'wf_emergency'], function(values) {
-        const wf = parseInt(values['wf']) || 0;
+// WARP FACTOR changed by player
+on('change:wf_current change:wf_desired', function(eventInfo) {
+    getAttrs(['wf_current', 'wf_desired', 'wf_cruise', 'wf_emergency', 'wfr_cruise', 'wfr_jump'], function(values) {
+        const wfCurrent = parseInt(values['wf_current']) || 0;
+        const wfDesired = parseInt(values['wf_desired']) || 0;
         const wfCruise = parseInt(values['wf_cruise']) || 0;
         const wfEmergency = parseInt(values['wf_emergency']) || 0;
+        const wfrCruise = parseInt(values['wfr_cruise']) || 0;
+        const wfrJump = parseInt(values['wfr_jump']) || 0;
+
+        const wfrCurrent = wfDesired > wfCurrent ? wfrJump : wfrCruise;
+        const tpaRequired = wfDesired > wfCurrent ? wfDesired * wfrCurrent : wfrCruise * Math.min(wfCurrent, wfDesired);
 
         const output = {};
-        output['wf_status'] = wf > wfEmergency ? 1 : wf > wfCruise ? 2 : 0;
+        output['wfr_1'] = wfrCurrent;
+        output['tpa_warp'] = tpaRequired;
+        output['wf_current_status'] = wfCurrent > wfEmergency ? 1 : wfCurrent > wfCruise ? 2 : 0;
+        output['wf_desired_status'] = wfDesired > wfEmergency ? 1 : wfDesired != wfCurrent || wfDesired > wfCruise ? 2 : 0;
         setAttrs(output);
     });
 });
 
-// WARP FACTOR status indicator calculations
-on('change:repeating_engines:engine_power change:wf_cruise_max change:wf_emergency_max', function(eventInfo) {
+// WARP FACTOR RATIO calculations
+// Note: This should not occur after initial ship setup
+//  but event is triggered whenever engine power changes
+on('change:repeating_engines:engine_power_full remove:repeating_engines change:wf_emergency', function(eventInfo) {
     getSectionIDs('repeating_engines', function (ids) {
         const Fieldnames = [];
         ids.forEach(id => {
             Fieldnames.push(`repeating_engines_${id}_engine_type`);
-            Fieldnames.push(`repeating_engines_${id}_engine_power`);
-            Fieldnames.push(`repeating_engines_${id}_engine_power_max`);
+            Fieldnames.push(`repeating_engines_${id}_engine_power_full`);
         });
         
-        getAttrs([...Fieldnames, 'wf_cruise_max', 'wf_emergency_max'], function (values) {
-            const wfCruiseMax = parseInt(values['wf_cruise_max']) || 0;
-            const wfEmergencyMax = parseInt(values['wf_emergency_max']) || 0;
+        getAttrs([...Fieldnames, 'wf_emergency'], function (values) {
+            const wfEmergency = parseInt(values['wf_emergency']) || 0;
 
-            let theLowestPowerRatio = 1; // By default, 100%
+            let totalWarpEngines = 0;
+            let totalWarpPower = 0;
             const output = {};
             ids.forEach(id => {
                 if (values[`repeating_engines_${id}_engine_type`] == ENGINE_TYPE_WARP) {
-                    const theEnginePower = parseInt(values[`repeating_engines_${id}_engine_power`]) || 0;
-                    const theEnginePowerMax = parseInt(values[`repeating_engines_${id}_engine_power_max`]) || 0;
-                    const thisEnginesRatio = theEnginePower / theEnginePowerMax;
-                    if (thisEnginesRatio < theLowestPowerRatio) theLowestPowerRatio = thisEnginesRatio;
+                    const theEnginePowerMax = parseInt(values[`repeating_engines_${id}_engine_power_full`]) || 0;
+                    totalWarpEngines += 1;
+                    totalWarpPower += theEnginePowerMax;
                 }
             });
-            output['wf_cruise'] = Math.round(wfCruiseMax * theLowestPowerRatio);
-            output['wf_emergency'] = Math.round(wfEmergencyMax * theLowestPowerRatio);
+
+            output['wf_current'] = output['wf_desired'] = 0; // Clear settings
+            output['wfr_jump'] = output['wfr_1'] = Math.floor(totalWarpPower / wfEmergency);
+            output['wfr_cruise'] = totalWarpEngines;
             setAttrs(output);
         });
     });
+});
+
+// WARP JUMP
+on('clicked:jump', function(eventInfo) {
+    getAttrs(['wf_current', 'wf_desired'], function(values) {
+        const wfCurrent = parseInt(values['wf_current']) || 0;
+        const wfDesired = parseInt(values['wf_desired']) || 0;
+
+        if (wfCurrent != wfDesired) {
+            startRoll('&{template:custom} {{title=@{banner_warp} **@{character_name}**}} {{subtitle=Warp Factor Change}} {{color=blue}} {{From=Warp Factor **@{wf_current}**}} {{To=Warp Factor **@{wf_desired}**}}', roll => {
+                finishRoll(roll.rollId);
+            });
+
+            const output = {};
+            output['wf_current'] = wfDesired;
+            setAttrs(output);
+        }
+    });   
 });
 
 // WEAPON POINTS calculation
@@ -1187,8 +1234,7 @@ on('clicked:repeating_beams:btn-fire clicked:repeating_missiles:btn-fire', (even
 
         const totalDamage = wpnPower + (targetDistance < wpnBonus3 ? 3 : targetDistance < wpnBonus2 ? 2 : targetDistance < wpnBonus1 ? 1 : 0);
 
-        startRoll(`&{template:custom} {{title=@{banner_fire${section}} 
-        **@{character_name}**}} {{subtitle=Weapon Fired}} {{color=red}} {{Weapon=${wpnName}}} {{Target=${targetName}}} {{To-Hit=[[${targetToHit}]] or less}} {{Roll=[[1d10cs>11cf<0]]}} {{Damage=${totalDamage}}} {{Location=[[1t[DLBasic]]]}}`, roll => {
+        startRoll(`&{template:custom} {{title=@{banner_fire${section}} **@{character_name}**}} {{subtitle=Weapon Fired}} {{color=red}} {{Weapon=${wpnName}}} {{Target=${targetName}}} {{To-Hit=[[${targetToHit}]] or less}} {{Roll=[[1d10cs>11cf<0]]}} {{Damage=${totalDamage}}} {{Location=[[1t[DLBasic]]]}}`, roll => {
             finishRoll(roll.rollId);
         });
 

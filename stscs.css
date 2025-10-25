@@ -203,7 +203,9 @@
 .ui-dialog .charsheet .shield-6c-status[value='0'] ~ .shield-6c,
 .ui-dialog .charsheet .sp-remaining-status[value='0'] ~ .sp-remaining,
 .ui-dialog .charsheet .tpa-remaining-status[value='0'] ~ .tpa-remaining,
-.ui-dialog .charsheet .wp-remaining-status[value='0'] ~ .wp-remaining {
+.ui-dialog .charsheet .wf-current-status[value='0'] ~ .wf-current,
+.ui-dialog .charsheet .wf-desired-status[value='0'] ~ .em,
+.ui-dialog .charsheet .wf-remaining-status[value='0'] ~ .wf-remaining {
   accent-color: palegreen;
   background-color: palegreen;
   border-color: forestgreen;
@@ -228,8 +230,10 @@
 .ui-dialog .charsheet .shield-5c-status[value='1'] ~ .shield-5c,
 .ui-dialog .charsheet .shield-6c-status[value='1'] ~ .shield-6c,
 .ui-dialog .charsheet .sp-remaining-status[value='1'] ~ .sp-remaining,
-.ui-dialog .charsheet .wf-status[value='1'] ~ input.em,
-.ui-dialog .charsheet .wp-remaining-status[value='1'] ~ .wp-remaining {
+.ui-dialog .charsheet .tpa-remaining-status[value='1'] ~ .tpa-remaining,
+.ui-dialog .charsheet .wf-current-status[value='1'] ~ .wf-current,
+.ui-dialog .charsheet .wf-desired-status[value='1'] ~ .em,
+.ui-dialog .charsheet .wf-remaining-status[value='1'] ~ .wf-remaining {
   accent-color: lightpink;
   background-color: lightpink; 
   border-color: red;
@@ -253,9 +257,10 @@
 .ui-dialog .charsheet .shield-5c-status[value='2'] ~ .shield-5c,
 .ui-dialog .charsheet .shield-6c-status[value='2'] ~ .shield-6c,
 .ui-dialog .charsheet .sp-remaining-status[value='2'] ~ .sp-remaining,
+.ui-dialog .charsheet .wf-current-status[value='2'] ~ .wf-current,
+.ui-dialog .charsheet .wf-desired-status[value='2'] ~ .em,
 .ui-dialog .charsheet .tpa-remaining-status[value='2'] ~ .tpa-remaining,
-.ui-dialog .charsheet .wf-status[value='2'] ~ input.em,
-.ui-dialog .charsheet .wp-remaining-status[value='2'] ~ .wp-remaining {
+.ui-dialog .charsheet .wf-remaining-status[value='2'] ~ .wf-remaining {
   background-color: lemonchiffon; 
   border-color: coral;
   color: coral;
@@ -318,7 +323,7 @@
 }
 .sheet-rolltemplate-custom .sheet-container.sheet-color-blue,
 .sheet-rolltemplate-menu .sheet-container.sheet-color-blue {
-  --header-bg-color: darkslateblue;
+  --header-bg-color: darkblue;
   --header-text-color: #FFF;
 }
 .sheet-rolltemplate-custom .sheet-container.sheet-color-gold,
