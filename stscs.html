@@ -419,10 +419,10 @@
     <div class='grid-3col'>
         <span>
             <label>Fleet:</label>
-            <select name='attr_fleet'>
+            <select name='attr_faction'>
                 <option selected>Select...</option>
-                <option value='1'>United Federation of Planets</option>
-                <option value='2'>Klingon Empire</option>
+                <option value='federation'>United Federation of Planets</option>
+                <option value='klingon'>Klingon Empire</option>
             </select>
         </span>
 
@@ -522,9 +522,12 @@
     </div>
 
 <!-- Banner placeholders (see readme) -->
-<input type='hidden' name='attr_banner_firebeams' value='[x](https://files.d20.io/images/459374797/BrLK7l69a5n4Mfomy8M4GA/original.png)'/>
-<input type='hidden' name='attr_banner_firemissiles' value='[x](https://files.d20.io/images/459155112/hNZ9AQX33_kJr7InoxYVbA/original.png)'/>
-<input type='hidden' name='attr_banner_warp' value='[x](https://files.d20.io/images/461519720/yapt5OaNN9fy0m-b2HhVaQ/original.png)'/>
+<input type='hidden' name='attr_banner_federationfirebeams' value='[x](https://files.d20.io/images/459374797/BrLK7l69a5n4Mfomy8M4GA/original.png)'/>
+<input type='hidden' name='attr_banner_federationfiremissiles' value='[x](https://files.d20.io/images/461676845/PIWNmdJhQ8DotQAYJS7Eew/original.png)'/>
+<input type='hidden' name='attr_banner_federationwarp' value='[x](https://files.d20.io/images/461519720/yapt5OaNN9fy0m-b2HhVaQ/original.png)'/>
+<input type='hidden' name='attr_banner_klingonfirebeams' value='[x](https://files.d20.io/images/461674377/cX_DbSv-iBzHRa8XCK36uw/original.png)'/>
+<input type='hidden' name='attr_banner_klingonfiremissiles' value='[x](https://files.d20.io/images/459155112/hNZ9AQX33_kJr7InoxYVbA/original.png)'/>
+<input type='hidden' name='attr_banner_klingonwarp' value='[x](https://files.d20.io/images/461677914/LFn_ncPFcBHm_yHjz6xr9A/original.png)'/>
 
 <script type='text/worker'>
 const ENGINE_TYPE_IMPULSE = 1;
@@ -1070,12 +1073,13 @@ on('change:repeating_engines:engine_power_full remove:repeating_engines change:w
 
 // WARP JUMP
 on('clicked:jump', function(eventInfo) {
-    getAttrs(['wf_current', 'wf_desired'], function(values) {
+    getAttrs(['wf_current', 'wf_desired', 'faction'], function(values) {
         const wfCurrent = parseInt(values['wf_current']) || 0;
         const wfDesired = parseInt(values['wf_desired']) || 0;
+        const faction = values['faction'];
 
         if (wfCurrent != wfDesired) {
-            startRoll('&{template:custom} {{title=@{banner_warp} **@{character_name}**}} {{subtitle=Warp Factor Change}} {{color=blue}} {{From=Warp Factor **@{wf_current}**}} {{To=Warp Factor **@{wf_desired}**}}', roll => {
+            startRoll(`&{template:custom} {{title=@{banner_${faction}warp} **@{character_name}**}} {{subtitle=Warp Factor Change}} {{color=blue}} {{From=Warp Factor **@{wf_current}**}} {{To=Warp Factor **@{wf_desired}**}}`, roll => {
                 finishRoll(roll.rollId);
             });
 
@@ -1218,9 +1222,10 @@ on('clicked:repeating_beams:btn-fire clicked:repeating_missiles:btn-fire', async
     const attributes = await getAttrsAsync([
         `${row}_name`, `${row}_armed`, `${row}_power`, `${row}_power_max`,
         `${row}_bonus_3`, `${row}_bonus_2`, `${row}_bonus_1`,
-        `${row}_target_name`, `${row}_target_distance`, `${row}_target_tohit`
+        `${row}_target_name`, `${row}_target_distance`, `${row}_target_tohit`, 'faction'
     ]);
 
+    const faction = attributes['faction'];
     const wpnName = attributes[`${row}_name`];
     const wpnBankName = wpnName.match(/#\d+\w+/);
     const targetName = attributes[`${row}_target_name`];
@@ -1296,7 +1301,7 @@ on('clicked:repeating_beams:btn-fire clicked:repeating_missiles:btn-fire', async
 
         // Single roll with all weapons and damages
         startRoll(
-            `&{template:custom} {{title=@{banner_fire${section}} **@{character_name}**}} {{subtitle=Weapons Fired}} {{color=red}} {{Weapons=${weaponNames.join('\\n')}}} {{Target=${targetName}}} {{To-Hit=[[${targetToHit}]] or less}} {{Roll=[[1d10cs>11cf<0]]}} {{Damage=${damageList.join(', ')}}} {{Location=[[1t[DLBasic]]]}}`,
+            `&{template:custom} {{title=@{banner_${faction}fire${section}} **@{character_name}**}} {{subtitle=Weapons Fired}} {{color=red}} {{Weapons=${weaponNames.join('\\n')}}} {{Target=${targetName}}} {{To-Hit=[[${targetToHit}]] or less}} {{Roll=[[1d10cs>11cf<0]]}} {{Damage=${damageList.join(', ')}}} {{Location=[[1t[DLBasic]]]}}`,
             roll => finishRoll(roll.rollId)
         );
     });
