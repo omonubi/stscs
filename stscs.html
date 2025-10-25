@@ -279,6 +279,7 @@
         <input type='number' class='wp-remaining' name='attr_wp_remaining' value='0' readonly/>
 
     <h4 class='span-grid'>Beam Weapons</h4>
+    <input type='hidden' name='attr_wp_beam'/>
     <div class='span-grid'>
         <label style='padding-left: 3px;'>T</label>
         <label style='padding-left: 5px;'>F</label>
@@ -346,6 +347,7 @@
     </fieldset>
     
     <h4 class='span-grid'>Missile Weapons</h4>
+    <input type='hidden' name='attr_wp_missile'/>
     <div class='span-grid'>
         <label style='padding-left: 3px;'>T</label>
         <label style='padding-left: 5px;'>F</label>
@@ -525,6 +527,7 @@
 <script type='text/worker'>
 const ENGINE_TYPE_IMPULSE = 1;
 const ENGINE_TYPE_WARP = 2;
+const BEAM_TYPE_LASER_FED = 'FL-';
 
 // HELPER: Format large numbers with commas
 function formatNumber(value) {
@@ -1136,18 +1139,18 @@ on('clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target', (
             });            
         } else {
             // Get additional values from player...
-            const wpnTargetName = await extractChatData('@{target|character_name}');
+            const wpnTargetName = await extractChatData('@{target|token_name}');
             const wpnTargetDistance = +(await extractChatData('?{How far|1}')) || 0;
 
             const wpnTargetToHit = getToHit(wpnChart, wpnTargetDistance);
             const wpnTargetToHitStr = `${wpnTargetToHit * 10}%`;
 
             if (!wpnTargetToHit) {
-                startRoll(`&{template:custom} {{title=**@{character_name}**}} {{subtitle=Target Out of Range}} {{Weapon=${wpnName}}} {{Max Range=${wpnMaxRange}}} {{Target=${wpnTargetName}}} {{Distance=${wpnTargetDistance}}}`, roll => {
+                startRoll(`&{template:custom} {{title=**@{character_name}**}} {{subtitle=Target Out of Range}} {{Weapon=${wpnName}}} {{Max Range=${wpnMaxRange} hexes}} {{Target=${wpnTargetName}}} {{Distance=${wpnTargetDistance} hexes}}`, roll => {
                 finishRoll(roll.rollId);
                 });
             } else {
-                startRoll(`&{template:custom} {{title=**@{character_name}**}} {{subtitle=Weapon Targeted}} {{color=green}} {{Weapon=${wpnName}}} {{Target=${wpnTargetName}}} {{Distance=${wpnTargetDistance}}} {{Chance To-Hit=${wpnTargetToHitStr}}}`, roll => {
+                startRoll(`&{template:custom} {{title=**@{character_name}**}} {{subtitle=Weapon Targeted}} {{color=green}} {{Weapon=${wpnName}}} {{Target=${wpnTargetName}}} {{Distance=${wpnTargetDistance} hexes}} {{Firing Chart=${wpnChart}}} {{Chance To-Hit=${wpnTargetToHitStr}}}`, roll => {
                 finishRoll(roll.rollId);
                 });
 
@@ -1222,28 +1225,38 @@ on('clicked:repeating_beams:btn-fire clicked:repeating_missiles:btn-fire', (even
     const { section, rowID, buttonName } = match?.groups || {};
     const row = `repeating_${section}_${rowID}`;
 
-    getAttrs([`${row}_name`, `${row}_power`, `${row}_bonus_3`, `${row}_bonus_2`, `${row}_bonus_1`, `${row}_target_name`, `${row}_target_distance`, `${row}_target_tohit`],async (attributes) => {
+    getAttrs([`${row}_name`, `${row}_power`, `${row}_power_max`, `${row}_bonus_3`, `${row}_bonus_2`, `${row}_bonus_1`, `${row}_target_name`, `${row}_target_distance`, `${row}_target_tohit`],async (attributes) => {
         const wpnName = attributes[`${row}_name`];
         const wpnPower = parseInt(attributes[`${row}_power`]) ||0;
+        const wpnPowerMax = parseInt(attributes[`${row}_power_max`]) ||0;
         const wpnBonus3 = parseInt(attributes[`${row}_bonus_3`]) ||0;
         const wpnBonus2 = parseInt(attributes[`${row}_bonus_2`]) ||0;
         const wpnBonus1 = parseInt(attributes[`${row}_bonus_1`]) ||0;
         const targetName = attributes[`${row}_target_name`];
         const targetDistance = parseInt(attributes[`${row}_target_distance`]) ||0;
         const targetToHit = parseInt(attributes[`${row}_target_tohit`]) ||0;
-
-        const totalDamage = wpnPower + (targetDistance < wpnBonus3 ? 3 : targetDistance < wpnBonus2 ? 2 : targetDistance < wpnBonus1 ? 1 : 0);
+        
+        const wpnIsOCLaser = wpnPower > wpnPowerMax ? 1 : 0; // If an overcharged laser...
+        const wpnPowerDischarge = wpnIsOCLaser ? Math.floor(wpnPower / 2) : wpnPower;
+        const totalDamage = wpnPowerDischarge + (targetDistance <= wpnBonus3 ? 3 : targetDistance <= wpnBonus2 ? 2 : targetDistance <= wpnBonus1 ? 1 : 0);
 
         startRoll(`&{template:custom} {{title=@{banner_fire${section}} **@{character_name}**}} {{subtitle=Weapon Fired}} {{color=red}} {{Weapon=${wpnName}}} {{Target=${targetName}}} {{To-Hit=[[${targetToHit}]] or less}} {{Roll=[[1d10cs>11cf<0]]}} {{Damage=${totalDamage}}} {{Location=[[1t[DLBasic]]]}}`, roll => {
             finishRoll(roll.rollId);
         });
 
         const output = {};
-        output[`${row}_fired`] = 1;
+        output[`${row}_power`] = wpnIsOCLaser ? wpnPowerDischarge : 0;
+        output[`${row}_fired`] = wpnIsOCLaser ? 0 : 1;
         output[`${row}_btn-fire_status`] = 0;
+        if (wpnIsOCLaser) {
+            output[`${row}_target_name`] = '';
+            output[`${row}_target_distance`] = 0;
+            output[`${row}_target_tohit`] = 0;
+        }
         setAttrs(output);
     });
 });
+
 // WEAPON FIRED by clicking checkbox
 on('change:repeating_beams:fired change:repeating_missiles:fired', function(event) {
     if (event.sourceType == 'player') {
@@ -1262,10 +1275,11 @@ on('change:repeating_beams:fired change:repeating_missiles:fired', function(even
 });
 
 // WEAPON POWER (BEAM) ALLOCATION calculations
-on('change:repeating_beams:damaged change:repeating_beams:power change:repeating_beams:power_max remove:repeating_beams', function(eventInfo) {
+on('change:repeating_beams:name change:repeating_beams:damaged change:repeating_beams:power change:repeating_beams:power_max remove:repeating_beams', function(eventInfo) {
     getSectionIDs('repeating_beams', function (ids) {
         const Fieldnames = [];
         ids.forEach(id => {
+            Fieldnames.push(`repeating_beams_${id}_name`);
             Fieldnames.push(`repeating_beams_${id}_damaged`);
             Fieldnames.push(`repeating_beams_${id}_power`);
             Fieldnames.push(`repeating_beams_${id}_power_max`);
@@ -1275,12 +1289,13 @@ on('change:repeating_beams:damaged change:repeating_beams:power change:repeating
             let totalPowerToBeams = 0;
             const output = {};
             ids.forEach(id => {
+                const theBeamIsLaser = values[`repeating_beams_${id}_name`].includes(BEAM_TYPE_LASER_FED);
                 const theBeamIsDamaged = parseInt(values[`repeating_beams_${id}_damaged`]) || 0;
                 const theBeamPower = parseInt(values[`repeating_beams_${id}_power`]) || 0;
                 const theBeamPowerMax = parseInt(values[`repeating_beams_${id}_power_max`]) || 0;
                 totalPowerToBeams += theBeamIsDamaged == 0 ? theBeamPower : 0;
 
-                output[`repeating_beams_${id}_power_status`] = theBeamIsDamaged == 1 ? 1 : (theBeamPowerMax - theBeamPower) < 0 ? 1 : (theBeamPower > 0 ? 2 : 0);
+                output[`repeating_beams_${id}_power_status`] = theBeamIsDamaged == 1 ? 1 : (theBeamPowerMax + theBeamPowerMax * theBeamIsLaser - theBeamPower) < 0 ? 1 : (theBeamPower > 0 ? 2 : 0);
             });
             output['wp_beam'] = totalPowerToBeams;
             setAttrs(output);
