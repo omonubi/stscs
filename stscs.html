@@ -140,45 +140,49 @@
             <span name='attr_mp1'></span> | <span name='attr_mp2'></span> | <span name='attr_mp3'></span>
         </span>
 
-        <h4>Warp Speed</h4>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
+        <input type='hidden' class='warp-show-content' name='attr_warp_show_content' value='1'/>
+        <div class='warp-content'>
+            <hr class='span-grid'/>
+            <h4>Warp Speed</h4>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
 
-        <label>TPA to Warp:</label>
-        <input type='number' name='attr_tpa_warp' min='0' value='0' readonly/>
-        <label>Warp Factor Ratio:</label>
-        <input type='hidden' name='attr_wfr_jump'/>
-        <input type='hidden' name='attr_wfr_cruise'/>
-        <span>
-            <input type='number' class='w3' name='attr_wfr_1' value='0' readonly/>
-            /
-            <input type='number' class='w3' name='attr_wfr_2' value='1' readonly/>
-        </span>
-        <span></span>
-        <span></span>
+            <label>TPA to Warp:</label>
+            <input type='number' name='attr_tpa_warp' min='0' value='0' readonly/>
+            <label>Warp Factor Ratio:</label>
+            <input type='hidden' name='attr_wfr_jump'/>
+            <input type='hidden' name='attr_wfr_cruise'/>
+            <span>
+                <input type='number' class='w3' name='attr_wfr_1' value='0' readonly/>
+                /
+                <input type='number' class='w3' name='attr_wfr_2' value='1' readonly/>
+            </span>
+            <span></span>
+            <span></span>
 
-        <label>Current Warp Factor</label>
-        <input type='hidden' class='wf-current-status' name='attr_wf_current_status'/>
-        <input type='number' class='wf-current' min='0' value='0' name='attr_wf_current' readonly/>
-        <label>Desired Warp Factor</label>
-        <input type='hidden' class='wf-desired-status' name='attr_wf_desired_status'/>
-        <input type='number' class='em' min='0' value='0' name='attr_wf_desired'/>
-        <button type='action' class='btn' name='act_jump'>Update: Phase 3 ONLY</button>
-        <span></span>
+            <label>Current Warp Factor</label>
+            <input type='hidden' class='wf-current-status' name='attr_wf_current_status'/>
+            <input type='number' class='wf-current' min='0' value='0' name='attr_wf_current' readonly/>
+            <label>Desired Warp Factor</label>
+            <input type='hidden' class='wf-desired-status' name='attr_wf_desired_status'/>
+            <input type='number' class='em' min='0' value='0' name='attr_wf_desired'/>
+            <button type='action' class='btn' name='act_jump'>Update: Phase 3 ONLY</button>
+            <span></span>
 
-        <label>Safe Cruise WF:</label>
-        <input type='number' class='w5' name='attr_wf_cruise' min='0' value='0'/>
-        <label>Emergency WF:</label>
-        <input type='number' class='w5' name='attr_wf_emergency' min='0' value='0'/>
-        <label>Stress Charts:</label>
-        <span>
-            <input type='text' class='w5' name='attr_stress_cruise' maxlength='1'/>
-            /
-            <input type='text' class='w5' name='attr_stress_emergency' maxlength='1'/> 
-        </span>
+            <label>Safe Cruise WF:</label>
+            <input type='number' class='w5' name='attr_wf_cruise' min='0' value='0'/>
+            <label>Emergency WF:</label>
+            <input type='number' class='w5' name='attr_wf_emergency' min='0' value='0'/>
+            <label>Stress Charts:</label>
+            <span>
+                <input type='text' class='w5' name='attr_stress_cruise' maxlength='1'/>
+                /
+                <input type='text' class='w5' name='attr_stress_emergency' maxlength='1'/> 
+            </span>
+        </div>
     </div>
     <hr/>
 
@@ -532,9 +536,10 @@
 <input type='hidden' name='attr_banner_klingonwarp' value='[x](https://files.d20.io/images/461677914/LFn_ncPFcBHm_yHjz6xr9A/original.png)'/>
 
 <script type='text/worker'>
+const BEAM_TYPE_LASER_FED = 'FL-';
 const ENGINE_TYPE_IMPULSE = 1;
 const ENGINE_TYPE_WARP = 2;
-const BEAM_TYPE_LASER_FED = 'FL-';
+const TYPE_STATION = 'Station';
 
 // HELPER: Format large numbers with commas
 function formatNumber(value) {
@@ -1017,6 +1022,17 @@ function resetTPA() {
     output['tpa_shields'] = 0;
     setAttrs(output);
 }
+
+// TYPE = STATION = no warp speed
+on('change:type', function(eventInfo) {
+    getAttrs(['type'], function(values) {
+        const type = values['type'];
+
+        const output = {};
+        output['warp_show_content'] = type == TYPE_STATION ? 0 : 1;
+        setAttrs(output);
+    });
+});
 
 // WARP FACTOR changed by player
 on('change:wf_current change:wf_desired', function(eventInfo) {

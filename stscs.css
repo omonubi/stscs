@@ -78,6 +78,13 @@
   grid-template-columns: [first] 20% [second] auto [third] 15% [last];
   row-gap: 5px;
 }
+.ui-dialog .charsheet .warp-show-content[value='0'] ~ .warp-content {
+  display: none;
+}
+.ui-dialog .charsheet .warp-show-content[value='1'] ~ .warp-content {
+  display: contents;
+  grid-column: 1 / 7;
+}
 
 .ui-dialog .charsheet h1 {
   font-size: 1.8em;
