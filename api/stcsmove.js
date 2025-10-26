@@ -1,105 +1,149 @@
+// name: stcsmove.js
+// author: omonubi (omonubi@hotmail.com)
+// game: FASA Star Trek: STCS
+// description: Script to automate movement of ship tokens via macros
+
+if (!state.movementHistory) state.movementHistory = {};    
+
 // Move forward 1 hex
 on('chat:message', function(msg) {
-    if(msg.type == 'api' && msg.selected && msg.content.indexOf('!move 1') == 0){
-		var selectedObjs = msg.selected;
-		_.each(selectedObjs, function(obj) {
-			if(obj._type == 'graphic'){
-				var token = getObj('graphic', obj._id);
-                var top = token.get("top");
-                var left = token.get("left");
-                var rotation = token.get("rotation");
-                top = top - Math.cos(rotation * Math.PI / 180) * 70;
-                left = left + Math.sin(rotation * Math.PI / 180) * 70;
-                token.set({top: top, left: left});
-			};
-		});
-	};
+    if (msg.type === 'api' && msg.content === '!move 1') {
+        _.each(msg.selected, function(obj) {
+            if (obj._type === 'graphic') {
+                var token = getObj('graphic', obj._id);
+                var prev = { top: token.get('top'), left: token.get('left'), rotation: token.get('rotation') };
+                var top = prev.top - Math.cos(prev.rotation * Math.PI / 180) * 70;
+                var left = prev.left + Math.sin(prev.rotation * Math.PI / 180) * 70;
+                token.set({ top: top, left: left });
+    
+                if (!state.movementHistory[obj._id]) state.movementHistory[obj._id] = [];
+                state.movementHistory[obj._id].push(prev);
+            }
+        });
+    }
 });
 
 // Move forward 2 hexes
 on('chat:message', function(msg) {
-    if(msg.type == 'api' && msg.selected && msg.content.indexOf('!move 2') == 0){
-		var selectedObjs = msg.selected;
-		_.each(selectedObjs, function(obj) {
-			if(obj._type == 'graphic'){
-				var token = getObj('graphic', obj._id);
-                var top = token.get("top");
-                var left = token.get("left");
-                var rotation = token.get("rotation");
-                top = top - Math.cos(rotation * Math.PI / 180) * 140;
-                left = left + Math.sin(rotation * Math.PI / 180) * 140;
-                token.set({top: top, left: left});
-			};
-		});
-	};
+    if (msg.type === 'api' && msg.content === '!move 2') {
+        _.each(msg.selected, function(obj) {
+            if (obj._type === 'graphic') {
+                var token = getObj('graphic', obj._id);
+                var prev = { top: token.get('top'), left: token.get('left'), rotation: token.get('rotation') };
+                var top = prev.top - Math.cos(prev.rotation * Math.PI / 180) * 140;
+                var left = prev.left + Math.sin(prev.rotation * Math.PI / 180) * 140;
+                token.set({ top: top, left: left });
+    
+                if (!state.movementHistory[obj._id]) state.movementHistory[obj._id] = [];
+                state.movementHistory[obj._id].push(prev);
+            }
+        });
+    }
 });
 
 // Rotate 1 hex facing to port
 on('chat:message', function(msg) {
-    if(msg.type == 'api' && msg.selected && msg.content.indexOf('!move rp') == 0){
-		var selectedObjs = msg.selected;
-		_.each(selectedObjs, function(obj) {
-			if(obj._type == 'graphic'){
-				var token = getObj('graphic', obj._id);
-        		var rotation = token.get("rotation");
-        		rotation = rotation - 60;
-        		token.set({rotation: rotation});
-			};
-		});
-	};
+    if (msg.type === 'api' && msg.content === '!move rp') {
+        _.each(msg.selected, function(obj) {
+            if (obj._type === 'graphic') {
+                var token = getObj('graphic', obj._id);
+                var prev = { top: token.get('top'), left: token.get('left'), rotation: token.get('rotation') };
+                token.set({ rotation: prev.rotation - 60 });
+    
+                if (!state.movementHistory[obj._id]) state.movementHistory[obj._id] = [];
+                state.movementHistory[obj._id].push(prev);
+            }
+        });
+    }
 });
 
 // Rotate 1 hex facing to starboard
 on('chat:message', function(msg) {
-    if(msg.type == 'api' && msg.selected && msg.content.indexOf('!move rs') == 0){
-		var selectedObjs = msg.selected;
-		_.each(selectedObjs, function(obj) {
-			if(obj._type == 'graphic'){
-				var token = getObj('graphic', obj._id);
-                var rotation = token.get("rotation");
-        		rotation = rotation + 60;
-        		token.set({rotation: rotation});
-			};
-		});
-	};
+    if (msg.type === 'api' && msg.content === '!move rs') {
+        _.each(msg.selected, function(obj) {
+            if (obj._type === 'graphic') {
+                var token = getObj('graphic', obj._id);
+                var prev = { top: token.get('top'), left: token.get('left'), rotation: token.get('rotation') };
+                token.set({ rotation: prev.rotation + 60 });
+    
+                if (!state.movementHistory[obj._id]) state.movementHistory[obj._id] = [];
+                state.movementHistory[obj._id].push(prev);
+            }
+        });
+    }
 });
 
 // Sideslip to port
 on('chat:message', function(msg) {
-    if(msg.type == 'api' && msg.selected && msg.content.indexOf('!move ssp') == 0){
-		var selectedObjs = msg.selected;
-		_.each(selectedObjs, function(obj) {
-			if(obj._type == 'graphic'){
-				var token = getObj('graphic', obj._id);
-                var top = token.get("top");
-                var left = token.get("left");
-                var rotation = token.get("rotation");
-                top = top - Math.cos((rotation - 60) * Math.PI / 180) * 70; 
-                top = top - Math.cos(rotation * Math.PI / 180) * 70;
-                left = left + Math.sin((rotation - 60) * Math.PI / 180) * 70;
-                left = left + Math.sin(rotation * Math.PI / 180) * 70;
-                token.set({top: top, left: left});
-			};
-		});
-	};
+    if (msg.type === 'api' && msg.content === '!move ssp') {
+        _.each(msg.selected, function(obj) {
+            if (obj._type === 'graphic') {
+                var token = getObj('graphic', obj._id);
+                var prev = { top: token.get('top'), left: token.get('left'), rotation: token.get('rotation') };
+                var top = prev.top - Math.cos((prev.rotation - 60) * Math.PI / 180) * 70 - Math.cos(prev.rotation * Math.PI / 180) * 70;
+                var left = prev.left + Math.sin((prev.rotation - 60) * Math.PI / 180) * 70 + Math.sin(prev.rotation * Math.PI / 180) * 70;
+                token.set({ top: top, left: left });
+    
+                if (!state.movementHistory[obj._id]) state.movementHistory[obj._id] = [];
+                state.movementHistory[obj._id].push(prev);
+            }
+        });
+    }
 });
 
 // Sideslip to starboard
 on('chat:message', function(msg) {
-    if(msg.type == 'api' && msg.selected && msg.content.indexOf('!move sss') == 0){
-		var selectedObjs = msg.selected;
-		_.each(selectedObjs, function(obj) {
-			if(obj._type == 'graphic'){
-				var token = getObj('graphic', obj._id);
-                var top = token.get("top");
-                var left = token.get("left");
-                var rotation = token.get("rotation");
-                top = top - Math.cos((rotation + 60) * Math.PI / 180) * 70; 
-                top = top - Math.cos(rotation * Math.PI / 180) * 70;
-                left = left + Math.sin((rotation + 60) * Math.PI / 180) * 70;
-                left = left + Math.sin(rotation * Math.PI / 180) * 70;
-                token.set({top: top, left: left});
-			};
-		});
-	};
+    if (msg.type === 'api' && msg.content === '!move sss') {
+        _.each(msg.selected, function(obj) {
+            if (obj._type === 'graphic') {
+                var token = getObj('graphic', obj._id);
+                var prev = { top: token.get('top'), left: token.get('left'), rotation: token.get('rotation') };
+                var top = prev.top - Math.cos((prev.rotation + 60) * Math.PI / 180) * 70 - Math.cos(prev.rotation * Math.PI / 180) * 70;
+                var left = prev.left + Math.sin((prev.rotation + 60) * Math.PI / 180) * 70 + Math.sin(prev.rotation * Math.PI / 180) * 70;
+                token.set({ top: top, left: left });
+    
+                if (!state.movementHistory[obj._id]) state.movementHistory[obj._id] = [];
+                state.movementHistory[obj._id].push(prev);
+            }
+        });
+    }
 });
+
+// undo
+on('chat:message', function(msg) {
+    if (msg.type === 'api' && msg.content === '!move undo') {
+        _.each(msg.selected, function(obj) {
+            if (obj._type === 'graphic') {
+                var stack = state.movementHistory[obj._id];
+                if (stack && stack.length) {
+                    var last = stack.pop();
+                    var token = getObj('graphic', obj._id);
+                    var curr = { top: token.get('top'), left: token.get('left'), rotation: token.get('rotation') };
+                    
+                    if (!token._redo) token._redo = [];
+                    token._redo.push(curr);
+
+                    token.set(last);  // Changed from last.prev
+                }
+            }
+        });
+    }
+});   
+
+// redo
+on('chat:message', function(msg) {
+    if (msg.type === 'api' && msg.content === '!move redo') {
+        _.each(msg.selected, function(obj) {
+            if (obj._type === 'graphic' && getObj('graphic', obj._id)._redo?.length) {
+                var token = getObj('graphic', obj._id);
+                var next = token._redo.pop();
+                var curr = { top: token.get('top'), left: token.get('left'), rotation: token.get('rotation') };
+                
+                if (!state.movementHistory[obj._id]) state.movementHistory[obj._id] = [];
+                state.movementHistory[obj._id].push(curr);  // Changed from { prev: curr, next: null }
+
+                token.set(next);
+            }
+        });
+    }
+});   
