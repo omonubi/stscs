@@ -623,75 +623,80 @@ on('change:tpa_movement change:mpr_1 change:mpr_2', function(eventInfo) {
 });
 
 // REPAIR and RESET after combat
-on('clicked:repair', function(eventInfo) {
-    // Repair engines
-    getSectionIDs('repeating_engines', function (ids) {
-        const Fieldnames = [];
-        ids.forEach(id => {
-            Fieldnames.push(`repeating_engines_${id}_engine_power_full`);
-        });
-        
-        getAttrs([...Fieldnames], function (values) {
-            const output = {};
+on('clicked:repair', async function(eventInfo) {
+
+    const response = await extractChatData('?{Repair and Reset Vessel|Confirm|Cancel}');
+
+    if (response === 'Confirm') {
+        // Repair engines
+        getSectionIDs('repeating_engines', function (ids) {
+            const Fieldnames = [];
             ids.forEach(id => {
-                output[`repeating_engines_${id}_engine_power`] = values[`repeating_engines_${id}_engine_power_full`];
+                Fieldnames.push(`repeating_engines_${id}_engine_power_full`);
             });
+            
+            getAttrs([...Fieldnames], function (values) {
+                const output = {};
+                ids.forEach(id => {
+                    output[`repeating_engines_${id}_engine_power`] = values[`repeating_engines_${id}_engine_power_full`];
+                });
+                setAttrs(output);
+            });
+        });
+
+        // Repair beam weapons
+        getSectionIDs('repeating_beams', function (ids) {
+            const Fieldnames = [];
+            ids.forEach(id => {
+                Fieldnames.push(`repeating_beams_${id}_damaged`);
+            });
+            
+            getAttrs([...Fieldnames], function (values) {
+                const output = {};
+                ids.forEach(id => {
+                    output[`repeating_beams_${id}_damaged`] = 0;
+                });
+                setAttrs(output);
+            });
+        });
+
+        // Repair missile weapons
+        getSectionIDs('repeating_missiles', function (ids) {
+            const Fieldnames = [];
+            ids.forEach(id => {
+                Fieldnames.push(`repeating_missiles_${id}_damaged`);
+            });
+            
+            getAttrs([...Fieldnames], function (values) {
+                const output = {};
+                ids.forEach(id => {
+                    output[`repeating_missiles_${id}_damaged`] = 0;
+                });
+                setAttrs(output);
+            });
+        });
+
+        // Repair hull and shields, and replace crew
+        getAttrs(['hp_max', 'crew_max'], function(values) {
+            const hpMax = parseInt(values['hp_max']) || 0;
+            const crewMax = parseInt(values['crew_max']) || 0;
+
+            const output = {};
+            output['hp'] = hpMax;
+            output['crew'] = crewMax;
+            output['shield_1_damaged'] = 0;
+            output['shield_2_damaged'] = 0;
+            output['shield_3_damaged'] = 0;
+            output['shield_4_damaged'] = 0;
+            output['shield_5_damaged'] = 0;
+            output['shield_6_damaged'] = 0;
+            output['wf_current'] = 0;
+            output['wf_desired'] = 0;
             setAttrs(output);
         });
-    });
 
-    // Repair beam weapons
-    getSectionIDs('repeating_beams', function (ids) {
-        const Fieldnames = [];
-        ids.forEach(id => {
-            Fieldnames.push(`repeating_beams_${id}_damaged`);
-        });
-        
-        getAttrs([...Fieldnames], function (values) {
-            const output = {};
-            ids.forEach(id => {
-                output[`repeating_beams_${id}_damaged`] = 0;
-            });
-            setAttrs(output);
-        });
-    });
-
-    // Repair missile weapons
-    getSectionIDs('repeating_missiles', function (ids) {
-        const Fieldnames = [];
-        ids.forEach(id => {
-            Fieldnames.push(`repeating_missiles_${id}_damaged`);
-        });
-        
-        getAttrs([...Fieldnames], function (values) {
-            const output = {};
-            ids.forEach(id => {
-                output[`repeating_missiles_${id}_damaged`] = 0;
-            });
-            setAttrs(output);
-        });
-    });
-
-    // Repair hull and shields, and replace crew
-    getAttrs(['hp_max', 'crew_max'], function(values) {
-        const hpMax = parseInt(values['hp_max']) || 0;
-        const crewMax = parseInt(values['crew_max']) || 0;
-
-        const output = {};
-        output['hp'] = hpMax;
-        output['crew'] = crewMax;
-        output['shield_1_damaged'] = 0;
-        output['shield_2_damaged'] = 0;
-        output['shield_3_damaged'] = 0;
-        output['shield_4_damaged'] = 0;
-        output['shield_5_damaged'] = 0;
-        output['shield_6_damaged'] = 0;
-        output['wf_current'] = 0;
-        output['wf_desired'] = 0;
-        setAttrs(output);
-    });
-
-    resetTPA();
+        resetTPA();
+    }
 });
 
 // SHIELD POINTS calculation
@@ -854,11 +859,16 @@ on('change:shield_6c', function(eventInfo) {
 });
 
 // SHIELD POWER COMMITTED
-on('clicked:shield_commit', function(eventInfo) {
-    const output = {};
-    output['shields_allocated_status'] = 0;
-    output['shields_current_status'] = 1;
-    setAttrs(output);
+on('clicked:shield_commit', async (event) => {
+
+    const response = await extractChatData('?{Lock Shield Allocations|Confirm|Cancel}');
+
+    if (response === 'Confirm') {
+        const output = {};
+        output['shields_allocated_status'] = 0;
+        output['shields_current_status'] = 1;
+        setAttrs(output);
+    }
 });
 
 
