@@ -189,6 +189,13 @@
     <!-------------------------------------------------------->
     <h2>Shield Control</h2>
     <div class='grid-6col'>
+        <input type='text' name='attr_shield_phase' value='0'/>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+
         <label>TPA to Shields:</label>
         <input type='number' class='em' name='attr_tpa_shields' min='0' value='0'/>
         <label>Shield Points:</label>
@@ -197,7 +204,7 @@
         <input type='hidden' class='sp-remaining-status' name='attr_sp_remaining_status'/>
         <input type='number' class='sp-remaining' name='attr_sp_remaining' value='0' readonly/>
 
-        <label>SPR: </label>
+        <label>Shield Point Ratio: </label>
         <span>
             <input type='number' class='w3' name='attr_spr_1' min='1' max='2' value='1'/>
             /        
@@ -874,6 +881,12 @@ on('clicked:shield_commit', async (event) => {
 
 // SHIELDS RE-ENERGIZED
 on('clicked:shield_reenergize', function(eventInfo) {
+    energizeShields();
+});
+on('change:shield_phase', function(eventInfo) {
+    energizeShields();
+});
+function energizeShields() {
     getAttrs(['shield_1', 'shield_2', 'shield_3', 'shield_4', 'shield_5', 'shield_6', 'shield_1_damaged', 'shield_2_damaged', 'shield_3_damaged', 'shield_4_damaged', 'shield_5_damaged', 'shield_6_damaged'], function(values) {
         const shield1Allocation = parseInt(values['shield_1']) || 0;
         const shield2Allocation = parseInt(values['shield_2']) || 0;
@@ -897,7 +910,7 @@ on('clicked:shield_reenergize', function(eventInfo) {
         output['shield_6c'] = shield6IsDamaged ? 0 : shield6Allocation;
         setAttrs(output);
     });
-});
+};
 
 // SUPERSTRUCTURE MASS and SIZE calculations
 on('change:mass', function(eventInfo) {

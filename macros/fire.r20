@@ -1,1 +1,0 @@
-!chatmenu @{selected|character_id} {template:menu} {{color=red}} {{title=**@{selected|character_name}**}} {{subtitle=Targeted Weapons}} {{desc=CHATMENU}} --separator: ~ : --title:Beam Weapons --repeating_beams|beam_type|beam_attack|beam_targeted --title:Missile Weapons --repeating_missiles|missile_type|missile_attack|missile_targeted

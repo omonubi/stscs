@@ -44,9 +44,9 @@ on('change:campaign:turnorder', function() {
 	    switch (PhaseIndex) {
 	        case 2: case 3: case 6: case 7: case 10: case 11:
 	            sortTurnOrder(sorter_desc);
-	        case 3: case 7: case 11:
-	            removeFireTokens();
 	            break;
+	        case 4: case 8: case 12:
+	            removeFireTokens();
 	        default:
 	            sortTurnOrder(sorter_asc);
         }
