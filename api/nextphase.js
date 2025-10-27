@@ -8,7 +8,9 @@
 
 var PhaseIndex = 0;
 var RoundIndex = 1; // Used to track combat rounds
-const names = ['Phase 1: Movement', 'Phase 1: Targeting', 'Phase 1: Fire', 'Phase 1: Recharge', 'Phase 2: Movement', 'Phase 2: Targeting', 'Phase 2: Fire', 'Phase 2: Recharge', 'Phase 3: Movement', 'Phase 3: Targeting', 'Phase 3: Fire', 'Phase 3: Recharge', 'Phase/Turn is COMPLETE!'];
+const names = ['Phase 1: Movement', 'Phase 1: Targeting', 'Phase 1: Fire', 'Phase 2: Movement', 
+    'Phase 2: Targeting', 'Phase 2: Fire', 'Phase 3: Movement', 'Phase 3: Targeting', 'Phase 3: Fire', 
+    'Phase/Turn is COMPLETE!'];
 
 // Reset name of token and phase counter
 on('chat:message', function(msg) {
@@ -42,10 +44,10 @@ on('change:campaign:turnorder', function() {
 	    myObj.set('name', names[PhaseIndex]);
 	    sendChat("Phase Tracker", names[PhaseIndex]);
 	    switch (PhaseIndex) {
-	        case 2: case 3: case 6: case 7: case 10: case 11:
+	        case 2: case 5: case 8:
 	            sortTurnOrder(sorter_desc);
 	            break;
-	        case 4: case 8: case 12:
+	        case 3: case 6: case 9:
 	            removeFireTokens();
 	        default:
 	            sortTurnOrder(sorter_asc);
