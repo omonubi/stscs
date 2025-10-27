@@ -1,5 +1,7 @@
 <div>
     <h1><span name='attr_character_name'></span></h1> 
+    <input type='hidden' name='attr_current_phase' value='0'/>
+    <input type='text' name='attr_tpa_reset' value='0'/>
     <!-------------------------------------------------------->
     <div class='grid-3col'>
         <span>
@@ -189,13 +191,6 @@
     <!-------------------------------------------------------->
     <h2>Shield Control</h2>
     <div class='grid-6col'>
-        <input type='text' name='attr_shield_phase' value='0'/>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-
         <label>TPA to Shields:</label>
         <input type='number' class='em' name='attr_tpa_shields' min='0' value='0'/>
         <label>Shield Points:</label>
@@ -883,7 +878,7 @@ on('clicked:shield_commit', async (event) => {
 on('clicked:shield_reenergize', function(eventInfo) {
     energizeShields();
 });
-on('change:shield_phase', function(eventInfo) {
+on('change:current_phase', function(eventInfo) {
     energizeShields();
 });
 function energizeShields() {
@@ -991,6 +986,9 @@ on('change:tpa change:tpa_movement change:tpa_warp change:tpa_weapons change:tpa
 
 // TOTAL POWER AVAILABLE reset
 on('clicked:tpa_reset', function(eventInfo) {
+    resetTPA();
+});
+on('change:tpa_reset', function(eventInfo) {
     resetTPA();
 });
 function resetTPA() {

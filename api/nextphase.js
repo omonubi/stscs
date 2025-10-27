@@ -47,15 +47,18 @@ on('change:campaign:turnorder', function() {
 	        case 2: case 5: case 8:
 	            sortTurnOrder(sorter_desc);
 	            break;
-	        case 3: case 6: case 9:
+	        case 3: case 6:
 	            removeFireTokens();
+                rechargeShields(PhaseIndex);
 	        default:
 	            sortTurnOrder(sorter_asc);
         }
         PhaseIndex ++;
     }
     // If the round is over, update Round label in turn tracker
-    if (PhaseIndex == 13) {
+    if (PhaseIndex == 10) {
+log('phase 10');
+        resetTPA();
         PhaseIndex = 0;
         const resortedTokens = getTurnArray();
         for (let i = 0; i < resortedTokens.length; i++) {
@@ -76,4 +79,70 @@ function removeFireTokens() {
 	_.each (selectedObjs, function(obj) {
 		if (obj.get('_subtype') == 'card') { obj.remove(); }
 	});
+}
+
+// Recharge all shields
+function rechargeShields(currentPhaseIndex) {
+    var tokens = findObjs({ _type: 'graphic' });
+
+    tokens.forEach(function(token) {
+        var charId = token.get('represents');
+        if (!charId) return;
+
+        var character = getObj('character', charId);
+        if (!character) return;
+
+        var tpaResetAttr = findObjs({
+            _type: 'attribute',
+            characterid: charId,
+            name: 'current_phase'
+        })[0];
+
+        if (!tpaResetAttr) {
+            tpaResetAttr = createObj('attribute', {
+                name: 'current_phase',
+                current: currentPhaseIndex,
+                max: '',
+                characterid: charId
+            });
+            log('Created current_phase for character: ' + character.get('name'));
+        } else {
+            tpaResetAttr.setWithWorker({ current: currentPhaseIndex });
+            log('Updated current_phase for character: ' + character.get('name'));
+        }
+    });
+}
+
+function resetTPA() {
+    var tokens = findObjs({ _type: 'graphic' });
+    var now = new Date().toLocaleString();
+
+    tokens.forEach(function(token) {
+        var charId = token.get('represents');
+        if (!charId) return;
+
+        var character = getObj('character', charId);
+        if (!character) return;
+
+        var tpaResetAttr = findObjs({
+            _type: 'attribute',
+            characterid: charId,
+            name: 'tpa_reset'
+        })[0];
+
+        if (!tpaResetAttr) {
+            // Create attribute and use setWithWorker
+            tpaResetAttr = createObj('attribute', {
+                name: 'tpa_reset',
+                current: now,
+                max: '',
+                characterid: charId
+            });
+            log('Created tpa_reset for character: ' + character.get('name'));
+        } else {
+            // Use setWithWorker instead of set
+            tpaResetAttr.setWithWorker({ current: now });
+            log('Updated tpa_reset for character: ' + character.get('name'));
+        }
+    });
 }
