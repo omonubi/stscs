@@ -35,6 +35,7 @@
         </span>
         <span>
             <label>Ratings (Cap | Crew):</label>
+            <input type='hidden' name='attr_caprating_ta'/>
             <input type='number' name='attr_caprating' min='48' value='60'/>
             |            
             <input type='number' name='attr_crewrating' min='27' value='40'/>
@@ -549,6 +550,17 @@ function formatNumber(value) {
     return value.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
+// CAPTAIN RATING change
+on('change:caprating', function(eventInfo) {
+    getAttrs(['caprating'], function(values) {
+        const caprating = parseInt(values['caprating']);
+
+        const output = {};
+        output['caprating_ta'] = caprating * 100;
+        setAttrs(output);
+    });
+});
+
 // CARGO CAPACITY calculation
 on('change:scu', function(eventInfo) {
     getAttrs(['scu'], function(values) {
@@ -614,7 +626,7 @@ on('change:tpa_movement change:mpr_1 change:mpr_2', function(eventInfo) {
 
         const output = {};
         output['mp'] = mp;
-        output['ta'] = mp * 100;
+        output['ta'] = mp * 10000;
         output['mp1'] = mpPhase1;
         output['mp2'] = mpPhase2;
         output['mp3'] = mpPhase3;
