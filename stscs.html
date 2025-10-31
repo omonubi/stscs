@@ -560,6 +560,7 @@
 const BEAM_TYPE_LASER_FED = 'FL-';
 const ENGINE_TYPE_IMPULSE = 1;
 const ENGINE_TYPE_WARP = 2;
+const MAX_WPN_DISTANCE = 24;
 const TYPE_STATION = 'Station';
 
 // HELPER: Format large numbers with commas
@@ -1300,7 +1301,7 @@ function getToHit (chart, distance) {
     ];
 
     const index = ranges.indexOf(chart);
-    const toHit = ranges[index + distance];
+    const toHit = ranges[index + Math.min(distance, MAX_WPN_DISTANCE)];
 
     return isNaN(toHit) ? 0 : toHit;
 }
@@ -1550,14 +1551,18 @@ function getSectionIDsAsync(sectionName){
       </div>
 
       <div class="sheet-content">
-        {{#allprops() title subtitle color Location}}
+        {{#allprops() title subtitle color Location Damage}}
         <div class="sheet-key">{{key}}</div>
         <div class="sheet-value">{{value}}</div>
-        {{/allprops() title subtitle color Location}}
+        {{/allprops() title subtitle color Location Damage}}
 
         {{#^rollGreater() Roll To-Hit}}
         <div class="sheet-key">Result</div>
         <div class="sheet-value"><span class="success">Hit!</span></div>
+        {{#Damage}}
+            <div class="sheet-key">Damage</div>
+            <div class="sheet-value">{{Damage}}</div>
+        {{/Damage}}
         {{#Location}}
             <div class="sheet-key">Location</div>
             <div class="sheet-value">{{Location}}</div>
