@@ -1202,6 +1202,19 @@ on('clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target', a
     const wpnIsPowered = parseInt(attributes[`${row}_power`]) || 0;
     const wpnIsDamaged = parseInt(attributes[`${row}_damaged`]) || 0;
 
+    const output = {};
+    const ids = await getSectionIDsAsync(`repeating_${section}`);
+    
+    ids.forEach(id => {
+        const targetRow = `repeating_${section}_${id}`;
+        output[`${targetRow}_target_name`] = '';
+        output[`${targetRow}_target_distance`] = '';
+        output[`${targetRow}_target_tohit`] = '';
+        output[`${targetRow}_btn-fire_status`] = 0;
+    });
+
+    await setAttrsAsync(output);
+
     // Get target input
     const wpnTargetName = await extractChatData('@{target|token_name}');
     const wpnTargetDistance = +(await extractChatData('?{How far|1}')) || 0;
@@ -1226,7 +1239,6 @@ on('clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target', a
         bankedRows.push(rowID); // Not banked — just target self
     }
 
-    const output = {};
     const weaponNames = [];
 
     for (const id of bankedRows) {
