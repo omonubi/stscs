@@ -1,7 +1,7 @@
 <div>
     <h1><span name='attr_character_name'></span></h1> 
     <input type='hidden' name='attr_current_phase' value='0'/>
-    <input type='text' name='attr_tpa_reset' value='0'/>
+    <input type='hidden' name='attr_tpa_reset' value='0'/>
     <!-------------------------------------------------------->
     <div class='grid-3col'>
         <span>
@@ -43,6 +43,24 @@
         <span></span>
     </div>
     <hr/>
+
+    <!-------------------------------------------------------->
+    <!--
+    <h2>Sensors</h2>
+
+    <div class='grid-6col'>
+        <span>
+            <input type='checkbox' class='damaged' style='margin-bottom: 2px;' name='attr_sensorsdamaged' value='1'/>
+            <label>Status: </label>
+        </span>
+        <input type='text' class='sensor-status' name='attr_sensorsstatus' readonly/>
+        <label>Current Lock → </label>        
+        <input type='text' class='w10' name='attr_sensortarget' readonly/>
+        <button type='action' class='btn' name='act_locksensors'>Lock New Target</button>
+        <span></span>
+    </div>
+    <hr/>
+-->
 
     <!-------------------------------------------------------->
     <h2>Damage Control</h2>
@@ -711,6 +729,17 @@ on('clicked:repair', async function(eventInfo) {
 
         resetTPA();
     }
+});
+
+// SENSORS DAMAGED
+on('change:sensorsdamaged', function(eventInfo) {
+    getAttrs(['sensorsdamaged'], function(values) {
+        const sensorsDamaged = parseInt(values['sensorsdamaged']) || 0;
+
+        const output = {};
+        output['sensorsstatus'] = sensorsDamaged ? 'Damaged' : 'Online';
+        setAttrs(output);
+    });
 });
 
 // SHIELD POINTS calculation

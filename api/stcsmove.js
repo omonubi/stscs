@@ -5,9 +5,25 @@
 
 if (!state.movementHistory) state.movementHistory = {};    
 
+// Hold station
+on('chat:message', function(msg) {
+    if (msg.type === 'api' && msg.content === '!move hs') {
+        _.each(msg.selected, function(obj) {
+            if (obj._type === 'graphic') {
+                var token = getObj('graphic', obj._id);
+                
+                // Add status marker
+                token.set('status_green', false);
+                token.set('status_purple', false);
+                token.set('status_red', true);
+            }
+        });
+    }
+});
+
 // Move forward 1 hex
 on('chat:message', function(msg) {
-    if (msg.type === 'api' && msg.content === '!move 1') {
+    if (msg.type === 'api' && msg.content === '!move f1') {
         _.each(msg.selected, function(obj) {
             if (obj._type === 'graphic') {
                 var token = getObj('graphic', obj._id);
@@ -15,6 +31,10 @@ on('chat:message', function(msg) {
                 var top = prev.top - Math.cos(prev.rotation * Math.PI / 180) * 70;
                 var left = prev.left + Math.sin(prev.rotation * Math.PI / 180) * 70;
                 token.set({ top: top, left: left });
+                
+                // Add status marker
+                token.set('status_green', true);
+                token.set('status_red', false);
     
                 if (!state.movementHistory[obj._id]) state.movementHistory[obj._id] = [];
                 state.movementHistory[obj._id].push(prev);
@@ -25,7 +45,7 @@ on('chat:message', function(msg) {
 
 // Move forward 2 hexes
 on('chat:message', function(msg) {
-    if (msg.type === 'api' && msg.content === '!move 2') {
+    if (msg.type === 'api' && msg.content === '!move f2') {
         _.each(msg.selected, function(obj) {
             if (obj._type === 'graphic') {
                 var token = getObj('graphic', obj._id);
@@ -33,6 +53,10 @@ on('chat:message', function(msg) {
                 var top = prev.top - Math.cos(prev.rotation * Math.PI / 180) * 140;
                 var left = prev.left + Math.sin(prev.rotation * Math.PI / 180) * 140;
                 token.set({ top: top, left: left });
+                
+                // Add status marker
+                token.set('status_green', true);
+                token.set('status_red', false);
     
                 if (!state.movementHistory[obj._id]) state.movementHistory[obj._id] = [];
                 state.movementHistory[obj._id].push(prev);
@@ -73,9 +97,9 @@ on('chat:message', function(msg) {
     }
 });
 
-// Sideslip to port
+// Sideslip to forward/port
 on('chat:message', function(msg) {
-    if (msg.type === 'api' && msg.content === '!move ssp') {
+    if (msg.type === 'api' && msg.content === '!move sspf') {
         _.each(msg.selected, function(obj) {
             if (obj._type === 'graphic') {
                 var token = getObj('graphic', obj._id);
@@ -83,6 +107,10 @@ on('chat:message', function(msg) {
                 var top = prev.top - Math.cos((prev.rotation - 60) * Math.PI / 180) * 70 - Math.cos(prev.rotation * Math.PI / 180) * 70;
                 var left = prev.left + Math.sin((prev.rotation - 60) * Math.PI / 180) * 70 + Math.sin(prev.rotation * Math.PI / 180) * 70;
                 token.set({ top: top, left: left });
+                
+                // Add status marker
+                token.set('status_green', true);
+                token.set('status_red', false);
     
                 if (!state.movementHistory[obj._id]) state.movementHistory[obj._id] = [];
                 state.movementHistory[obj._id].push(prev);
@@ -91,9 +119,9 @@ on('chat:message', function(msg) {
     }
 });
 
-// Sideslip to starboard
+// Sideslip to forward/starboard
 on('chat:message', function(msg) {
-    if (msg.type === 'api' && msg.content === '!move sss') {
+    if (msg.type === 'api' && msg.content === '!move sssf') {
         _.each(msg.selected, function(obj) {
             if (obj._type === 'graphic') {
                 var token = getObj('graphic', obj._id);
@@ -101,6 +129,98 @@ on('chat:message', function(msg) {
                 var top = prev.top - Math.cos((prev.rotation + 60) * Math.PI / 180) * 70 - Math.cos(prev.rotation * Math.PI / 180) * 70;
                 var left = prev.left + Math.sin((prev.rotation + 60) * Math.PI / 180) * 70 + Math.sin(prev.rotation * Math.PI / 180) * 70;
                 token.set({ top: top, left: left });
+                
+                // Add status marker
+                token.set('status_green', true);
+                token.set('status_red', false);
+    
+                if (!state.movementHistory[obj._id]) state.movementHistory[obj._id] = [];
+                state.movementHistory[obj._id].push(prev);
+            }
+        });
+    }
+});
+
+// Move backward 1 hex
+on('chat:message', function(msg) {
+    if (msg.type === 'api' && msg.content === '!move r1') {
+        _.each(msg.selected, function(obj) {
+            if (obj._type === 'graphic') {
+                var token = getObj('graphic', obj._id);
+                var prev = { top: token.get('top'), left: token.get('left'), rotation: token.get('rotation') };
+                var top = prev.top + Math.cos(prev.rotation * Math.PI / 180) * 70;
+                var left = prev.left - Math.sin(prev.rotation * Math.PI / 180) * 70;
+                token.set({ top: top, left: left });
+                
+                // Add status marker
+                token.set('status_purple', true);
+                token.set('status_red', false);
+    
+                if (!state.movementHistory[obj._id]) state.movementHistory[obj._id] = [];
+                state.movementHistory[obj._id].push(prev);
+            }
+        });
+    }
+});
+
+// Move backward 2 hexes
+on('chat:message', function(msg) {
+    if (msg.type === 'api' && msg.content === '!move r2') {
+        _.each(msg.selected, function(obj) {
+            if (obj._type === 'graphic') {
+                var token = getObj('graphic', obj._id);
+                var prev = { top: token.get('top'), left: token.get('left'), rotation: token.get('rotation') };
+                var top = prev.top + Math.cos(prev.rotation * Math.PI / 180) * 140;
+                var left = prev.left - Math.sin(prev.rotation * Math.PI / 180) * 140;
+                token.set({ top: top, left: left });
+                
+                // Add status marker
+                token.set('status_purple', true);
+                token.set('status_red', false);
+    
+                if (!state.movementHistory[obj._id]) state.movementHistory[obj._id] = [];
+                state.movementHistory[obj._id].push(prev);
+            }
+        });
+    }
+});
+
+// Sideslip to aft/port
+on('chat:message', function(msg) {
+    if (msg.type === 'api' && msg.content === '!move sspr') {
+        _.each(msg.selected, function(obj) {
+            if (obj._type === 'graphic') {
+                var token = getObj('graphic', obj._id);
+                var prev = { top: token.get('top'), left: token.get('left'), rotation: token.get('rotation') };
+                var top = prev.top + Math.cos((prev.rotation + 60) * Math.PI / 180) * 70 + Math.cos(prev.rotation * Math.PI / 180) * 70;
+                var left = prev.left - Math.sin((prev.rotation + 60) * Math.PI / 180) * 70 - Math.sin(prev.rotation * Math.PI / 180) * 70;
+                token.set({ top: top, left: left });
+                
+                // Add status marker
+                token.set('status_purple', true);
+                token.set('status_red', false);
+    
+                if (!state.movementHistory[obj._id]) state.movementHistory[obj._id] = [];
+                state.movementHistory[obj._id].push(prev);
+            }
+        });
+    }
+});
+
+// Sideslip to aft/starboard
+on('chat:message', function(msg) {
+    if (msg.type === 'api' && msg.content === '!move sssr') {
+        _.each(msg.selected, function(obj) {
+            if (obj._type === 'graphic') {
+                var token = getObj('graphic', obj._id);
+                var prev = { top: token.get('top'), left: token.get('left'), rotation: token.get('rotation') };
+                var top = prev.top + Math.cos((prev.rotation - 60) * Math.PI / 180) * 70 + Math.cos(prev.rotation * Math.PI / 180) * 70;
+                var left = prev.left - Math.sin((prev.rotation - 60) * Math.PI / 180) * 70 - Math.sin(prev.rotation * Math.PI / 180) * 70;
+                token.set({ top: top, left: left });
+                
+                // Add status marker
+                token.set('status_purple', true);
+                token.set('status_red', false);
     
                 if (!state.movementHistory[obj._id]) state.movementHistory[obj._id] = [];
                 state.movementHistory[obj._id].push(prev);
