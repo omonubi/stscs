@@ -10,7 +10,7 @@ var PhaseIndex = 0;
 var RoundIndex = 1; // Used to track combat rounds
 const names = ['Phase 1: Movement', 'Phase 1: Targeting', 'Phase 1: Fire', 'Phase 2: Movement', 
     'Phase 2: Targeting', 'Phase 2: Fire', 'Phase 3: Movement', 'Phase 3: Targeting', 'Phase 3: Fire', 
-    'Phase/Turn is COMPLETE!'];
+    'Phase/Round is COMPLETE!'];
     
 const PHASE_MAX = 10;
 
@@ -23,6 +23,8 @@ on('chat:message', function(msg) {
     // New combat round
     } else if (msg.type == 'api' && msg.content.indexOf('!nextphase') == 0){
 		const selectedObjs = findObjs({type: 'graphic'});
+		
+		sortTurnOrder(sorter_asc);
 		
 		_.each (selectedObjs, function(obj) {
 			if (obj.get('_subtype') == 'token' && obj.get('name').startsWith('Phase')) {
@@ -51,23 +53,36 @@ on('change:campaign:turnorder', function() {
     	        case 2: case 5: case 8:
     	            sortTurnOrder(sorter_desc);
     	            break;
-    	        case 3: case 6:
+    	        case 3: case 6: case 9:
     	            removeFireTokens();
                     rechargeShields(PhaseIndex);
     	        default:
     	            sortTurnOrder(sorter_asc);
             }
             PhaseIndex ++;
-        } else {
+        } else if (!myObj.get('name').startsWith('Round')) {
+            // Output the name of the vessel whose turn it is.
             // Note: PhaseIndex was incremented!
+            const characterId = myObj.get('represents');
+            const mpAttr = findObjs({ type: 'attribute', characterid: characterId, name: 'mp' });
+            const mp = mpAttr ? mpAttr[0].get('current') : 0;
+            // If the current phase is a movement phase, display the vessel's current MP for the phase
             switch (PhaseIndex) {
+                case 1:
+                    sendChat('Ship', `&{template:custom} {{title=**${myObj.get('name')} - ${Math.floor(mp / 3) + Math.floor((mp % 3) / 2)} MP**}}`);
+                    break;
+                case 4:
+                    sendChat('Ship', `&{template:custom} {{title=**${myObj.get('name')} - ${Math.floor(mp / 3) + (mp % 3 == 1 ? 1 : 0)} MP**}}`);
+                    break;
+                case 7:
+                    sendChat('Ship', `&{template:custom} {{title=**${myObj.get('name')} - ${Math.floor(mp / 3) + Math.floor((mp % 3) / 2)} MP**}}`);
+                    break;
                 case 2: case 3: case 5: case 6: case 8: case 9:
                     sendChat('Ship', `&{template:custom} {{title=**${myObj.get('name')}**}}`);
             }
         }
         // If the round is over, update Round label in turn tracker
         if (PhaseIndex == PHASE_MAX) {
-            removeFireTokens();
             resetTPA();
             const resortedTokens = getTurnArray();
             for (let i = 0; i < resortedTokens.length; i++) {
