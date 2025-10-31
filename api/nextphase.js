@@ -67,6 +67,7 @@ on('change:campaign:turnorder', function() {
         }
         // If the round is over, update Round label in turn tracker
         if (PhaseIndex == PHASE_MAX) {
+            removeFireTokens();
             resetTPA();
             const resortedTokens = getTurnArray();
             for (let i = 0; i < resortedTokens.length; i++) {
