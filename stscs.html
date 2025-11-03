@@ -1246,7 +1246,9 @@ on('clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target', a
         // Skip if not powered
         if (power === 0) continue;
 
-        weaponNames.push(attributes[`${row}_name`] || 'Unknown Weapon');
+        const rowAttrs = await getAttrsAsync([`repeating_${section}_${id}_name`]);
+
+        weaponNames.push(rowAttrs[`repeating_${section}_${id}_name`] || 'Unknown Weapon');
         output[`${targetRow}_target_name`] = wpnTargetName;
         output[`${targetRow}_target_distance`] = wpnTargetDistance;
         output[`${targetRow}_target_tohit`] = wpnTargetToHit;
