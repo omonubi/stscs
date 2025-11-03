@@ -51,6 +51,7 @@ on('change:campaign:turnorder', function() {
     	    sendChat("Phase", `&{template:custom} {{title=**${names[PhaseIndex]}**}} {{color=black}}`);
     	    switch (PhaseIndex) {
     	        case 2: case 5: case 8:
+                    removeSensorStatus();
     	            sortTurnOrder(sorter_desc);
     	            break;
     	        case 3: case 6: case 9:
@@ -114,6 +115,15 @@ function removeFireTokens() {
 	
 	_.each (selectedObjs, function(obj) {
 		if (obj.get('_subtype') == 'card') { obj.remove(); }
+	});
+}
+
+// Remove no-sensor status tokens
+function removeSensorStatus() {
+	const selectedObjs = findObjs({type: 'graphic'});
+	
+	_.each (selectedObjs, function(obj) {
+		if (obj.get('_subtype') == 'token') { obj.set('status_interdiction', false); }
 	});
 }
 
