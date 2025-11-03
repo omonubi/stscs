@@ -66,19 +66,30 @@ on('change:campaign:turnorder', function() {
             const characterId = myObj.get('represents');
             const mpAttr = findObjs({ type: 'attribute', characterid: characterId, name: 'mp' });
             const mp = mpAttr ? mpAttr[0].get('current') : 0;
+            
             // If the current phase is a movement phase, display the vessel's current MP for the phase
+            let noCurrentMove = 0;
             switch (PhaseIndex) {
                 case 1:
+                    noCurrentMove = (mp == 0 || mp == 1) ? 1 : 0;
                     sendChat('Ship', `&{template:custom} {{title=**${myObj.get('name')} - ${Math.floor(mp / 3) + Math.floor((mp % 3) / 2)} MP**}}`);
                     break;
                 case 4:
+                    noCurrentMove = (mp == 0 || mp == 2) ? 1 : 0;
                     sendChat('Ship', `&{template:custom} {{title=**${myObj.get('name')} - ${Math.floor(mp / 3) + (mp % 3 == 1 ? 1 : 0)} MP**}}`);
                     break;
                 case 7:
+                    noCurrentMove = (mp == 0 || mp == 1) ? 1 : 0;
                     sendChat('Ship', `&{template:custom} {{title=**${myObj.get('name')} - ${Math.floor(mp / 3) + Math.floor((mp % 3) / 2)} MP**}}`);
                     break;
                 case 2: case 3: case 5: case 6: case 8: case 9:
                     sendChat('Ship', `&{template:custom} {{title=**${myObj.get('name')}**}}`);
+            }
+            // Set movement status marker if no movement in this phase
+            if (noCurrentMove) {
+                myObj.set('status_green', false);
+                myObj.set('status_purple', false);
+                myObj.set('status_red', true);
             }
         }
         // If the round is over, update Round label in turn tracker

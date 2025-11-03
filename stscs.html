@@ -596,10 +596,10 @@ on('change:scu', function(eventInfo) {
 // COMBAT EFFICIENCY calculation
 on('change:defense change:wdf', function(eventInfo) {
     getAttrs(['defense', 'wdf'], function(values) {
-        const defense = parseInt(values['defense']) || 0;
-        const wpnDmgFactor = parseInt(values['wdf']) || 0;
+        const defense = parseFloat(values['defense']) || 0;
+        const wpnDmgFactor = parseFloat(values['wdf']) || 0;
 
-        const combatEfficiency = defense * wpnDmgFactor / 100;
+        const combatEfficiency = parseFloat((defense * wpnDmgFactor / 100).toFixed(2));
 
         const output = {};
         output['ce'] = combatEfficiency;
@@ -1204,15 +1204,12 @@ on('clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target', a
     const wpnIsDamaged = parseInt(attributes[`${row}_damaged`]) || 0;
 
     const output = {};
-    const ids = await getSectionIDsAsync(`repeating_${section}`);
-    
-    ids.forEach(id => {
-        const targetRow = `repeating_${section}_${id}`;
-        output[`${targetRow}_target_name`] = '';
-        output[`${targetRow}_target_distance`] = '';
-        output[`${targetRow}_target_tohit`] = '';
-        output[`${targetRow}_btn-fire_status`] = 0;
-    });
+
+    // Clear only the triggered row
+    output[`${row}_target_name`] = '';
+    output[`${row}_target_distance`] = '';
+    output[`${row}_target_tohit`] = '';
+    output[`${row}_btn-fire_status`] = 0;
 
     await setAttrsAsync(output);
 
