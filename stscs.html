@@ -36,9 +36,9 @@
         <span>
             <label>Ratings (Cap | Crew):</label>
             <input type='hidden' name='attr_caprating_ta'/>
-            <input type='number' name='attr_caprating' min='48' value='60'/>
+            <input type='number' name='attr_caprating' min='48'/>
             |            
-            <input type='number' name='attr_crewrating' min='27' value='40'/>
+            <input type='number' name='attr_crewrating' min='27'/>
         </span>
         <span></span>
     </div>
@@ -558,10 +558,32 @@
 
 <script type='text/worker'>
 const BEAM_TYPE_LASER_FED = 'FL-';
+const COPY_OF = "Copy of";
 const ENGINE_TYPE_IMPULSE = 1;
 const ENGINE_TYPE_WARP = 2;
 const MAX_WPN_DISTANCE = 24;
 const TYPE_STATION = 'Station';
+
+// ON SHEET OPENED
+on('sheet:opened',function(){
+    getAttrs(['character_name'], function(values) {
+        const charactername = values['character_name'];
+        
+        const output = {};
+
+        if (charactername.includes(COPY_OF)) {
+            output['caprating'] = 45 + getRandomIntInclusive(1,10) + getRandomIntInclusive(1,10) + getRandomIntInclusive(1,10);
+            output['crewrating'] = 25 + getRandomIntInclusive(1,10) + getRandomIntInclusive(1,10) + getRandomIntInclusive(1,10);
+        }
+
+        setAttrs(output);
+    });
+});
+function getRandomIntInclusive(min, max) {
+  const minCeiled = Math.ceil(min);
+  const maxFloored = Math.floor(max);
+  return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled);
+}
 
 // HELPER: Format large numbers with commas
 function formatNumber(value) {
