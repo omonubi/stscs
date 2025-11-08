@@ -26,6 +26,13 @@
             <input type='text' name='attr_capname' placeholder='name...'/>
         </span>
         <span>
+            <label>Rating:</label>
+            <input type='hidden' name='attr_caprating_ta'/>
+            <input type='number' name='attr_caprating' min='48'/>
+        </span>
+        <span></span>
+
+        <span>
             <label>Crew:</label>
             <span >
                 <input type='number' class='w5' name='attr_crew' value='0' min='0'/>
@@ -34,13 +41,19 @@
             </span>
         </span>
         <span>
-            <label>Ratings (Cap | Crew):</label>
-            <input type='hidden' name='attr_caprating_ta'/>
-            <input type='number' name='attr_caprating' min='48'/>
-            |            
+            <label>Rating:</label>
             <input type='number' name='attr_crewrating' min='27'/>
         </span>
-        <span></span>
+        <span>
+            <button type='roll' class='btn' name='roll_rollcrewbonus' value='&{template:custom} {{title=**@{character_name}**}} {{subtitle=Crew Efficiency Roll}} {{color=gold}} {{Rating=[[@{crewrating}]]}} {{Roll=[[d100]]}}'>Check</button>
+            <select class='crewbonus' name='attr_crewbonus'>
+                <option value='0' selected>None this round</option>
+                <option value='1'>+1 To-Hit (1 wpn/bank)</option>
+                <option value='2'>+1 TPA per engine</option>
+                <option value='3'>+1 TPA to 1 shield</option>
+                <option value='4'>Repair 1 damage (eng or sup)</option>
+            </select>
+        </span>
     </div>
     <hr/>
 
@@ -63,7 +76,10 @@
 -->
 
     <!-------------------------------------------------------->
-    <h2>Damage Control</h2>
+    <h2>Damage Control
+        <input type='hidden' class='crewbonus4' name='attr_crewbonus4' value='0'/>
+        <span class='crewbonusicon' title='crew efficiency bonus'>&#x26A1;</span>
+    </h2>
 
     <div class='grid-6col'>
         <label>Superstructure:</label>
@@ -107,7 +123,11 @@
     <hr/>
 
     <!-------------------------------------------------------->
-    <h2>Total Power Available</h2>
+    <h2>Total Power Available
+        <input type='hidden' class='crewbonus2' name='attr_crewbonus2' value='0'/>
+        <span class='crewbonusicon' title='crew efficiency bonus'>&#x26A1;</span>
+    </h2>
+
     <div class='grid-6col'>
         <label>TPA:</label> 
         <span><span name='attr_tpa'></span> / <span name='attr_tpa_max'></span></span>
@@ -208,7 +228,11 @@
     <hr/>
 
     <!-------------------------------------------------------->
-    <h2>Shield Control</h2>
+    <h2>Shield Control
+        <input type='hidden' class='crewbonus3' name='attr_crewbonus3' value='0'/>
+        <span class='crewbonusicon' title='crew efficiency bonus'>&#x26A1;</span>
+    </h2>
+
     <div class='grid-6col'>
         <label>TPA to Shields:</label>
         <input type='number' class='em' name='attr_tpa_shields' min='0' value='0'/>
@@ -294,7 +318,12 @@
     <hr/>
 
     <!-------------------------------------------------------->
-    <h2>Fire Control</h2>
+    <h2>Fire Control
+        <input type='hidden' class='crewbonus1' name='attr_crewbonus1' value='0'/>
+        <span class='crewbonusicon' title='crew efficiency bonus'>&#x26A1;</span>
+    </h2>
+
+    <input type='hidden' name='attr_crewbonustohitapplied' value='0'/>
     <div class='grid-6col'>
         <label>TPA to Weapons:</label>
         <input type='number' class='em' name='attr_tpa_weapons' min='0' value='0'/>
@@ -559,6 +588,12 @@
 <script type='text/worker'>
 const BEAM_TYPE_LASER_FED = 'FL-';
 const COPY_OF = "Copy of";
+const CREW_BONUS_WEAPONS = 1;
+const CREW_BONUS_ENGINES = 2;
+const CREW_BONUS_SHIELD = 3;
+const CREW_BONUS_REPAIR = 4;
+const EMPTY_STRING = '';
+const ENGINE_NO_POWER = 0;
 const ENGINE_TYPE_IMPULSE = 1;
 const ENGINE_TYPE_WARP = 2;
 const MAX_WPN_DISTANCE = 24;
@@ -625,6 +660,18 @@ on('change:defense change:wdf', function(eventInfo) {
 
         const output = {};
         output['ce'] = combatEfficiency;
+        setAttrs(output);
+    });
+});
+
+// CREW BONUS selection
+on('change:crewbonus', function(eventInfo) {
+    getAttrs(['crewbonus'], function(values) {
+        const crewBonus = parseInt(values['crewbonus']) || 0;
+
+        const output = {};
+        output['crewbonus1'] = output['crewbonus2'] = output['crewbonus3'] = output['crewbonus4'] = 0;
+        output[`crewbonus${crewBonus}`] = 1;
         setAttrs(output);
     });
 });
@@ -766,8 +813,8 @@ on('change:sensorsdamaged', function(eventInfo) {
 });
 
 // SHIELD POINTS calculation
-on('change:tpa_shields change:spr_1 change:spr_2 change:shield_1 change:shield_2 change:shield_3 change:shield_4 change:shield_5 change:shield_6', function(eventInfo) {
-    getAttrs(['tpa_shields', 'spr_1', 'spr_2', 'shield_1', 'shield_2', 'shield_3', 'shield_4', 'shield_5', 'shield_6'], function(values) {
+on('change:tpa_shields change:spr_1 change:spr_2 change:shield_1 change:shield_2 change:shield_3 change:shield_4 change:shield_5 change:shield_6 change:crewbonus3', function(eventInfo) {
+    getAttrs(['tpa_shields', 'spr_1', 'spr_2', 'shield_1', 'shield_2', 'shield_3', 'shield_4', 'shield_5', 'shield_6', 'crewbonus'], function(values) {
         const power = parseInt(values['tpa_shields']) || 0;
         const spr = (parseInt(values['spr_1']) || 1) / (parseInt(values['spr_2']) || 1);
         const shield1 = parseInt(values['shield_1']) || 0;
@@ -776,9 +823,11 @@ on('change:tpa_shields change:spr_1 change:spr_2 change:shield_1 change:shield_2
         const shield4 = parseInt(values['shield_4']) || 0;
         const shield5 = parseInt(values['shield_5']) || 0;
         const shield6 = parseInt(values['shield_6']) || 0;
+        const crewBonus = parseInt(values['crewbonus']) || 0;
 
-        const sp = Math.floor(power / spr);
-        const powerRemaining = Math.round(power - shield1 * spr - shield2 * spr - shield3 * spr - shield4 * spr - shield5 * spr - shield6 * spr);
+        const totalPower = power + (crewBonus == CREW_BONUS_SHIELD ? 1 : 0);
+        const sp = Math.floor(totalPower / spr);
+        const powerRemaining = Math.round(totalPower - shield1 * spr - shield2 * spr - shield3 * spr - shield4 * spr - shield5 * spr - shield6 * spr);
 
         const output = {};
         output['sp'] = sp;
@@ -1002,15 +1051,17 @@ on('change:hp', function(eventInfo) {
 });
 
 // TOTAL POWER AVAILABLE calculation
-on('change:repeating_engines:engine_power change:repeating_engines:engine_power_full remove:repeating_engines', function(eventInfo) {
+on('change:repeating_engines:engine_power change:repeating_engines:engine_power_full remove:repeating_engines change:crewbonus2', function(eventInfo) {
     getSectionIDs('repeating_engines', function (ids) {
         const Fieldnames = [];
         ids.forEach(id => {
             Fieldnames.push(`repeating_engines_${id}_engine_power`);
             Fieldnames.push(`repeating_engines_${id}_engine_power_full`);
         });
-        
-        getAttrs([...Fieldnames], function (values) {
+
+        getAttrs([...Fieldnames, 'crewbonus'], function (values) {
+            const crewBonus = parseInt(values['crewbonus'] || 0);
+
             let tpa = 0;
             let tpaMax = 0;
             const output = {};
@@ -1018,7 +1069,7 @@ on('change:repeating_engines:engine_power change:repeating_engines:engine_power_
                 const enginePower = parseInt(values[`repeating_engines_${id}_engine_power`]) || 0;
                 const enginePowerMax = parseInt(values[`repeating_engines_${id}_engine_power_full`]) || 0;
                 
-                tpa += enginePower;
+                tpa += enginePower + (enginePower > ENGINE_NO_POWER && crewBonus == CREW_BONUS_ENGINES ? 1 : 0);
                 tpaMax += enginePowerMax
 
                 output[`repeating_engines_${id}_engine_power_status`] = ((enginePower > enginePowerMax) || (enginePower == 0)) ? 1 : enginePower < enginePowerMax ? 2 : 0;
@@ -1073,6 +1124,9 @@ function resetTPA() {
                 output[`repeating_beams_${id}_btn-fire_status`] = 0;
             });
             output['wp_beam'] = 0;
+            output['crewbonus'] = 0;
+            output['crewbonustohitapplied'] = 0;
+            output['crewbonus1'] = output['crewbonus2'] = output['crewbonus3'] = output['crewbonus4'] = 0;
             setAttrs(output);
         });
     });
@@ -1216,7 +1270,7 @@ on('clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target', a
     const row = `repeating_${section}_${rowID}`;
 
     const attributes = await getAttrsAsync([
-        `${row}_name`, `${row}_chart`, `${row}_maxrange`, `${row}_power`, `${row}_damaged`
+        `${row}_name`, `${row}_chart`, `${row}_maxrange`, `${row}_power`, `${row}_damaged`, `crewbonus`, `crewbonustohitapplied`
     ]);
 
     const wpnName = attributes[`${row}_name`];
@@ -1224,6 +1278,8 @@ on('clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target', a
     const wpnMaxRange = parseInt(attributes[`${row}_maxrange`]) || 0;
     const wpnIsPowered = parseInt(attributes[`${row}_power`]) || 0;
     const wpnIsDamaged = parseInt(attributes[`${row}_damaged`]) || 0;
+    const crewBonus = parseInt(attributes[`crewbonus`]) || 0;
+    const crewBonusApplied = parseInt(attributes[`crewbonustohitapplied`]) || 0;
 
     const output = {};
 
@@ -1238,7 +1294,8 @@ on('clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target', a
     // Get target input
     const wpnTargetName = await extractChatData('@{target|token_name}');
     const wpnTargetDistance = +(await extractChatData('?{How far|1}')) || 0;
-    const wpnTargetToHit = getToHit(wpnChart, wpnTargetDistance);
+    const wpnCrewBonus = crewBonus == CREW_BONUS_WEAPONS && !crewBonusApplied ? +(await extractChatData('?{Apply crew bonus|Yes,1|No,0}')) || 0 : 0;
+    const wpnTargetToHit = getToHit(wpnChart, wpnTargetDistance) + wpnCrewBonus;
     const wpnTargetToHitStr = `${wpnTargetToHit * 10}%`;
 
     // Get all matching banked weapons
@@ -1283,6 +1340,8 @@ on('clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target', a
     } else {
         startRoll(`&{template:custom} {{title=**@{character_name}**}} {{subtitle=Weapons Targeted}} {{color=green}} {{Weapons=${weaponNames.join('\\n')}}} {{Target=${wpnTargetName}}} {{Distance=${wpnTargetDistance} hexes}} {{Firing Chart=${wpnChart}}} {{Chance To-Hit=${wpnTargetToHitStr}}}`, roll => finishRoll(roll.rollId));
     }
+
+    output[`crewbonustohitapplied`] = Math.max(wpnCrewBonus, crewBonusApplied);
 
     await setAttrsAsync(output);
 });   
@@ -1594,6 +1653,16 @@ function getSectionIDsAsync(sectionName){
         <div class="sheet-key">Result</div>
         <div class="sheet-value"><span class="failure">Miss!</span></div>
         {{/rollGreater() Roll To-Hit}}
+
+        {{#^rollGreater() Roll Rating}}
+        <div class="sheet-key">Result</div>
+        <div class="sheet-value"><span class="success">Bonus!</span></div>
+        {{/^rollGreater() Roll Rating}}
+
+        {{#rollGreater() Roll Rating}}
+        <div class="sheet-key">Result</div>
+        <div class="sheet-value"><span class="failure">No Bonus</span></div>
+        {{/rollGreater() Roll Rating}}
 
         {{#desc}}<div class="sheet-desc">{{desc}}</div>{{/desc}}
       </div>

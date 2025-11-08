@@ -138,6 +138,9 @@
   background-color: gainsboro;
   margin: 0px;
 }
+.ui-dialog .charsheet select.crewbonus {
+  width: fit-content;
+}
 
 .ui-dialog .charsheet span.shields-allocated,
 .ui-dialog .charsheet span.shields-current,
@@ -176,6 +179,20 @@
   display: none;
 }
 .ui-dialog .charsheet .impulse-power-status[value='1'] ~ .no-impulse-power {
+  display: inline-block;
+}
+
+/**************** CREW EFFICIENCY INDICATORS ****************/
+.ui-dialog .charsheet .crewbonus1[value='0'] ~ .crewbonusicon,
+.ui-dialog .charsheet .crewbonus2[value='0'] ~ .crewbonusicon,
+.ui-dialog .charsheet .crewbonus3[value='0'] ~ .crewbonusicon,
+.ui-dialog .charsheet .crewbonus4[value='0'] ~ .crewbonusicon {
+  display: none;
+}
+.ui-dialog .charsheet .crewbonus1[value='1'] ~ .crewbonusicon,
+.ui-dialog .charsheet .crewbonus2[value='1'] ~ .crewbonusicon,
+.ui-dialog .charsheet .crewbonus3[value='1'] ~ .crewbonusicon,
+.ui-dialog .charsheet .crewbonus4[value='1'] ~ .crewbonusicon {
   display: inline-block;
 }
 
