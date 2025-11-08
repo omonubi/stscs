@@ -45,7 +45,7 @@
             <input type='number' name='attr_crewrating' min='27'/>
         </span>
         <span>
-            <button type='roll' class='btn' name='roll_rollcrewbonus' value='&{template:custom} {{title=**@{character_name}**}} {{subtitle=Crew Efficiency Roll}} {{color=gold}} {{Rating=[[@{crewrating}]]}} {{Roll=[[d100]]}}'>Check</button>
+            <button type='roll' class='btn' name='roll_rollcrewbonus' value='&{template:custom} {{title=**@{character_name}**}} {{subtitle=Crew Efficiency Roll}} {{color=gold}} {{Rating=[[@{crewrating}]]}} {{Roll=[[d100]]}}'>Bonus</button>
             <select class='crewbonus' name='attr_crewbonus'>
                 <option value='0' selected>None this round</option>
                 <option value='1'>+1 To-Hit (1 wpn/bank)</option>
@@ -76,24 +76,35 @@
 -->
 
     <!-------------------------------------------------------->
-    <h2>Damage Control
-        <input type='hidden' class='crewbonus4' name='attr_crewbonus4' value='0'/>
+    <h2>Engineering
+        <input type='hidden' class='crewbonus2' name='attr_crewbonus2' value='0'/>
         <span class='crewbonusicon' title='crew efficiency bonus'>&#x26A1;</span>
     </h2>
 
     <div class='grid-6col'>
-        <label>Superstructure:</label>
-        <span>
-            <input type='hidden' class='hp-status' name='attr_hp_status' value='0'/>
-            <input type='number' class='hp' name='attr_hp' value='0'/>
-            /
-            <span name='attr_hp_max'></span>
-        </span>
-        <label>Damage Chart:</label>
-        <span name='attr_dmg_chart'></span>
+        <button type='action' class='btn' name='act_tpa_reset'>Reset TPA</button>
         <span></span>
-        <span></span>
+        <label><strong>Current TPA:</strong></label> 
+        <span><strong><span name='attr_tpa'></span> / <span name='attr_tpa_max'></span></strong></span>
+        <label>TPA Unallocated:</label>
+        <input type='hidden' class='tpa-remaining-status' name='attr_tpa_remaining_status'/>
+        <input type='number' class='tpa-remaining' name='attr_tpa_remaining'  value='0' readonly/>
 
+        <label>TPA to Movement:</label>
+        <input type='number' class='em' name='attr_tpa_movement' min='0' value='0'/>
+        <label>TPA to Shields:</label>
+        <input type='number' class='em' name='attr_tpa_shields' min='0' value='0'/>
+        <label>TPA to Weapons:</label>
+        <input type='number' class='em' name='attr_tpa_weapons' min='0' value='0'/>
+                
+        <label>TPA to Warp:</label>
+        <input type='number' name='attr_tpa_warp' min='0' value='0' readonly/>
+        <span></span>
+        <span></span>
+    </div>
+    <br/>
+    
+    <div class='grid-6col'>    
         <h4 class='span-grid'>Engines</h4>
         <div class='span-grid'>
             <label style='padding-left: 32px;'>Model</label>
@@ -123,38 +134,9 @@
     <hr/>
 
     <!-------------------------------------------------------->
-    <h2>Total Power Available
-        <input type='hidden' class='crewbonus2' name='attr_crewbonus2' value='0'/>
-        <span class='crewbonusicon' title='crew efficiency bonus'>&#x26A1;</span>
-    </h2>
-
-    <div class='grid-6col'>
-        <label>TPA:</label> 
-        <span><span name='attr_tpa'></span> / <span name='attr_tpa_max'></span></span>
-        <button type='action' class='btn' name='act_tpa_reset'>Reset TPA</button>
-        <span></span>
-        <label>TPA Unallocated:</label>
-        <input type='hidden' class='tpa-remaining-status' name='attr_tpa_remaining_status'/>
-        <input type='number' class='tpa-remaining' name='attr_tpa_remaining'  value='0' readonly/>
-
-        <label>TPA to Movement:</label>
-        <input type='number' class='em' name='attr_tpa_movement' min='0' value='0'/>
-        <label>TPA to Shields:</label>
-        <input type='number' class='em' name='attr_tpa_shields' min='0' value='0'/>
-        <label>TPA to Weapons:</label>
-        <input type='number' class='em' name='attr_tpa_weapons' min='0' value='0'/>
-                
-        <label>TPA to Warp:</label>
-        <input type='number' name='attr_tpa_warp' min='0' value='0' readonly/>
-        <span></span>
-        <span></span>
-    </div>
-    <hr/>
-
-    <!-------------------------------------------------------->
     <h2>Helm Control</h2>
-    <div class='grid-6col'>
 
+    <div class='grid-6col'>
         <label>TPA to Movement:</label>
         <input type='number' class='em' name='attr_tpa_movement' min='0' value='0'/>
         <span></span>
@@ -180,10 +162,12 @@
         <span>
             <span name='attr_mp1'></span> | <span name='attr_mp2'></span> | <span name='attr_mp3'></span>
         </span>
+    </div>
+    <br/>
 
+    <div class='grid-6col'>
         <input type='hidden' class='warp-show-content' name='attr_warp_show_content' value='1'/>
         <div class='warp-content'>
-            <hr class='span-grid'/>
             <h4>Warp Speed</h4>
             <span></span>
             <span></span>
@@ -228,10 +212,183 @@
     <hr/>
 
     <!-------------------------------------------------------->
-    <h2>Shield Control
+    <h2>Fire Control
+        <input type='hidden' class='crewbonus1' name='attr_crewbonus1' value='0'/>
+        <span class='crewbonusicon' title='crew efficiency bonus'>&#x26A1;</span>
+    </h2>
+
+    <input type='hidden' name='attr_crewbonustohitapplied' value='0'/>
+    <div class='grid-6col'>
+        <label>TPA to Weapons:</label>
+        <input type='number' class='em' name='attr_tpa_weapons' min='0' value='0'/>
+        <span></span>
+        <span></span>
+        <label>TPA Remaining:</label>
+        <input type='hidden' class='wp-remaining-status' name='attr_wp_remaining_status'/>
+        <input type='number' class='wp-remaining' name='attr_wp_remaining' value='0' readonly/>
+    </div>
+    <br/>
+
+    
+    <div class='grid-6col'>
+        <h4 class='span-grid'>Beam Weapons</h4>
+        <input type='hidden' name='attr_wp_beam'/>
+        <div class='span-grid'>
+            <label style='padding-left: 4px;'>X</label>
+            <label style='padding-left: 15px;'>Desig. (Arcs)</label>
+            <label style='padding-left: 18px;'>Range</label>
+            <label style='padding-left: 15px;'>Chart</label>
+            <label style='padding-left: 14px;'>Power</label>
+            <label style='padding-left: 23px;'>Max</label>
+            <label style='padding-left: 20px;'>+3</label>
+            <label style='padding-left: 20px;'>+2</label>
+            <label style='padding-left: 20px;'>+1</label>
+            <label style='padding-left: 115px;'>Target</label>
+            <label style='padding-left: 36px;'>Distance</label>
+            <label style='padding-left: 5px;'>To-Hit</label>
+        </div>
+        <fieldset class='repeating_beams'>
+            <input type='checkbox' class='damaged' name='attr_damaged' value='1'/>
+            <input type='text' class='w10' name='attr_name' placeholder='# Name (arcs)...'/>
+            <input type='number' class='w5' name='attr_maxrange'/>
+            <select class='w5' name='attr_chart'>
+                <option value='0' selected>select...</option>
+                <option>A</option>
+                <option>B</option>
+                <option>C</option>
+                <option>D</option>
+                <option>E</option>
+                <option>F</option>
+                <option>G</option>
+                <option>H</option>
+                <option>I</option>
+                <option>J</option>
+                <option>K</option>
+                <option>L</option>
+                <option>M</option>
+                <option>N</option>
+                <option>O</option>
+                <option>P</option>
+                <option>Q</option>
+                <option>R</option>
+                <option>S</option>
+                <option>T</option>
+                <option>U</option>
+                <option>V</option>
+                <option>W</option>
+                <option>X</option>
+                <option>Y</option>
+            </select>
+            <input type='hidden' class='power-status' name='attr_power_status'/>
+            <input type='number' class='power' name='attr_power' min='0' max='10' value='0'/>
+            /
+            <input type='number' name='attr_power_max' min='0' max='10' value='0'/>
+            <input type='text' class='w3' name='attr_bonus_3' value='-'/>
+            <input type='text' class='w3' name='attr_bonus_2' value='-'/>
+            <input type='text' class='w3' name='attr_bonus_1' value='-'/>
+            <span>
+                <input type='hidden' class='btn-target-status' name='attr_btn-target_status' value='0'/>
+                <button type='action' class='btn' name='act_btn-target'>Target</button>
+            </span>
+            →
+            <input type='text' class='w10' name='attr_target_name' readonly/>
+            <input type='number' class='w5' name='attr_target_distance' value='0' readonly/>
+            <input type='text' class='w5' name='attr_target_tohit' value='0' readonly/>
+            <span>
+                <input type='hidden' class='btn-fire-status' name='attr_btn-fire_status' value='0'/>
+                <button type='action' class='btn' name='act_btn-fire'>Fire</button>
+            </span>
+        </fieldset>
+    </div>
+    <br/>
+        
+    <div class='grid-6col'>
+        <h4 class='span-grid'>Missile Weapons</h4>
+        <input type='hidden' name='attr_wp_missile'/>
+        <div class='span-grid'>
+            <label style='padding-left: 4px;'>X</label>
+            <label style='padding-left: 15px;'>Desig. (Arcs)</label>
+            <label style='padding-left: 18px;'>Range</label>
+            <label style='padding-left: 15px;'>Chart</label>
+            <label style='padding-left: 14px;'>Power</label>
+            <label style='padding-left: 2px;'>Damage</label>
+            <label style='padding-left: 7px;'>Arm</label>
+            <label style='padding-left: 192px;'>Target</label>
+            <label style='padding-left: 36px;'>Distance</label>
+            <label style='padding-left: 5px;'>To-Hit</label>
+        </div>
+        <fieldset class='repeating_missiles'>
+            <input type='checkbox' class='damaged' name='attr_damaged' value='1'/>
+            <input type='text' class='w10' name='attr_name' placeholder='# Name (arcs)...'/>
+            <input type='number' class='w5' name='attr_maxrange'/>
+            <select class='w5' name='attr_chart'>
+                <option value='0' selected>select...</option>
+                <option>A</option>
+                <option>B</option>
+                <option>C</option>
+                <option>D</option>
+                <option>E</option>
+                <option>F</option>
+                <option>G</option>
+                <option>H</option>
+                <option>I</option>
+                <option>J</option>
+                <option>K</option>
+                <option>L</option>
+                <option>M</option>
+                <option>N</option>
+                <option>O</option>
+                <option>P</option>
+                <option>Q</option>
+                <option>R</option>
+                <option>S</option>
+                <option>T</option>
+                <option>U</option>
+                <option>V</option>
+                <option>W</option>
+                <option>X</option>
+                <option>Y</option>
+            </select>
+            <input type='number' name='attr_cost' min='1' max='4' value='1'/>
+            <input type='number' name='attr_power' min='1' max='20' value='1'/>
+            <input type='hidden' class='missile-armed-status' name='attr_armed_status'/>
+            <input type='checkbox' class='missile-armed' style='margin-left: 13px;' value='1' name='attr_armed'/>
+            <span>
+                <input type='hidden' class='btn-target-status' name='attr_btn-target_status' value='0'/>
+                <button type='action' class='btn' style='margin-left: 95px;' name='act_btn-target'>Target</button>
+            </span>
+            →
+            <input type='text' class='w10' name='attr_target_name' readonly/>
+            <input type='number' class='w5' name='attr_target_distance' value='0' readonly/>
+            <input type='text' class='w5' name='attr_target_tohit' value='0' readonly/>
+            <span>
+                <input type='hidden' class='btn-fire-status' name='attr_btn-fire_status' value='0'/>
+                <button type='action' class='btn' name='act_btn-fire'>Fire</button>
+            </span>
+        </fieldset>
+    </div>
+    <hr/>
+
+    <!-------------------------------------------------------->
+    <h2>Damage Control
         <input type='hidden' class='crewbonus3' name='attr_crewbonus3' value='0'/>
         <span class='crewbonusicon' title='crew efficiency bonus'>&#x26A1;</span>
     </h2>
+
+    <div class='grid-6col'>
+        <label>Superstructure:</label>
+        <span>
+            <input type='hidden' class='hp-status' name='attr_hp_status' value='0'/>
+            <input type='number' class='hp' name='attr_hp' value='0'/>
+            /
+            <span name='attr_hp_max'></span>
+        </span>
+        <label>Damage Chart:</label>
+        <span name='attr_dmg_chart'></span>
+        <span></span>
+        <span></span>
+    </div>
+    <br/>
 
     <div class='grid-6col'>
         <label>TPA to Shields:</label>
@@ -314,157 +471,6 @@
         <span class='shields-current-buttons'>
             <button type='action' class='btn' name='act_shield_reenergize'>Re-Energize</button>
         </span>
-    </div>
-    <hr/>
-
-    <!-------------------------------------------------------->
-    <h2>Fire Control
-        <input type='hidden' class='crewbonus1' name='attr_crewbonus1' value='0'/>
-        <span class='crewbonusicon' title='crew efficiency bonus'>&#x26A1;</span>
-    </h2>
-
-    <input type='hidden' name='attr_crewbonustohitapplied' value='0'/>
-    <div class='grid-6col'>
-        <label>TPA to Weapons:</label>
-        <input type='number' class='em' name='attr_tpa_weapons' min='0' value='0'/>
-        <span></span>
-        <span></span>
-        <label>TPA Remaining:</label>
-        <input type='hidden' class='wp-remaining-status' name='attr_wp_remaining_status'/>
-        <input type='number' class='wp-remaining' name='attr_wp_remaining' value='0' readonly/>
-
-        <h4 class='span-grid'>Beam Weapons</h4>
-        <input type='hidden' name='attr_wp_beam'/>
-        <div class='span-grid'>
-            <label style='padding-left: 4px;'>X</label>
-            <label style='padding-left: 15px;'>Desig. (Arcs)</label>
-            <label style='padding-left: 18px;'>Range</label>
-            <label style='padding-left: 15px;'>Chart</label>
-            <label style='padding-left: 14px;'>Power</label>
-            <label style='padding-left: 23px;'>Max</label>
-            <label style='padding-left: 20px;'>+3</label>
-            <label style='padding-left: 20px;'>+2</label>
-            <label style='padding-left: 20px;'>+1</label>
-            <label style='padding-left: 115px;'>Target</label>
-            <label style='padding-left: 36px;'>Distance</label>
-            <label style='padding-left: 5px;'>To-Hit</label>
-        </div>
-        <fieldset class='repeating_beams'>
-            <input type='checkbox' class='damaged' name='attr_damaged' value='1'/>
-            <input type='text' class='w10' name='attr_name' placeholder='# Name (arcs)...'/>
-            <input type='number' class='w5' name='attr_maxrange'/>
-            <select class='w5' name='attr_chart'>
-                <option value='0' selected>select...</option>
-                <option>A</option>
-                <option>B</option>
-                <option>C</option>
-                <option>D</option>
-                <option>E</option>
-                <option>F</option>
-                <option>G</option>
-                <option>H</option>
-                <option>I</option>
-                <option>J</option>
-                <option>K</option>
-                <option>L</option>
-                <option>M</option>
-                <option>N</option>
-                <option>O</option>
-                <option>P</option>
-                <option>Q</option>
-                <option>R</option>
-                <option>S</option>
-                <option>T</option>
-                <option>U</option>
-                <option>V</option>
-                <option>W</option>
-                <option>X</option>
-                <option>Y</option>
-            </select>
-            <input type='hidden' class='power-status' name='attr_power_status'/>
-            <input type='number' class='power' name='attr_power' min='0' max='10' value='0'/>
-            /
-            <input type='number' name='attr_power_max' min='0' max='10' value='0'/>
-            <input type='text' class='w3' name='attr_bonus_3' value='-'/>
-            <input type='text' class='w3' name='attr_bonus_2' value='-'/>
-            <input type='text' class='w3' name='attr_bonus_1' value='-'/>
-            <span>
-                <input type='hidden' class='btn-target-status' name='attr_btn-target_status' value='0'/>
-                <button type='action' class='btn' name='act_btn-target'>Target</button>
-            </span>
-            →
-            <input type='text' class='w10' name='attr_target_name' readonly/>
-            <input type='number' class='w5' name='attr_target_distance' value='0' readonly/>
-            <input type='text' class='w5' name='attr_target_tohit' value='0' readonly/>
-            <span>
-                <input type='hidden' class='btn-fire-status' name='attr_btn-fire_status' value='0'/>
-                <button type='action' class='btn' name='act_btn-fire'>Fire</button>
-            </span>
-        </fieldset>
-    
-        <h4 class='span-grid'>Missile Weapons</h4>
-        <input type='hidden' name='attr_wp_missile'/>
-        <div class='span-grid'>
-            <label style='padding-left: 4px;'>X</label>
-            <label style='padding-left: 15px;'>Desig. (Arcs)</label>
-            <label style='padding-left: 18px;'>Range</label>
-            <label style='padding-left: 15px;'>Chart</label>
-            <label style='padding-left: 14px;'>Power</label>
-            <label style='padding-left: 2px;'>Damage</label>
-            <label style='padding-left: 7px;'>Arm</label>
-            <label style='padding-left: 192px;'>Target</label>
-            <label style='padding-left: 36px;'>Distance</label>
-            <label style='padding-left: 5px;'>To-Hit</label>
-        </div>
-        <fieldset class='repeating_missiles'>
-            <input type='checkbox' class='damaged' name='attr_damaged' value='1'/>
-            <input type='text' class='w10' name='attr_name' placeholder='# Name (arcs)...'/>
-            <input type='number' class='w5' name='attr_maxrange'/>
-            <select class='w5' name='attr_chart'>
-                <option value='0' selected>select...</option>
-                <option>A</option>
-                <option>B</option>
-                <option>C</option>
-                <option>D</option>
-                <option>E</option>
-                <option>F</option>
-                <option>G</option>
-                <option>H</option>
-                <option>I</option>
-                <option>J</option>
-                <option>K</option>
-                <option>L</option>
-                <option>M</option>
-                <option>N</option>
-                <option>O</option>
-                <option>P</option>
-                <option>Q</option>
-                <option>R</option>
-                <option>S</option>
-                <option>T</option>
-                <option>U</option>
-                <option>V</option>
-                <option>W</option>
-                <option>X</option>
-                <option>Y</option>
-            </select>
-            <input type='number' name='attr_cost' min='1' max='4' value='1'/>
-            <input type='number' name='attr_power' min='1' max='20' value='1'/>
-            <input type='hidden' class='missile-armed-status' name='attr_armed_status'/>
-            <input type='checkbox' class='missile-armed' style='margin-left: 13px;' value='1' name='attr_armed'/>
-            <span>
-                <input type='hidden' class='btn-target-status' name='attr_btn-target_status' value='0'/>
-                <button type='action' class='btn' style='margin-left: 95px;' name='act_btn-target'>Target</button>
-            </span>
-            →
-            <input type='text' class='w10' name='attr_target_name' readonly/>
-            <input type='number' class='w5' name='attr_target_distance' value='0' readonly/>
-            <input type='text' class='w5' name='attr_target_tohit' value='0' readonly/>
-            <span>
-                <input type='hidden' class='btn-fire-status' name='attr_btn-fire_status' value='0'/>
-                <button type='action' class='btn' name='act_btn-fire'>Fire</button>
-            </span>
-        </fieldset>
     </div>
     <hr/>
 
