@@ -3,16 +3,16 @@
     <input type='hidden' name='attr_current_phase' value='0'/>
     <input type='hidden' name='attr_tpa_reset' value='0'/>
     <!-------------------------------------------------------->
-    <div class='grid-3col'>
-        <span>
+    <div class='grid-6col'>
+        <span class='span2'>
             <span name='attr_class'></span>
             <span name='attr_type'></span>
         </span>
-        <span>
+        <span class='span2'>
             <label>Size:</label>
             <span name='attr_size'></span>
         </span>
-        <span>
+        <span class='span2'>
             <label>D / WDF / CE:</label>
             <input type='number' class='w5' name='attr_defense' min='0' step='.1' value='0'/>
             /
@@ -21,39 +21,31 @@
             <span name='attr_ce'>0</span>
         </span>
 
-        <span>
-            <label>Captain:</label>
-            <input type='text' name='attr_capname' placeholder='name...'/>
-        </span>
-        <span>
-            <label>Rating:</label>
-            <input type='hidden' name='attr_caprating_ta'/>
-            <input type='number' name='attr_caprating' min='48'/>
-        </span>
+        
+        <button type='roll' class='btn' name='roll_rollcrewbonus' value='&{template:custom} {{title=**@{character_name}**}} {{subtitle=Crew Efficiency Roll}} {{color=gold}} {{Rating=[[@{crewrating}]]}} {{Roll=[[d100]]}}'>Crew Bonus</button>
         <span></span>
-
-        <span>
-            <label>Crew:</label>
-            <span >
-                <input type='number' class='w5' name='attr_crew' value='0' min='0'/>
-                /
-                <span name='attr_crew_max'></span>
-            </span>
+        <label>Captain:</label>
+        <input type='text' class='w12' name='attr_capname' placeholder='name...'/>
+        <label>Rating:</label>
+        <input type='hidden' name='attr_caprating_ta'/>
+        <input type='number' name='attr_caprating' min='48'/>
+        
+        <select class='crew-bonus' name='attr_crewbonus'>
+            <option value='0' selected>None</option>
+            <option value='1'>Bonus To-Hit</option>
+            <option value='2'>Bonus TPA</option>
+            <option value='3'>Bonus SPA</option>
+            <option value='4'>Repair</option>
+        </select>
+        <span></span>
+        <label>Crew:</label>
+        <span >
+            <input type='number' class='w5' name='attr_crew' value='0' min='0'/>
+            /
+            <span name='attr_crew_max'></span>
         </span>
-        <span>
-            <label>Rating:</label>
-            <input type='number' name='attr_crewrating' min='27'/>
-        </span>
-        <span>
-            <button type='roll' class='btn' name='roll_rollcrewbonus' value='&{template:custom} {{title=**@{character_name}**}} {{subtitle=Crew Efficiency Roll}} {{color=gold}} {{Rating=[[@{crewrating}]]}} {{Roll=[[d100]]}}'>Bonus</button>
-            <select class='crewbonus' name='attr_crewbonus'>
-                <option value='0' selected>None this round</option>
-                <option value='1'>+1 To-Hit (1 wpn/bank)</option>
-                <option value='2'>+1 TPA per engine</option>
-                <option value='3'>+1 TPA to 1 shield</option>
-                <option value='4'>Repair 1 damage (eng or sup)</option>
-            </select>
-        </span>
+        <label>Rating:</label>
+        <input type='number' name='attr_crewrating' min='27'/>
     </div>
     <hr/>
 
@@ -137,10 +129,10 @@
     <h2>Helm Control</h2>
 
     <div class='grid-6col'>
-        <label>TPA to Movement:</label>
+        <span></span>
+        <span></span>
+        <label><strong>TPA to Movement:</strong></label>
         <input type='number' class='em' name='attr_tpa_movement' min='0' value='0'/>
-        <span></span>
-        <span></span>
         <label>TPA Remaining:</label> 
         <input type='hidden' class='mp-remaining-status' name='attr_mp_remaining_status'/>
         <input type='number' class='mp-remaining' name='attr_mp_remaining' value='0' readonly/>
@@ -175,7 +167,9 @@
             <span></span>
             <span></span>
 
-            <label>TPA to Warp:</label>
+            <button type='action' class='btn' name='act_jump'>Change Warp Factor</button>
+            <span></span>
+            <label><strong>TPA to Warp:</strong></label>
             <input type='number' name='attr_tpa_warp' min='0' value='0' readonly/>
             <label>Warp Factor Ratio:</label>
             <input type='hidden' name='attr_wfr_jump'/>
@@ -185,8 +179,6 @@
                 /
                 <input type='number' class='w3' name='attr_wfr_2' value='1' readonly/>
             </span>
-            <span></span>
-            <span></span>
 
             <label>Current Warp Factor</label>
             <input type='hidden' class='wf-current-status' name='attr_wf_current_status'/>
@@ -194,7 +186,7 @@
             <label>Desired Warp Factor</label>
             <input type='hidden' class='wf-desired-status' name='attr_wf_desired_status'/>
             <input type='number' class='em' min='0' value='0' name='attr_wf_desired'/>
-            <button type='action' class='btn' name='act_jump'>Update: Phase 3 ONLY</button>
+            <span></span>
             <span></span>
 
             <label>Safe Cruise WF:</label>
@@ -219,10 +211,10 @@
 
     <input type='hidden' name='attr_crewbonustohitapplied' value='0'/>
     <div class='grid-6col'>
-        <label>TPA to Weapons:</label>
+        <span></span>
+        <span></span>
+        <label><strong>TPA to Weapons:</strong></label>
         <input type='number' class='em' name='attr_tpa_weapons' min='0' value='0'/>
-        <span></span>
-        <span></span>
         <label>TPA Remaining:</label>
         <input type='hidden' class='wp-remaining-status' name='attr_wp_remaining_status'/>
         <input type='number' class='wp-remaining' name='attr_wp_remaining' value='0' readonly/>
@@ -376,25 +368,10 @@
     </h2>
 
     <div class='grid-6col'>
-        <label>Superstructure:</label>
-        <span>
-            <input type='hidden' class='hp-status' name='attr_hp_status' value='0'/>
-            <input type='number' class='hp' name='attr_hp' value='0'/>
-            /
-            <span name='attr_hp_max'></span>
-        </span>
-        <label>Damage Chart:</label>
-        <span name='attr_dmg_chart'></span>
-        <span></span>
-        <span></span>
-    </div>
-    <br/>
-
-    <div class='grid-6col'>
-        <label>TPA to Shields:</label>
+        <label>Shield Type:</label>
+        <input type='text' class='w10' name='attr_shield_type'/>
+        <label><strong>TPA to Shields:</strong></label>
         <input type='number' class='em' name='attr_tpa_shields' min='0' value='0'/>
-        <label>Shield Points:</label>
-        <span name='attr_sp'></span>
         <label>TPA Remaining:</label>
         <input type='hidden' class='sp-remaining-status' name='attr_sp_remaining_status'/>
         <input type='number' class='sp-remaining' name='attr_sp_remaining' value='0' readonly/>
@@ -405,8 +382,8 @@
             /        
             <input type='number' class='w3' name='attr_spr_2' min='1' max='6' value='1'/>
         </span>
-        <label>Shield Type:</label>
-        <input type='text' class='w10' name='attr_shield_type'/>
+        <label>Shield Points:</label>
+        <span name='attr_sp'></span>
         <label>Max Shield Power:</label>
         <input type='number' name='attr_shield_max' min='0' max='16' value='0'/>
 
@@ -471,6 +448,21 @@
         <span class='shields-current-buttons'>
             <button type='action' class='btn' name='act_shield_reenergize'>Re-Energize</button>
         </span>
+    </div>
+    <br/>
+
+    <div class='grid-6col'>
+        <label><strong>Superstructure:</strong></label>
+        <span>
+            <input type='hidden' class='hp-status' name='attr_hp_status' value='0'/>
+            <input type='number' class='hp' name='attr_hp' value='0'/>
+            /
+            <span name='attr_hp_max'></span>
+        </span>
+        <label>Damage Chart:</label>
+        <span name='attr_dmg_chart'></span>
+        <span></span>
+        <span></span>
     </div>
     <hr/>
 
@@ -733,7 +725,7 @@ on('change:tpa_movement change:mpr_1 change:mpr_2', function(eventInfo) {
 // REPAIR and RESET after combat
 on('clicked:repair', async function(eventInfo) {
 
-    const response = await extractChatData('?{Repair and Reset Vessel|Confirm|Cancel}');
+    const response = await extractChatData('?{Confirm Repair and Rest|Confirm|Cancel}');
 
     if (response === 'Confirm') {
         // Repair engines
@@ -982,7 +974,7 @@ on('change:shield_6c', function(eventInfo) {
 // SHIELD POWER COMMITTED
 on('clicked:shield_commit', async (event) => {
 
-    const response = await extractChatData('?{Lock Shield Allocations|Confirm|Cancel}');
+    const response = await extractChatData('?{Confirm Shield Allocations|Confirm|Cancel}');
 
     if (response === 'Confirm') {
         const output = {};
@@ -1235,8 +1227,12 @@ on('change:repeating_engines:engine_power_full remove:repeating_engines change:w
 });
 
 // WARP JUMP
-on('clicked:jump', function(eventInfo) {
-    getAttrs(['wf_current', 'wf_desired', 'faction'], function(values) {
+on('clicked:jump', async (event) => {
+    const response = await extractChatData('?{Confirm Speed Change|Confirm|Cancel}');
+
+    if (response === 'Confirm') {
+        const values = await getAttrsAsync(['wf_current', 'wf_desired', 'faction']);
+        
         const wfCurrent = parseInt(values['wf_current']) || 0;
         const wfDesired = parseInt(values['wf_desired']) || 0;
         const faction = values['faction'];
@@ -1246,11 +1242,9 @@ on('clicked:jump', function(eventInfo) {
                 finishRoll(roll.rollId);
             });
 
-            const output = {};
-            output['wf_current'] = wfDesired;
-            setAttrs(output);
+            await setAttrsAsync({'wf_current': wfDesired});
         }
-    });   
+    }   
 });
 
 // WEAPON POINTS calculation

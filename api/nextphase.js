@@ -55,7 +55,6 @@ on('change:campaign:turnorder', function() {
     	            sortTurnOrder(sorter_desc);
     	            break;
     	        case 3: case 6: case 9:
-    	            removeEvasiveStatus();
     	            removeFireTokens();
                     rechargeShields(PhaseIndex);
     	        default:
@@ -109,15 +108,6 @@ on('change:campaign:turnorder', function() {
         }
     }
 });
-
-// Remove evasive maneuver status tokens
-function removeEvasiveStatus() {
-	const selectedObjs = findObjs({type: 'graphic'});
-	
-	_.each (selectedObjs, function(obj) {
-		if (obj.get('_subtype') == 'token') { obj.set('status_stopwatch', false); }
-	});
-}
 
 // Remove fire tokens from map
 function removeFireTokens() {

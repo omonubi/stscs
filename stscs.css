@@ -21,6 +21,9 @@
   padding: 5px;
   row-gap: 5px;
 }
+.ui-dialog .charsheet div.grid-6col .span2 {
+  grid-column: span 2;
+}
 
 .ui-dialog .charsheet div.grid-tpa {
   align-items: center;
@@ -138,8 +141,10 @@
   background-color: gainsboro;
   margin: 0px;
 }
-.ui-dialog .charsheet select.crewbonus {
-  width: fit-content;
+.ui-dialog .charsheet select.crew-bonus {
+  background-color: white; 
+  margin-left: 5px; 
+  width: 130px;
 }
 
 .ui-dialog .charsheet span.shields-allocated,
@@ -173,11 +178,18 @@
 .ui-dialog .charsheet .w10 {
   width: 100px !important; /*override r20 class*/
 }
+.ui-dialog .charsheet .w12 {
+  width: 120px !important; /*override r20 class*/
+}
 
 /**************** ALERT INDICATORS ****************/
+.ui-dialog .charsheet .evasive-maneuvers-status[value='0'] ~ .evasive-maneuvers,
+.ui-dialog .charsheet .evasive-maneuvers-status[value='1'] ~ .no-evasive-maneuvers,
 .ui-dialog .charsheet .impulse-power-status[value='0'] ~ .no-impulse-power {
   display: none;
 }
+.ui-dialog .charsheet .evasive-maneuvers-status[value='1'] ~ .evasive-maneuvers,
+.ui-dialog .charsheet .evasive-maneuvers-status[value='0'] ~ .no-evasive-maneuvers,
 .ui-dialog .charsheet .impulse-power-status[value='1'] ~ .no-impulse-power {
   display: inline-block;
 }
