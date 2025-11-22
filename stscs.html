@@ -904,138 +904,32 @@ on('change:tpa_shields change:spr_1 change:spr_2 change:shield_1 change:shield_2
 });
 
 // SHIELD POINTS ALLOCATED status indicators
-on('change:shield_1 change:shield_1_damaged change:shield_max', function(eventInfo) {
-    getAttrs(['shield_1', 'shield_1_damaged', 'shield_max'], function(values) {
-        const shieldSP = parseInt(values['shield_1']) || 0;
-        const shieldIsDamaged = parseInt(values['shield_1_damaged']) || 0;
-        const shieldSPMax = parseInt(values['shield_max']) || 0;
+['1', '2', '3', '4', '5', '6'].forEach(num => {
+    on(`change:shield_${num} change:shield_${num}_damaged change:shield_max`, function(eventInfo) {
+        getAttrs([`shield_${num}`, `shield_${num}_damaged`, 'shield_max'], function(values) {
+            const shieldSP = parseInt(values[`shield_${num}`]) || 0;
+            const shieldIsDamaged = parseInt(values[`shield_${num}_damaged`]) || 0;
+            const shieldSPMax = parseInt(values['shield_max']) || 0;
 
-        const output = {};
-        output['shield_1_status'] = shieldSP > shieldSPMax || shieldIsDamaged ? 1 : shieldSP == 0 ? 2 : 0;
-        output['shield_1c'] = shieldIsDamaged ? 0 : shieldSP; // When allocation changes, reset & update current
-        setAttrs(output);
-    });
-});
-on('change:shield_2 change:shield_2_damaged change:shield_max', function(eventInfo) {
-    getAttrs(['shield_2', 'shield_2_damaged', 'shield_max'], function(values) {
-        const shieldSP = parseInt(values['shield_2']) || 0;
-        const shieldIsDamaged = parseInt(values['shield_2_damaged']) || 0;
-        const shieldSPMax = parseInt(values['shield_max']) || 0;
-
-        const output = {};
-        output['shield_2_status'] = shieldSP > shieldSPMax || shieldIsDamaged ? 1 : shieldSP == 0 ? 2 : 0;
-        output['shield_2c'] = shieldIsDamaged ? 0 : shieldSP; // When allocation changes, reset & update current
-        setAttrs(output);
-    });
-});
-on('change:shield_3 change:shield_3_damaged change:shield_max', function(eventInfo) {
-    getAttrs(['shield_3', 'shield_3_damaged', 'shield_max'], function(values) {
-        const shieldSP = parseInt(values['shield_3']) || 0;
-        const shieldIsDamaged = parseInt(values['shield_3_damaged']) || 0;
-        const shieldSPMax = parseInt(values['shield_max']) || 0;
-
-        const output = {};
-        output['shield_3_status'] = shieldSP > shieldSPMax || shieldIsDamaged ? 1 : shieldSP == 0 ? 2 : 0;
-        output['shield_3c'] = shieldIsDamaged ? 0 : shieldSP; // When allocation changes, reset & update current
-        setAttrs(output);
-    });
-});
-on('change:shield_4 change:shield_4_damaged change:shield_max', function(eventInfo) {
-    getAttrs(['shield_4', 'shield_4_damaged', 'shield_max'], function(values) {
-        const shieldSP = parseInt(values['shield_4']) || 0;
-        const shieldIsDamaged = parseInt(values['shield_4_damaged']) || 0;
-        const shieldSPMax = parseInt(values['shield_max']) || 0;
-
-        const output = {};
-        output['shield_4_status'] = shieldSP > shieldSPMax || shieldIsDamaged ? 1 : shieldSP == 0 ? 2 : 0;
-        output['shield_4c'] = shieldIsDamaged ? 0 : shieldIsDamaged ? 0 : shieldSP; // When allocation changes, reset & update current
-        setAttrs(output);
-    });
-});
-on('change:shield_5 change:shield_5_damaged change:shield_max', function(eventInfo) {
-    getAttrs(['shield_5', 'shield_5_damaged', 'shield_max'], function(values) {
-        const shieldSP = parseInt(values['shield_5']) || 0;
-        const shieldIsDamaged = parseInt(values['shield_5_damaged']) || 0;
-        const shieldSPMax = parseInt(values['shield_max']) || 0;
-
-        const output = {};
-        output['shield_5_status'] = shieldSP > shieldSPMax || shieldIsDamaged ? 1 : shieldSP == 0 ? 2 : 0;
-        output['shield_5c'] = shieldIsDamaged ? 0 : shieldSP; // When allocation changes, reset & update current
-        setAttrs(output);
-    });
-});
-on('change:shield_6 change:shield_6_damaged change:shield_max', function(eventInfo) {
-    getAttrs(['shield_6', 'shield_6_damaged', 'shield_max'], function(values) {
-        const shieldSP = parseInt(values['shield_6']) || 0;
-        const shieldIsDamaged = parseInt(values['shield_6_damaged']) || 0;
-        const shieldSPMax = parseInt(values['shield_max']) || 0;
-
-        const output = {};
-        output['shield_6_status'] = shieldSP > shieldSPMax || shieldIsDamaged ? 1 : shieldSP == 0 ? 2 : 0;
-        output['shield_6c'] = shieldIsDamaged ? 0 : shieldSP; // When allocation changes, reset & update current
-        setAttrs(output);
+            const output = {};
+            output[`shield_${num}_status`] = shieldSP > shieldSPMax || shieldIsDamaged ? 1 : shieldSP == 0 ? 2 : 0;
+            output[`shield_${num}c`] = shieldIsDamaged ? 0 : shieldSP;
+            setAttrs(output);
+        });
     });
 });
 
 // SHIELD POINTS CURRENT status indicators
-on('change:shield_1c', function(eventInfo) {
-    getAttrs(['shield_1', 'shield_1c'], function(values) {
-        const shieldSPAllocated = parseInt(values['shield_1']) || 0;
-        const shieldSPCurrent = parseInt(values['shield_1c']) || 0;
+['1', '2', '3', '4', '5', '6'].forEach(num => {
+    on(`change:shield_${num}c`, function(eventInfo) {
+        getAttrs([`shield_${num}`, `shield_${num}c`], function(values) {
+            const shieldSPAllocated = parseInt(values[`shield_${num}`]) || 0;
+            const shieldSPCurrent = parseInt(values[`shield_${num}c`]) || 0;
 
-        const output = {};
-        output['shield_1c_status'] = shieldSPCurrent > shieldSPAllocated || shieldSPCurrent == 0 ? 1 : shieldSPCurrent == shieldSPAllocated ? 0 : 2;
-        setAttrs(output);
-    });
-});
-on('change:shield_2c', function(eventInfo) {
-    getAttrs(['shield_2', 'shield_2c'], function(values) {
-        const shieldSPAllocated = parseInt(values['shield_2']) || 0;
-        const shieldSPCurrent = parseInt(values['shield_2c']) || 0;
-
-        const output = {};
-        output['shield_2c_status'] = shieldSPCurrent > shieldSPAllocated || shieldSPCurrent == 0 ? 1 : shieldSPCurrent == shieldSPAllocated ? 0 : 2;
-        setAttrs(output);
-    });
-});
-on('change:shield_3c', function(eventInfo) {
-    getAttrs(['shield_3', 'shield_3c'], function(values) {
-        const shieldSPAllocated = parseInt(values['shield_3']) || 0;
-        const shieldSPCurrent = parseInt(values['shield_3c']) || 0;
-
-        const output = {};
-        output['shield_3c_status'] = shieldSPCurrent > shieldSPAllocated || shieldSPCurrent == 0 ? 1 : shieldSPCurrent == shieldSPAllocated ? 0 : 2;
-        setAttrs(output);
-    });
-});
-on('change:shield_4c', function(eventInfo) {
-    getAttrs(['shield_4', 'shield_4c'], function(values) {
-        const shieldSPAllocated = parseInt(values['shield_4']) || 0;
-        const shieldSPCurrent = parseInt(values['shield_4c']) || 0;
-
-        const output = {};
-        output['shield_4c_status'] = shieldSPCurrent > shieldSPAllocated || shieldSPCurrent == 0 ? 1 : shieldSPCurrent == shieldSPAllocated ? 0 : 2;
-        setAttrs(output);
-    });
-});
-on('change:shield_5c', function(eventInfo) {
-    getAttrs(['shield_5', 'shield_5c'], function(values) {
-        const shieldSPAllocated = parseInt(values['shield_5']) || 0;
-        const shieldSPCurrent = parseInt(values['shield_5c']) || 0;
-
-        const output = {};
-        output['shield_5c_status'] = shieldSPCurrent > shieldSPAllocated || shieldSPCurrent == 0 ? 1 : shieldSPCurrent == shieldSPAllocated ? 0 : 2;
-        setAttrs(output);
-    });
-});
-on('change:shield_6c', function(eventInfo) {
-    getAttrs(['shield_6', 'shield_6c'], function(values) {
-        const shieldSPAllocated = parseInt(values['shield_6']) || 0;
-        const shieldSPCurrent = parseInt(values['shield_6c']) || 0;
-
-        const output = {};
-        output['shield_6c_status'] = shieldSPCurrent > shieldSPAllocated || shieldSPCurrent == 0 ? 1 : shieldSPCurrent == shieldSPAllocated ? 0 : 2;
-        setAttrs(output);
+            const output = {};
+            output[`shield_${num}c_status`] = shieldSPCurrent > shieldSPAllocated || shieldSPCurrent == 0 ? 1 : shieldSPCurrent == shieldSPAllocated ? 0 : 2;
+            setAttrs(output);
+        });
     });
 });
 
