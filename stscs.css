@@ -110,10 +110,13 @@
   background-color: transparent;
   text-align: left;
 }
+.ui-dialog .charsheet input[type='text'] {
+  width:  100%;
+}
 .ui-dialog .charsheet input.em {
   background-color: white;
 }
-.ui-dialog .charsheet input[type="checkbox"].damaged {
+.ui-dialog .charsheet input[type='checkbox'].damaged {
   accent-color: crimson;
 }
 .ui-dialog .charsheet input.sensor-status[value='Online'] {
@@ -145,6 +148,10 @@
   background-color: white; 
   margin-left: 5px; 
   width: 130px;
+}
+.ui-dialog .charsheet input.scan-answer,
+.ui-dialog .charsheet select.scan-question {
+  background-color: white; 
 }
 
 .ui-dialog .charsheet span.shields-allocated,
@@ -192,6 +199,18 @@
 .ui-dialog .charsheet .evasive-maneuvers-status[value='0'] ~ .no-evasive-maneuvers,
 .ui-dialog .charsheet .impulse-power-status[value='1'] ~ .no-impulse-power {
   display: inline-block;
+}
+
+/**************** SENSOR LOCKS ****************/
+.ui-dialog .charsheet .w12[value='NONE'] ~ .span2 input,
+.ui-dialog .charsheet .w12[value='NONE'] ~ .span2 select {
+  background-color: gainsboro;
+  pointer-events: none;
+}
+.ui-dialog .charsheet .w12:not([value='NONE']) ~ .span2 input,
+.ui-dialog .charsheet .w12:not([value='NONE']) ~ .span2 select {
+  background-color:white;
+  pointer-events: all;
 }
 
 /**************** CREW EFFICIENCY INDICATORS ****************/

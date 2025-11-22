@@ -8,18 +8,31 @@
 
 var PhaseIndex = 0;
 var RoundIndex = 1; // Used to track combat rounds
-const names = ['Phase 1: Movement', 'Phase 1: Targeting', 'Phase 1: Fire', 'Phase 2: Movement', 
+const names = ['Phase: Crew Rolls', 'Phase: Sensor Scans', 'Phase 1: Movement', 'Phase 1: Targeting', 'Phase 1: Fire', 'Phase 2: Movement', 
     'Phase 2: Targeting', 'Phase 2: Fire', 'Phase 3: Movement', 'Phase 3: Targeting', 'Phase 3: Fire', 
     'Phase/Round is COMPLETE!'];
-    
-const PHASE_MAX = 10;
+
+const PHASE_CREW = 0;
+const PHASE_SENSORS = 1;    
+const PHASE_1_MOVEMENT = 2;
+const PHASE_1_TARGET = 3;
+const PHASE_1_FIRE = 4;
+const PHASE_2_MOVEMENT = 5;
+const PHASE_2_TARGET = 6;
+const PHASE_2_FIRE = 7;
+const PHASE_3_MOVEMENT = 8;
+const PHASE_3_TARGET = 9;
+const PHASE_3_FIRE = 10;
+const PHASE_ROUND_COMPLETE = 11;
+const PHASE_MAX = 12;
+const ROUND_1 = 1;
 
 // Reset name of token and phase counter
 on('chat:message', function(msg) {
     // New combat 
     if (msg.type == 'api' && msg.content.indexOf('!nextphase reset') == 0){
-        PhaseIndex = 0;
-        RoundIndex = 1;
+        PhaseIndex = PHASE_CREW;
+        RoundIndex = ROUND_1;
     // New combat round
     } else if (msg.type == 'api' && msg.content.indexOf('!nextphase') == 0){
 		const selectedObjs = findObjs({type: 'graphic'});
@@ -30,7 +43,7 @@ on('chat:message', function(msg) {
 			if (obj.get('_subtype') == 'token' && obj.get('name').startsWith('Phase')) {
 			    obj.set('name', names[0]);
 	            sendChat("Phase", `&{template:custom} {{title=**${names[0]}**}} {{color=black}}`);
-			    PhaseIndex = 1;
+			    PhaseIndex = PHASE_SENSORS;
 			    RoundIndex ++;
 			}
 		});
@@ -50,11 +63,11 @@ on('change:campaign:turnorder', function() {
     	    myObj.set('name', names[PhaseIndex]);
     	    sendChat("Phase", `&{template:custom} {{title=**${names[PhaseIndex]}**}} {{color=black}}`);
     	    switch (PhaseIndex) {
-    	        case 2: case 5: case 8:
+    	        case PHASE_1_FIRE: case PHASE_2_FIRE: case PHASE_3_FIRE:
                     removeSensorStatus();
     	            sortTurnOrder(sorter_desc);
     	            break;
-    	        case 3: case 6: case 9:
+    	        case PHASE_2_MOVEMENT: case PHASE_3_MOVEMENT: case PHASE_ROUND_COMPLETE:
     	            removeFireTokens();
                     rechargeShields(PhaseIndex);
     	        default:
@@ -71,21 +84,24 @@ on('change:campaign:turnorder', function() {
             // If the current phase is a movement phase, display the vessel's current MP for the phase
             let noCurrentMove = 0;
             switch (PhaseIndex) {
-                case 1:
+                case PHASE_1_TARGET:
                     noCurrentMove = (mp == 0 || mp == 1) ? 1 : 0;
                     sendChat('Ship', `&{template:custom} {{title=**${myObj.get('name')} - ${Math.floor(mp / 3) + Math.floor((mp % 3) / 2)} MP**}}`);
                     break;
-                case 4:
+                case PHASE_2_TARGET:
                     noCurrentMove = (mp == 0 || mp == 2) ? 1 : 0;
                     sendChat('Ship', `&{template:custom} {{title=**${myObj.get('name')} - ${Math.floor(mp / 3) + (mp % 3 == 1 ? 1 : 0)} MP**}}`);
                     break;
-                case 7:
+                case PHASE_3_TARGET:
                     noCurrentMove = (mp == 0 || mp == 1) ? 1 : 0;
                     sendChat('Ship', `&{template:custom} {{title=**${myObj.get('name')} - ${Math.floor(mp / 3) + Math.floor((mp % 3) / 2)} MP**}}`);
                     break;
-                case 2: case 3: case 5: case 6: case 8: case 9:
+                //case PHASE_1_MOVEMENT:
+                //    break;
+                default:
                     sendChat('Ship', `&{template:custom} {{title=**${myObj.get('name')}**}}`);
             }
+
             // Set movement status marker if no movement in this phase
             if (noCurrentMove) {
                 myObj.set('status_green', false);

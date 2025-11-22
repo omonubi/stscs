@@ -50,24 +50,6 @@
     <hr/>
 
     <!-------------------------------------------------------->
-    <!--
-    <h2>Sensors</h2>
-
-    <div class='grid-6col'>
-        <span>
-            <input type='checkbox' class='damaged' style='margin-bottom: 2px;' name='attr_sensorsdamaged' value='1'/>
-            <label>Status: </label>
-        </span>
-        <input type='text' class='sensor-status' name='attr_sensorsstatus' readonly/>
-        <label>Current Lock → </label>        
-        <input type='text' class='w10' name='attr_sensortarget' readonly/>
-        <button type='action' class='btn' name='act_locksensors'>Lock New Target</button>
-        <span></span>
-    </div>
-    <hr/>
--->
-
-    <!-------------------------------------------------------->
     <h2>Engineering
         <input type='hidden' class='crewbonus2' name='attr_crewbonus2' value='0'/>
         <span class='crewbonusicon' title='crew efficiency bonus'>&#x26A1;</span>
@@ -142,6 +124,31 @@
     <hr/>
 
     <!-------------------------------------------------------->
+    <h2>Sensors</h2>
+
+    <div class='grid-6col'>
+        <button type='action' class='btn' name='act_scan'>Scan Target</button>
+        <input type='text' class='w12' name='attr_sensorlock' value='NONE' readonly/>
+        <input type='hidden' class='w12' name='attr_sensorlockid'/>
+        <span class='span2'>
+            <select class='scan-question' name='attr_scanquestion'>
+                <option value='0'>Submit a query...</option>
+                <option value='1'>How much power is available?</option>
+                <option value='2'>What is the relative power allocation?</option>
+                <option value='3'>How are the shields powered?</option>
+                <!--<option value='4'>Is a specific shield up?</option>-->
+                <option value='5'>How are the weapons powered?</option>
+                <!--<option value='6'>Is a specific weapon powered?</option>-->
+                <option value='7'>How much damage has the vessel taken?</option>
+                <!--<option value='8'>What is the status of the ship's crew?</option>-->
+                <!--<option value='9'>Are any transporters powered?</option>-->
+            </select>
+        </span>
+        <span class='span2'><input type='text' class='scan-answer' name='attr_scananswer' placeholder='Paste the result here...'/>
+    </div>
+    <hr/>
+
+    <!-------------------------------------------------------->
     <h2>Helm Control</h2>
 
     <div class='grid-6col'>
@@ -176,7 +183,7 @@
     <div class='grid-6col'>
         <input type='hidden' class='warp-show-content' name='attr_warp_show_content' value='1'/>
         <div class='warp-content'>
-            <h4>Warp Speed</h4>
+            <h4>Warp Drive</h4>
             <span></span>
             <span></span>
             <span></span>
@@ -196,10 +203,10 @@
                 <input type='number' class='w3' name='attr_wfr_2' value='1' readonly/>
             </span>
 
-            <label>Current Warp Factor</label>
+            <label>Current Warp Factor:</label>
             <input type='hidden' class='wf-current-status' name='attr_wf_current_status'/>
             <input type='number' class='wf-current' min='0' value='0' name='attr_wf_current' readonly/>
-            <label>Desired Warp Factor</label>
+            <label>Desired Warp Factor:</label>
             <input type='hidden' class='wf-desired-status' name='attr_wf_desired_status'/>
             <input type='number' class='em' min='0' value='0' name='attr_wf_desired'/>
             <span></span>
@@ -596,6 +603,8 @@ const ENGINE_NO_POWER = 0;
 const ENGINE_TYPE_IMPULSE = 1;
 const ENGINE_TYPE_WARP = 2;
 const MAX_WPN_DISTANCE = 24;
+const NO_LOCK = 'NONE';
+const SCAN_NONE = 0;
 const TYPE_STATION = 'Station';
 
 // ON SHEET OPENED
@@ -800,16 +809,57 @@ on('clicked:repair', async function(eventInfo) {
     }
 });
 
-// SENSORS DAMAGED
-on('change:sensorsdamaged', function(eventInfo) {
-    getAttrs(['sensorsdamaged'], function(values) {
-        const sensorsDamaged = parseInt(values['sensorsdamaged']) || 0;
+// SCAN question/attr_scananswer
+on('change:scanquestion', function(eventInfo) {
+    if (eventInfo.sourceType == "player") {
+        getAttrs(['sensorlock', 'sensorlockid', 'scanquestion'], function(values) {
+            const sensorLock = values['sensorlock'];
+            const sensorLockId = values['sensorlockid'];
+            const questionIndex = parseInt(values['scanquestion']) || 0;
 
-        const output = {};
-        output['sensorsstatus'] = sensorsDamaged ? 'Damaged' : 'Online';
-        setAttrs(output);
-    });
-});
+            const questions = [
+                '',
+                'How much power is available?',
+                'What is the relative power allocation?',
+                'How are the shields powered?',
+                'Is a specific shield up?',
+                'How are the weapons powered?',
+                'Is a specific weapon powered?',
+                'How much damage has the vessel taken?',
+                'What is the status of the ships crew?',
+                'Are any transporters powered?'
+                ];
+
+            startRoll(`/w gm &{template:custom} {{title=**[@{character_name}](https://journal.roll20.net/character/@{character_id})**}} {{subtitle=Sensor Query}} {{color=orange}} {{Target=[${sensorLock}](https://journal.roll20.net/character/${sensorLockId})}} {{Query=${questions[questionIndex]}}}`, roll => {
+                finishRoll(roll.rollId);
+            });
+        });
+    }
+}); 
+
+// SENSOR scan
+on('clicked:scan', async (event) => {
+    const output = {};
+
+    const { token, charid } = await extractTargetData(); // Destructure JSON
+    const scanRoll = getRandomIntInclusive(1, 10);
+
+    startRoll(
+        `&{template:custom} {{title=**@{character_name}**}} {{subtitle=Scanning ${token}...}} {{color=orange}} {{To-Scan=[[6]]}} {{Roll=[[${scanRoll}]]}}`,
+        roll => finishRoll(roll.rollId)
+    );
+
+    output['sensorlock'] = scanRoll < 7 && token ? token : NO_LOCK;
+    output['sensorlockid'] = scanRoll < 7 ? charid : NO_LOCK;
+    await setAttrsAsync(output);
+});   
+const extractTargetData = async () => {
+    const query = await startRoll(`!{{target=[[0+{"token":"@{target|token_name}","charid":"@{target|character_id}"}]]}} /direct`);
+    finishRoll(query.rollId);
+    const expr = query.results.target.expression;
+    const jsonStr = expr.replace(/0\+\{(.+)\}/, '{$1}');
+    return JSON.parse(jsonStr);
+};
 
 // SHIELD POINTS calculation
 on('change:tpa_shields change:spr_1 change:spr_2 change:shield_1 change:shield_2 change:shield_3 change:shield_4 change:shield_5 change:shield_6 change:crewbonus3', function(eventInfo) {
@@ -1123,9 +1173,6 @@ function resetTPA() {
                 output[`repeating_beams_${id}_btn-fire_status`] = 0;
             });
             output['wp_beam'] = 0;
-            output['crewbonus'] = 0;
-            output['crewbonustohitapplied'] = 0;
-            output['crewbonus1'] = output['crewbonus2'] = output['crewbonus3'] = output['crewbonus4'] = 0;
             setAttrs(output);
         });
     });
@@ -1152,12 +1199,21 @@ function resetTPA() {
     });
 
     const output = {};
+
     output['shield_1'] = output['shield_2'] = output['shield_3'] = output['shield_4'] = output['shield_5'] = output['shield_6'] = 0
     output['shields_allocated_status'] = 1;
     output['shields_current_status'] = 0;
     output['tpa_movement'] = 0;
     output['tpa_weapons'] = 0;
     output['tpa_shields'] = 0;
+
+    output['crewbonus'] = 0;
+    output['crewbonustohitapplied'] = 0;
+    output['crewbonus1'] = output['crewbonus2'] = output['crewbonus3'] = output['crewbonus4'] = 0;
+
+    output['scanquestion'] = SCAN_NONE;
+    output['scananswer'] = EMPTY_STRING;
+
     setAttrs(output);
 }
 
@@ -1637,6 +1693,16 @@ function getSectionIDsAsync(sectionName){
         <div class="sheet-value">{{value}}</div>
         {{/allprops() title subtitle color Location Damage}}
 
+        {{#^rollGreater() Roll Rating}}
+        <div class="sheet-key">Result</div>
+        <div class="sheet-value"><span class="success">Bonus!</span></div>
+        {{/^rollGreater() Roll Rating}}
+
+        {{#rollGreater() Roll Rating}}
+        <div class="sheet-key">Result</div>
+        <div class="sheet-value"><span class="failure">No Bonus</span></div>
+        {{/rollGreater() Roll Rating}}
+
         {{#^rollGreater() Roll To-Hit}}
         <div class="sheet-key">Result</div>
         <div class="sheet-value"><span class="success">Hit!</span></div>
@@ -1655,15 +1721,15 @@ function getSectionIDsAsync(sectionName){
         <div class="sheet-value"><span class="failure">Miss!</span></div>
         {{/rollGreater() Roll To-Hit}}
 
-        {{#^rollGreater() Roll Rating}}
+        {{#^rollGreater() Roll To-Scan}}
         <div class="sheet-key">Result</div>
-        <div class="sheet-value"><span class="success">Bonus!</span></div>
-        {{/^rollGreater() Roll Rating}}
+        <div class="sheet-value"><span class="success">Scanned!</span></div>
+        {{/^rollGreater() Roll To-Scan}}
 
-        {{#rollGreater() Roll Rating}}
+        {{#rollGreater() Roll To-Scan}}
         <div class="sheet-key">Result</div>
-        <div class="sheet-value"><span class="failure">No Bonus</span></div>
-        {{/rollGreater() Roll Rating}}
+        <div class="sheet-value"><span class="failure">Failure</span></div>
+        {{/rollGreater() Roll To-Scan}}
 
         {{#desc}}<div class="sheet-desc">{{desc}}</div>{{/desc}}
       </div>
