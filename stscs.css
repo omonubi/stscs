@@ -2,6 +2,8 @@
   font-size: 1.0em;
 }
 
+/**************** GRID LAYOUT STYLES ****************/
+
 .ui-dialog .charsheet div.grid-3col {
   align-items: center;
   background-color: gainsboro;
@@ -48,6 +50,7 @@
   color: gray !important;
 }
 
+/**************** HTML ELEMENT STYLES ****************/
 .ui-dialog .charsheet button.btn {
   background-image: linear-gradient(white, lightgray);
   border-color: black;
@@ -164,6 +167,8 @@
   margin-left: 40px;
   margin-right: 15.5px;
 }
+
+/**************** CUSTOM CLASSES ****************/
 
 .ui-dialog .charsheet .big { 
   font-size: 2em;
@@ -471,4 +476,8 @@
 
 .sheet-rolltemplate-custom .sheet-desc {
   text-align: left;
+}
+
+.sheet-rolltemplate-custom a {
+  color: inherit;
 }
