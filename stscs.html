@@ -15,9 +15,9 @@
         </span>
         <span class='span2'>
             <label>D / WDF / CE:</label>
-            <input type='number' class='w5' name='attr_defense' min='0' step='.1' value='0'/>
+            <input type='number' class='w6' name='attr_defense' min='0' step='.1' value='0'/>
             /
-            <input type='number' class='w5' name='attr_wdf' min='0' step='.1' value='0'/>
+            <input type='number' class='w6' name='attr_wdf' min='0' step='.1' value='0'/>
             /
             <span name='attr_ce'>0</span>
         </span>
@@ -48,14 +48,13 @@
         <label>Rating:</label>
         <input type='number' name='attr_crewrating' min='27'/>
     </div>
-    <hr/>
+    <br/>
 
     <!-------------------------------------------------------->
     <h2>Engineering
         <input type='hidden' class='crewbonus2' name='attr_crewbonus2' value='0'/>
         <span class='crewbonusicon' title='crew efficiency bonus'>&#x26A1;</span>
     </h2>
-    <br/>
 
     <div class='grid-6col'>
         <label><strong>Superstructure:</strong></label>
@@ -65,7 +64,7 @@
             /
             <span name='attr_hp_max'></span>
         </span>
-        <label>Damage Chart:</label>
+        <label>Damage Charts:</label>
         <span name='attr_dmg_chart'></span>
         <span></span>
         <span></span>
@@ -73,6 +72,7 @@
     <br/>
 
     <div class='grid-6col'>
+        <input type='hidden' class='tpa-committed-status' name='attr_shields_allocated_status' value='0'/>
         <button type='action' class='btn' name='act_tpa_reset'>Reset TPA</button>
         <span></span>
         <label><strong>Current TPA:</strong></label> 
@@ -81,17 +81,19 @@
         <input type='hidden' class='tpa-remaining-status' name='attr_tpa_remaining_status'/>
         <input type='number' class='tpa-remaining' name='attr_tpa_remaining'  value='0' readonly/>
 
+        <button type='action' class='btn critical' name='act_shield_commit'>Commit TPA</button>
+        <span></span>
         <label>TPA to Movement:</label>
         <input type='number' class='em' name='attr_tpa_movement' min='0' value='0'/>
+        <label>TPA to Warp:</label>
+        <input type='number' name='attr_tpa_warp' min='0' value='0' readonly/>
+
+        <button type='action' class='btn energize' name='act_shield_reenergize'>Re-energize</button>
+        <span></span>
         <label>TPA to Shields:</label>
         <input type='number' class='em' name='attr_tpa_shields' min='0' value='0'/>
         <label>TPA to Weapons:</label>
         <input type='number' class='em' name='attr_tpa_weapons' min='0' value='0'/>
-                
-        <label>TPA to Warp:</label>
-        <input type='number' name='attr_tpa_warp' min='0' value='0' readonly/>
-        <span></span>
-        <span></span>
     </div>
     <br/>
     
@@ -122,7 +124,7 @@
             <input type='number' class='engine-power' name='attr_engine_power' min='0' value='0'/> / <input type='number' name='attr_engine_power_full' min='0' value='0'/>
         </fieldset>
     </div>
-    <hr/>
+    <br/>
 
     <!-------------------------------------------------------->
     <h2>Sensors</h2>
@@ -147,7 +149,7 @@
         </span>
         <span class='span2'><input type='text' class='scan-answer' name='attr_scananswer' placeholder='Paste the result here...'/>
     </div>
-    <hr/>
+    <br/>
 
     <!-------------------------------------------------------->
     <h2>Helm Control</h2>
@@ -191,27 +193,29 @@
             <span></span>
             <span></span>
 
-            <button type='action' class='btn' name='act_jump'>Change Warp Factor</button>
+            <input type='hidden' class='warp-factor-status' name='attr_warp_factor_status' value='0'/>
+            <button type='action' class='btn' name='act_jump'>Engage Warp Drive</button>
             <span></span>
             <label><strong>TPA to Warp:</strong></label>
-            <input type='number' name='attr_tpa_warp' min='0' value='0' readonly/>
+            <input type='number' class='em' name='attr_tpa_warp' min='0' value='0' readonly/>
+            <span></span>
+            <span></span>
+
+            
             <label>Warp Factor Ratio:</label>
             <input type='hidden' name='attr_wfr_jump'/>
             <input type='hidden' name='attr_wfr_cruise'/>
             <span>
-                <input type='number' class='w3' name='attr_wfr_1' value='0' readonly/>
+                <input type='number' class='w5' name='attr_wfr_1' value='0' readonly/>
                 /
-                <input type='number' class='w3' name='attr_wfr_2' value='1' readonly/>
+                <input type='number' class='w5' name='attr_wfr_2' value='1' readonly/>
             </span>
-
             <label>Current Warp Factor:</label>
             <input type='hidden' class='wf-current-status' name='attr_wf_current_status'/>
             <input type='number' class='wf-current' min='0' value='0' name='attr_wf_current' readonly/>
             <label>Desired Warp Factor:</label>
             <input type='hidden' class='wf-desired-status' name='attr_wf_desired_status'/>
             <input type='number' class='em' min='0' value='0' name='attr_wf_desired'/>
-            <span></span>
-            <span></span>
 
             <label>Safe Cruise WF:</label>
             <input type='number' class='w5' name='attr_wf_cruise' min='0' value='0'/>
@@ -225,7 +229,7 @@
             </span>
         </div>
     </div>
-    <hr/>
+    <br/>
 
     <!-------------------------------------------------------->
     <h2>Shield Control
@@ -244,78 +248,101 @@
 
         <label>Shield Point Ratio: </label>
         <span>
-            <input type='number' class='w3' name='attr_spr_1' min='1' max='2' value='1'/>
+            <input type='number' class='w5' name='attr_spr_1' min='1' max='2' value='1'/>
             /        
-            <input type='number' class='w3' name='attr_spr_2' min='1' max='6' value='1'/>
+            <input type='number' class='w5' name='attr_spr_2' min='1' max='6' value='1'/>
         </span>
-        <label>Shield Points:</label>
-        <span name='attr_sp'></span>
         <label>Max Shield Power:</label>
         <input type='number' name='attr_shield_max' min='0' max='16' value='0'/>
-
-        <span class='shields-damaged'>
-            <input type='checkbox' class='damaged' name='attr_shield_1_damaged' value='1' title='generator damaged'/>
-            <input type='checkbox' class='damaged' name='attr_shield_2_damaged' value='1' title='generator damaged'/>
-            <input type='checkbox' class='damaged' name='attr_shield_3_damaged' value='1' title='generator damaged'/>
-            <input type='checkbox' class='damaged' name='attr_shield_4_damaged' value='1' title='generator damaged'/>
-            <input type='checkbox' class='damaged' name='attr_shield_5_damaged' value='1' title='generator damaged'/>
-            <input type='checkbox' class='damaged' name='attr_shield_6_damaged' value='1' title='generator damaged'/>
-        </span>
-        <span></span>
-        
-        <input type='hidden' class='shields-allocated-status' name='attr_shields_allocated_status' value='1'/>
-        <span class='shields-allocated'>
-            <label>f/p:</label>
-            <input type='hidden' class='shield-1-status' name='attr_shield_1_status'/>
-            <input type='number' class='shield-1' name='attr_shield_1' min='0' value='0' title='Shield #1 (f/p)'/>
-            <label>fwd:</label>
-            <input type='hidden' class='shield-2-status' name='attr_shield_2_status'/>
-            <input type='number' class='shield-2' name='attr_shield_2' min='0' value='0' title='Shield #2 (fwd)'/>
-            <label>f/s:</label>
-            <input type='hidden' class='shield-3-status' name='attr_shield_3_status'/>
-            <input type='number' class='shield-3' name='attr_shield_3' min='0' value='0' title='Shield #3 (f/s)'/>
-            <label>a/s:</label>
-            <input type='hidden' class='shield-4-status' name='attr_shield_4_status'/>
-            <input type='number' class='shield-4' name='attr_shield_4' min='0' value='0' title='Shield #4 (a/s)'/>
-            <label>aft</label>
-            <input type='hidden' class='shield-5-status' name='attr_shield_5_status'/>
-            <input type='number' class='shield-5' name='attr_shield_5' min='0' value='0' title='Shield #5 (aft)'/>
-            <label>a/p:</label>
-            <input type='hidden' class='shield-6-status' name='attr_shield_6_status'/>
-            <input type='number' class='shield-6' name='attr_shield_6' min='0' value='0' title='Shield #6 (a/p)'/>
-        </span>
-        <input type='hidden' class='shields-allocated-status' name='attr_shields_allocated_status' value='1'/>
-        <span class='shields-allocated-buttons'>
-            <button type='action' class='btn' name='act_shield_commit'>READY</button>
-        </span>
-
-        <input type='hidden' class='shields-current-status' name='attr_shields_current_status' value='0'/>
-        <span class='shields-current'>
-            <label>f/p:</label>
-            <input type='hidden' class='shield-1c-status' name='attr_shield_1c_status'/>
-            <input type='number' class='shield-1c' name='attr_shield_1c' min='0' value='0' title='Shield #1 (f/p)'/>
-            <label>fwd:</label>
-            <input type='hidden' class='shield-2c-status' name='attr_shield_2c_status'/>
-            <input type='number' class='shield-2c' name='attr_shield_2c' min='0' value='0' title='Shield #2 (fwd)'/>
-            <label>f/s:</label>
-            <input type='hidden' class='shield-3c-status' name='attr_shield_3c_status'/>
-            <input type='number' class='shield-3c' name='attr_shield_3c' min='0' value='0' title='Shield #3 (f/s)'/>
-            <label>a/s:</label>
-            <input type='hidden' class='shield-4c-status' name='attr_shield_4c_status'/>
-            <input type='number' class='shield-4c' name='attr_shield_4c' min='0' value='0' title='Shield #4 (a/s)'/>
-            <label>aft</label>
-            <input type='hidden' class='shield-5c-status' name='attr_shield_5c_status'/>
-            <input type='number' class='shield-5c' name='attr_shield_5c' min='0' value='0' title='Shield #5 (aft)'/>
-            <label>a/p:</label>
-            <input type='hidden' class='shield-6c-status' name='attr_shield_6c_status'/>
-            <input type='number' class='shield-6c' name='attr_shield_6c' min='0' value='0' title='Shield #6 (a/p)'/>
-        </span>
-        <input type='hidden' class='shields-current-status' name='attr_shields_current_status' value='0'/>
-        <span class='shields-current-buttons'>
-            <button type='action' class='btn' name='act_shield_reenergize'>Re-Energize</button>
-        </span>
+        <label>SPA Remaining:</label>
+        <span name='attr_sp'></span>
     </div>
-    <hr/>
+    <br/>
+    <div class='grid-6col'>
+        <h4 class='span-grid'>Shield Configuration</h4>
+
+        <input type='hidden' class='tpa-committed-status' name='attr_shields_allocated_status' value='0'/>
+        <div class='shields-allocated'>
+            <label>Shield #1 (<strong>f/p</strong>):</label>
+            <span>
+                <input type='checkbox' class='damaged' name='attr_shield_1_damaged' value='1' title='generator damaged'/>
+                <input type='hidden' class='shield-1-status' name='attr_shield_1_status'/>
+                <input type='number' class='shield-1' name='attr_shield_1' min='0' value='0' title='Shield #1 (f/p)'/>
+            </span>
+            <label>Shield #2 (<strong>fwd</strong>):</label>
+            <span>
+                <input type='checkbox' class='damaged' name='attr_shield_2_damaged' value='1' title='generator damaged'/>
+                <input type='hidden' class='shield-2-status' name='attr_shield_2_status'/>
+                <input type='number' class='shield-2' name='attr_shield_2' min='0' value='0' title='Shield #2 (fwd)'/>
+            </span>
+            <label>Shield #3 (<strong>f/s</strong>):</label>
+            <span>
+                <input type='checkbox' class='damaged' name='attr_shield_3_damaged' value='1' title='generator damaged'/>
+                <input type='hidden' class='shield-3-status' name='attr_shield_3_status'/>
+                <input type='number' class='shield-3' name='attr_shield_3' min='0' value='0' title='Shield #3 (f/s)'/>
+            </span>
+
+            <label>Shield #6 (<strong>a/p</strong>):</label>
+            <span>
+                <input type='checkbox' class='damaged' name='attr_shield_4_damaged' value='1' title='generator damaged'/>
+                <input type='hidden' class='shield-6-status' name='attr_shield_6_status'/>
+                <input type='number' class='shield-6' name='attr_shield_6' min='0' value='0' title='Shield #6 (a/p)'/>
+            </span>
+            <label>Shield #5 (<strong>aft</strong>)</label>
+            <span>
+                <input type='checkbox' class='damaged' name='attr_shield_5_damaged' value='1' title='generator damaged'/>
+                <input type='hidden' class='shield-5-status' name='attr_shield_5_status'/>
+                <input type='number' class='shield-5' name='attr_shield_5' min='0' value='0' title='Shield #5 (aft)'/>
+            </span>
+            <label>Shield #4 (<strong>a/s</strong>):</label>
+            <span>
+                <input type='checkbox' class='damaged' name='attr_shield_6_damaged' value='1' title='generator damaged'/>
+                <input type='hidden' class='shield-4-status' name='attr_shield_4_status'/>
+                <input type='number' class='shield-4' name='attr_shield_4' min='0' value='0' title='Shield #4 (a/s)'/>
+            </span>
+        </div>
+
+        <div class='shields-current'>
+            <label>Shield #1 (<strong>f/p</strong>):</label>
+            <span>
+                <input type='checkbox' class='damaged' name='attr_shield_1_damaged' value='1' title='generator damaged'/>
+                <input type='hidden' class='shield-1c-status' name='attr_shield_1c_status'/>
+                <input type='number' class='shield-1c' name='attr_shield_1c' min='0' value='0' title='Shield #1 (f/p)'/>
+            </span>
+            <label>Shield #2 (<strong>fwd</strong>):</label>
+            <span>
+                <input type='checkbox' class='damaged' name='attr_shield_2_damaged' value='1' title='generator damaged'/>
+                <input type='hidden' class='shield-2c-status' name='attr_shield_2c_status'/>
+                <input type='number' class='shield-2c' name='attr_shield_2c' min='0' value='0' title='Shield #2 (fwd)'/>
+            </span>
+            <label>Shield #3 (<strong>f/s</strong>):</label>
+            <span>
+                <input type='checkbox' class='damaged' name='attr_shield_3_damaged' value='1' title='generator damaged'/>
+                <input type='hidden' class='shield-3c-status' name='attr_shield_3c_status'/>
+                <input type='number' class='shield-3c' name='attr_shield_3c' min='0' value='0' title='Shield #3 (f/s)'/>
+            </span>
+
+            <label>Shield #6 (<strong>a/p</strong>):</label>
+            <span>
+                <input type='checkbox' class='damaged' name='attr_shield_4_damaged' value='1' title='generator damaged'/>
+                <input type='hidden' class='shield-6c-status' name='attr_shield_6c_status'/>
+                <input type='number' class='shield-6c' name='attr_shield_6c' min='0' value='0' title='Shield #6 (a/p)'/>
+            </span>
+            <label>Shield #5 (<strong>aft</strong>)</label>
+            <span>
+                <input type='checkbox' class='damaged' name='attr_shield_5_damaged' value='1' title='generator damaged'/>
+                <input type='hidden' class='shield-5c-status' name='attr_shield_5c_status'/>
+                <input type='number' class='shield-5c' name='attr_shield_5c' min='0' value='0' title='Shield #5 (aft)'/>
+            </span>
+            <label>Shield #4 (<strong>a/s</strong>):</label>
+            <span>
+                <input type='checkbox' class='damaged' name='attr_shield_6_damaged' value='1' title='generator damaged'/>
+                <input type='hidden' class='shield-4c-status' name='attr_shield_4c_status'/>
+                <input type='number' class='shield-4c' name='attr_shield_4c' min='0' value='0' title='Shield #4 (a/s)'/>
+            </span>
+        </div>
+    </div>
+    <br/>
 
     <!-------------------------------------------------------->
     <h2>Fire Control
@@ -340,9 +367,9 @@
         <h4 class='span-grid'>Beam Weapons</h4>
         <input type='hidden' name='attr_wp_beam'/>
         <div class='span-grid'>
-            <label style='padding-left: 4px;'>X</label>
-            <label style='padding-left: 15px;'>Desig. (Arcs)</label>
-            <label style='padding-left: 18px;'>Range</label>
+            <label style='padding-left: 3px;'>X</label>
+            <label style='padding-left: 8px;'>Desig. (Arcs)</label>
+            <label style='padding-left: 26px;'>Range</label>
             <label style='padding-left: 15px;'>Chart</label>
             <label style='padding-left: 14px;'>Power</label>
             <label style='padding-left: 23px;'>Max</label>
@@ -403,7 +430,7 @@
             <input type='text' class='w5' name='attr_target_tohit' value='0' readonly/>
             <span>
                 <input type='hidden' class='btn-fire-status' name='attr_btn-fire_status' value='0'/>
-                <button type='action' class='btn' name='act_btn-fire'>Fire</button>
+                <button type='action' class='btn critical' name='act_btn-fire'>Fire</button>
             </span>
         </fieldset>
     </div>
@@ -471,11 +498,11 @@
             <input type='text' class='w5' name='attr_target_tohit' value='0' readonly/>
             <span>
                 <input type='hidden' class='btn-fire-status' name='attr_btn-fire_status' value='0'/>
-                <button type='action' class='btn' name='act_btn-fire'>Fire</button>
+                <button type='action' class='btn critical' name='act_btn-fire'>Fire</button>
             </span>
         </fieldset>
     </div>
-    <hr/>
+    <br/>
 
     <!-------------------------------------------------------->
     <h2>Construction Data</h2> 
@@ -483,7 +510,7 @@
     <div class='grid-3col'>
         <span>
             <label>Fleet:</label>
-            <select name='attr_faction'>
+            <select class='w20' name='attr_faction'>
                 <option selected>Select...</option>
                 <option value='federation'>United Federation of Planets</option>
                 <option value='klingon'>Klingon Empire</option>
@@ -492,12 +519,12 @@
 
         <span>
             <label>Class:</label>
-            <input type='text' name='attr_class' placeholder='Class...'/>
+            <input type='text' class='w20' name='attr_class' placeholder='Class...'/>
         </span>
 
         <span>
             <label>Type:</label>
-            <input type='text' name='attr_type' placeholder='Type...'/>
+            <input type='text' class='w20' name='attr_type' placeholder='Type...'/>
         </span>
 
         <span>
@@ -515,7 +542,7 @@
             <input type='text' class='w7' name='attr_computer'/>
         </span>
     </div>
-    <hr/>
+    <br/>
 
     <!-------------------------------------------------------->
     <h2>Hull Data</h2>
@@ -553,7 +580,7 @@
         <label>Cargo Transporters:</label>
         <input type='number' class='w7' name='attr_scu_trans' min='0' value='0'></span>
     </div>
-    <hr/>
+    <br/>
 
     <!-------------------------------------------------------->
     <h2>Crew Data</h2>
@@ -577,7 +604,7 @@
         <input type='number' class='w7' name='attr_trans_emergency' min='0' value='0'/>
 
     </div>
-    <hr/>
+    <br/>
 
     <!-------------------------------------------------------->
     <h2>Maintenance</h2>
@@ -759,7 +786,7 @@ on('change:tpa_movement change:mpr_1 change:mpr_2', function(eventInfo) {
 // REPAIR and RESET after combat
 on('clicked:repair', async function(eventInfo) {
 
-    const response = await extractChatData('?{Confirm Repair and Rest|Confirm|Cancel}');
+    const response = await extractChatData('?{Confirm Repair and TPA Reset|Confirm|Cancel}');
 
     if (response === 'Confirm') {
         // Repair engines
@@ -933,25 +960,6 @@ on('change:tpa_shields change:spr_1 change:spr_2 change:shield_1 change:shield_2
     });
 });
 
-// SHIELD POWER COMMITTED
-on('clicked:shield_commit', async (event) => {
-
-    const response = await extractChatData('?{Confirm READY|Confirm|Cancel}');
-
-    if (response === 'Confirm') {
-
-        startRoll(
-            `&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=READY!}} {{color=purple}}`,
-            roll => finishRoll(roll.rollId)
-        );
-    
-        const output = {};
-        output['shields_allocated_status'] = 0;
-        output['shields_current_status'] = 1;
-        setAttrs(output);
-    }
-});
-
 
 // SHIELDS RE-ENERGIZED
 on('clicked:shield_reenergize', function(eventInfo) {
@@ -1065,9 +1073,32 @@ on('change:tpa change:tpa_movement change:tpa_warp change:tpa_weapons change:tpa
     });
 });
 
+// TOTAL POWER AVAILABLE COMMITTED
+on('clicked:shield_commit', async (event) => {
+
+    const response = await extractChatData('?{Confirm TPA Commit|Confirm|Cancel}');
+
+    if (response === 'Confirm') {
+
+        startRoll(
+            `&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=READY!}} {{color=purple}}`,
+            roll => finishRoll(roll.rollId)
+        );
+    
+        const output = {};
+        output['shields_allocated_status'] = 0;
+        setAttrs(output);
+    }
+});
+
 // TOTAL POWER AVAILABLE reset
-on('clicked:tpa_reset', function(eventInfo) {
-    resetTPA();
+on('clicked:tpa_reset', async (event) => {
+
+    const response = await extractChatData('?{Confirm TPA Reset|Confirm|Cancel}');
+
+    if (response === 'Confirm') {
+        resetTPA();
+    }
 });
 on('change:tpa_reset', function(eventInfo) {
     resetTPA();
@@ -1119,7 +1150,6 @@ function resetTPA() {
 
     output['shield_1'] = output['shield_2'] = output['shield_3'] = output['shield_4'] = output['shield_5'] = output['shield_6'] = 0
     output['shields_allocated_status'] = 1;
-    output['shields_current_status'] = 0;
     output['tpa_movement'] = 0;
     output['tpa_weapons'] = 0;
     output['tpa_shields'] = 0;
@@ -1163,6 +1193,7 @@ on('change:wf_current change:wf_desired', function(eventInfo) {
         output['tpa_warp'] = tpaRequired;
         output['wf_current_status'] = wfCurrent > wfEmergency ? 1 : wfCurrent > wfCruise ? 2 : 0;
         output['wf_desired_status'] = wfDesired > wfEmergency ? 1 : wfDesired != wfCurrent || wfDesired > wfCruise ? 2 : 0;
+        output['warp_factor_status'] = wfDesired != wfCurrent ? 1 : 0;
         setAttrs(output);
     });
 });

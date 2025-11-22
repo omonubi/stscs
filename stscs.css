@@ -2,26 +2,40 @@
   font-size: 1.0em;
 }
 
+:root {
+  --st-alert-red: #cc0000;
+  --st-alert-yellow: #ffcc00;
+  --st-alert-green: #00cc00;
+  --st-neutral: #333333;
+  --st-accent: #0099ff;
+  --st-panel-bg: #1a1a1a;
+  --st-panel-border: #0099ff;
+}
+
 /**************** GRID LAYOUT STYLES ****************/
 
 .ui-dialog .charsheet div.grid-3col {
   align-items: center;
-  background-color: gainsboro;
-  border-radius: 10px;
+  background: linear-gradient(135deg, white 0%, mintcream 100%);
+  border: 2px solid #0099ff;
+  border-radius: 8px;
   display: grid;
   grid-template-columns: [first] repeat(3, 1fr) [last];
-  padding: 5px;
-  row-gap: 5px;
+  padding: 10px;
+  row-gap: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .ui-dialog .charsheet div.grid-6col {
   align-items: center;
-  background-color: gainsboro;
-  border-radius: 10px;
+  background: linear-gradient(135deg, white 0%, mintcream 100%);
+  border: 2px solid #0099ff;
+  border-radius: 8px;
   display: grid;
   grid-template-columns: [first] repeat(6, 1fr) [last];
-  padding: 5px;
-  row-gap: 5px;
+  padding: 10px;
+  row-gap: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 .ui-dialog .charsheet div.grid-6col .span2 {
   grid-column: span 2;
@@ -52,24 +66,60 @@
 
 /**************** HTML ELEMENT STYLES ****************/
 .ui-dialog .charsheet button.btn {
-  background-image: linear-gradient(white, lightgray);
-  border-color: black;
-  color: black;
-  font-size: 0.9em;
-  padding: 1px 10px;
+  background: linear-gradient(135deg, #0099ff 0%, #0077cc 100%);
+  border: 2px solid #004499;
+  border-radius: 4px;
+  color: #ffffff;
+  font-size: 0.8em;
+  font-weight: bold;
+  padding: 1px 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
+
 .ui-dialog .charsheet button.btn::before {
   content: '';
 }
+
 .ui-dialog .charsheet button.btn:hover {
-  background-color: lightgray;
+  background: linear-gradient(135deg, #00bbff 0%, #0099dd 100%);
+  box-shadow: 0 4px 8px rgba(0, 153, 255, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
 }
+
+.ui-dialog .charsheet button.btn:active {
+  background: linear-gradient(135deg, #0077cc 0%, #005599 100%);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2), inset 0 1px 2px rgba(0, 0, 0, 0.2);
+  transform: translateY(0);
+}
+
+/* Disabled/inactive buttons */
 .ui-dialog .charsheet .btn-fire-status[value='0'] ~ .btn,
-.ui-dialog .charsheet .btn-target-status[value='0'] ~ .btn {
-  background-image: linear-gradient(lightgray, lightgray);
-  border-color: gray;
-  color: gray;
+.ui-dialog .charsheet .btn-target-status[value='0'] ~ .btn,
+.ui-dialog .charsheet .tpa-committed-status[value='0'] ~ button.btn.critical,
+.ui-dialog .charsheet .tpa-committed-status[value='1'] ~ button.btn.energize,
+.ui-dialog .charsheet .warp-factor-status[value='0'] ~ .btn {
+  background: linear-gradient(135deg, #999999 0%, #666666 100%);
+  border-color: #555555;
+  color: #cccccc;
+  cursor: not-allowed;
+  opacity: 0.6;
   pointer-events: none;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* For critical actions like "Fire" or "READY" */
+.ui-dialog .charsheet button.btn.critical {
+  background: linear-gradient(135deg, #ff6600 0%, #cc3300 100%);
+  border-color: #990000;
+}
+
+.ui-dialog .charsheet button.btn.critical:hover {
+  background: linear-gradient(135deg, #ff8833 0%, #ff5500 100%);
+  box-shadow: 0 4px 8px rgba(255, 102, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
 .ui-dialog .charsheet div {
@@ -97,12 +147,19 @@
 }
 .ui-dialog .charsheet h2 {
   font-size: 1.6em;
+  color: #0099ff;
+  padding-bottom: 5px;
+  margin-top: 10px;
 }
 .ui-dialog .charsheet h3 {
   font-size: 1.4em;
+  color: #0099ff;
+  padding-bottom: 5px;
 }
 .ui-dialog .charsheet h4 {
   font-size: 1.2em;
+  color: #0099ff;
+  padding-bottom: 5px;
 }
 
 .ui-dialog .charsheet hr {
@@ -112,12 +169,30 @@
 .ui-dialog .charsheet input {
   background-color: transparent;
   text-align: left;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  margin: 1px;
+  padding: 5px;
+  transition: all 0.2s ease;
+}
+.ui-dialog .charsheet input:focus {
+  border-color: #0099ff;
+  box-shadow: 0 0 4px rgba(0, 153, 255, 0.3);
+  outline: none;
 }
 .ui-dialog .charsheet input[type='text'] {
   width:  100%;
 }
+.ui-dialog .charsheet input[readonly] {
+  background-color: transparent;
+  color: #666;
+  cursor: not-allowed;
+}
 .ui-dialog .charsheet input.em {
-  background-color: white;
+  background-color: white; 
+  border-color: #0099ff;;
+  color: black;
+  font-weight: bold;
 }
 .ui-dialog .charsheet input[type='checkbox'].damaged {
   accent-color: crimson;
@@ -144,8 +219,15 @@
 }
 
 .ui-dialog .charsheet select {
-  background-color: gainsboro;
-  margin: 0px;
+  background-color: transparent;
+  height: 29px;
+  line-height: 29px;
+  margin: 1px 0px;
+  padding: 0px;
+}
+.ui-dialog .charsheet select option {
+  color: gray;
+  background-color: white;
 }
 .ui-dialog .charsheet select.crew-bonus {
   background-color: white; 
@@ -157,19 +239,12 @@
   background-color: white; 
 }
 
-.ui-dialog .charsheet span.shields-allocated,
-.ui-dialog .charsheet span.shields-current,
-.ui-dialog .charsheet span.shields-damaged {
-  grid-column: 1 / 5;
-}
-
 .ui-dialog .charsheet span.shields-damaged input[type="checkbox"].damaged {
   margin-left: 40px;
   margin-right: 15.5px;
 }
 
 /**************** CUSTOM CLASSES ****************/
-
 .ui-dialog .charsheet .big { 
   font-size: 2em;
 }
@@ -184,6 +259,9 @@
 .ui-dialog .charsheet .w5 {
   width: 50px !important; /*override r20 class*/
 }
+.ui-dialog .charsheet .w6 {
+  width: 60px !important; /*override r20 class*/
+}
 .ui-dialog .charsheet .w7 {
   width: 70px !important; /*override r20 class*/
 }
@@ -193,15 +271,16 @@
 .ui-dialog .charsheet .w12 {
   width: 120px !important; /*override r20 class*/
 }
+.ui-dialog .charsheet .w20 {
+  width: 200px !important; /*override r20 class*/
+}
+
+/**************** REPEATING ITEMS ****************/
 
 /**************** ALERT INDICATORS ****************/
-.ui-dialog .charsheet .evasive-maneuvers-status[value='0'] ~ .evasive-maneuvers,
-.ui-dialog .charsheet .evasive-maneuvers-status[value='1'] ~ .no-evasive-maneuvers,
 .ui-dialog .charsheet .impulse-power-status[value='0'] ~ .no-impulse-power {
   display: none;
 }
-.ui-dialog .charsheet .evasive-maneuvers-status[value='1'] ~ .evasive-maneuvers,
-.ui-dialog .charsheet .evasive-maneuvers-status[value='0'] ~ .no-evasive-maneuvers,
 .ui-dialog .charsheet .impulse-power-status[value='1'] ~ .no-impulse-power {
   display: inline-block;
 }
@@ -231,17 +310,13 @@
 }
 
 /**************** CONDITIONAL STYLES ****************/
-.ui-dialog .charsheet .shields-allocated-status[value='0'] ~ .shields-allocated,
-.ui-dialog .charsheet .shields-allocated-status[value='0'] ~ .shields-allocated-buttons,
-.ui-dialog .charsheet .shields-current-status[value='0'] ~ .shields-current,
-.ui-dialog .charsheet .shields-current-status[value='0'] ~ .shields-current-buttons {
+.ui-dialog .charsheet .tpa-committed-status[value='0'] ~ .shields-allocated,
+.ui-dialog .charsheet .tpa-committed-status[value='1'] ~ .shields-current {
   display: none;
 }
-.ui-dialog .charsheet .shields-allocated-status[value='1'] ~ .shields-allocated,
-.ui-dialog .charsheet .shields-allocated-status[value='1'] ~ .shields-allocated-buttons,
-.ui-dialog .charsheet .shields-current-status[value='1'] ~ .shields-current,
-.ui-dialog .charsheet .shields-current-status[value='1'] ~ .shields-current-buttons {
-  display: inline-block;
+.ui-dialog .charsheet .tpa-committed-status[value='1'] ~ .shields-allocated,
+.ui-dialog .charsheet .tpa-committed-status[value='0'] ~ .shields-current {
+  display: contents;
 }
 
 .ui-dialog .charsheet .missile-armed-status[value="0"] ~ input[type="checkbox"].missile-armed {
