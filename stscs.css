@@ -373,42 +373,47 @@
 .sheet-rolltemplate-menu .sheet-container {
   /* this is the default color */
   --header-bg-color:dimgray;
-  --header-text-color: #FFF;
+  --header-text-color: white;
 }
 .sheet-rolltemplate-custom .sheet-container.sheet-color-black,
 .sheet-rolltemplate-menu .sheet-container.sheet-color-black {
   --header-bg-color: black;
-  --header-text-color: #FFF;
+  --header-text-color: white;
 }
 .sheet-rolltemplate-custom .sheet-container.sheet-color-brown,
 .sheet-rolltemplate-menu .sheet-container.sheet-color-brown {
   --header-bg-color: sienna;
-  --header-text-color: #FFF;
+  --header-text-color: white;
 }
 .sheet-rolltemplate-custom .sheet-container.sheet-color-blue,
 .sheet-rolltemplate-menu .sheet-container.sheet-color-blue {
   --header-bg-color: darkblue;
-  --header-text-color: #FFF;
+  --header-text-color: white;
 }
 .sheet-rolltemplate-custom .sheet-container.sheet-color-gold,
 .sheet-rolltemplate-menu .sheet-container.sheet-color-gold {
   --header-bg-color: gold;
-  --header-text-color: #000;
+  --header-text-color: black;
 }
 .sheet-rolltemplate-custom .sheet-container.sheet-color-green,
 .sheet-rolltemplate-menu .sheet-container.sheet-color-green {
   --header-bg-color: darkolivegreen;
-  --header-text-color: #FFF;
+  --header-text-color: white;
 }
 .sheet-rolltemplate-custom .sheet-container.sheet-color-orange,
 .sheet-rolltemplate-menu .sheet-container.sheet-color-orange {
   --header-bg-color: darkorange;
-  --header-text-color: #000;
+  --header-text-color: black;
+}
+.sheet-rolltemplate-custom .sheet-container.sheet-color-purple,
+.sheet-rolltemplate-menu .sheet-container.sheet-color-purple {
+  --header-bg-color: violet;
+  --header-text-color: black;
 }
 .sheet-rolltemplate-custom .sheet-container.sheet-color-red,
 .sheet-rolltemplate-menu .sheet-container.sheet-color-red {
   --header-bg-color: maroon;
-  --header-text-color: #FFF;
+  --header-text-color: white;
 }
 
 /* Success/Failure colors*/

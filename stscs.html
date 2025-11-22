@@ -286,7 +286,7 @@
         </span>
         <input type='hidden' class='shields-allocated-status' name='attr_shields_allocated_status' value='1'/>
         <span class='shields-allocated-buttons'>
-            <button type='action' class='btn' name='act_shield_commit'>Commit Allocation</button>
+            <button type='action' class='btn' name='act_shield_commit'>READY</button>
         </span>
 
         <input type='hidden' class='shields-current-status' name='attr_shields_current_status' value='0'/>
@@ -1042,9 +1042,15 @@ on('change:shield_6c', function(eventInfo) {
 // SHIELD POWER COMMITTED
 on('clicked:shield_commit', async (event) => {
 
-    const response = await extractChatData('?{Confirm Shield Allocations|Confirm|Cancel}');
+    const response = await extractChatData('?{Confirm READY|Confirm|Cancel}');
 
     if (response === 'Confirm') {
+
+        startRoll(
+            `&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=READY!}} {{color=purple}}`,
+            roll => finishRoll(roll.rollId)
+        );
+    
         const output = {};
         output['shields_allocated_status'] = 0;
         output['shields_current_status'] = 1;
