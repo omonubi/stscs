@@ -255,7 +255,7 @@
         <label>Max Shield Power:</label>
         <input type='number' name='attr_shield_max' min='0' max='16' value='0'/>
         <label>SPA Remaining:</label>
-        <span name='attr_sp'></span>
+        <input type='number' name='attr_sp' readonly/>
     </div>
     <br/>
     <div class='grid-6col'>
@@ -933,7 +933,7 @@ on('change:tpa_shields change:spr_1 change:spr_2 change:shield_1 change:shield_2
         const crewBonus = parseInt(values['crewbonus']) || 0;
 
         const totalPower = power + (crewBonus == CREW_BONUS_SHIELD ? 1 : 0);
-        const sp = Math.floor(totalPower / spr);
+        const sp = Math.floor(totalPower / spr - shield1 - shield2 - shield3 - shield4 - shield5 - shield6);
         const powerRemaining = Math.round(totalPower - shield1 * spr - shield2 * spr - shield3 * spr - shield4 * spr - shield5 * spr - shield6 * spr);
 
         const output = {};
