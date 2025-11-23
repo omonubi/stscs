@@ -57,6 +57,8 @@
     </h2>
 
     <div class='grid-6col'>
+        <button type='action' class='btn critical' name='act_rolldamage'>Roll Damage</button>
+        <span></span>
         <label><strong>Superstructure:</strong></label>
         <span>
             <input type='hidden' class='hp-status' name='attr_hp_status' value='0'/>
@@ -66,8 +68,6 @@
         </span>
         <label>Damage Charts:</label>
         <span name='attr_dmg_chart'></span>
-        <span></span>
-        <span></span>
     </div>
     <br/>
 
@@ -81,7 +81,7 @@
         <input type='hidden' class='tpa-remaining-status' name='attr_tpa_remaining_status'/>
         <input type='number' class='tpa-remaining' name='attr_tpa_remaining'  value='0' readonly/>
 
-        <button type='action' class='btn critical' name='act_shield_commit'>Commit TPA</button>
+        <button type='action' class='btn' name='act_shield_commit'>Commit TPA</button>
         <span></span>
         <label>TPA to Movement:</label>
         <input type='number' class='em' name='attr_tpa_movement' min='0' value='0'/>
@@ -171,7 +171,7 @@
         </span>
         <label>Movement Points:</label>
         <span>
-            <input type='number' name='attr_mp'/>
+            <input type='number' name='attr_mp' readonly/>
             <input type='hidden' class='impulse-power-status' name='attr_impulse_power_status' value='0'/>
             <span class='no-impulse-power' title='no impulse power = max 1'>&#x1F534;</span>
         </span>
@@ -628,6 +628,7 @@ const CREW_BONUS_WEAPONS = 1;
 const CREW_BONUS_ENGINES = 2;
 const CREW_BONUS_SHIELD = 3;
 const CREW_BONUS_REPAIR = 4;
+const DAMAGE_CHART_DEFAULT = 'C';
 const EMPTY_STRING = '';
 const ENGINE_NO_POWER = 0;
 const ENGINE_TYPE_IMPULSE = 1;
@@ -733,6 +734,19 @@ on('change:crewbonus', function(eventInfo) {
         output[`crewbonus${crewBonus}`] = 1;
         setAttrs(output);
     });
+});
+
+// DAMAGE roll
+on('clicked:rolldamage', async () => {
+    const values = await getAttrsAsync(['dmg_chart']);
+    const dmgChart = values['dmg_chart'] || DAMAGE_CHART_DEFAULT;
+    const shieldArc = await extractChatData('?{Shield Arc|#1 (f/p)|#2 (fwd)|#3 (f/s)|#4 (a/s)|#5 (aft)|#6 (a/p)}');
+    const damageChart = `DC${dmgChart}${shieldArc.substring(1,2)}`;
+
+    startRoll(
+        `/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Damage Roll}} {{color=red}} {{Chart=${dmgChart}}} {{Shield Arc=${shieldArc}}} {{Effect=[[1t[${damageChart}]]]}}`,
+        roll => finishRoll(roll.rollId)
+    );
 });
 
 // IMPULSE POWER status indicator
@@ -1479,7 +1493,7 @@ on('clicked:repeating_beams:btn-fire clicked:repeating_missiles:btn-fire', async
 
         // Single roll with all weapons and damages
         startRoll(
-            `&{template:custom} {{title=@{banner_${faction}fire${section}} **[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Weapons Fired}} {{color=red}} {{Weapons=${weaponNames.join('\\n')}}} {{Target=[${targetName}](${ROLL20_CHAR_URL}${targetId})}} {{To-Hit=[[${targetToHit}]] or less}} {{Roll=[[1d10cs>11cf<0]]}} {{Damage=${damageList.join(', ')}}} {{Location=[[1t[DLBasic]]]}}`,
+            `&{template:custom} {{title=@{banner_${faction}fire${section}} **[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Weapons Fired}} {{color=red}} {{Weapons=${weaponNames.join('\\n')}}} {{Target=[${targetName}](${ROLL20_CHAR_URL}${targetId})}} {{To-Hit=[[${targetToHit}]] or less}} {{Roll=[[1d10cs>11cf<0]]}} {{Damage=${damageList.join(', ')}}}`,
             roll => finishRoll(roll.rollId)
         );
     });
@@ -1636,10 +1650,10 @@ function getSectionIDsAsync(sectionName){
       </div>
 
       <div class="sheet-content">
-        {{#allprops() title subtitle color Location Damage}}
+        {{#allprops() title subtitle color Damage}}
         <div class="sheet-key">{{key}}</div>
         <div class="sheet-value">{{value}}</div>
-        {{/allprops() title subtitle color Location Damage}}
+        {{/allprops() title subtitle color Damage}}
 
         {{#^rollGreater() Roll Rating}}
         <div class="sheet-key">Result</div>
@@ -1658,10 +1672,6 @@ function getSectionIDsAsync(sectionName){
             <div class="sheet-key">Damage</div>
             <div class="sheet-value">{{Damage}}</div>
         {{/Damage}}
-        {{#Location}}
-            <div class="sheet-key">Location</div>
-            <div class="sheet-value">{{Location}}</div>
-        {{/Location}}
         {{/^rollGreater() Roll To-Hit}}
 
         {{#rollGreater() Roll To-Hit}}
