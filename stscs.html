@@ -140,11 +140,12 @@
                 <option value='2'>What is the relative power allocation?</option>
                 <option value='3'>How are the shields powered?</option>
                 <!--<option value='4'>Is a specific shield up?</option>-->
-                <option value='5'>How are the weapons powered?</option>
-                <!--<option value='6'>Is a specific weapon powered?</option>-->
-                <option value='7'>How much damage has the vessel taken?</option>
-                <!--<option value='8'>What is the status of the ship's crew?</option>-->
-                <!--<option value='9'>Are any transporters powered?</option>-->
+                <option value='5'>How are the beam weapons powered?</option>
+                <option value='6'>How are the missile weapons powered?</option>
+                <!--<option value='7'>Is a specific weapon powered?</option>-->
+                <option value='8'>How much damage has the vessel taken?</option>
+                <!--<option value='9'>What is the status of the ship's crew?</option>-->
+                <!--<option value='10'>Are any transporters powered?</option>-->
             </select>
         </span>
         <span class='span2'><input type='text' class='scan-answer' name='attr_scananswer' placeholder='Paste the result here...'/>
@@ -905,7 +906,8 @@ on('change:scanquestion', function(eventInfo) {
                 'What is the relative power allocation?',
                 'How are the shields powered?',
                 'Is a specific shield up?',
-                'How are the weapons powered?',
+                'How are the beam weapons powered?',
+                'How are the missile weapons powered?',
                 'Is a specific weapon powered?',
                 'How much damage has the vessel taken?',
                 'What is the status of the ships crew?',
