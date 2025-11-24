@@ -237,6 +237,7 @@
 .ui-dialog .charsheet input.scan-answer,
 .ui-dialog .charsheet select.scan-question {
   background-color: white; 
+  width: 268px;
 }
 
 .ui-dialog .charsheet span.shields-damaged input[type="checkbox"].damaged {

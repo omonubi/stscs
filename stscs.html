@@ -131,7 +131,7 @@
 
     <div class='grid-6col'>
         <button type='action' class='btn' name='act_scan'>Scan Target</button>
-        <input type='text' class='w12' name='attr_sensorlock' value='NONE' readonly/>
+        <input type='text' class='w12' style='margin-left: 9px;' name='attr_sensorlock' value='NONE' readonly/>
         <input type='hidden' class='w12' name='attr_sensorlockid'/>
         <span class='span2'>
             <select class='scan-question' name='attr_scanquestion'>
@@ -883,12 +883,18 @@ on('clicked:scan', async (event) => {
     const scanRoll = getRandomIntInclusive(1, 10);
 
     startRoll(
-        `&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Scanning ${tokenName}...}} {{color=orange}} {{To-Scan=[[6]]}} {{Roll=[[${scanRoll}]]}}`,
+        `&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Sensor Scan}} {{color=orange}} {{Target=[${tokenName}](${ROLL20_CHAR_URL}${charId})}} {{To-Scan=[[6]]}} {{Roll=[[${scanRoll}]]}}`,
         roll => finishRoll(roll.rollId)
     );
 
-    output['sensorlock'] = scanRoll < 7 && tokenName ? tokenName : NO_LOCK;
-    output['sensorlockid'] = scanRoll < 7 ? charId : NO_LOCK;
+    if (scanRoll < 7) {
+        output['sensorlock'] = tokenName;
+        output['sensorlockid'] = charId;
+    } else {
+        output['sensorlock'] = output['sensorlockid'] = NO_LOCK;
+        output['scanquestion'] = output['scananswer'] = EMPTY_STRING;
+    }
+
     await setAttrsAsync(output);
 }); 
 
