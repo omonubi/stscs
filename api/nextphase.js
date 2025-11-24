@@ -33,17 +33,16 @@ on('chat:message', function(msg) {
     if (msg.type == 'api' && msg.content.indexOf('!nextphase reset') == 0){
         PhaseIndex = PHASE_CREW;
         RoundIndex = ROUND_1;
+        sendChat(msg.who, `&{template:custom} {{title=**Let the Battle Begin!**}} {{color=red}}`);
     // New combat round
     } else if (msg.type == 'api' && msg.content.indexOf('!nextphase') == 0){
 		const selectedObjs = findObjs({type: 'graphic'});
-		
 		sortTurnOrder(sorter_asc);
-		
 		_.each (selectedObjs, function(obj) {
 			if (obj.get('_subtype') == 'token' && obj.get('name').startsWith('Phase')) {
 			    obj.set('name', names[0]);
-	            sendChat("Phase", `&{template:custom} {{title=**${names[0]}**}} {{color=black}}`);
-			    PhaseIndex = PHASE_SENSORS;
+	            sendChat(msg.who, `&{template:custom} {{title=**${names[0]}**}} {{color=black}}`);
+			    PhaseIndex = PHASE_1_MOVEMENT;
 			    RoundIndex ++;
 			}
 		});
@@ -61,8 +60,11 @@ on('change:campaign:turnorder', function() {
         const myObj = getObj('graphic', myTokenId);
         if (myObj.get('name').startsWith('Phase')) {
     	    myObj.set('name', names[PhaseIndex]);
-    	    sendChat("Phase", `&{template:custom} {{title=**${names[PhaseIndex]}**}} {{color=black}}`);
+    	    sendChat('Phase', `&{template:custom} {{title=**${names[PhaseIndex]}**}} {{color=black}}`);
     	    switch (PhaseIndex) {
+    	        case PHASE_1_TARGET: case PHASE_2_TARGET: case PHASE_3_TARGET:
+    	            sendChat('Phase', `&{template:custom} {{title=**(Tactical Heading Changes)**}} {{color=blue}}`);
+    	            break;
     	        case PHASE_1_FIRE: case PHASE_2_FIRE: case PHASE_3_FIRE:
                     removeSensorStatus();
     	            sortTurnOrder(sorter_desc);
@@ -86,20 +88,20 @@ on('change:campaign:turnorder', function() {
             switch (PhaseIndex) {
                 case PHASE_1_TARGET:
                     noCurrentMove = (mp == 0 || mp == 1) ? 1 : 0;
-                    sendChat('Ship', `&{template:custom} {{title=**${myObj.get('name')} - ${Math.floor(mp / 3) + Math.floor((mp % 3) / 2)} MP**}}`);
+                    sendChat('Vessel', `&{template:custom} {{title=**${myObj.get('name')} - ${Math.floor(mp / 3) + Math.floor((mp % 3) / 2)} MP**}}`);
                     break;
                 case PHASE_2_TARGET:
                     noCurrentMove = (mp == 0 || mp == 2) ? 1 : 0;
-                    sendChat('Ship', `&{template:custom} {{title=**${myObj.get('name')} - ${Math.floor(mp / 3) + (mp % 3 == 1 ? 1 : 0)} MP**}}`);
+                    sendChat('Vessel', `&{template:custom} {{title=**${myObj.get('name')} - ${Math.floor(mp / 3) + (mp % 3 == 1 ? 1 : 0)} MP**}}`);
                     break;
                 case PHASE_3_TARGET:
                     noCurrentMove = (mp == 0 || mp == 1) ? 1 : 0;
-                    sendChat('Ship', `&{template:custom} {{title=**${myObj.get('name')} - ${Math.floor(mp / 3) + Math.floor((mp % 3) / 2)} MP**}}`);
+                    sendChat('Vessel', `&{template:custom} {{title=**${myObj.get('name')} - ${Math.floor(mp / 3) + Math.floor((mp % 3) / 2)} MP**}}`);
                     break;
                 //case PHASE_1_MOVEMENT:
                 //    break;
                 default:
-                    sendChat('Ship', `&{template:custom} {{title=**${myObj.get('name')}**}}`);
+                    sendChat('Vessel', `&{template:custom} {{title=**${myObj.get('name')}**}}`);
             }
 
             // Set movement status marker if no movement in this phase
