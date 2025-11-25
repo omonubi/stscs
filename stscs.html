@@ -20,20 +20,18 @@
         </span>
         <span class='span2'>
             <label>D / WDF / CE:</label>
-            <input type='number' class='w6' name='attr_defense' min='0' step='.1' value='0'/>
-            /
-            <input type='number' class='w6' name='attr_wdf' min='0' step='.1' value='0'/>
-            /
+            <input type='number' class='w6' name='attr_defense' min='0' step='.1' value='0'/> /
+            <input type='number' class='w6' name='attr_wdf' min='0' step='.1' value='0'/> /
             <span name='attr_ce'>0</span>
         </span>
 
         <label>Captain:</label>
         <input type='text' class='w12' name='attr_capname' placeholder='name...'/>
-        <label>Rating:</label>
+        <label>Command Rating:</label>
         <input type='hidden' name='attr_caprating_ta'/>
-        <input type='number' name='attr_caprating' min='48'/>   
-        <span></span>
-        <span></span>
+        <input type='number' name='attr_caprating' min='0'/>   
+        <label>Crew Rating:</label>
+        <input type='number' name='attr_crewrating' min='0'/>
     </div>
     <br/>
 
@@ -53,17 +51,19 @@
         <label>Damage Charts:</label>
         <span name='attr_dmg_chart'></span>
 
-        <button type='roll' class='btn' name='roll_rollcrew' value='&{template:custom} {{title=**[@{character_name}](@{roll20charurl}@{character_id})**}} {{subtitle=Crew Efficiency Roll}} {{color=gold}} {{Rating=[[@{crewrating}]]}} {{Roll=[[d100cf<0cs>101]]}}'>Crew Check</button>
+        <button type='roll' class='btn' name='roll_rollcrew' value='&{template:custom} {{title=**[@{character_name}](@{roll20charurl}@{character_id})**}} {{subtitle=Crew Efficiency Roll}} {{color=gold}} {{Efficiency=[[@{crewefficiency}]]}} {{Roll=[[d100cf<0cs>101]]}}'>Crew Check</button>
         <span></span>
         <label><strong>Crew:</strong></label>
         <span >
             <input type='hidden' class='crew-status' name='attr_crew_status' value='0'/>
-            <input type='number' class='w5 crew' name='attr_crew' value='0' min='0'/>
-            /
+            <input type='number' class='w5 crew' name='attr_crew' value='0' min='0'/> /
             <span name='attr_crew_max'></span>
         </span>
         <label>Efficiency:</label>
-        <input type='number' name='attr_crewrating' min='27'/>
+        <span>
+            <input type='number' name='attr_crewefficiency' readonly/> / 
+            <input type='number' name='attr_crewrollpenalty' readonly/>
+        </span>
 
         <select class='crew-bonus' name='attr_crewbonus'>
             <option value='0' selected>None</option>
@@ -762,6 +762,27 @@ on('change:crew change:crew_max', function(eventInfo) {
     });
 });
 
+// CREW EFFICIENCY calculation
+on('change:crewrating change:crew-percent', function(eventInfo) {
+    getAttrs(['crewrating', 'crew-percent'], function(values) {
+        const crewRating = parseInt(values['crewrating']) || 0;
+        const crewPercent = values['crew-percent'] || '0%';
+        const crewCasualties = 100 - Number(crewPercent.replace('%', EMPTY_STRING));
+
+        const casualtyBrackets = [19, 39, 59, 69, 100];
+        const rollPenalties = [0, -1, -2, -5, -10];
+        const efficiencyModifiers = [0, 10, 20, 50, 50];
+
+        let i = 0;
+        while (crewCasualties > casualtyBrackets[i]) i++;
+
+        const output = {};
+        output['crewefficiency'] = Math.max(0, crewRating - efficiencyModifiers[i]);
+        output['crewrollpenalty'] = rollPenalties[i];
+        setAttrs(output);
+    });
+});
+
 // DAMAGE roll
 on('clicked:rolldamage', async () => {
     const shieldArcStr = await extractChatData('?{Shield Arc|#1 (f/p)|#2 (fwd)|#3 (f/s)|#4 (a/s)|#5 (aft)|#6 (a/p)}');
@@ -787,9 +808,9 @@ on('clicked:rolldamage', async () => {
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 
-        10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
-        1, 1, 1, 2, 2, 2, 2, 5, 1, 1,
-        1, 1, 7, 4, 2, 2, 1, 9, 1, 1,
+        10, 1, 6, 3, 2, 2, 1, 8, 1, 1,
+        10, 1, 1, 2, 2, 2, 2, 5, 1, 1,
+        10, 1, 7, 4, 2, 2, 1, 9, 1, 1,
         1, 1, 7, 7, 4, 1, 1, 2, 2, 9,
         1, 1, 1, 6, 3, 1, 1, 7, 4, 1,
         1, 1, 6, 6, 3, 1, 1, 2, 2, 8
@@ -1694,7 +1715,8 @@ on('clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target', a
     const row = `repeating_${section}_${rowID}`;
 
     const attributes = await getAttrsAsync([
-        `${row}_name`, `${row}_chart`, `${row}_maxrange`, `${row}_power`, `${row}_damaged`, `crewbonus`, `crewbonustohitapplied`
+        `${row}_name`, `${row}_chart`, `${row}_maxrange`, `${row}_power`, `${row}_damaged`, 
+        `crewbonus`, `crewbonustohitapplied`, `crewrollpenalty`
     ]);
 
     const wpnName = attributes[`${row}_name`];
@@ -1704,6 +1726,7 @@ on('clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target', a
     const wpnIsDamaged = parseInt(attributes[`${row}_damaged`]) || 0;
     const crewBonus = parseInt(attributes[`crewbonus`]) || 0;
     const crewBonusApplied = parseInt(attributes[`crewbonustohitapplied`]) || 0;
+    const crewCasualtyPenalty = parseInt(attributes[`crewrollpenalty`]) || 0;
 
     const output = {};
 
@@ -1720,7 +1743,7 @@ on('clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target', a
     const { tokenName, charId } = await extractTargetData(); // Destructure JSON
     const wpnTargetDistance = +(await extractChatData('?{How far|1}')) || 0;
     const wpnCrewBonus = crewBonus == CREW_BONUS_WEAPONS && !crewBonusApplied ? +(await extractChatData('?{Apply crew bonus|Yes,1|No,0}')) || 0 : 0;
-    const wpnTargetToHit = getToHit(wpnChart, wpnTargetDistance) + wpnCrewBonus;
+    const wpnTargetToHit = getToHit(wpnChart, wpnTargetDistance) + wpnCrewBonus + crewCasualtyPenalty;
     const wpnTargetToHitStr = `${wpnTargetToHit * 10}%`;
 
     // Get all matching banked weapons
@@ -2062,15 +2085,15 @@ function getSectionIDsAsync(sectionName){
         <div class="sheet-value">{{value}}</div>
         {{/allprops() title subtitle color Damage}}
 
-        {{#^rollGreater() Roll Rating}}
+        {{#^rollGreater() Roll Efficiency}}
         <div class="sheet-key">Result</div>
         <div class="sheet-value"><span class="success">Success!</span></div>
-        {{/^rollGreater() Roll Rating}}
+        {{/^rollGreater() Roll Efficiency}}
 
-        {{#rollGreater() Roll Rating}}
+        {{#rollGreater() Roll Efficiency}}
         <div class="sheet-key">Result</div>
         <div class="sheet-value"><span class="failure">Failure</span></div>
-        {{/rollGreater() Roll Rating}}
+        {{/rollGreater() Roll Efficiency}}
 
         {{#^rollGreater() Roll To-Hit}}
         <div class="sheet-key">Result</div>
