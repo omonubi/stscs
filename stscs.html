@@ -1,8 +1,17 @@
 <div>
+    <input type='hidden' class='movement-grid-status' name='attr_movement_grid_status' value='0'/>
+    <input type='hidden' class='sensors-status' name='attr_sensors_status' value='0'/>
+    <input type='hidden' class='shields-grid-status' name='attr_shields_grid_status' value='0'/>
     <input type='hidden' class='ship-is-disabled' name='attr_ship-is-disabled' value='0'/>
+    <input type='hidden' class='tpa-committed-status' name='attr_shields_allocated_status' value='0'/>
+    <input type='hidden' class='weapons-grid-status' name='attr_weapons_grid_status' value='0'/>
     <h1>
         <span name='attr_character_name'></span>
-        <span class='disable-ship'> &#x1F915;</span>
+        <span class='disable-ship' title='disabled'> &#x1F198;</span>
+        <span class='warning-sensors' style='cursor: default;' title='sensors offline'> &#x26A0;&#xFE0F;</span>
+        <span class='warning-movement' style='cursor: default;' title='helm offline'> &#x26A0;&#xFE0F;</span>
+        <span class='warning-shields' style='cursor: default;' title='shields offline'> &#x26A0;&#xFE0F;</span>
+        <span class='warning-weapons' style='cursor: default;' title='weapons offline'> &#x26A0;&#xFE0F;</span>
     </h1> 
     <input type='hidden' name='attr_current_phase' value='0'/>
     <input type='hidden' name='attr_tpa_reset' value='0'/>
@@ -188,7 +197,6 @@
     </h2>
 
     <div class='grid-6col tpa-panel'>
-        <input type='hidden' class='tpa-committed-status' name='attr_shields_allocated_status' value='0'/>
         <button type='action' class='btn' name='act_tpa_reset'>Reset TPA</button>
         <span></span>
         <label><strong>Current TPA:</strong></label> 
@@ -243,18 +251,9 @@
     <br/>
 
     <!-------------------------------------------------------->
-    <h2>Sensors</h2>
-
-    <input type='hidden' class='sensors-status' name='attr_sensors_status' value='0'/>
-    <input type='hidden' class='sensors-destroyed' name='attr_sensors_destroyed' value='0'/>
-    <div class='grid-6col sensors-panel'>
-        <button type='action' class='btn btn-scan' name='act_scan'>Scan Target</button>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
+    <span class='sensors-header header-container'>
+        <h2>Sensors</h2>
         <span>
-            <input type='hidden' class='sensors-status' name='attr_sensors_status' value='0'/>
             <input type='hidden' name='attr_sensors_to_repair' value='0'/>
             <select class='w7 state-select' name='attr_sensors_state' readonly>
                 <option value='0' selected>Online</option>
@@ -266,6 +265,16 @@
             </select>
             <button type='action' class='btn btn-sensors-repair' name='act_sensors_repair'>Repair</button>
         </span>
+    </span>
+
+    <input type='hidden' class='sensors-destroyed' name='attr_sensors_destroyed' value='0'/>
+    <div class='grid-6col sensors-panel'>
+        <button type='action' class='btn btn-scan' name='act_scan'>Scan Target</button>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
         
         <span class='span2'>
             <input type='text' class='scan-lock' name='attr_sensorlock' placeholder='No target lock...' readonly/>
@@ -291,7 +300,21 @@
     <br/>
 
     <!-------------------------------------------------------->
-    <h2>Helm Control</h2>
+    <span class='helm-header header-container'>
+        <h2>Helm Control</h2>
+        <span>
+            <input type='hidden' name='attr_movement_grid_to_repair' value='0'/>
+            <select class='w7 state-select' name='attr_movement_grid_state' readonly>
+                <option value='0' selected>Online</option>
+                <option value='1'>Dmg 1-8</option>
+                <option value='2'>Dmg 1-6</option>
+                <option value='3'>Dmg 1-4</option>
+                <option value='4'>Dmg 1-2</option>
+                <option value='5'>DEST</option>
+            </select>
+            <button type='action' class='btn btn-movement-grid-repair' name='act_movement_grid_repair'>Repair</button>
+        </span>
+    </span>
 
     <div class='grid-6col helm-panel'>
         <span></span>
@@ -371,10 +394,24 @@
     <br/>
 
     <!-------------------------------------------------------->
-    <h2>Shield Control
-        <input type='hidden' class='crewbonus3' name='attr_crewbonus3' value='0'/>
-        <span class='crewbonusicon' title='crew efficiency bonus'>&#x26A1;</span>
-    </h2>
+    <span class='shields-header header-container'>
+        <h2>Shield Control
+            <input type='hidden' class='crewbonus3' name='attr_crewbonus3' value='0'/>
+            <span class='crewbonusicon' title='crew efficiency bonus'>&#x26A1;</span>
+        </h2>
+        <span>
+            <input type='hidden' name='attr_shields_grid_to_repair' value='0'/>
+            <select class='w7 state-select' name='attr_shields_grid_state' readonly>
+                <option value='0' selected>Online</option>
+                <option value='1'>Dmg 1-8</option>
+                <option value='2'>Dmg 1-6</option>
+                <option value='3'>Dmg 1-4</option>
+                <option value='4'>Dmg 1-2</option>
+                <option value='5'>DEST</option>
+            </select>
+            <button type='action' class='btn btn-shields-grid-repair' name='act_shields_grid_repair'>Repair</button>
+        </span>
+    </span>
 
     <div class='grid-6col shields-panel'>
         <label>Shield Type:</label>
@@ -400,7 +437,6 @@
     <div class='grid-6col spa-panel'>
         <h4 class='span-grid'>Shield Configuration</h4>
 
-        <input type='hidden' class='tpa-committed-status' name='attr_shields_allocated_status' value='0'/>
         <div class='shields-allocated'>
             <label>Shield #1 (<strong>f/p</strong>):</label>
             <span>
@@ -473,10 +509,24 @@
     <br/>
 
     <!-------------------------------------------------------->
-    <h2>Fire Control
-        <input type='hidden' class='crewbonus1' name='attr_crewbonus1' value='0'/>
-        <span class='crewbonusicon' title='crew efficiency bonus'>&#x26A1;</span>
-    </h2>
+    <span class='fc-header header-container'>
+        <h2>Fire Control
+            <input type='hidden' class='crewbonus1' name='attr_crewbonus1' value='0'/>
+            <span class='crewbonusicon' title='crew efficiency bonus'>&#x26A1;</span>
+        </h2>
+        <span>
+            <input type='hidden' name='attr_weapons_grid_to_repair' value='0'/>
+            <select class='w7 state-select' name='attr_weapons_grid_state' readonly>
+                <option value='0' selected>Online</option>
+                <option value='1'>Dmg 1-8</option>
+                <option value='2'>Dmg 1-6</option>
+                <option value='3'>Dmg 1-4</option>
+                <option value='4'>Dmg 1-2</option>
+                <option value='5'>DEST</option>
+            </select>
+            <button type='action' class='btn btn-weapons-grid-repair' name='act_weapons_grid_repair'>Repair</button>
+        </span>
+    </span>
 
     <input type='hidden' name='attr_crewbonustohitapplied' value='0'/>
     <div class='grid-6col fc-panel'>
@@ -541,8 +591,7 @@
                 <option>Y</option>
             </select>
             <input type='hidden' class='power-status' name='attr_power_status'/>
-            <input type='number' class='power' name='attr_power' min='0' max='10' value='0'/>
-            /
+            <input type='number' class='power' name='attr_power' min='0' max='10' value='0'/> /
             <input type='number' name='attr_power_max' min='0' max='10' value='0'/>
             <input type='text' class='w3' name='attr_bonus_3' value='-'/>
             <input type='text' class='w3' name='attr_bonus_2' value='-'/>
@@ -550,12 +599,11 @@
             <span>
                 <input type='hidden' class='btn-target-status' name='attr_btn-target_status' value='0'/>
                 <button type='action' class='btn btn-target' name='act_btn-target'>Target</button>
-            </span>
-            →
+            </span> →
             <input type='text' class='w10' name='attr_target_name' readonly/>
             <input type='hidden' name='attr_target_id'/>
-            <input type='number' class='w5' name='attr_target_distance' value='0' readonly/>
-            <input type='text' class='w5' name='attr_target_tohit' value='0' readonly/>
+            <input type='text' class='w3' name='attr_target_distance' value='0' readonly/>
+            <input type='text' class='w3' name='attr_target_tohit' value='0' readonly/>
             <span>
                 <input type='hidden' class='btn-fire-status' name='attr_btn-fire_status' value='0'/> 
                 <button type='action' class='btn btn-fire critical' name='act_btn-fire'>Fire</button>
@@ -618,12 +666,11 @@
             <span>
                 <input type='hidden' class='btn-target-status' name='attr_btn-target_status' value='0'/>
                 <button type='action' class='btn btn-target' style='margin-left: 95px;' name='act_btn-target'>Target</button>
-            </span>
-            →
+            </span> →
             <input type='text' class='w10' name='attr_target_name' readonly/>
             <input type='hidden' name='attr_target_id'/>
-            <input type='number' class='w5' name='attr_target_distance' value='0' readonly/>
-            <input type='text' class='w5' name='attr_target_tohit' value='0' readonly/>
+            <input type='text' class='w3' name='attr_target_distance' value='0' readonly/>
+            <input type='text' class='w3' name='attr_target_tohit' value='0' readonly/>
             <span>
                 <input type='hidden' class='btn-fire-status' name='attr_btn-fire_status' value='0'/>
                 <button type='action' class='btn btn-fire critical' name='act_btn-fire'>Fire</button>
@@ -909,18 +956,19 @@ on('clicked:rolldamage', async () => {
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 
-        14, 14, 14, 14, 14, 14, 14, 14, 14, 14,
-        13, 1, 1, 2, 2, 2, 2, 5, 1, 12,
-        13, 1, 7, 4, 2, 2, 1, 9, 1, 12,
+        15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+        13, 1, 1, 2, 2, 2, 2, 5, 14, 12,
+        13, 1, 7, 4, 2, 2, 1, 9, 14, 12,
         13, 1, 7, 7, 4, 1, 1, 2, 2, 9,
         13, 1, 1, 6, 3, 1, 1, 7, 4, 1,
         13, 1, 6, 6, 3, 1, 1, 2, 2, 8
     ];
 
-    //13, 1, 6, 3, 2, 2, 1, 8, 1, 12,
+    //13, 1, 6, 3, 2, 2, 1, 8, 14, 12,
 
     const DAMAGE_CHART_DEFAULT = 'C';
     const DAMAGE_RESULT_BRIDGE = 'Bridge 2C';
+    const DAMAGE_RESULT_ENG = 'Engineering';
     const DAMAGE_RESULT_IMP = 'Impulse';
     const DAMAGE_RESULT_IMP_HALF = 'Impulse (x1/2)';
     const DAMAGE_RESULT_PORT = 'PWE';
@@ -943,6 +991,7 @@ on('clicked:rolldamage', async () => {
     let penetratingDamage = 0;
     let returnStr = EMPTY_STRING;
     let rollStr = `/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Damage Results}} {{color=red}} {{Incoming Dmg=${baseDamage}}} {{On Shield Arc=${shieldArcStr}}} `;
+    let gridStr = EMPTY_STRING; // Used to track grid hits
 
     const hitRollResult = getRandomIntInclusive(0, 9);
     const hitLocation = ((damageChart.charCodeAt(0) - 65) * 60) + (hitRollResult * shieldArc);
@@ -1142,7 +1191,7 @@ on('clicked:rolldamage', async () => {
             ({ penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage)); 
             rollStr += returnStr;
             if (penetratingDamage) {           
-                ({ residualDamage, returnStr } = await damageGenerator(shieldArc, penetratingDamage));
+                ({ residualDamage, returnStr } = await damageSystem(`shield_${shieldArc}`, penetratingDamage));
                 rollStr += returnStr;
                 if (residualDamage) {
                     ({ residualDamage, returnStr } = await damageResidual(residualDamage));
@@ -1155,18 +1204,39 @@ on('clicked:rolldamage', async () => {
             ({ penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage)); 
             rollStr += returnStr;
             if (penetratingDamage) {  
-                ({ residualDamage, returnStr } = await damageSensors());
-                rollStr += returnStr;         
+                ({ residualDamage, returnStr } = await damageSystem(`sensors`, penetratingDamage));
+                undoSensorLock();
+                rollStr += returnStr;
+                if (residualDamage) {
+                    ({ residualDamage, returnStr } = await damageResidual(residualDamage));
+                    rollStr += returnStr;
+                }
+            }
+            break;
+        case 15:
+            rollStr += `{{Hit Location=${DAMAGE_RESULT_ENG}}} `;
+            ({ penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage)); 
+            rollStr += returnStr;
+            if (penetratingDamage) {
+                const gridNames = [`Shields`, `Weapons`, `Movement`];
+                const damagedGrids = await selectRandomGrids();
+                for (i = 0; i < damagedGrids.length; i++) {
+                    gridStr += `${gridNames[damagedGrids[i]-1]}, `;
+                }
+                gridStr = gridStr.slice(0, -2);
+                rollStr += ` {{Affected Grids=${gridStr}}}`;
                 ({ residualDamage, returnStr } = await damageSup(1));
                 rollStr += returnStr;
             }
             break;
     }
 
-    startRoll(
+    await startRoll(
         `/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Damage Results}} {{color=red}} {{Incoming Dmg=${baseDamage}}} {{On Shield Arc=${shieldArcStr}}} ${rollStr}`,
         roll => finishRoll(roll.rollId)
     );
+
+    if (gridStr) damageGrids(gridStr); // Handle damage to individal grids
 });
 
 // DAMAGE CREW
@@ -1203,6 +1273,48 @@ async function damageCrew(myDmg, myFactor = 1, isBridge = false) {
     const residualDamage = 0;
     const returnStr = ` {{Crew Check=${isCrewEffective ? CREW_EFFECTIVE_TRUE : CREW_EFFECTIVE_FALSE}}} {{Crew Lost=[[${crewLost}]]}}`;
     return { residualDamage, returnStr };
+}
+
+// DAMAGE GRIDS
+async function damageGrids(gridStr) {
+    const affectedGrids = gridStr.split(`, `);
+    for (i = 0; i < affectedGrids.length; i++) {
+        const gridVarName = `${affectedGrids[i].toLowerCase()}_grid`;
+
+        const output = {};
+        if (affectedGrids[i] == 'Shields') output[`shield_1c`] = output[`shield_2c`] = output[`shield_3c`] = output[`shield_4c`] = output[`shield_5c`] = output[`shield_6c`] = 0;
+        await setAttrsAsync(output);
+
+        ({ residualDamage, returnStr } = await damageSystem(gridVarName, 0));
+        await startRoll(
+            `/w gm &{template:custom} {{subtitle=**${affectedGrids[i]}** Grid}} {{color=red}} ${returnStr}`,
+            roll => finishRoll(roll.rollId)
+        );
+    }
+}
+
+// SELECT RANDOM GRIDS
+async function selectRandomGrids() {
+    const randomResult = getRandomIntInclusive(1, 10);
+    
+    let affectedGrids = [];
+    if (randomResult <= 2) {
+        affectedGrids = [1]; // shields-grid
+    } else if (randomResult <= 4) {
+        affectedGrids = [2]; // weapon-grid
+    } else if (randomResult <= 6) {
+        affectedGrids = [3]; // movement-grid
+    } else if (randomResult === 7) {
+        affectedGrids = [1, 2]; // shields-grid, weapon-grid
+    } else if (randomResult === 8) {
+        affectedGrids = [1, 3]; // shields-grid, movement-grid
+    } else if (randomResult === 9) {
+        affectedGrids = [2, 3]; // weapon-grid, movement-grid
+    } else if (randomResult === 10) {
+        affectedGrids = [1, 2, 3]; // all three grids
+    }
+    
+    return affectedGrids;
 }
 
 // DAMAGE IMPULSE ENGINE
@@ -1242,27 +1354,6 @@ async function damageImpulse(myDmg = 0, myFactor = 1) {
     return { residualDamage, returnStr };
 }
 
-// DAMAGE SENSORS
-async function damageSensors() {
-    const values = await getAttrsAsync([`sensors_state`]);
-    const sensorStatus = parseInt(values[`sensors_state`]) || 0;
-
-    const sensorStatusNew = Math.min(5, sensorStatus + 1);
-
-    const output = {};
-    output[`sensors_state`] = sensorStatusNew;
-    output[`sensors_status`] = sensorStatusNew > 0 ? 1 : 0;
-    output[`sensors_destroyed`] = sensorStatusNew == 5 ? 1 : 0;
-    output[`sensors_to_repair`] = 10 - (sensorStatusNew * 2);
-    await setAttrsAsync(output);
-
-    undoSensorLock();
-
-    const residualDamage = 0;
-    const returnStr = ` {{Sensors=${DAMAGE_STATUSES[sensorStatusNew]}}}`;
-    return { residualDamage, returnStr };
-}
-
 // DAMAGE SHIELD
 async function damageShield(myShieldVar = EMPTY_STRING, myDmg = 0, myFactor = 1) {
     const values = await getAttrsAsync([myShieldVar]);
@@ -1280,21 +1371,21 @@ async function damageShield(myShieldVar = EMPTY_STRING, myDmg = 0, myFactor = 1)
     return { penetratingDamage, returnStr };
 }
 
-// DAMAGE SHIELD GENERATOR
-async function damageGenerator(myShieldArc = 0, myDmg = 0) {
-    const values = await getAttrsAsync([`shield_${myShieldArc}_state`]);
-    const shieldStatus = parseInt(values[`shield_${myShieldArc}_state`]) || 0;
+// DAMAGE SYSTEM
+async function damageSystem(mySystemVar = EMPTY_STRING, myDmg = 0) {
+    const values = await getAttrsAsync([`${mySystemVar}_state`]);
+    const systemState = parseInt(values[`${mySystemVar}_state`]) || 0;
 
-    const shieldStatusNew = Math.min(5, shieldStatus + 1);
+    const systemStateNew = Math.min(5, systemState + 1);
 
     const output = {};
-    output[`shield_${myShieldArc}_state`] = shieldStatusNew;
-    output[`shield_${myShieldArc}_status`] = shieldStatusNew > 0 && shieldStatusNew < 5 ? 1 : 0;
-    output[`shield_${myShieldArc}_to_repair`] = 10 - (shieldStatusNew * 2);
+    output[`${mySystemVar}_state`] = systemStateNew;
+    output[`${mySystemVar}_status`] = systemStateNew > 0 && systemStateNew < 5 ? 1 : 0;
+    output[`${mySystemVar}_to_repair`] = 10 - (systemStateNew * 2);
     await setAttrsAsync(output);
 
-    const residualDamage = shieldStatusNew == 5 ? myDmg : 2;
-    const returnStr = ` {{Shield Generator=${DAMAGE_STATUSES[shieldStatusNew]}}}`;
+    const residualDamage = systemStateNew == 5 ? myDmg : 2;
+    const returnStr = ` {{Damage Status=${DAMAGE_STATUSES[systemStateNew]}}}`;
     return { residualDamage, returnStr };
 }
 
@@ -1440,10 +1531,20 @@ on('change:tpa_movement change:mpr_1 change:mpr_2', function(eventInfo) {
     });
 });
 
-// REPAIR SENSORS
-on(`clicked:sensors_repair`, function(eventInfo) {
-    getAttrs([`sensors_to_repair`, 'crewrollpenalty'], function(values) {
-        const repairTargetBase = parseInt(values[`sensors_to_repair`]) || 0;
+// REPAIR SYSTEM
+on(`clicked:movement_grid_repair`, function(eventInfo) { repairSystem(`movement_grid`, `Movement Grid`); });
+on(`clicked:sensors_repair`, function(eventInfo) { repairSystem(`sensors`, `Sensors`); });
+on(`clicked:shield_1_repair`, function(eventInfo) { repairSystem(`shield_1`, `Shield #1 (f/p)`); });
+on(`clicked:shield_2_repair`, function(eventInfo) { repairSystem(`shield_2`, `Shield #2 (fwd)`); });
+on(`clicked:shield_3_repair`, function(eventInfo) { repairSystem(`shield_3`, `Shield #3 (f/s)`); });
+on(`clicked:shield_4_repair`, function(eventInfo) { repairSystem(`shield_4`, `Shield #4 (a/s)`); });
+on(`clicked:shield_5_repair`, function(eventInfo) { repairSystem(`shield_5`, `Shield #5 (aft)`); });
+on(`clicked:shield_6_repair`, function(eventInfo) { repairSystem(`shield_6`, `Shield #6 (a/p)`); });
+on(`clicked:shields_grid_repair`, function(eventInfo) { repairSystem(`shields_grid`, `Shields Grid`); energizeShields()});
+on(`clicked:weapons_grid_repair`, function(eventInfo) { repairSystem(`weapons_grid`, `Weapons Grid`); });
+function repairSystem(mySystemVar = EMPTY_STRING, mySystemName = EMPTY_STRING) {
+    getAttrs([`${mySystemVar}_to_repair`, 'crewrollpenalty'], function(values) {
+        const repairTargetBase = parseInt(values[`${mySystemVar}_to_repair`]) || 0;
         const crewRollPenalty = parseInt(values['crewrollpenalty']) || 0;
         let repairTargetNew = repairTargetBase;
         const repairTarget = Math.max(0, repairTargetBase + crewRollPenalty);
@@ -1451,57 +1552,22 @@ on(`clicked:sensors_repair`, function(eventInfo) {
         const output = {};
         const repairRoll = getRandomIntInclusive(1, 10);
         if (repairRoll <= repairTarget) {
-            output[`sensors_state`] = 0;
-            output[`sensors_status`] = 0;
+            output[`${mySystemVar}_state`] = 0;
+            output[`${mySystemVar}_status`] = 0;
             repairTargetNew = 0;
         } else {
             repairTargetNew = repairTargetBase + 1;
         }
 
-        output[`sensors_to_repair`] = repairTargetNew;
+        output[`${mySystemVar}_to_repair`] = repairTargetNew;
         setAttrs(output);
 
         startRoll(
-            `/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Repair Roll}} {{color=gold}} {{System=Sensors}} {{To-Repair=[[${repairTarget}]]}} {{Roll=[[${repairRoll}]]}}`,
+            `/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Repair Roll}} {{color=gold}} {{System=${mySystemName}}} {{To-Repair=[[${repairTarget}]]}} {{Roll=[[${repairRoll}]]}}`,
             roll => finishRoll(roll.rollId)
         );
     });
-});
-
-// REPAIR SHIELD GENERATOR
-['1', '2', '3', '4', '5', '6'].forEach(num => {
-    on(`clicked:shield_${num}_repair`, function(eventInfo) {
-        getAttrs([`shield_${num}_to_repair`, 'crewrollpenalty'], function(values) {
-            const repairTargetBase = parseInt(values[`shield_${num}_to_repair`]) || 0;
-            const crewRollPenalty = parseInt(values['crewrollpenalty']) || 0;
-            let repairTargetNew = repairTargetBase;
-            const repairTarget = Math.max(0, repairTargetBase + crewRollPenalty);
-
-            const shieldArcs = [
-                'Shield #1 (f/p)', 'Shield #2 (fwd)', 'Shield #3 (f/s)', 
-                'Shield #4 (a/s)', 'Shield #5 (aft)', 'Shield #6 (a/p)'
-                ];
-
-            const output = {};
-            const repairRoll = getRandomIntInclusive(1, 10);
-            if (repairRoll <= repairTarget) {
-                output[`shield_${num}_state`] = 0;
-                output[`shield_${num}_status`] = 0;
-                repairTargetNew = 0;
-            } else {
-                repairTargetNew = repairTargetBase + 1;
-            }
-
-            output[`shield_${num}_to_repair`] = repairTargetNew;
-            setAttrs(output);
-
-            startRoll(
-                `/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Repair Roll}} {{color=gold}} {{System=${shieldArcs[num-1]}}} {{To-Repair=[[${repairTarget}]]}} {{Roll=[[${repairRoll}]]}}`,
-                roll => finishRoll(roll.rollId)
-            );
-        });
-    });
-});
+};
 
 // REPAIR and RESET after combat
 on('clicked:repair', async function(eventInfo) {
@@ -1574,6 +1640,9 @@ on('clicked:repair', async function(eventInfo) {
             output[`shield_5_state`] = output[`shield_5_status`] = output[`shield_5_to_repair`] = 0;
             output[`shield_6_state`] = output[`shield_6_status`] = output[`shield_6_to_repair`] = 0;
             output[`sensors_state`] = output[`sensors_status`] = output[`sensors_to_repair`] = output[`sensors_destroyed`] = 0;
+            output[`shields_grid_state`] = output[`shields_grid_status`] = output[`shields_grid_to_repair`] = output[`shields_grid_destroyed`] = 0;
+            output[`weapons_grid_state`] = output[`weapons_grid_status`] = output[`weapons_grid_to_repair`] = output[`weapons_grid_destroyed`] = 0;
+            output[`movement_grid_state`] = output[`movement_grid_status`] = output[`movement_grid_to_repair`] = output[`movement_grid_destroyed`] = 0;
             setAttrs(output);
         });
 
