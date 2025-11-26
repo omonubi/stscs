@@ -91,6 +91,96 @@
         </span>
     </div>
     <br/>
+    <div class='grid-6col shield-status'>
+        <h4 class='span-grid'>Shield Generators Status</h4>
+
+        <label>Shield #1 (<strong>f/p</strong>):</label>
+        <span>
+            <input type='hidden' class='shield-1-status' name='attr_shield_1_status' value='0'/>
+            <input type='hidden' name='attr_shield_1_to_repair' value='0'/>
+            <select class='w7 shieldgen' name='attr_shield_1_state' readonly>
+                <option value='0' selected>Online</option>
+                <option value='1'>Dmg 1-8</option>
+                <option value='2'>Dmg 1-6</option>
+                <option value='3'>Dmg 1-4</option>
+                <option value='4'>Dmg 1-2</option>
+                <option value='5'>DEST</option>
+            </select>
+            <button type='action' class='btn' name='act_shield_1_repair'>Repair</button>
+        </span>
+        <label>Shield #2 (<strong>fwd</strong>):</label>
+        <span>
+            <input type='hidden' class='shield-2-status' name='attr_shield_2_status' value='0'/>
+            <input type='hidden' name='attr_shield_2_to_repair' value='0'/>
+            <select class='w7 shieldgen' name='attr_shield_2_state' readonly>
+                <option value='0' selected>Online</option>
+                <option value='1'>Dmg 1-8</option>
+                <option value='2'>Dmg 1-6</option>
+                <option value='3'>Dmg 1-4</option>
+                <option value='4'>Dmg 1-2</option>
+                <option value='5'>DEST</option>
+            </select>
+            <button type='action' class='btn' name='act_shield_2_repair'>Repair</button>
+        </span>
+        <label>Shield #3 (<strong>f/s</strong>):</label>
+        <span>
+            <input type='hidden' class='shield-3-status' name='attr_shield_3_status' value='0'/>
+            <input type='hidden' name='attr_shield_3_to_repair' value='0'/>
+            <select class='w7 shieldgen' name='attr_shield_3_state' readonly>
+                <option value='0' selected>Online</option>
+                <option value='1'>Dmg 1-8</option>
+                <option value='2'>Dmg 1-6</option>
+                <option value='3'>Dmg 1-4</option>
+                <option value='4'>Dmg 1-2</option>
+                <option value='5'>DEST</option>
+            </select>
+            <button type='action' class='btn' name='act_shield_3_repair'>Repair</button>
+        </span>
+
+        <label>Shield #6 (<strong>a/p</strong>):</label>
+        <span>
+            <input type='hidden' class='shield-6-status' name='attr_shield_6_status' value='0'/>
+            <input type='hidden' name='attr_shield_6_to_repair' value='0'/>
+            <select class='w7 shieldgen' name='attr_shield_6_state' readonly>
+                <option value='0' selected>Online</option>
+                <option value='1'>Dmg 1-8</option>
+                <option value='2'>Dmg 1-6</option>
+                <option value='3'>Dmg 1-4</option>
+                <option value='4'>Dmg 1-2</option>
+                <option value='5'>DEST</option>
+            </select>
+            <button type='action' class='btn' name='act_shield_6_repair'>Repair</button>
+        </span>
+        <label>Shield #5 (<strong>aft</strong>):</label>
+        <span>
+            <input type='hidden' class='shield-5-status' name='attr_shield_5_status' value='0'/>
+            <input type='hidden' name='attr_shield_5_to_repair' value='0'/>
+            <select class='w7 shieldgen' name='attr_shield_5_state' readonly>
+                <option value='0' selected>Online</option>
+                <option value='1'>Dmg 1-8</option>
+                <option value='2'>Dmg 1-6</option>
+                <option value='3'>Dmg 1-4</option>
+                <option value='4'>Dmg 1-2</option>
+                <option value='5'>DEST</option>
+            </select>
+            <button type='action' class='btn' name='act_shield_5_repair'>Repair</button>
+        </span>
+        <label>Shield #4 (<strong>a/s</strong>):</label>
+        <span>
+            <input type='hidden' class='shield-4-status' name='attr_shield_4_status' value='0'/>
+            <input type='hidden' name='attr_shield_4_to_repair' value='0'/>
+            <select class='w7 shieldgen' name='attr_shield_4_state' readonly>
+                <option value='0' selected>Online</option>
+                <option value='1'>Dmg 1-8</option>
+                <option value='2'>Dmg 1-6</option>
+                <option value='3'>Dmg 1-4</option>
+                <option value='4'>Dmg 1-2</option>
+                <option value='5'>DEST</option>
+            </select>
+            <button type='action' class='btn' name='act_shield_4_repair'>Repair</button>
+        </span>
+    </div>
+    <br/>
 
     <!-------------------------------------------------------->
     <h2>Engineering
@@ -293,39 +383,34 @@
         <div class='shields-allocated'>
             <label>Shield #1 (<strong>f/p</strong>):</label>
             <span>
-                <input type='checkbox' class='damaged' name='attr_shield_1_damaged' value='1' title='generator damaged'/>
-                <input type='hidden' class='shield-1-status' name='attr_shield_1_status'/>
+                <input type='hidden' class='shield-1a-status' name='attr_shield_1a_status'/>
                 <input type='number' class='shield-1' name='attr_shield_1' min='0' value='0' title='Shield #1 (f/p)'/>
             </span>
             <label>Shield #2 (<strong>fwd</strong>):</label>
             <span>
-                <input type='checkbox' class='damaged' name='attr_shield_2_damaged' value='1' title='generator damaged'/>
-                <input type='hidden' class='shield-2-status' name='attr_shield_2_status'/>
+                <input type='hidden' class='shield-2a-status' name='attr_shield_2a_status'/>
                 <input type='number' class='shield-2' name='attr_shield_2' min='0' value='0' title='Shield #2 (fwd)'/>
             </span>
             <label>Shield #3 (<strong>f/s</strong>):</label>
             <span>
-                <input type='checkbox' class='damaged' name='attr_shield_3_damaged' value='1' title='generator damaged'/>
-                <input type='hidden' class='shield-3-status' name='attr_shield_3_status'/>
+                <input type='hidden' class='shield-3a-status' name='attr_shield_3a_status'/>
                 <input type='number' class='shield-3' name='attr_shield_3' min='0' value='0' title='Shield #3 (f/s)'/>
             </span>
 
             <label>Shield #6 (<strong>a/p</strong>):</label>
             <span>
-                <input type='checkbox' class='damaged' name='attr_shield_4_damaged' value='1' title='generator damaged'/>
-                <input type='hidden' class='shield-6-status' name='attr_shield_6_status'/>
+                <input type='hidden' class='shield-6a-status' name='attr_shield_6a_status'/>
                 <input type='number' class='shield-6' name='attr_shield_6' min='0' value='0' title='Shield #6 (a/p)'/>
             </span>
-            <label>Shield #5 (<strong>aft</strong>)</label>
+            <label>Shield #5 (<strong>aft</strong>):</label>
             <span>
-                <input type='checkbox' class='damaged' name='attr_shield_5_damaged' value='1' title='generator damaged'/>
-                <input type='hidden' class='shield-5-status' name='attr_shield_5_status'/>
+                
+                <input type='hidden' class='shield-5a-status' name='attr_shield_5a_status'/>
                 <input type='number' class='shield-5' name='attr_shield_5' min='0' value='0' title='Shield #5 (aft)'/>
             </span>
             <label>Shield #4 (<strong>a/s</strong>):</label>
             <span>
-                <input type='checkbox' class='damaged' name='attr_shield_6_damaged' value='1' title='generator damaged'/>
-                <input type='hidden' class='shield-4-status' name='attr_shield_4_status'/>
+                <input type='hidden' class='shield-4a-status' name='attr_shield_4a_status'/>
                 <input type='number' class='shield-4' name='attr_shield_4' min='0' value='0' title='Shield #4 (a/s)'/>
             </span>
         </div>
@@ -333,40 +418,34 @@
         <div class='shields-current'>
             <label>Shield #1 (<strong>f/p</strong>):</label>
             <span>
-                <input type='checkbox' class='damaged' name='attr_shield_1_damaged' value='1' title='generator damaged'/>
                 <input type='hidden' class='shield-1c-status' name='attr_shield_1c_status'/>
-                <input type='number' class='shield-1c' name='attr_shield_1c' min='0' value='0' title='Shield #1 (f/p)'/>
+                <input type='number' class='shield-1c' name='attr_shield_1c' readonly/>
             </span>
             <label>Shield #2 (<strong>fwd</strong>):</label>
             <span>
-                <input type='checkbox' class='damaged' name='attr_shield_2_damaged' value='1' title='generator damaged'/>
                 <input type='hidden' class='shield-2c-status' name='attr_shield_2c_status'/>
-                <input type='number' class='shield-2c' name='attr_shield_2c' min='0' value='0' title='Shield #2 (fwd)'/>
+                <input type='number' class='shield-2c' name='attr_shield_2c' readonly/>
             </span>
             <label>Shield #3 (<strong>f/s</strong>):</label>
             <span>
-                <input type='checkbox' class='damaged' name='attr_shield_3_damaged' value='1' title='generator damaged'/>
                 <input type='hidden' class='shield-3c-status' name='attr_shield_3c_status'/>
-                <input type='number' class='shield-3c' name='attr_shield_3c' min='0' value='0' title='Shield #3 (f/s)'/>
+                <input type='number' class='shield-3c' name='attr_shield_3c' readonly/>
             </span>
 
             <label>Shield #6 (<strong>a/p</strong>):</label>
             <span>
-                <input type='checkbox' class='damaged' name='attr_shield_4_damaged' value='1' title='generator damaged'/>
                 <input type='hidden' class='shield-6c-status' name='attr_shield_6c_status'/>
-                <input type='number' class='shield-6c' name='attr_shield_6c' min='0' value='0' title='Shield #6 (a/p)'/>
+                <input type='number' class='shield-6c' name='attr_shield_6c' readonly/>
             </span>
-            <label>Shield #5 (<strong>aft</strong>)</label>
+            <label>Shield #5 (<strong>aft</strong>):</label>
             <span>
-                <input type='checkbox' class='damaged' name='attr_shield_5_damaged' value='1' title='generator damaged'/>
                 <input type='hidden' class='shield-5c-status' name='attr_shield_5c_status'/>
-                <input type='number' class='shield-5c' name='attr_shield_5c' min='0' value='0' title='Shield #5 (aft)'/>
+                <input type='number' class='shield-5c' name='attr_shield_5c' readonly/>
             </span>
             <label>Shield #4 (<strong>a/s</strong>):</label>
             <span>
-                <input type='checkbox' class='damaged' name='attr_shield_6_damaged' value='1' title='generator damaged'/>
                 <input type='hidden' class='shield-4c-status' name='attr_shield_4c_status'/>
-                <input type='number' class='shield-4c' name='attr_shield_4c' min='0' value='0' title='Shield #4 (a/s)'/>
+                <input type='number' class='shield-4c' name='attr_shield_4c' readonly/>
             </span>
         </div>
     </div>
@@ -626,7 +705,7 @@
 
     <!-------------------------------------------------------->
     <h2>Maintenance</h2>
-    <div class='grid-3col'>
+    <div class='grid-6col'>
         <p class='span-grid'><strong>Do not use these controls during battle!</strong></p>
         <button type='action' class='btn' name='act_repair'>Repair/Reset Vessel</button>
     </div>
@@ -808,15 +887,15 @@ on('clicked:rolldamage', async () => {
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 
-        10, 1, 6, 3, 2, 2, 1, 8, 1, 1,
-        10, 1, 1, 2, 2, 2, 2, 5, 1, 1,
-        10, 1, 7, 4, 2, 2, 1, 9, 1, 1,
-        1, 1, 7, 7, 4, 1, 1, 2, 2, 9,
-        1, 1, 1, 6, 3, 1, 1, 7, 4, 1,
-        1, 1, 6, 6, 3, 1, 1, 2, 2, 8
+        11, 1, 6, 3, 2, 2, 1, 8, 1, 10,
+        11, 1, 1, 2, 2, 2, 2, 5, 1, 10,
+        11, 1, 7, 4, 2, 2, 1, 9, 1, 10,
+        11, 1, 7, 7, 4, 1, 1, 2, 2, 9,
+        11, 1, 1, 6, 3, 1, 1, 7, 4, 1,
+        11, 1, 6, 6, 3, 1, 1, 2, 2, 8
     ];
 
-    //1, 1, 6, 3, 2, 2, 1, 8, 1, 1,
+    //11, 1, 6, 3, 2, 2, 1, 8, 1, 10,
 
     const DAMAGE_CHART_DEFAULT = 'C';
     const DAMAGE_RESULT_BRIDGE = 'Bridge 2C';
@@ -826,6 +905,7 @@ on('clicked:rolldamage', async () => {
     const DAMAGE_RESULT_SUP_STBD = 'SWE/Sup C (x1/2)';
     const DAMAGE_RESULT_PORT = 'PWE';
     const DAMAGE_RESULT_PORT_HALF = 'PWE (x1/2)';
+    const DAMAGE_RESULT_SHIELD = 'Shield Gen';
     const DAMAGE_RESULT_STBD = 'SWE';
     const DAMAGE_RESULT_STBD_HALF = 'SWE (x1/2)';
     const DAMAGE_RESULT_WARP = 'Any WE';
@@ -1006,6 +1086,19 @@ on('clicked:rolldamage', async () => {
                 rollStr += returnStr;
             }
             break;
+        case 11:
+            rollStr += `{{Hit Location=${DAMAGE_RESULT_SHIELD}}} `;
+            ({ penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage)); 
+            rollStr += returnStr;
+            if (penetratingDamage) {           
+                ({ residualDamage, returnStr } = await damageGenerator(shieldArc, penetratingDamage));
+                rollStr += returnStr;
+                if (residualDamage) {
+                    ({ residualDamage, returnStr } = await damageResidual(residualDamage));
+                    rollStr += returnStr;
+                }
+            }
+            break;
     }
 
     startRoll(
@@ -1065,6 +1158,26 @@ async function damageShield(myShieldVar = EMPTY_STRING, myDmg = 0, myFactor = 1)
 
     const returnStr = ` {{Shield Strength=${shieldPower}}} {{Absorbed=${myDmgAbsorbed}}} {{Penetrating Dmg=[[${penetratingDamage}]]}}`;
     return { penetratingDamage, returnStr };
+}
+
+// DAMAGE SHIELD GENERATOR
+async function damageGenerator(myShieldArc = 0, myDmg = 0) {
+    const values = await getAttrsAsync([`shield_${myShieldArc}_state`]);
+    const shieldStatus = parseInt(values[`shield_${myShieldArc}_state`]) || 0;
+
+    const shieldStatuses = ['Online', 'Dmg 1-8', 'Dmg 1-6', 'Dmg 1-4', 'Dmg 1-2', 'DEST'];
+
+    const shieldStatusNew = Math.min(5, shieldStatus + 1);
+
+    const output = {};
+    output[`shield_${myShieldArc}_state`] = shieldStatusNew;
+    output[`shield_${myShieldArc}_status`] = shieldStatusNew > 0 && shieldStatusNew < 5 ? 1 : 0;
+    output[`shield_${myShieldArc}_to_repair`] = 10 - (shieldStatusNew * 2);
+    await setAttrsAsync(output);
+
+    const residualDamage = shieldStatusNew == 5 ? myDmg : 2;
+    const returnStr = ` {{Shield Generator=${shieldStatuses[shieldStatusNew]}}}`;
+    return { residualDamage, returnStr };
 }
 
 // DAMAGE SUPERSTRUCTURE
@@ -1209,6 +1322,41 @@ on('change:tpa_movement change:mpr_1 change:mpr_2', function(eventInfo) {
     });
 });
 
+// REPAIR SHIELD GENERATOR
+['1', '2', '3', '4', '5', '6'].forEach(num => {
+    on(`clicked:shield_${num}_repair`, function(eventInfo) {
+        getAttrs([`shield_${num}_to_repair`, 'crewrollpenalty'], function(values) {
+            const repairTargetBase = parseInt(values[`shield_${num}_to_repair`]) || 0;
+            const crewRollPenalty = parseInt(values['crewrollpenalty']) || 0;
+            let repairTargetNew = repairTargetBase;
+            const repairTarget = Math.max(0, repairTargetBase + crewRollPenalty);
+
+            const shieldArcs = [
+                'Shield #1 (f/p)', 'Shield #2 (fwd)', 'Shield #3 (f/s)', 
+                'Shield #4 (a/s)', 'Shield #5 (aft)', 'Shield #6 (a/p)'
+                ];
+
+            const output = {};
+            const repairRoll = getRandomIntInclusive(1, 10);
+            if (repairRoll <= repairTarget) {
+                output[`shield_${num}_state`] = 0;
+                output[`shield_${num}_status`] = 0;
+                repairTargetNew = 0;
+            } else {
+                repairTargetNew = repairTargetBase + 1;
+            }
+
+            output[`shield_${num}_to_repair`] = repairTargetNew;
+            setAttrs(output);
+
+            startRoll(
+                `/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Repair Roll}} {{color=gold}} {{System=${shieldArcs[num-1]}}} {{To-Repair=[[${repairTarget}]]}} {{Roll=[[${repairRoll}]]}}`,
+                roll => finishRoll(roll.rollId)
+            );
+        });
+    });
+});
+
 // REPAIR and RESET after combat
 on('clicked:repair', async function(eventInfo) {
 
@@ -1263,7 +1411,7 @@ on('clicked:repair', async function(eventInfo) {
             });
         });
 
-        // Repair hull and shields, and replace crew
+        // Other vars
         getAttrs(['hp_max', 'crew_max'], function(values) {
             const hpMax = parseInt(values['hp_max']) || 0;
             const crewMax = parseInt(values['crew_max']) || 0;
@@ -1271,12 +1419,12 @@ on('clicked:repair', async function(eventInfo) {
             const output = {};
             output['hp'] = hpMax;
             output['crew'] = crewMax;
-            output['shield_1_damaged'] = 0;
-            output['shield_2_damaged'] = 0;
-            output['shield_3_damaged'] = 0;
-            output['shield_4_damaged'] = 0;
-            output['shield_5_damaged'] = 0;
-            output['shield_6_damaged'] = 0;
+            output['shield_1_state'] = output['shield_1_status'] = output['shield_1_to_repair'] = 0;
+            output['shield_2_state'] = output['shield_2_status'] = output['shield_2_to_repair'] = 0;
+            output['shield_3_state'] = output['shield_3_status'] = output['shield_3_to_repair'] = 0;
+            output['shield_4_state'] = output['shield_4_status'] = output['shield_4_to_repair'] = 0;
+            output['shield_5_state'] = output['shield_5_status'] = output['shield_5_to_repair'] = 0;
+            output['shield_6_state'] = output['shield_6_status'] = output['shield_6_to_repair'] = 0;
             output['wf_current'] = 0;
             output['wf_desired'] = 0;
             setAttrs(output);
@@ -1366,14 +1514,14 @@ on('change:tpa_shields change:spr_1 change:spr_2 change:shield_1 change:shield_2
 
 // SHIELD POINTS ALLOCATED status indicators
 ['1', '2', '3', '4', '5', '6'].forEach(num => {
-    on(`change:shield_${num} change:shield_${num}_damaged change:shield_max`, function(eventInfo) {
-        getAttrs([`shield_${num}`, `shield_${num}_damaged`, 'shield_max'], function(values) {
+    on(`change:shield_${num} change:shield_${num}_state change:shield_max`, function(eventInfo) {
+        getAttrs([`shield_${num}`, `shield_${num}_state`, 'shield_max'], function(values) {
             const shieldSP = parseInt(values[`shield_${num}`]) || 0;
-            const shieldIsDamaged = parseInt(values[`shield_${num}_damaged`]) || 0;
+            const shieldIsDamaged = parseInt(values[`shield_${num}_state`]) || 0;
             const shieldSPMax = parseInt(values['shield_max']) || 0;
 
             const output = {};
-            output[`shield_${num}_status`] = shieldSP > shieldSPMax || shieldIsDamaged ? 1 : shieldSP == 0 ? 2 : 0;
+            output[`shield_${num}a_status`] = shieldSP > shieldSPMax || shieldIsDamaged ? 1 : shieldSP == 0 ? 2 : 0;
             output[`shield_${num}c`] = shieldIsDamaged ? 0 : shieldSP;
             setAttrs(output);
         });
@@ -1394,7 +1542,6 @@ on('change:tpa_shields change:spr_1 change:spr_2 change:shield_1 change:shield_2
     });
 });
 
-
 // SHIELDS RE-ENERGIZED
 on('clicked:shield_reenergize', function(eventInfo) {
     energizeShields();
@@ -1403,19 +1550,19 @@ on('change:current_phase', function(eventInfo) {
     energizeShields();
 });
 function energizeShields() {
-    getAttrs(['shield_1', 'shield_2', 'shield_3', 'shield_4', 'shield_5', 'shield_6', 'shield_1_damaged', 'shield_2_damaged', 'shield_3_damaged', 'shield_4_damaged', 'shield_5_damaged', 'shield_6_damaged'], function(values) {
+    getAttrs(['shield_1', 'shield_2', 'shield_3', 'shield_4', 'shield_5', 'shield_6', 'shield_1_state', 'shield_2_state', 'shield_3_state', 'shield_4_state', 'shield_5_state', 'shield_6_state'], function(values) {
         const shield1Allocation = parseInt(values['shield_1']) || 0;
         const shield2Allocation = parseInt(values['shield_2']) || 0;
         const shield3Allocation = parseInt(values['shield_3']) || 0;
         const shield4Allocation = parseInt(values['shield_4']) || 0;
         const shield5Allocation = parseInt(values['shield_5']) || 0;
         const shield6Allocation = parseInt(values['shield_6']) || 0;
-        const shield1IsDamaged = parseInt(values['shield_1_damaged']) || 0;
-        const shield2IsDamaged = parseInt(values['shield_2_damaged']) || 0;
-        const shield3IsDamaged = parseInt(values['shield_3_damaged']) || 0;
-        const shield4IsDamaged = parseInt(values['shield_4_damaged']) || 0;
-        const shield5IsDamaged = parseInt(values['shield_5_damaged']) || 0;
-        const shield6IsDamaged = parseInt(values['shield_6_damaged']) || 0;
+        const shield1IsDamaged = parseInt(values['shield_1_state']) || 0;
+        const shield2IsDamaged = parseInt(values['shield_2_state']) || 0;
+        const shield3IsDamaged = parseInt(values['shield_3_state']) || 0;
+        const shield4IsDamaged = parseInt(values['shield_4_state']) || 0;
+        const shield5IsDamaged = parseInt(values['shield_5_state']) || 0;
+        const shield6IsDamaged = parseInt(values['shield_6_state']) || 0;
 
         const output = {};
         output['shield_1c'] = shield1IsDamaged ? 0 : shield1Allocation;
@@ -1427,6 +1574,22 @@ function energizeShields() {
         setAttrs(output);
     });
 };
+
+// SHIELD STATE changed
+['1', '2', '3', '4', '5', '6'].forEach(num => {
+    on(`change:shield_${num}_state`, function(eventInfo) {
+        getAttrs(['shield_1_state', 'shield_2_state', 'shield_3_state', 'shield_4_state', 'shield_5_state', 'shield_6_state'], function(values) {
+
+            const activeShields = Object.values(values).filter(state => state == 0).length;
+            
+            const percentage = Math.round((activeShields / 6) * 100);
+            
+            const output = {};
+            output['shields-percent'] = `${percentage}%`;
+            setAttrs(output);
+        });
+    });
+});
 
 // SUPERSTRUCTURE MASS and SIZE calculations
 on('change:mass', function(eventInfo) {
@@ -2108,6 +2271,16 @@ function getSectionIDsAsync(sectionName){
         <div class="sheet-key">Result</div>
         <div class="sheet-value"><span class="failure">Miss!</span></div>
         {{/rollGreater() Roll To-Hit}}
+
+        {{#^rollGreater() Roll To-Repair}}
+        <div class="sheet-key">Result</div>
+        <div class="sheet-value"><span class="success">Success!</span></div>
+        {{/^rollGreater() Roll To-Repair}}
+
+        {{#rollGreater() Roll To-Repair}}
+        <div class="sheet-key">Result</div>
+        <div class="sheet-value"><span class="failure">Failure</span></div>
+        {{/rollGreater() Roll To-Repair}}
 
         {{#^rollGreater() Roll To-Scan}}
         <div class="sheet-key">Result</div>

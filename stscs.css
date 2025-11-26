@@ -27,6 +27,10 @@
 .ui-dialog .charsheet div.grid-6col .span2 {
   grid-column: span 2;
 }
+.ui-dialog .charsheet div.shield-status {
+  grid-template-columns: 1.2fr 2fr 1.2fr 2fr 1.2fr 2fr;
+  justify-items: start;
+}
 
 .ui-dialog .charsheet div.grid-tpa {
   align-items: center;
@@ -86,6 +90,12 @@
 /* Disabled/inactive buttons */
 .ui-dialog .charsheet .btn-fire-status[value='0'] ~ .btn,
 .ui-dialog .charsheet .btn-target-status[value='0'] ~ .btn,
+.ui-dialog .charsheet .shield-1-status[value='0'] ~ .btn,
+.ui-dialog .charsheet .shield-2-status[value='0'] ~ .btn,
+.ui-dialog .charsheet .shield-3-status[value='0'] ~ .btn,
+.ui-dialog .charsheet .shield-4-status[value='0'] ~ .btn,
+.ui-dialog .charsheet .shield-5-status[value='0'] ~ .btn,
+.ui-dialog .charsheet .shield-6-status[value='0'] ~ .btn,
 .ui-dialog .charsheet .ship-is-disabled[value='1'] ~ .grid-6col .repcontainer .repitem span.toggle button,
 .ui-dialog .charsheet .tpa-committed-status[value='0'] ~ button.btn.critical,
 .ui-dialog .charsheet .tpa-committed-status[value='1'] ~ button.btn.energize,
@@ -233,11 +243,12 @@
   background-color: white; 
   width: 268px;
 }
-
-.ui-dialog .charsheet span.shields-damaged input[type="checkbox"].damaged {
-  margin-left: 40px;
-  margin-right: 15.5px;
+.ui-dialog .charsheet select.shieldgen {
+  padding-left: 4px;
+  pointer-events: none;
+  -webkit-appearance: none
 }
+
 
 /**************** CUSTOM CLASSES ****************/
 .ui-dialog .charsheet .big { 
@@ -369,12 +380,18 @@
 .ui-dialog .charsheet .missile-arm-status[value='1'] ~ .missile-armed,
 .ui-dialog .charsheet .mp-remaining-status[value='1'] ~ .mp-remaining,
 .ui-dialog .charsheet .power-status[value='1'] ~ .power,
-.ui-dialog .charsheet .shield-1-status[value='1'] ~ .shield-1,
-.ui-dialog .charsheet .shield-2-status[value='1'] ~ .shield-2,
-.ui-dialog .charsheet .shield-3-status[value='1'] ~ .shield-3,
-.ui-dialog .charsheet .shield-4-status[value='1'] ~ .shield-4,
-.ui-dialog .charsheet .shield-5-status[value='1'] ~ .shield-5,
-.ui-dialog .charsheet .shield-6-status[value='1'] ~ .shield-6,
+.ui-dialog .charsheet .shield-1-status[value='1'] ~ .w7,
+.ui-dialog .charsheet .shield-2-status[value='1'] ~ .w7,
+.ui-dialog .charsheet .shield-3-status[value='1'] ~ .w7,
+.ui-dialog .charsheet .shield-4-status[value='1'] ~ .w7,
+.ui-dialog .charsheet .shield-5-status[value='1'] ~ .w7,
+.ui-dialog .charsheet .shield-6-status[value='1'] ~ .w7,
+.ui-dialog .charsheet .shield-1a-status[value='1'] ~ .shield-1,
+.ui-dialog .charsheet .shield-2a-status[value='1'] ~ .shield-2,
+.ui-dialog .charsheet .shield-3a-status[value='1'] ~ .shield-3,
+.ui-dialog .charsheet .shield-4a-status[value='1'] ~ .shield-4,
+.ui-dialog .charsheet .shield-5a-status[value='1'] ~ .shield-5,
+.ui-dialog .charsheet .shield-6a-status[value='1'] ~ .shield-6,
 .ui-dialog .charsheet .shield-1c-status[value='1'] ~ .shield-1c,
 .ui-dialog .charsheet .shield-2c-status[value='1'] ~ .shield-2c,
 .ui-dialog .charsheet .shield-3c-status[value='1'] ~ .shield-3c,
@@ -398,12 +415,12 @@
 .ui-dialog .charsheet .hp-status[value='2'] ~ .hp,
 .ui-dialog .charsheet .mp-remaining-status[value='2'] ~ .mp-remaining,
 .ui-dialog .charsheet .power-status[value='0'] ~ .power,
-.ui-dialog .charsheet .shield-1-status[value='2'] ~ .shield-1,
-.ui-dialog .charsheet .shield-2-status[value='2'] ~ .shield-2,
-.ui-dialog .charsheet .shield-3-status[value='2'] ~ .shield-3,
-.ui-dialog .charsheet .shield-4-status[value='2'] ~ .shield-4,
-.ui-dialog .charsheet .shield-5-status[value='2'] ~ .shield-5,
-.ui-dialog .charsheet .shield-6-status[value='2'] ~ .shield-6,
+.ui-dialog .charsheet .shield-1a-status[value='2'] ~ .shield-1,
+.ui-dialog .charsheet .shield-2a-status[value='2'] ~ .shield-2,
+.ui-dialog .charsheet .shield-3a-status[value='2'] ~ .shield-3,
+.ui-dialog .charsheet .shield-4a-status[value='2'] ~ .shield-4,
+.ui-dialog .charsheet .shield-5a-status[value='2'] ~ .shield-5,
+.ui-dialog .charsheet .shield-6a-status[value='2'] ~ .shield-6,
 .ui-dialog .charsheet .shield-1c-status[value='2'] ~ .shield-1c,
 .ui-dialog .charsheet .shield-2c-status[value='2'] ~ .shield-2c,
 .ui-dialog .charsheet .shield-3c-status[value='2'] ~ .shield-3c,
