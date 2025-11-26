@@ -887,27 +887,29 @@ on('clicked:rolldamage', async () => {
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 
-        11, 1, 6, 3, 2, 2, 1, 8, 1, 10,
-        11, 1, 1, 2, 2, 2, 2, 5, 1, 10,
-        11, 1, 7, 4, 2, 2, 1, 9, 1, 10,
-        11, 1, 7, 7, 4, 1, 1, 2, 2, 9,
-        11, 1, 1, 6, 3, 1, 1, 7, 4, 1,
-        11, 1, 6, 6, 3, 1, 1, 2, 2, 8
+        11, 11, 11, 11, 11, 11, 11, 11, 11, 11,
+        13, 1, 1, 2, 2, 2, 2, 5, 1, 12,
+        13, 1, 7, 4, 2, 2, 1, 9, 1, 12,
+        13, 1, 7, 7, 4, 1, 1, 2, 2, 9,
+        13, 1, 1, 6, 3, 1, 1, 7, 4, 1,
+        13, 1, 6, 6, 3, 1, 1, 2, 2, 8
     ];
 
-    //11, 1, 6, 3, 2, 2, 1, 8, 1, 10,
+    //13, 1, 6, 3, 2, 2, 1, 8, 1, 12,
 
     const DAMAGE_CHART_DEFAULT = 'C';
     const DAMAGE_RESULT_BRIDGE = 'Bridge 2C';
-    const DAMAGE_RESULT_SUP = 'Sup 2C';
-    const DAMAGE_RESULT_SUP_HALF = 'Sup C (x1/2)';
-    const DAMAGE_RESULT_SUP_PORT = 'PWE/Sup C (x1/2)';
-    const DAMAGE_RESULT_SUP_STBD = 'SWE/Sup C (x1/2)';
+    const DAMAGE_RESULT_IMP = 'Impulse';
+    const DAMAGE_RESULT_IMP_HALF = 'Impulse (x1/2)';
     const DAMAGE_RESULT_PORT = 'PWE';
     const DAMAGE_RESULT_PORT_HALF = 'PWE (x1/2)';
     const DAMAGE_RESULT_SHIELD = 'Shield Gen';
     const DAMAGE_RESULT_STBD = 'SWE';
     const DAMAGE_RESULT_STBD_HALF = 'SWE (x1/2)';
+    const DAMAGE_RESULT_SUP = 'Sup 2C';
+    const DAMAGE_RESULT_SUP_HALF = 'Sup C (x1/2)';
+    const DAMAGE_RESULT_SUP_PORT = 'PWE/Sup C (x1/2)';
+    const DAMAGE_RESULT_SUP_STBD = 'SWE/Sup C (x1/2)';
     const DAMAGE_RESULT_WARP = 'Any WE';
 
     const ENGINE_LOCATION_PORT = '2';
@@ -958,7 +960,7 @@ on('clicked:rolldamage', async () => {
                         ({ residualDamage, returnStr } = await damageResidual(residualDamage));
                     }
                     rollStr += returnStr;
-                 }
+                }
             }
             break;
         case 4:
@@ -975,7 +977,7 @@ on('clicked:rolldamage', async () => {
                         ({ residualDamage, returnStr } = await damageResidual(residualDamage));
                     }
                     rollStr += returnStr;
-                 }
+                }
             }
             break;
         case 5:
@@ -992,7 +994,7 @@ on('clicked:rolldamage', async () => {
                         ({ residualDamage, returnStr } = await damageResidual(residualDamage));
                     }
                     rollStr += returnStr;
-                 }
+                }
             }
             break;
         case 6:
@@ -1009,7 +1011,7 @@ on('clicked:rolldamage', async () => {
                         ({ residualDamage, returnStr } = await damageResidual(residualDamage));
                     }
                     rollStr += returnStr;
-                 }
+                }
             }
             break;
         case 7:
@@ -1026,7 +1028,7 @@ on('clicked:rolldamage', async () => {
                         ({ residualDamage, returnStr } = await damageResidual(residualDamage));
                     }
                     rollStr += returnStr;
-                 }
+                }
             }
             break;
         case 8:
@@ -1044,7 +1046,7 @@ on('clicked:rolldamage', async () => {
                     } else {
                         ({ residualDamage, returnStr } = await damageResidual(residualDamage));
                     }
-                 }
+                }
                 rollStr += returnStr;           
                 ({ residualDamage, returnStr } = await damageSup(penetratingDamageSup));
                 rollStr += returnStr;
@@ -1067,7 +1069,7 @@ on('clicked:rolldamage', async () => {
                     } else {
                         ({ residualDamage, returnStr } = await damageResidual(residualDamage));
                     }
-                 }
+                }
                 rollStr += returnStr;           
                 ({ residualDamage, returnStr } = await damageSup(penetratingDamageSup));
                 rollStr += returnStr;
@@ -1076,6 +1078,32 @@ on('clicked:rolldamage', async () => {
             }
             break;
         case 10:
+            rollStr += `{{Hit Location=${DAMAGE_RESULT_IMP}}} `;
+            ({ penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage)); 
+            rollStr += returnStr;
+            if (penetratingDamage) {
+                ({ residualDamage, returnStr } = await damageImpulse(penetratingDamage));
+                rollStr += returnStr;
+                if (residualDamage) {          
+                    ({ residualDamage, returnStr } = await damageResidual(residualDamage));
+                    rollStr += returnStr;
+                }
+            }
+            break;
+        case 11:
+            rollStr += `{{Hit Location=${DAMAGE_RESULT_IMP_HALF}}} `;
+            ({ penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage, 0.5)); 
+            rollStr += returnStr;
+            if (penetratingDamage) {
+                ({ residualDamage, returnStr } = await damageImpulse(penetratingDamage));
+                rollStr += returnStr;
+                if (residualDamage) {          
+                    ({ residualDamage, returnStr } = await damageResidual(residualDamage));
+                    rollStr += returnStr;
+                }
+            }
+            break;
+        case 12:
             rollStr += `{{Hit Location=${DAMAGE_RESULT_BRIDGE}}} `;
             ({ penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage)); 
             rollStr += returnStr;
@@ -1086,7 +1114,7 @@ on('clicked:rolldamage', async () => {
                 rollStr += returnStr;
             }
             break;
-        case 11:
+        case 13:
             rollStr += `{{Hit Location=${DAMAGE_RESULT_SHIELD}}} `;
             ({ penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage)); 
             rollStr += returnStr;
@@ -1140,6 +1168,43 @@ async function damageCrew(myDmg, myFactor = 1, isBridge = false) {
     const CREW_EFFECTIVE_FALSE = 'Failed';
     const residualDamage = 0;
     const returnStr = ` {{Crew Check=${isCrewEffective ? CREW_EFFECTIVE_TRUE : CREW_EFFECTIVE_FALSE}}} {{Crew Lost=[[${crewLost}]]}}`;
+    return { residualDamage, returnStr };
+}
+
+// DAMAGE IMPULSE ENGINE
+async function damageImpulse(myDmg = 0, myFactor = 1) {
+    const ids = await getSectionIDsAsync('repeating_engines');
+    
+    const Fieldnames = [];
+    ids.forEach(id => {
+        Fieldnames.push(`repeating_engines_${id}_engine_type`);
+        Fieldnames.push(`repeating_engines_${id}_engine_location`);
+        Fieldnames.push(`repeating_engines_${id}_engine_power`);
+    });
+    
+    const values = await getAttrsAsync(Fieldnames);
+    const output = {};
+    
+    let enginePower = -1;
+    let targetId = null;
+    
+    ids.forEach(id => {
+        if (values[`repeating_engines_${id}_engine_type`] == ENGINE_TYPE_IMPULSE) {
+            enginePower = parseInt(values[`repeating_engines_${id}_engine_power`]) || 0;
+            targetId = id;
+        }
+    });
+
+    let residualDamage = myDmg;
+
+    const damage = Math.floor(myDmg * myFactor);
+    const newEnginePower = Math.max(0, enginePower - damage);
+    residualDamage = Math.max(0, damage - enginePower);
+    
+    output[`repeating_engines_${targetId}_engine_power`] = newEnginePower;
+    await setAttrsAsync(output);
+    const returnStr = ` {{Power Available=${enginePower}}} {{Engine Damage=[[${enginePower - newEnginePower}]]}} {{Power Remaining=${newEnginePower}}}`;
+
     return { residualDamage, returnStr };
 }
 
