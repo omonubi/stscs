@@ -1169,27 +1169,6 @@ on('clicked:rolldamage', async () => {
     );
 });
 
-// DAMAGE SENSORS
-async function damageSensors() {
-    const values = await getAttrsAsync([`sensors_state`]);
-    const sensorStatus = parseInt(values[`sensors_state`]) || 0;
-
-    const sensorStatusNew = Math.min(5, sensorStatus + 1);
-
-    const output = {};
-    output[`sensors_state`] = sensorStatusNew;
-    output[`sensors_status`] = sensorStatusNew > 0 ? 1 : 0;
-    output[`sensors_destroyed`] = sensorStatusNew == 5 ? 1 : 0;
-    output[`sensors_to_repair`] = 10 - (sensorStatusNew * 2);
-    await setAttrsAsync(output);
-
-    undoSensorLock();
-
-    const residualDamage = 0;
-    const returnStr = ` {{Sensors=${DAMAGE_STATUSES[sensorStatusNew]}}}`;
-    return { residualDamage, returnStr };
-}
-
 // DAMAGE CREW
 async function damageCrew(myDmg, myFactor = 1, isBridge = false) {
     const values = await getAttrsAsync(['crew', 'crew_max', 'crewrating', 'hp_max']);
@@ -1263,6 +1242,27 @@ async function damageImpulse(myDmg = 0, myFactor = 1) {
     return { residualDamage, returnStr };
 }
 
+// DAMAGE SENSORS
+async function damageSensors() {
+    const values = await getAttrsAsync([`sensors_state`]);
+    const sensorStatus = parseInt(values[`sensors_state`]) || 0;
+
+    const sensorStatusNew = Math.min(5, sensorStatus + 1);
+
+    const output = {};
+    output[`sensors_state`] = sensorStatusNew;
+    output[`sensors_status`] = sensorStatusNew > 0 ? 1 : 0;
+    output[`sensors_destroyed`] = sensorStatusNew == 5 ? 1 : 0;
+    output[`sensors_to_repair`] = 10 - (sensorStatusNew * 2);
+    await setAttrsAsync(output);
+
+    undoSensorLock();
+
+    const residualDamage = 0;
+    const returnStr = ` {{Sensors=${DAMAGE_STATUSES[sensorStatusNew]}}}`;
+    return { residualDamage, returnStr };
+}
+
 // DAMAGE SHIELD
 async function damageShield(myShieldVar = EMPTY_STRING, myDmg = 0, myFactor = 1) {
     const values = await getAttrsAsync([myShieldVar]);
@@ -1285,8 +1285,6 @@ async function damageGenerator(myShieldArc = 0, myDmg = 0) {
     const values = await getAttrsAsync([`shield_${myShieldArc}_state`]);
     const shieldStatus = parseInt(values[`shield_${myShieldArc}_state`]) || 0;
 
-    const shieldStatuses = ['Online', 'Dmg 1-8', 'Dmg 1-6', 'Dmg 1-4', 'Dmg 1-2', 'DEST'];
-
     const shieldStatusNew = Math.min(5, shieldStatus + 1);
 
     const output = {};
@@ -1296,7 +1294,7 @@ async function damageGenerator(myShieldArc = 0, myDmg = 0) {
     await setAttrsAsync(output);
 
     const residualDamage = shieldStatusNew == 5 ? myDmg : 2;
-    const returnStr = ` {{Shield Generator=${shieldStatuses[shieldStatusNew]}}}`;
+    const returnStr = ` {{Shield Generator=${DAMAGE_STATUSES[shieldStatusNew]}}}`;
     return { residualDamage, returnStr };
 }
 
