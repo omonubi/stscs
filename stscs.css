@@ -27,7 +27,7 @@
 .ui-dialog .charsheet div.grid-6col .span2 {
   grid-column: span 2;
 }
-.ui-dialog .charsheet div.shield-status {
+.ui-dialog .charsheet div.shield-status-panel {
   grid-template-columns: 1.2fr 2fr 1.2fr 2fr 1.2fr 2fr;
   justify-items: start;
 }
@@ -88,18 +88,25 @@
 }
 
 /* Disabled/inactive buttons */
-.ui-dialog .charsheet .btn-fire-status[value='0'] ~ .btn,
-.ui-dialog .charsheet .btn-target-status[value='0'] ~ .btn,
-.ui-dialog .charsheet .shield-1-status[value='0'] ~ .btn,
-.ui-dialog .charsheet .shield-2-status[value='0'] ~ .btn,
-.ui-dialog .charsheet .shield-3-status[value='0'] ~ .btn,
-.ui-dialog .charsheet .shield-4-status[value='0'] ~ .btn,
-.ui-dialog .charsheet .shield-5-status[value='0'] ~ .btn,
-.ui-dialog .charsheet .shield-6-status[value='0'] ~ .btn,
-.ui-dialog .charsheet .ship-is-disabled[value='1'] ~ .grid-6col .repcontainer .repitem span.toggle button,
+.ui-dialog .charsheet .btn-fire-status[value='0'] ~ .btn-fire,
+.ui-dialog .charsheet .btn-target-status[value='0'] ~ .btn-target,
+.ui-dialog .charsheet .sensors-destroyed[value='1'] ~ .sensors-panel .btn-sensors-repair,
+.ui-dialog .charsheet .sensors-status[value='1'] ~ .beams-panel .btn-target,
+.ui-dialog .charsheet .sensors-status[value='1'] ~ .missiles-panel .btn-target,
+.ui-dialog .charsheet .sensors-status[value='0'] ~ .sensors-panel .btn-sensors-repair,
+.ui-dialog .charsheet .sensors-status[value='1'] ~ .sensors-panel .btn-scan,
+.ui-dialog .charsheet .sensors-status[value='1'] ~ .warp-panel .btn-jump,
+.ui-dialog .charsheet .shield-1-status[value='0'] ~ .btn-shield-repair,
+.ui-dialog .charsheet .shield-2-status[value='0'] ~ .btn-shield-repair,
+.ui-dialog .charsheet .shield-3-status[value='0'] ~ .btn-shield-repair,
+.ui-dialog .charsheet .shield-4-status[value='0'] ~ .btn-shield-repair,
+.ui-dialog .charsheet .shield-5-status[value='0'] ~ .btn-shield-repair,
+.ui-dialog .charsheet .shield-6-status[value='0'] ~ .btn-shield-repair,
+.ui-dialog .charsheet .ship-is-disabled[value='1'] ~ .beams-panel .btn-target,
+.ui-dialog .charsheet .ship-is-disabled[value='1'] ~ .missiles-panel .btn-target,
 .ui-dialog .charsheet .tpa-committed-status[value='0'] ~ button.btn.critical,
 .ui-dialog .charsheet .tpa-committed-status[value='1'] ~ button.btn.energize,
-.ui-dialog .charsheet .warp-factor-status[value='0'] ~ .btn {
+.ui-dialog .charsheet .warp-factor-status[value='0'] ~ .btn-jump {
   background: linear-gradient(135deg, #999999 0%, #666666 100%);
   border-color: #555555;
   color: #cccccc;
@@ -238,12 +245,13 @@
   margin-left: 5px; 
   width: 130px;
 }
+.ui-dialog .charsheet input.scan-lock,
 .ui-dialog .charsheet input.scan-answer,
 .ui-dialog .charsheet select.scan-question {
   background-color: white; 
   width: 268px;
 }
-.ui-dialog .charsheet select.shieldgen {
+.ui-dialog .charsheet select.state-select {
   padding-left: 4px;
   pointer-events: none;
   -webkit-appearance: none
@@ -276,6 +284,9 @@
 }
 .ui-dialog .charsheet .w12 {
   width: 120px !important; /*override r20 class*/
+}
+.ui-dialog .charsheet .w16 {
+  width: 160px !important; /*override r20 class*/
 }
 .ui-dialog .charsheet .w20 {
   width: 200px !important; /*override r20 class*/
@@ -332,6 +343,20 @@
 }
 /* See above for disabled target buttons */
 
+.ui-dialog .charsheet .sensors-status[value='1'] ~ .beams-panel,
+.ui-dialog .charsheet .sensors-status[value='1'] ~ .fc-panel,
+.ui-dialog .charsheet .sensors-status[value='1'] ~ .missiles-panel,
+.ui-dialog .charsheet .sensors-status[value='1'] ~ .sensors-panel,
+.ui-dialog .charsheet .sensors-status[value='1'] ~ .warp-panel {
+  background: linear-gradient(135deg, white 0%, #ffcccc 100%);
+  border: 2px solid #cc0000;
+}
+
+.ui-dialog .charsheet .sensors-status[value='1'] ~ .sensors-panel select[name='attr_scanquestion'],
+.ui-dialog .charsheet .sensors-status[value='1'] ~ .sensors-panel input[name='attr_scananswer'] {
+  pointer-events: none;
+}
+
 /**************** SHOW/HIDE SHIELD DIVS ****************/
 .ui-dialog .charsheet .tpa-committed-status[value='0'] ~ .shields-allocated,
 .ui-dialog .charsheet .tpa-committed-status[value='1'] ~ .shields-current {
@@ -380,6 +405,7 @@
 .ui-dialog .charsheet .missile-arm-status[value='1'] ~ .missile-armed,
 .ui-dialog .charsheet .mp-remaining-status[value='1'] ~ .mp-remaining,
 .ui-dialog .charsheet .power-status[value='1'] ~ .power,
+.ui-dialog .charsheet .sensors-status[value='1'] ~ .w7,
 .ui-dialog .charsheet .shield-1-status[value='1'] ~ .w7,
 .ui-dialog .charsheet .shield-2-status[value='1'] ~ .w7,
 .ui-dialog .charsheet .shield-3-status[value='1'] ~ .w7,
