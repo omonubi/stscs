@@ -62,6 +62,7 @@
         <button type='roll' class='btn' name='roll_rollcrew' value='&{template:custom} {{title=**[@{character_name}](@{roll20charurl}@{character_id})**}} {{subtitle=Crew Efficiency Roll}} {{color=gold}} {{Efficiency=[[@{crewefficiency}]]}} {{Roll=[[d100cf<0cs>101]]}}'>Crew Check</button>
         <span></span>
         <label><strong>Crew:</strong></label>
+        <input type='hidden' name='attr_crew-percent'/>
         <span >
             <input type='hidden' class='crew-status' name='attr_crew_status' value='0'/>
             <input type='number' class='w5 crew' name='attr_crew' value='0' min='0'/> /
@@ -82,20 +83,20 @@
         </select>
         <span></span>
         <span>
-            <label>Sup: </label>
-            <span name='attr_sup-percent'>100%</span>
+            <label>TPA: </label>
+            <span><span name='attr_tpa-percent'>100</span>%</span>
         </span>
         <span>
-            <label>Crew: </label>
-            <span name='attr_crew-percent'>100%</span>
+            <label>Sup: </label>
+            <span><span name='attr_sup-percent'>100</span>%</span>
         </span>
         <span>
             <label>Shields: </label>
-            <span name='attr_shields-percent'>100%</span>
+            <span><span name='attr_shields-percent'>100</span>%</span>
         </span>
         <span>
             <label>Wpns: </label>
-            <span name='attr_weapons-percent'>100%</span>
+            <span><span name='attr_weapons-percent'>100</span>%</span>
         </span>
     </div>
     <br/>
@@ -545,24 +546,29 @@
         <h4 class='span-grid'>Beam Weapons</h4>
         <input type='hidden' name='attr_wp_beam'/>
         <div class='span-grid'>
-            <label style='padding-left: 3px;'>X</label>
-            <label style='padding-left: 8px;'>Desig. (Arcs)</label>
+            <label style='padding-left: 27px;'>Desig. (Arcs)</label>
             <label style='padding-left: 26px;'>Range</label>
-            <label style='padding-left: 15px;'>Chart</label>
-            <label style='padding-left: 14px;'>Power</label>
-            <label style='padding-left: 23px;'>Max</label>
+            <label style='padding-left: 13px;'>Chart</label>
+            <label style='padding-left: 7px;'>Power</label>
+            <label style='padding-left: 18px;'>Max</label>
             <label style='padding-left: 24px;'>+3</label>
             <label style='padding-left: 25px;'>+2</label>
             <label style='padding-left: 26px;'>+1</label>
             <label style='padding-left: 95px;'>Target</label>
-            <label style='padding-left: 58px;'>Distance</label>
-            <label style='padding-left: 5px;'>To-Hit</label>
+            <label style='padding-left: 65px;'>Dist.</label>
+            <label style='padding-left: 7px;'>To-Hit</label>
         </div>
         <fieldset class='repeating_beams'>
-            <input type='checkbox' class='damaged' name='attr_damaged' value='1'/>
+            <input type='hidden' class='weapon-state-status' name='attr_weapon_state_status' value='0'/>
+            <select class='damaged state-select weapon-state' name='attr_state' value='0'>
+                <option value='0' selected>N</option>
+                <option value='1'>D</option>
+                <option value='2'>R</option>
+                <option value='3'>X</option>
+            </select>
             <input type='text' class='w10' name='attr_name' placeholder='# Name (arcs)...'/>
             <input type='number' class='w5' name='attr_maxrange'/>
-            <select class='w5' name='attr_chart'>
+            <select class='w3' name='attr_chart'>
                 <option value='0' selected>select...</option>
                 <option>A</option>
                 <option>B</option>
@@ -608,6 +614,7 @@
                 <input type='hidden' class='btn-fire-status' name='attr_btn-fire_status' value='0'/> 
                 <button type='action' class='btn btn-fire critical' name='act_btn-fire'>Fire</button>
             </span>
+            <button type='action' class='btn weapon-repair' name='act_weapon-repair'>repair</button>
         </fieldset>
     </div>
     <br/>
@@ -616,19 +623,24 @@
         <h4 class='span-grid'>Missile Weapons</h4>
         <input type='hidden' name='attr_wp_missile'/>
         <div class='span-grid'>
-            <label style='padding-left: 3px;'>X</label>
-            <label style='padding-left: 8px;'>Desig. (Arcs)</label>
+            <label style='padding-left: 27px;'>Desig. (Arcs)</label>
             <label style='padding-left: 26px;'>Range</label>
             <label style='padding-left: 15px;'>Chart</label>
             <label style='padding-left: 18px;'>Power</label>
             <label style='padding-left: 4px;'>Damage</label>
             <label style='padding-left: 7px;'>Arm</label>
-            <label style='padding-left: 175px;'>Target</label>
-            <label style='padding-left: 58px;'>Distance</label>
-            <label style='padding-left: 5px;'>To-Hit</label>
+            <label style='padding-left: 167px;'>Target</label>
+            <label style='padding-left: 65px;'>Dist.</label>
+            <label style='padding-left: 7px;'>To-Hit</label>
         </div>
         <fieldset class='repeating_missiles'>
-            <input type='checkbox' class='damaged' name='attr_damaged' value='1'/>
+            <input type='hidden' class='weapon-state-status' name='attr_weapon_state_status' value='0'/>
+            <select class='damaged state-select weapon-state' name='attr_state' value='0'>
+                <option value='0' selected>N</option>
+                <option value='1'>D</option>
+                <option value='2'>R</option>
+                <option value='3'>X</option>
+            </select>
             <input type='text' class='w10' name='attr_name' placeholder='# Name (arcs)...'/>
             <input type='number' class='w5' name='attr_maxrange'/>
             <select class='w5' name='attr_chart'>
@@ -665,7 +677,7 @@
             <input type='checkbox' class='missile-armed' style='margin-left: 13px;' value='1' name='attr_armed'/>
             <span>
                 <input type='hidden' class='btn-target-status' name='attr_btn-target_status' value='0'/>
-                <button type='action' class='btn btn-target' style='margin-left: 95px;' name='act_btn-target'>Target</button>
+                <button type='action' class='btn btn-target' style='margin-left: 87px;' name='act_btn-target'>Target</button>
             </span> →
             <input type='text' class='w10' name='attr_target_name' readonly/>
             <input type='hidden' name='attr_target_id'/>
@@ -675,6 +687,7 @@
                 <input type='hidden' class='btn-fire-status' name='attr_btn-fire_status' value='0'/>
                 <button type='action' class='btn btn-fire critical' name='act_btn-fire'>Fire</button>
             </span>
+            <button type='action' class='btn weapon-repair' name='act_weapon-repair'>repair</button>
         </fieldset>
     </div>
     <br/>
@@ -904,7 +917,7 @@ on('change:crew change:crew_max', function(eventInfo) {
         const crewMax = parseInt(values['crew_max']) || 0;
 
         const output = {};
-        output['crew-percent'] = `${Math.max(0, Math.round(crew / crewMax * 100))}%`;
+        output['crew-percent'] = Math.max(0, Math.round(crew / crewMax * 100));
         output['crew_status'] = crew < (crewMax / 2) || crew > crewMax ? 1 : crew < crewMax ? 2 : 0;
         setAttrs(output);
     });
@@ -914,8 +927,8 @@ on('change:crew change:crew_max', function(eventInfo) {
 on('change:crewrating change:crew-percent', function(eventInfo) {
     getAttrs(['crewrating', 'crew-percent'], function(values) {
         const crewRating = parseInt(values['crewrating']) || 0;
-        const crewPercent = values['crew-percent'] || '0%';
-        const crewCasualties = 100 - Number(crewPercent.replace('%', EMPTY_STRING));
+        const crewPercent = values['crew-percent'] || '0';
+        const crewCasualties = 100 - crewPercent;
 
         const casualtyBrackets = [19, 39, 59, 69, 100];
         const rollPenalties = [0, -1, -2, -5, -10];
@@ -956,21 +969,23 @@ on('clicked:rolldamage', async () => {
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 
-        15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-        13, 1, 1, 2, 2, 2, 2, 5, 14, 12,
-        13, 1, 7, 4, 2, 2, 1, 9, 14, 12,
-        13, 1, 7, 7, 4, 1, 1, 2, 2, 9,
-        13, 1, 1, 6, 3, 1, 1, 7, 4, 1,
-        13, 1, 6, 6, 3, 1, 1, 2, 2, 8
+        16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
+        13, 16, 17, 2, 2, 2, 2, 5, 14, 12,
+        13, 16, 7, 4, 2, 2, 1, 9, 14, 12,
+        13, 16, 7, 7, 4, 1, 1, 2, 2, 9,
+        13, 16, 17, 6, 3, 1, 1, 7, 4, 15,
+        13, 16, 6, 6, 3, 1, 1, 2, 2, 8
     ];
 
-    //13, 1, 6, 3, 2, 2, 1, 8, 14, 12,
+    //13, 16, 6, 3, 2, 2, 1, 8, 14, 12,
 
     const DAMAGE_CHART_DEFAULT = 'C';
+    const DAMAGE_RESULT_BEAM = 'Beam Weapon';
     const DAMAGE_RESULT_BRIDGE = 'Bridge 2C';
     const DAMAGE_RESULT_ENG = 'Engineering';
     const DAMAGE_RESULT_IMP = 'Impulse';
     const DAMAGE_RESULT_IMP_HALF = 'Impulse (x1/2)';
+    const DAMAGE_RESULT_MISSILE = 'Missile Weapon';
     const DAMAGE_RESULT_PORT = 'PWE';
     const DAMAGE_RESULT_PORT_HALF = 'PWE (x1/2)';
     const DAMAGE_RESULT_SENSORS = 'Sensors';
@@ -1229,6 +1244,32 @@ on('clicked:rolldamage', async () => {
                 rollStr += returnStr;
             }
             break;
+        case 16:
+            rollStr += `{{Hit Location=${DAMAGE_RESULT_BEAM}}} `;
+            ({ penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage)); 
+            rollStr += returnStr;
+            if (penetratingDamage) {           
+                ({ residualDamage, returnStr } = await damageWeapon(shieldArc, 'repeating_beams', penetratingDamage));
+                rollStr += returnStr;
+                if (residualDamage) {
+                    ({ residualDamage, returnStr } = await damageResidual(residualDamage));
+                    rollStr += returnStr;
+                }
+            }
+            break;
+        case 17:
+            rollStr += `{{Hit Location=${DAMAGE_RESULT_MISSILE}}} `;
+            ({ penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage)); 
+            rollStr += returnStr;
+            if (penetratingDamage) {           
+                ({ residualDamage, returnStr } = await damageWeapon(shieldArc, 'repeating_missiles', penetratingDamage));
+                rollStr += returnStr;
+                if (residualDamage) {
+                    ({ residualDamage, returnStr } = await damageResidual(residualDamage));
+                    rollStr += returnStr;
+                }
+            }
+            break;
     }
 
     await startRoll(
@@ -1273,6 +1314,105 @@ async function damageCrew(myDmg, myFactor = 1, isBridge = false) {
     const residualDamage = 0;
     const returnStr = ` {{Crew Check=${isCrewEffective ? CREW_EFFECTIVE_TRUE : CREW_EFFECTIVE_FALSE}}} {{Crew Lost=[[${crewLost}]]}}`;
     return { residualDamage, returnStr };
+}
+
+// DAMAGE WEAPON
+async function damageWeapon(myShieldNum = 1, myRepeatingSection = EMPTY_STRING, myDmg = 0) {
+    // Validate that a repeating section was provided
+    if (!myRepeatingSection) {
+        console.log('Error: No repeating section provided');
+        return { residualDamage: myDmg, returnStr: `{{Weapon Damaged=Error: No section}} ` };
+    }
+    
+    // Get all IDs for the specified repeating section
+    const weaponIds = await getSectionIDsAsync(myRepeatingSection);
+    
+    // Count the number of weapon items
+    const weaponCount = weaponIds.length;
+    
+    // Build array of attribute names to retrieve
+    const attrNames = [];
+    weaponIds.forEach(id => {
+        attrNames.push(`${myRepeatingSection}_${id}_name`);
+        attrNames.push(`${myRepeatingSection}_${id}_state`);
+    });
+    
+    // Get all attributes at once
+    const attrs = await getAttrsAsync(attrNames);
+    
+    // Build array of weapon objects with name and state
+    const weapons = weaponIds.map(id => ({
+        id: id,
+        name: attrs[`${myRepeatingSection}_${id}_name`] || '',
+        state: attrs[`${myRepeatingSection}_${id}_state`] || '0'
+    }));
+    
+    // Map shield number to arc letters
+    const shieldArcs = {
+        1: 'fp',  // f/p
+        2: 'f',   // f
+        3: 'fs',  // f/s
+        4: 'as',  // a/s
+        5: 'a',   // a
+        6: 'ap'   // a/p
+    };
+    
+    // Get the arc letters for this shield
+    const arcLetters = shieldArcs[myShieldNum] || '';
+    
+    // Build regex to match any of the arc letters within parentheses
+    const arcPattern = new RegExp(`\\([^)]*[${arcLetters}][^)]*\\)`, 'i');
+    
+    // Count weapons that match the shield arc
+    const matchingWeapons = weapons.filter(weapon => arcPattern.test(weapon.name));
+    const matchingCount = matchingWeapons.length;
+    
+    // Log results for debugging
+    console.log(`Found ${weaponCount} weapons in ${myRepeatingSection}:`, weapons);
+    console.log(`Shield ${myShieldNum} (${shieldArcs[myShieldNum]}) has ${matchingCount} matching weapons:`, matchingWeapons);
+    
+    // Filter matching weapons to only include those with state 0 or 2
+    const eligibleWeapons = matchingWeapons.filter(weapon => weapon.state === '0' || weapon.state === '2');
+    const eligibleCount = eligibleWeapons.length;
+    
+    let residualDamage = 0;
+    let returnStr = EMPTY_STRING;
+    
+    // If no eligible weapons, return residual damage
+    if (eligibleCount === 0) {
+        console.log('No eligible weapons (state 0 or 2) for shield arc');
+        return { residualDamage: myDmg, returnStr: `{{Weapon Damaged=None Available}} ` };
+    }
+    
+    // If there are eligible weapons, select one randomly and damage it
+    if (eligibleCount > 0) {
+        const randomIndex = getRandomIntInclusive(1, eligibleCount) - 1;
+        const selectedWeapon = eligibleWeapons[randomIndex];
+        
+        // Update state: 0 → 1, 2 → 3
+        let newState = selectedWeapon.state;
+        if (selectedWeapon.state === '0') {
+            newState = '1';
+        } else if (selectedWeapon.state === '2') {
+            newState = '3';
+        }
+        
+        // Update the attribute in Roll20
+        const updateObj = {};
+        updateObj[`${myRepeatingSection}_${selectedWeapon.id}_state`] = newState;
+        updateObj[`${myRepeatingSection}_${selectedWeapon.id}_weapon_state_status`] = newState;
+        
+        await setAttrsAsync(updateObj);
+        
+        console.log(`Damaged weapon: ${selectedWeapon.name} (state: ${selectedWeapon.state} → ${newState})`);
+        returnStr = `{{Weapon Damaged=${selectedWeapon.name}}} `;
+    } else {
+        returnStr = `{{Weapon Damaged=None Available}} `;
+    }
+
+    await updateWeaponsPercent();
+    
+    return { residualDamage, returnStr, weaponCount, weapons, matchingCount, matchingWeapons, eligibleCount, eligibleWeapons };
 }
 
 // DAMAGE GRIDS
@@ -1569,6 +1709,48 @@ function repairSystem(mySystemVar = EMPTY_STRING, mySystemName = EMPTY_STRING) {
     });
 };
 
+// REPAIR WEAPON
+on('clicked:repeating_beams:weapon-repair clicked:repeating_missiles:weapon-repair', async function(event) {
+    const match = event.sourceAttribute.match(/repeating_(?<section>.+?)_(?<rowID>.+?)_(?<buttonName>.+)/);
+    const { section, rowID, buttonName } = match?.groups || {};
+    const row = `repeating_${section}_${rowID}`;
+
+    if (!rowID) {
+        console.log('Error: Could not extract row ID');
+        return;
+    }
+
+    // Get the current name, state, and weapon_state_status
+    const attrs = await getAttrsAsync([
+        `${row}_name`,
+        `${row}_state`,
+        `${row}_weapon_state_status`
+    ]);
+
+    const wpnName = attrs[`${row}_name`];
+    const currentState = attrs[`${row}_state`];
+
+    // If state is 1, change it to 2 and set weapon_state_status to 2
+    if (currentState === '1') {
+        const updateObj = {};
+        updateObj[`${row}_state`] = '2';
+        updateObj[`${row}_weapon_state_status`] = '2';
+
+        await setAttrsAsync(updateObj);
+
+        console.log(`Weapon repaired: state 1 → 2, weapon_state_status → 2`);
+
+        await updateWeaponsPercent();
+
+        startRoll(
+            `/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Repairing...}} {{color=gold}} {{Weapon=${wpnName}}}`,
+            roll => finishRoll(roll.rollId)
+        );
+    } else {
+        console.log(`Weapon cannot be repaired. Current state: ${currentState}`);
+    }
+});
+
 // REPAIR and RESET after combat
 on('clicked:repair', async function(eventInfo) {
 
@@ -1595,13 +1777,15 @@ on('clicked:repair', async function(eventInfo) {
         getSectionIDs('repeating_beams', function (ids) {
             const Fieldnames = [];
             ids.forEach(id => {
-                Fieldnames.push(`repeating_beams_${id}_damaged`);
+                Fieldnames.push(`repeating_beams_${id}_state`);
+                Fieldnames.push(`repeating_beams_${id}_weapon_state_status`);
             });
             
             getAttrs([...Fieldnames], function (values) {
                 const output = {};
                 ids.forEach(id => {
-                    output[`repeating_beams_${id}_damaged`] = 0;
+                    output[`repeating_beams_${id}_state`] = 0;
+                    output[`repeating_beams_${id}_weapon_state_status`] = 0;
                 });
                 setAttrs(output);
             });
@@ -1611,13 +1795,15 @@ on('clicked:repair', async function(eventInfo) {
         getSectionIDs('repeating_missiles', function (ids) {
             const Fieldnames = [];
             ids.forEach(id => {
-                Fieldnames.push(`repeating_missiles_${id}_damaged`);
+                Fieldnames.push(`repeating_missiles_${id}_state`);
+                Fieldnames.push(`repeating_missiles_${id}_weapon_state_status`);
             });
             
             getAttrs([...Fieldnames], function (values) {
                 const output = {};
                 ids.forEach(id => {
-                    output[`repeating_missiles_${id}_damaged`] = 0;
+                    output[`repeating_missiles_${id}_state`] = 0;
+                    output[`repeating_missiles_${id}_weapon_state_status`] = 0;
                 });
                 setAttrs(output);
             });
@@ -1646,6 +1832,7 @@ on('clicked:repair', async function(eventInfo) {
             setAttrs(output);
         });
 
+        await updateWeaponsPercent();
         undoSensorLock();
         resetTPA();
     }
@@ -1803,10 +1990,8 @@ function energizeShields() {
 
             const activeShields = Object.values(values).filter(state => state == 0).length;
             
-            const percentage = Math.round((activeShields / 6) * 100);
-            
             const output = {};
-            output['shields-percent'] = `${percentage}%`;
+            output['shields-percent'] = Math.max(0, Math.round(activeShields / 6 * 100));
             setAttrs(output);
         });
     });
@@ -1837,7 +2022,7 @@ on('change:hp change:hp_max', function(eventInfo) {
         const hpMax = parseInt(values['hp_max']) || 0;  
 
         const output = {};
-        output['sup-percent'] = `${Math.max(0, Math.round(hp / hpMax * 100))}%`;
+        output['sup-percent'] = Math.max(0, Math.round(hp / hpMax * 100));
         if (hp < 1) output['tpa_movement'] = 0; // disable movement
         output['hp_status'] = hp < (hpMax / 2) || hp > hpMax ? 1 : hp < hpMax ? 2 : 0;
         output['ship-is-disabled'] = hp < 1 ? 1 : 0;
@@ -1872,6 +2057,7 @@ on('change:repeating_engines:engine_power change:repeating_engines:engine_power_
             });
             output['tpa'] = tpa;
             output['tpa_max'] = tpaMax;
+            output['tpa-percent'] = Math.max(0, Math.round(tpa / tpaMax * 100));
             setAttrs(output);
         });
     });
@@ -2374,6 +2560,32 @@ on('change:repeating_missiles:damaged change:repeating_missiles:armed change:rep
         });
     });
 });
+
+// WEAPONS DAMAGED PERCENT calculation
+async function updateWeaponsPercent() {
+    let countWeapons = 0;
+    let countWeaponsDamaged = 0;
+
+    const fieldNames = [];
+    let ids = await getSectionIDsAsync('repeating_beams');
+    ids.forEach(id => {
+        fieldNames.push(`repeating_beams_${id}_weapon_state_status`);
+    });
+    ids = await getSectionIDsAsync('repeating_missiles');
+    ids.forEach(id => {
+        fieldNames.push(`repeating_missiles_${id}_weapon_state_status`);
+    });
+
+    const values = await getAttrsAsync(fieldNames);
+    Object.values(values).forEach(value => {
+        countWeapons++;
+        if (value != 0) countWeaponsDamaged++;
+    });
+
+    const output = {};
+    output[`weapons-percent`] = Math.max(0, Math.round((countWeapons - countWeaponsDamaged) / countWeapons * 100));
+    setAttrs(output);
+}
 
 /****************************/
 function isRunningOnServer() { return self.dispatchEvent == undefined; }

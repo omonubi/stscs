@@ -109,6 +109,11 @@
 .ui-dialog .charsheet .tpa-committed-status[value='1'] ~ .tpa-panel button.btn.energize,
 .ui-dialog .charsheet .tpa-committed-status[value='0'] ~ .tpa-panel button.btn.warning,
 .ui-dialog .charsheet .warp-factor-status[value='0'] ~ .btn-jump,
+.ui-dialog .charsheet .weapon-state-status[value='0'] ~ .weapon-repair,
+.ui-dialog .charsheet .weapon-state-status[value='1'] ~ span .btn-target,
+.ui-dialog .charsheet .weapon-state-status[value='2'] ~ .weapon-repair,
+.ui-dialog .charsheet .weapon-state-status[value='3'] ~ .weapon-repair,
+.ui-dialog .charsheet .weapon-state-status[value='3'] ~ span .btn-target,
 .ui-dialog .charsheet .weapons-grid-status[value='1'] ~ .beams-panel .btn-target,
 .ui-dialog .charsheet .weapons-grid-status[value='1'] ~ .missiles-panel .btn-target,
 .ui-dialog .charsheet .weapons-grid-status[value='0'] ~ .fc-header .btn-weapons-grid-repair {
@@ -211,9 +216,6 @@
   color: black;
   font-weight: bold;
 }
-.ui-dialog .charsheet input[type='checkbox'].damaged {
-  accent-color: crimson;
-}
 .ui-dialog .charsheet input.sensor-status[value='Online'] {
   color: green;
   font-weight: bold;
@@ -250,6 +252,9 @@
   background-color: white; 
   margin-left: 5px; 
   width: 130px;
+}
+.ui-dialog .charsheet select.damaged {
+  width: 20px;
 }
 .ui-dialog .charsheet input.scan-lock,
 .ui-dialog .charsheet input.scan-answer,
@@ -480,6 +485,8 @@
 .ui-dialog .charsheet .sp-remaining-status[value='1'] ~ .sp-remaining,
 .ui-dialog .charsheet .tpa-remaining-status[value='1'] ~ .tpa-remaining,
 .ui-dialog .charsheet .weapons-grid-status[value='1'] ~ .fc-header span .state-select,
+.ui-dialog .charsheet .weapon-state-status[value='1'] ~ .weapon-state,
+.ui-dialog .charsheet .weapon-state-status[value='3'] ~ .weapon-state,
 .ui-dialog .charsheet .wf-current-status[value='1'] ~ .wf-current,
 .ui-dialog .charsheet .wf-desired-status[value='1'] ~ .em,
 .ui-dialog .charsheet .wf-remaining-status[value='1'] ~ .wf-remaining,
@@ -509,6 +516,7 @@
 .ui-dialog .charsheet .shield-6c-status[value='2'] ~ .shield-6c,
 .ui-dialog .charsheet .sp-remaining-status[value='2'] ~ .sp-remaining,
 .ui-dialog .charsheet .tpa-remaining-status[value='2'] ~ .tpa-remaining,
+.ui-dialog .charsheet .weapon-state-status[value='2'] ~ .weapon-state,
 .ui-dialog .charsheet .wp-remaining-status[value='2'] ~ .wp-remaining,
 .ui-dialog .charsheet .wf-current-status[value='2'] ~ .wf-current,
 .ui-dialog .charsheet .wf-desired-status[value='2'] ~ .em,
