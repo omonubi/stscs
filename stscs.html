@@ -803,29 +803,48 @@
 const CREW_BONUS_WEAPONS = 1;
 const CREW_BONUS_ENGINES = 2;
 const CREW_BONUS_SHIELD = 3;
-const CREW_BONUS_REPAIR = 4;
-const DAMAGE_STATUSES = ['Online', 'Dmg 1-8', 'Dmg 1-6', 'Dmg 1-4', 'Dmg 1-2', 'DEST'];
-const EMPTY_STRING = '';
+const CREW_BONUS_REPAIR = 4;const DAMAGE_CHART_DEFAULT = `C`;
+const DAMAGE_RESULT_BEAM = `Beam Weapon`;
+const DAMAGE_RESULT_BRIDGE = `Bridge 2C`;
+const DAMAGE_RESULT_ENG = `Engineering`;
+const DAMAGE_RESULT_IMP = `Impulse`;
+const DAMAGE_RESULT_IMP_HALF = `Impulse (x1/2)`;
+const DAMAGE_RESULT_MISSILE = `Missile Weapon`;
+const DAMAGE_RESULT_PORT = `PWE`;
+const DAMAGE_RESULT_PORT_HALF = `PWE (x1/2)`;
+const DAMAGE_RESULT_SENSORS = `Sensors`;
+const DAMAGE_RESULT_SHIELD = `Shield Gen`;
+const DAMAGE_RESULT_STBD = `SWE`;
+const DAMAGE_RESULT_STBD_HALF = `SWE (x1/2)`;
+const DAMAGE_RESULT_SUP = `Sup 2C`;
+const DAMAGE_RESULT_SUP_HALF = `Sup C (x1/2)`;
+const DAMAGE_RESULT_SUP_PORT = `PWE/Sup C (x1/2)`;
+const DAMAGE_RESULT_SUP_STBD = `SWE/Sup C (x1/2)`;
+const DAMAGE_RESULT_WARP = `Any WE`;
+const DAMAGE_STATUSES = [`Online`, `Dmg 1-8`, `Dmg 1-6`, `Dmg 1-4`, `Dmg 1-2`, `DEST`];
+const ENGINE_LOCATION_PORT = `2`;
+const ENGINE_LOCATION_STBD = `3`;
 const ENGINE_TYPE_IMPULSE = 1;
 const ENGINE_TYPE_WARP = 2;
 const ENGINE_TYPE_GENERATOR = 3;
-const ENGINE_WARP_NAME_NONE = 'No Warp Drive';
-const ROLL20_CHAR_URL = 'https://journal.roll20.net/character/';
+const ENGINE_WARP_NAME_NONE = `No Warp Drive`;
+const MAX_PERCENTAGE = 100;
+const ROLL20_CHAR_URL = `https://journal.roll20.net/character/`;    
 
 // ON SHEET OPENED
-on('sheet:opened',function(){
-    getAttrs(['character_name'], function(values) {
-        const charactername = values['character_name'];
+on(`sheet:opened`,function(){
+    getAttrs([`character_name`], function(values) {
+        const charactername = values[`character_name`];
         
         const output = {};
 
         const SEARCH_STR = "Copy of";
         if (charactername.includes(SEARCH_STR)) {
-            output['caprating'] = 45 + getRandomIntInclusive(1,10) + getRandomIntInclusive(1,10) + getRandomIntInclusive(1,10);
-            output['crewrating'] = 25 + getRandomIntInclusive(1,10) + getRandomIntInclusive(1,10) + getRandomIntInclusive(1,10);
+            output[`caprating`] = 45 + getRandomIntInclusive(1,10) + getRandomIntInclusive(1,10) + getRandomIntInclusive(1,10);
+            output[`crewrating`] = 25 + getRandomIntInclusive(1,10) + getRandomIntInclusive(1,10) + getRandomIntInclusive(1,10);
         }
 
-        output['roll20charurl'] = ROLL20_CHAR_URL;
+        output[`roll20charurl`] = ROLL20_CHAR_URL;
 
         setAttrs(output);
     });
@@ -835,7 +854,7 @@ on('sheet:opened',function(){
 const extractChatData = async (query) => {
     query = await startRoll(`!{{target=[[0[response=${query}]]]}}`);
     finishRoll(query.rollId);
-    return query.results.target.expression.replace(/0\[response=(.+?)\]/,'$1');
+    return query.results.target.expression.replace(/0\[response=(.+?)\]/,`$1`);
 };
 
 // Async function to return a token name and its character id 
@@ -843,7 +862,7 @@ const extractTargetData = async () => {
     const query = await startRoll(`!{{target=[[0+{"tokenName":"@{target|token_name}","charId":"@{target|character_id}"}]]}} /direct`);
     finishRoll(query.rollId);
     const expr = query.results.target.expression;
-    const jsonStr = expr.replace(/0\+\{(.+)\}/, '{$1}');
+    const jsonStr = expr.replace(/0\+\{(.+)\}/, `{$1}`);
     return JSON.parse(jsonStr);
 };
 
@@ -856,81 +875,81 @@ function getRandomIntInclusive(min, max) {
 
 // Format large numbers with commas
 function formatNumber(value) {
-    value = value.replace(/\D/g, '');
-    return value.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    value = value.replace(/\D/g, ``);
+    return value.replace(/\B(?=(\d{3})+(?!\d))/g, `,`);
 }
 
 // CAPTAIN RATING change
-on('change:caprating', function(eventInfo) {
-    getAttrs(['caprating'], function(values) {
-        const caprating = parseInt(values['caprating']);
+on(`change:caprating`, function(eventInfo) {
+    getAttrs([`caprating`], function(values) {
+        const caprating = parseInt(values[`caprating`]);
 
         const output = {};
-        output['caprating_ta'] = caprating * 100;
+        output[`caprating_ta`] = caprating * MAX_PERCENTAGE;
         setAttrs(output);
     });
 });
 
 // CARGO CAPACITY calculation
-on('change:scu', function(eventInfo) {
-    getAttrs(['scu'], function(values) {
-        const scu = parseInt(values['scu']) || 0;
+on(`change:scu`, function(eventInfo) {
+    getAttrs([`scu`], function(values) {
+        const scu = parseInt(values[`scu`]) || 0;
 
         const scuCapacity = formatNumber(String(scu * 50));
 
         const output = {};
-        output['scu_cap'] = `${scuCapacity} mt`;
+        output[`scu_cap`] = `${scuCapacity} mt`;
         setAttrs(output);
     });
 });
 
 // COMBAT EFFICIENCY calculation
-on('change:defense change:wdf', function(eventInfo) {
-    getAttrs(['defense', 'wdf'], function(values) {
-        const defense = parseFloat(values['defense']) || 0;
-        const wpnDmgFactor = parseFloat(values['wdf']) || 0;
+on(`change:defense change:wdf`, function(eventInfo) {
+    getAttrs([`defense`, `wdf`], function(values) {
+        const defense = parseFloat(values[`defense`]) || 0;
+        const wpnDmgFactor = parseFloat(values[`wdf`]) || 0;
 
-        const combatEfficiency = parseFloat((defense * wpnDmgFactor / 100).toFixed(2));
+        const combatEfficiency = parseFloat((defense * wpnDmgFactor / MAX_PERCENTAGE).toFixed(2));
 
         const output = {};
-        output['ce'] = combatEfficiency;
+        output[`ce`] = combatEfficiency;
         setAttrs(output);
     });
 });
 
 // CREW BONUS selection
-on('change:crewbonus', function(eventInfo) {
-    getAttrs(['crewbonus'], function(values) {
-        const crewBonus = parseInt(values['crewbonus']) || 0;
+on(`change:crewbonus`, function(eventInfo) {
+    getAttrs([`crewbonus`], function(values) {
+        const crewBonus = parseInt(values[`crewbonus`]) || 0;
 
         const output = {};
-        output['crewbonus1'] = output['crewbonus2'] = output['crewbonus3'] = output['crewbonus4'] = 0;
+        output[`crewbonus1`] = output[`crewbonus2`] = output[`crewbonus3`] = output[`crewbonus4`] = 0;
         output[`crewbonus${crewBonus}`] = 1;
         setAttrs(output);
     });
 });
 
 // CREW calculation
-on('change:crew change:crew_max', function(eventInfo) {
-    getAttrs(['crew', 'crew_max'], function(values) {
-        const crew = parseInt(values['crew']) || 0;
-        const crewMax = parseInt(values['crew_max']) || 0;
+on(`change:crew change:crew_max`, function(eventInfo) {
+    getAttrs([`crew`, `crew_max`], function(values) {
+        const crew = parseInt(values[`crew`]) || 0;
+        const crewMax = parseInt(values[`crew_max`]) || 0;
 
         const output = {};
-        output['crew-percent'] = Math.max(0, Math.round(crew / crewMax * 100));
-        output['crew_status'] = crew < (crewMax / 2) || crew > crewMax ? 1 : crew < crewMax ? 2 : 0;
+        output[`crew-percent`] = Math.max(0, Math.round(crew / crewMax * MAX_PERCENTAGE));
+        output[`crew_status`] = crew < (crewMax / 2) || crew > crewMax ? 1 : crew < crewMax ? 2 : 0;
         setAttrs(output);
     });
 });
 
 // CREW EFFICIENCY calculation
-on('change:crewrating change:crew-percent', function(eventInfo) {
-    getAttrs(['crewrating', 'crew-percent'], function(values) {
-        const crewRating = parseInt(values['crewrating']) || 0;
-        const crewPercent = values['crew-percent'] || '0';
-        const crewCasualties = 100 - crewPercent;
+on(`change:crewrating change:crew-percent`, function(eventInfo) {
+    getAttrs([`crewrating`, `crew-percent`], function(values) {
+        const crewRating = parseInt(values[`crewrating`]) || 0;
+        const crewPercent = values[`crew-percent`] || `0`;
+        const crewCasualties = MAX_PERCENTAGE - crewPercent;
 
-        const casualtyBrackets = [19, 39, 59, 69, 100];
+        const casualtyBrackets = [19, 39, 59, 69, MAX_PERCENTAGE];
         const rollPenalties = [0, -1, -2, -5, -10];
         const efficiencyModifiers = [0, 10, 20, 50, 50];
 
@@ -938,21 +957,21 @@ on('change:crewrating change:crew-percent', function(eventInfo) {
         while (crewCasualties > casualtyBrackets[i]) i++;
 
         const output = {};
-        output['crewefficiency'] = Math.max(0, crewRating - efficiencyModifiers[i]);
-        output['crewrollpenalty'] = rollPenalties[i];
+        output[`crewefficiency`] = Math.max(0, crewRating - efficiencyModifiers[i]);
+        output[`crewrollpenalty`] = rollPenalties[i];
         setAttrs(output);
     });
 });
 
 // DAMAGE roll
-on('clicked:rolldamage', async () => {
-    const shieldArcStr = await extractChatData('?{Shield Arc|#1 (f/p)|#2 (fwd)|#3 (f/s)|#4 (a/s)|#5 (aft)|#6 (a/p)}');
-    const baseDamage = +await extractChatData('?{Damage|0}');
+on(`clicked:rolldamage`, async () => {
+    const shieldArcStr = await extractChatData(`?{Shield Arc|#1 (f/p)|#2 (fwd)|#3 (f/s)|#4 (a/s)|#5 (aft)|#6 (a/p)}`);
+    const baseDamage = +await extractChatData(`?{Damage|0}`);
   
     const shieldArc = shieldArcStr.substring(1,2);
     const shieldVar = `shield_${shieldArc}c`;
-    const values = await getAttrsAsync(['dmg_chart']);
-    const damageChart = values['dmg_chart'] || DAMAGE_CHART_DEFAULT;
+    const values = await getAttrsAsync([`dmg_chart`]);
+    const damageChart = values[`dmg_chart`] || DAMAGE_CHART_DEFAULT;
 
     const damageResults = [
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -969,7 +988,7 @@ on('clicked:rolldamage', async () => {
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 
-        16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
+        13, 16, 6, 3, 2, 2, 1, 8, 14, 12,
         13, 16, 17, 2, 2, 2, 2, 5, 14, 12,
         13, 16, 7, 4, 2, 2, 1, 9, 14, 12,
         13, 16, 7, 7, 4, 1, 1, 2, 2, 9,
@@ -979,298 +998,254 @@ on('clicked:rolldamage', async () => {
 
     //13, 16, 6, 3, 2, 2, 1, 8, 14, 12,
 
-    const DAMAGE_CHART_DEFAULT = 'C';
-    const DAMAGE_RESULT_BEAM = 'Beam Weapon';
-    const DAMAGE_RESULT_BRIDGE = 'Bridge 2C';
-    const DAMAGE_RESULT_ENG = 'Engineering';
-    const DAMAGE_RESULT_IMP = 'Impulse';
-    const DAMAGE_RESULT_IMP_HALF = 'Impulse (x1/2)';
-    const DAMAGE_RESULT_MISSILE = 'Missile Weapon';
-    const DAMAGE_RESULT_PORT = 'PWE';
-    const DAMAGE_RESULT_PORT_HALF = 'PWE (x1/2)';
-    const DAMAGE_RESULT_SENSORS = 'Sensors';
-    const DAMAGE_RESULT_SHIELD = 'Shield Gen';
-    const DAMAGE_RESULT_STBD = 'SWE';
-    const DAMAGE_RESULT_STBD_HALF = 'SWE (x1/2)';
-    const DAMAGE_RESULT_SUP = 'Sup 2C';
-    const DAMAGE_RESULT_SUP_HALF = 'Sup C (x1/2)';
-    const DAMAGE_RESULT_SUP_PORT = 'PWE/Sup C (x1/2)';
-    const DAMAGE_RESULT_SUP_STBD = 'SWE/Sup C (x1/2)';
-    const DAMAGE_RESULT_WARP = 'Any WE';
-
-    const ENGINE_LOCATION_PORT = '2';
-    const ENGINE_LOCATION_STBD = '3';
-
-    let hitLocationStr = EMPTY_STRING;
     let residualDamage = 0;
     let penetratingDamage = 0;
-    let returnStr = EMPTY_STRING;
+    let returnStr = ``;
     let rollStr = `/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Damage Results}} {{color=red}} {{Incoming Dmg=${baseDamage}}} {{On Shield Arc=${shieldArcStr}}} `;
-    let gridStr = EMPTY_STRING; // Used to track grid hits
+    let gridStr = ``; // Used to track grid hits
 
     const hitRollResult = getRandomIntInclusive(0, 9);
     const hitLocation = ((damageChart.charCodeAt(0) - 65) * 60) + (hitRollResult * shieldArc);
-    switch (damageResults[hitLocation]) {
-        case 1:
-            rollStr += `{{Hit Location=${DAMAGE_RESULT_SUP}}} `;
-            ({ penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage)); 
-            rollStr += returnStr;
-            if (penetratingDamage) {           
-                ({ residualDamage, returnStr } = await damageSup(penetratingDamage));
-                rollStr += returnStr;
-                ({ residualDamage, returnStr } = await damageCrew(penetratingDamage, 2));
-                rollStr += returnStr;
-            }
-            break;
-        case 2:
-            rollStr += `{{Hit Location=${DAMAGE_RESULT_SUP_HALF}}} `;
-            ({ penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage, 0.5)); 
-            rollStr += returnStr;
-            if (penetratingDamage) {           
-                ({ residualDamage, returnStr } = await damageSup(penetratingDamage));
-                rollStr += returnStr;
-                ({ residualDamage, returnStr } = await damageCrew(penetratingDamage));
-                rollStr += returnStr;
-            }
-            break;
-        case 3:
-            rollStr += `{{Hit Location=${DAMAGE_RESULT_PORT}}} `;
-            ({ penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage)); 
-            rollStr += returnStr;
+    
+    const damageHandlers = {
+        1: async (shieldVar, baseDamage) => {
+            let result = `{{Hit Location=${DAMAGE_RESULT_SUP}}} `;
+            let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
+            result += returnStr;
             if (penetratingDamage) {
-                ({ residualDamage, returnStr } = await damageWarp(penetratingDamage, ENGINE_LOCATION_PORT));
-                rollStr += returnStr;
-                if (residualDamage) {
-                    if (returnStr.includes(ENGINE_WARP_NAME_NONE)) {           
-                        ({ residualDamage, returnStr } = await damageSup(residualDamage));
-                    } else {
-                        ({ residualDamage, returnStr } = await damageResidual(residualDamage));
-                    }
-                    rollStr += returnStr;
-                }
+                let { residualDamage, returnStr: supReturn } = await damageSup(penetratingDamage);
+                result += supReturn;
+                let { residualDamage: crewResidual, returnStr: crewReturn } = await damageCrew(penetratingDamage, 2);
+                result += crewReturn;
             }
-            break;
-        case 4:
-            rollStr += `{{Hit Location=${DAMAGE_RESULT_STBD}}} `;
-            ({ penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage)); 
-            rollStr += returnStr;
+            return result;
+        },
+        2: async (shieldVar, baseDamage) => {
+            let result = `{{Hit Location=${DAMAGE_RESULT_SUP_HALF}}} `;
+            let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage, 0.5);
+            result += returnStr;
             if (penetratingDamage) {
-                ({ residualDamage, returnStr } = await damageWarp(penetratingDamage, ENGINE_LOCATION_STBD));
-                rollStr += returnStr;
-                if (residualDamage) {
-                    if (returnStr.includes(ENGINE_WARP_NAME_NONE)) {           
-                        ({ residualDamage, returnStr } = await damageSup(residualDamage));
-                    } else {
-                        ({ residualDamage, returnStr } = await damageResidual(residualDamage));
-                    }
-                    rollStr += returnStr;
-                }
+                let { residualDamage, returnStr: supReturn } = await damageSup(penetratingDamage);
+                result += supReturn;
+                let { residualDamage: crewResidual, returnStr: crewReturn } = await damageCrew(penetratingDamage);
+                result += crewReturn;
             }
-            break;
-        case 5:
-            rollStr += `{{Hit Location=${DAMAGE_RESULT_WARP}}} `;
-            ({ penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage)); 
-            rollStr += returnStr;
+            return result;
+        },
+        3: async (shieldVar, baseDamage) => {
+            let result = `{{Hit Location=${DAMAGE_RESULT_PORT}}} `;
+            let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
+            result += returnStr;
             if (penetratingDamage) {
-                ({ residualDamage, returnStr } = await damageWarp(penetratingDamage));
-                rollStr += returnStr;
-                if (residualDamage) {
-                    if (returnStr.includes(ENGINE_WARP_NAME_NONE)) {           
-                        ({ residualDamage, returnStr } = await damageSup(residualDamage));
-                    } else {
-                        ({ residualDamage, returnStr } = await damageResidual(residualDamage));
-                    }
-                    rollStr += returnStr;
-                }
+                result += await handleWarpDamage(penetratingDamage, ENGINE_LOCATION_PORT, shieldArc);
             }
-            break;
-        case 6:
-            rollStr += `{{Hit Location=${DAMAGE_RESULT_PORT_HALF}}} `;
-            ({ penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage, 0.5)); 
-            rollStr += returnStr;
+            return result;
+            },
+        4: async (shieldVar, baseDamage) => {
+            let result = `{{Hit Location=${DAMAGE_RESULT_STBD}}} `;
+            let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
+            result += returnStr;
             if (penetratingDamage) {
-                ({ residualDamage, returnStr } = await damageWarp(penetratingDamage, ENGINE_LOCATION_PORT));
-                rollStr += returnStr;
-                if (residualDamage) {
-                    if (returnStr.includes(ENGINE_WARP_NAME_NONE)) {           
-                        ({ residualDamage, returnStr } = await damageSup(residualDamage));
-                    } else {
-                        ({ residualDamage, returnStr } = await damageResidual(residualDamage));
-                    }
-                    rollStr += returnStr;
-                }
+                result += await handleWarpDamage(penetratingDamage, ENGINE_LOCATION_STBD, shieldArc);
             }
-            break;
-        case 7:
-            rollStr += `{{Hit Location=${DAMAGE_RESULT_STBD_HALF}}} `;
-            ({ penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage, 0.5)); 
-            rollStr += returnStr;
+            return result;
+        },
+        5: async (shieldVar, baseDamage) => {
+            let result = `{{Hit Location=${DAMAGE_RESULT_WARP}}} `;
+            let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
+            result += returnStr;
             if (penetratingDamage) {
-                ({ residualDamage, returnStr } = await damageWarp(penetratingDamage, ENGINE_LOCATION_STBD));
-                rollStr += returnStr;
-                if (residualDamage) {
-                    if (returnStr.includes(ENGINE_WARP_NAME_NONE)) {           
-                        ({ residualDamage, returnStr } = await damageSup(residualDamage));
-                    } else {
-                        ({ residualDamage, returnStr } = await damageResidual(residualDamage));
-                    }
-                    rollStr += returnStr;
-                }
+                result += await handleWarpDamage(penetratingDamage, null, shieldArc);
             }
-            break;
-        case 8:
-            rollStr += `{{Hit Location=${DAMAGE_RESULT_SUP_PORT}}} `;
-            ({ penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage, 0.5)); 
-            rollStr += returnStr;
+            return result;
+        },
+        6: async (shieldVar, baseDamage) => {
+            let result = `{{Hit Location=${DAMAGE_RESULT_PORT_HALF}}} `;
+            let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage, 0.5);
+            result += returnStr;
+            if (penetratingDamage) {
+                result += await handleWarpDamage(penetratingDamage, ENGINE_LOCATION_PORT, shieldArc);
+            }
+            return result;
+        },
+        7: async (shieldVar, baseDamage) => {
+            let result = `{{Hit Location=${DAMAGE_RESULT_STBD_HALF}}} `;
+            let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage, 0.5);
+            result += returnStr;
+            if (penetratingDamage) {
+                result += await handleWarpDamage(penetratingDamage, ENGINE_LOCATION_STBD, shieldArc);
+            }
+            return result;
+        },
+        8: async (shieldVar, baseDamage) => {
+            let result = `{{Hit Location=${DAMAGE_RESULT_SUP_PORT}}} `;
+            let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage, 0.5);
+            result += returnStr;
             if (penetratingDamage) {
                 let penetratingDamageEng = Math.ceil(penetratingDamage / 2);
                 let penetratingDamageSup = Math.floor(penetratingDamage / 2);
-                ({ residualDamage, returnStr } = await damageWarp(penetratingDamageEng, ENGINE_LOCATION_PORT));
-                rollStr += returnStr;
+                let { residualDamage, returnStr: warpReturn } = await damageWarp(penetratingDamageEng, ENGINE_LOCATION_PORT);
+                result += warpReturn;
                 if (residualDamage) {
-                    if (returnStr.includes(ENGINE_WARP_NAME_NONE)) {           
+                    if (returnStr.includes(ENGINE_WARP_NAME_NONE)) {
                         penetratingDamageSup += residualDamage;
                     } else {
-                        ({ residualDamage, returnStr } = await damageResidual(residualDamage));
+                        let { residualDamage: residualResidual, returnStr: residualReturn } = await damageResidual(residualDamage);
+                        result += residualReturn;
                     }
                 }
-                rollStr += returnStr;           
-                ({ residualDamage, returnStr } = await damageSup(penetratingDamageSup));
-                rollStr += returnStr;
-                ({ residualDamage, returnStr } = await damageCrew(penetratingDamageSup));
-                rollStr += returnStr;
+                result += warpReturn;
+                let { residualDamage: supResidual, returnStr: supReturn } = await damageSup(penetratingDamageSup);
+                result += supReturn;
+                let { residualDamage: crewResidual, returnStr: crewReturn } = await damageCrew(penetratingDamageSup);
+                result += crewReturn;
             }
-            break;
-        case 9:
-            rollStr += `{{Hit Location=${DAMAGE_RESULT_SUP_STBD}}} `;
-            ({ penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage, 0.5)); 
-            rollStr += returnStr;
+            return result;
+        },
+        9: async (shieldVar, baseDamage) => {
+            let result = `{{Hit Location=${DAMAGE_RESULT_SUP_STBD}}} `;
+            let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage, 0.5);
+            result += returnStr;
             if (penetratingDamage) {
                 let penetratingDamageEng = Math.ceil(penetratingDamage / 2);
                 let penetratingDamageSup = Math.floor(penetratingDamage / 2);
-                ({ residualDamage, returnStr } = await damageWarp(penetratingDamageEng, ENGINE_LOCATION_STBD));
-                rollStr += returnStr;
+                let { residualDamage, returnStr: warpReturn } = await damageWarp(penetratingDamageEng, ENGINE_LOCATION_STBD);
+                result += warpReturn;
                 if (residualDamage) {
-                    if (returnStr.includes(ENGINE_WARP_NAME_NONE)) {           
+                    if (returnStr.includes(ENGINE_WARP_NAME_NONE)) {
                         penetratingDamageSup += residualDamage;
                     } else {
-                        ({ residualDamage, returnStr } = await damageResidual(residualDamage));
+                        let { residualDamage: residualResidual, returnStr: residualReturn } = await damageResidual(residualDamage);
+                        result += residualReturn;
                     }
                 }
-                rollStr += returnStr;           
-                ({ residualDamage, returnStr } = await damageSup(penetratingDamageSup));
-                rollStr += returnStr;
-                ({ residualDamage, returnStr } = await damageCrew(penetratingDamageSup));
-                rollStr += returnStr;
+                result += warpReturn;
+                let { residualDamage: supResidual, returnStr: supReturn } = await damageSup(penetratingDamageSup);
+                result += supReturn;
+                let { residualDamage: crewResidual, returnStr: crewReturn } = await damageCrew(penetratingDamageSup);
+                result += crewReturn;
             }
-            break;
-        case 10:
-            rollStr += `{{Hit Location=${DAMAGE_RESULT_IMP}}} `;
-            ({ penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage)); 
-            rollStr += returnStr;
+            return result;
+        },
+        10: async (shieldVar, baseDamage) => {
+            let result = `{{Hit Location=${DAMAGE_RESULT_IMP}}} `;
+            let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
+            result += returnStr;
             if (penetratingDamage) {
-                ({ residualDamage, returnStr } = await damageImpulse(penetratingDamage));
-                rollStr += returnStr;
-                if (residualDamage) {          
-                    ({ residualDamage, returnStr } = await damageResidual(residualDamage));
-                    rollStr += returnStr;
-                }
-            }
-            break;
-        case 11:
-            rollStr += `{{Hit Location=${DAMAGE_RESULT_IMP_HALF}}} `;
-            ({ penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage, 0.5)); 
-            rollStr += returnStr;
-            if (penetratingDamage) {
-                ({ residualDamage, returnStr } = await damageImpulse(penetratingDamage));
-                rollStr += returnStr;
-                if (residualDamage) {          
-                    ({ residualDamage, returnStr } = await damageResidual(residualDamage));
-                    rollStr += returnStr;
-                }
-            }
-            break;
-        case 12:
-            rollStr += `{{Hit Location=${DAMAGE_RESULT_BRIDGE}}} `;
-            ({ penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage)); 
-            rollStr += returnStr;
-            if (penetratingDamage) {           
-                ({ residualDamage, returnStr } = await damageSup(1));
-                rollStr += returnStr;
-                ({ residualDamage, returnStr } = await damageCrew(penetratingDamage, 2, true));
-                rollStr += returnStr;
-            }
-            break;
-        case 13:
-            rollStr += `{{Hit Location=${DAMAGE_RESULT_SHIELD}}} `;
-            ({ penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage)); 
-            rollStr += returnStr;
-            if (penetratingDamage) {           
-                ({ residualDamage, returnStr } = await damageSystem(`shield_${shieldArc}`, penetratingDamage));
-                rollStr += returnStr;
+                let { residualDamage, returnStr: impulseReturn } = await damageImpulse(penetratingDamage);
+                result += impulseReturn;
                 if (residualDamage) {
-                    ({ residualDamage, returnStr } = await damageResidual(residualDamage));
-                    rollStr += returnStr;
+                    let { residualDamage: residualResidual, returnStr: residualReturn } = await damageResidual(residualDamage);
+                    result += residualReturn;
                 }
             }
-            break;
-        case 14:
-            rollStr += `{{Hit Location=${DAMAGE_RESULT_SENSORS}}} `;
-            ({ penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage)); 
-            rollStr += returnStr;
-            if (penetratingDamage) {  
-                ({ residualDamage, returnStr } = await damageSystem(`sensors`, penetratingDamage));
+            return result;
+        },
+        11: async (shieldVar, baseDamage) => {
+            let result = `{{Hit Location=${DAMAGE_RESULT_IMP_HALF}}} `;
+            let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage, 0.5);
+            result += returnStr;
+            if (penetratingDamage) {
+                let { residualDamage, returnStr: impulseReturn } = await damageImpulse(penetratingDamage);
+                result += impulseReturn;
+                if (residualDamage) {
+                    let { residualDamage: residualResidual, returnStr: residualReturn } = await damageResidual(residualDamage);
+                    result += residualReturn;
+                }
+            }
+            return result;
+        },
+        12: async (shieldVar, baseDamage) => {
+            let result = `{{Hit Location=${DAMAGE_RESULT_BRIDGE}}} `;
+            let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
+            result += returnStr;
+            if (penetratingDamage) {
+                let { residualDamage, returnStr: supReturn } = await damageSup(1);
+                result += supReturn;
+                let { residualDamage: crewResidual, returnStr: crewReturn } = await damageCrew(penetratingDamage, 2, true);
+                result += crewReturn;
+            }
+            return result;
+        },
+        13: async (shieldVar, baseDamage) => {
+            let result = `{{Hit Location=${DAMAGE_RESULT_SHIELD}}} `;
+            let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
+            result += returnStr;
+            if (penetratingDamage) {
+                let { residualDamage, returnStr: systemReturn } = await damageSystem(`shield_${shieldArc}`, penetratingDamage);
+                result += systemReturn;
+                if (residualDamage) {
+                    let { residualDamage: residualResidual, returnStr: residualReturn } = await damageResidual(residualDamage);
+                    result += residualReturn;
+                }
+            }
+            return result;
+        },
+        14: async (shieldVar, baseDamage) => {
+            let result = `{{Hit Location=${DAMAGE_RESULT_SENSORS}}} `;
+            let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
+            result += returnStr;
+            if (penetratingDamage) {
+                let { residualDamage, returnStr: systemReturn } = await damageSystem(`sensors`, penetratingDamage);
                 undoSensorLock();
-                rollStr += returnStr;
+                result += systemReturn;
                 if (residualDamage) {
-                    ({ residualDamage, returnStr } = await damageResidual(residualDamage));
-                    rollStr += returnStr;
+                    let { residualDamage: residualResidual, returnStr: residualReturn } = await damageResidual(residualDamage);
+                    result += residualReturn;
                 }
             }
-            break;
-        case 15:
-            rollStr += `{{Hit Location=${DAMAGE_RESULT_ENG}}} `;
-            ({ penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage)); 
-            rollStr += returnStr;
+            return result;
+        },
+        15: async (shieldVar, baseDamage) => {
+            let result = `{{Hit Location=${DAMAGE_RESULT_ENG}}} `;
+            let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
+            result += returnStr;
             if (penetratingDamage) {
                 const gridNames = [`Shields`, `Weapons`, `Movement`];
                 const damagedGrids = await selectRandomGrids();
-                for (i = 0; i < damagedGrids.length; i++) {
+                let gridStr = ``;
+                for (let i = 0; i < damagedGrids.length; i++) {
                     gridStr += `${gridNames[damagedGrids[i]-1]}, `;
                 }
                 gridStr = gridStr.slice(0, -2);
-                rollStr += ` {{Affected Grids=${gridStr}}}`;
-                ({ residualDamage, returnStr } = await damageSup(1));
-                rollStr += returnStr;
+                result += ` {{Affected Grids=${gridStr}}}`;
+                let { residualDamage, returnStr: supReturn } = await damageSup(1);
+                result += supReturn;
             }
-            break;
-        case 16:
-            rollStr += `{{Hit Location=${DAMAGE_RESULT_BEAM}}} `;
-            ({ penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage)); 
-            rollStr += returnStr;
-            if (penetratingDamage) {           
-                ({ residualDamage, returnStr } = await damageWeapon(shieldArc, 'repeating_beams', penetratingDamage));
-                rollStr += returnStr;
+            return result;
+        },
+        16: async (shieldVar, baseDamage) => {
+            let result = `{{Hit Location=${DAMAGE_RESULT_BEAM}}} `;
+            let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
+            result += returnStr;
+            if (penetratingDamage) {
+                let { residualDamage, returnStr: weaponReturn } = await damageWeapon(shieldArc, `repeating_beams`, penetratingDamage);
+                result += weaponReturn;
                 if (residualDamage) {
-                    ({ residualDamage, returnStr } = await damageResidual(residualDamage));
-                    rollStr += returnStr;
+                    let { residualDamage: residualResidual, returnStr: residualReturn } = await damageResidual(residualDamage);
+                    result += residualReturn;
                 }
             }
-            break;
-        case 17:
-            rollStr += `{{Hit Location=${DAMAGE_RESULT_MISSILE}}} `;
-            ({ penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage)); 
-            rollStr += returnStr;
-            if (penetratingDamage) {           
-                ({ residualDamage, returnStr } = await damageWeapon(shieldArc, 'repeating_missiles', penetratingDamage));
-                rollStr += returnStr;
+            return result;
+        },
+        17: async (shieldVar, baseDamage) => {
+            let result = `{{Hit Location=${DAMAGE_RESULT_MISSILE}}} `;
+            let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
+            result += returnStr;
+            if (penetratingDamage) {
+                let { residualDamage, returnStr: weaponReturn } = await damageWeapon(shieldArc, `repeating_missiles`, penetratingDamage);
+                result += weaponReturn;
                 if (residualDamage) {
-                    ({ residualDamage, returnStr } = await damageResidual(residualDamage));
-                    rollStr += returnStr;
+                    let { residualDamage: residualResidual, returnStr: residualReturn } = await damageResidual(residualDamage);
+                    result += residualReturn;
                 }
             }
-            break;
-    }
+            return result;
+        }
+    };
+
+    const hitResult = damageResults[hitLocation];
+    rollStr += await damageHandlers[hitResult]?.(shieldVar, baseDamage) || ``;
 
     await startRoll(
         `/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Damage Results}} {{color=red}} {{Incoming Dmg=${baseDamage}}} {{On Shield Arc=${shieldArcStr}}} ${rollStr}`,
@@ -1280,16 +1255,30 @@ on('clicked:rolldamage', async () => {
     if (gridStr) damageGrids(gridStr); // Handle damage to individal grids
 });
 
+async function handleWarpDamage(penetratingDamage, engineLocation, shieldArc) {
+    let result = ``;
+    const { residualDamage, returnStr } = await damageWarp(penetratingDamage, engineLocation);
+    result += returnStr;
+    if (residualDamage) {
+        if (returnStr.includes(ENGINE_WARP_NAME_NONE)) {
+            result += (await damageSup(residualDamage)).returnStr;
+        } else {
+            result += (await damageResidual(residualDamage)).returnStr;
+        }
+    }
+    return result;
+}
+
 // DAMAGE CREW
 async function damageCrew(myDmg, myFactor = 1, isBridge = false) {
-    const values = await getAttrsAsync(['crew', 'crew_max', 'crewrating', 'hp_max']);
-    const crew = parseInt(values['crew']) || 0;
-    const crewMax = parseInt(values['crew_max']) || 0;
-    const crewRating = parseInt(values['crewrating']) || 0;
-    const maxSup = parseInt(values['hp_max']) || 0;
+    const values = await getAttrsAsync([`crew`, `crew_max`, `crewrating`, `hp_max`]);
+    const crew = parseInt(values[`crew`]) || 0;
+    const crewMax = parseInt(values[`crew_max`]) || 0;
+    const crewRating = parseInt(values[`crewrating`]) || 0;
+    const maxSup = parseInt(values[`hp_max`]) || 0;
 
     const supIntervals = [0, 1, 2, 3, 4, 5, 6, 8, 11, 14, 19, 34, 50, 999];
-    const percentsLost = [0, 100, 50, 30, 25, 20, 18, 14, 10, 8, 6, 4, 2, 1];
+    const percentsLost = [0, MAX_PERCENTAGE, 50, 30, 25, 20, 18, 14, 10, 8, 6, 4, 2, 1];
 
     // Determine percentage bracket based on max sup
     let index = -1;
@@ -1299,28 +1288,27 @@ async function damageCrew(myDmg, myFactor = 1, isBridge = false) {
     while (maxSup > supIntervals[index])
 
     // Determine amount of crew lost
-    const isCrewEffective = getRandomIntInclusive(1, 100) <= crewRating;
+    const isCrewEffective = getRandomIntInclusive(1, MAX_PERCENTAGE) <= crewRating;
     const CREW_MAX_DMG = 5;
-    const percentLost = Math.min((isBridge == true) ? 20 : 100, Math.floor(percentsLost[index] * Math.min(CREW_MAX_DMG, myDmg) * myFactor)) / (isCrewEffective ? 2 : 1);
-    const crewLost = Math.ceil(crewMax * percentLost / 100);
+    const percentLost = Math.min((isBridge == true) ? 20 : MAX_PERCENTAGE, Math.floor(percentsLost[index] * Math.min(CREW_MAX_DMG, myDmg) * myFactor)) / (isCrewEffective ? 2 : 1);
+    const crewLost = Math.ceil(crewMax * percentLost / MAX_PERCENTAGE);
     const newCrew = Math.max(0, crew - crewLost);
 
     const output = {};
-    output['crew'] = newCrew;
+    output[`crew`] = newCrew;
     await setAttrsAsync(output);
     
-    const CREW_EFFECTIVE_TRUE = 'Success!';
-    const CREW_EFFECTIVE_FALSE = 'Failed';
+    const CREW_EFFECTIVE_TRUE = `Success!`;
+    const CREW_EFFECTIVE_FALSE = `Failed`;
     const residualDamage = 0;
     const returnStr = ` {{Crew Check=${isCrewEffective ? CREW_EFFECTIVE_TRUE : CREW_EFFECTIVE_FALSE}}} {{Crew Lost=[[${crewLost}]]}}`;
     return { residualDamage, returnStr };
 }
 
 // DAMAGE WEAPON
-async function damageWeapon(myShieldNum = 1, myRepeatingSection = EMPTY_STRING, myDmg = 0) {
+async function damageWeapon(myShieldNum = 1, myRepeatingSection = ``, myDmg = 0) {
     // Validate that a repeating section was provided
     if (!myRepeatingSection) {
-        console.log('Error: No repeating section provided');
         return { residualDamage: myDmg, returnStr: `{{Weapon Damaged=Error: No section}} ` };
     }
     
@@ -1343,44 +1331,39 @@ async function damageWeapon(myShieldNum = 1, myRepeatingSection = EMPTY_STRING, 
     // Build array of weapon objects with name and state
     const weapons = weaponIds.map(id => ({
         id: id,
-        name: attrs[`${myRepeatingSection}_${id}_name`] || '',
-        state: attrs[`${myRepeatingSection}_${id}_state`] || '0'
+        name: attrs[`${myRepeatingSection}_${id}_name`] || ``,
+        state: attrs[`${myRepeatingSection}_${id}_state`] || `0`
     }));
     
     // Map shield number to arc letters
     const shieldArcs = {
-        1: 'fp',  // f/p
-        2: 'f',   // f
-        3: 'fs',  // f/s
-        4: 'as',  // a/s
-        5: 'a',   // a
-        6: 'ap'   // a/p
+        1: `fp`,  // f/p
+        2: `f`,   // f
+        3: `fs`,  // f/s
+        4: `as`,  // a/s
+        5: `a`,   // a
+        6: `ap`   // a/p
     };
     
     // Get the arc letters for this shield
-    const arcLetters = shieldArcs[myShieldNum] || '';
+    const arcLetters = shieldArcs[myShieldNum] || ``;
     
     // Build regex to match any of the arc letters within parentheses
-    const arcPattern = new RegExp(`\\([^)]*[${arcLetters}][^)]*\\)`, 'i');
+    const arcPattern = new RegExp(`\\([^)]*[${arcLetters}][^)]*\\)`, `i`);
     
     // Count weapons that match the shield arc
     const matchingWeapons = weapons.filter(weapon => arcPattern.test(weapon.name));
     const matchingCount = matchingWeapons.length;
     
-    // Log results for debugging
-    console.log(`Found ${weaponCount} weapons in ${myRepeatingSection}:`, weapons);
-    console.log(`Shield ${myShieldNum} (${shieldArcs[myShieldNum]}) has ${matchingCount} matching weapons:`, matchingWeapons);
-    
     // Filter matching weapons to only include those with state 0 or 2
-    const eligibleWeapons = matchingWeapons.filter(weapon => weapon.state === '0' || weapon.state === '2');
+    const eligibleWeapons = matchingWeapons.filter(weapon => weapon.state === `0` || weapon.state === `2`);
     const eligibleCount = eligibleWeapons.length;
     
     let residualDamage = 0;
-    let returnStr = EMPTY_STRING;
+    let returnStr = ``;
     
     // If no eligible weapons, return residual damage
     if (eligibleCount === 0) {
-        console.log('No eligible weapons (state 0 or 2) for shield arc');
         return { residualDamage: myDmg, returnStr: `{{Weapon Damaged=None Available}} ` };
     }
     
@@ -1391,10 +1374,10 @@ async function damageWeapon(myShieldNum = 1, myRepeatingSection = EMPTY_STRING, 
         
         // Update state: 0 → 1, 2 → 3
         let newState = selectedWeapon.state;
-        if (selectedWeapon.state === '0') {
-            newState = '1';
-        } else if (selectedWeapon.state === '2') {
-            newState = '3';
+        if (selectedWeapon.state === `0`) {
+            newState = `1`;
+        } else if (selectedWeapon.state === `2`) {
+            newState = `3`;
         }
         
         // Update the attribute in Roll20
@@ -1404,7 +1387,6 @@ async function damageWeapon(myShieldNum = 1, myRepeatingSection = EMPTY_STRING, 
         
         await setAttrsAsync(updateObj);
         
-        console.log(`Damaged weapon: ${selectedWeapon.name} (state: ${selectedWeapon.state} → ${newState})`);
         returnStr = `{{Weapon Damaged=${selectedWeapon.name}}} `;
     } else {
         returnStr = `{{Weapon Damaged=None Available}} `;
@@ -1422,7 +1404,7 @@ async function damageGrids(gridStr) {
         const gridVarName = `${affectedGrids[i].toLowerCase()}_grid`;
 
         const output = {};
-        if (affectedGrids[i] == 'Shields') output[`shield_1c`] = output[`shield_2c`] = output[`shield_3c`] = output[`shield_4c`] = output[`shield_5c`] = output[`shield_6c`] = 0;
+        if (affectedGrids[i] == `Shields`) output[`shield_1c`] = output[`shield_2c`] = output[`shield_3c`] = output[`shield_4c`] = output[`shield_5c`] = output[`shield_6c`] = 0;
         await setAttrsAsync(output);
 
         ({ residualDamage, returnStr } = await damageSystem(gridVarName, 0));
@@ -1459,7 +1441,7 @@ async function selectRandomGrids() {
 
 // DAMAGE IMPULSE ENGINE
 async function damageImpulse(myDmg = 0, myFactor = 1) {
-    const ids = await getSectionIDsAsync('repeating_engines');
+    const ids = await getSectionIDsAsync(`repeating_engines`);
     
     const Fieldnames = [];
     ids.forEach(id => {
@@ -1495,7 +1477,7 @@ async function damageImpulse(myDmg = 0, myFactor = 1) {
 }
 
 // DAMAGE SHIELD
-async function damageShield(myShieldVar = EMPTY_STRING, myDmg = 0, myFactor = 1) {
+async function damageShield(myShieldVar = ``, myDmg = 0, myFactor = 1) {
     const values = await getAttrsAsync([myShieldVar]);
     const shieldPower = parseInt(values[myShieldVar]) || 0;
 
@@ -1512,7 +1494,7 @@ async function damageShield(myShieldVar = EMPTY_STRING, myDmg = 0, myFactor = 1)
 }
 
 // DAMAGE SYSTEM
-async function damageSystem(mySystemVar = EMPTY_STRING, myDmg = 0) {
+async function damageSystem(mySystemVar = ``, myDmg = 0) {
     const values = await getAttrsAsync([`${mySystemVar}_state`]);
     const systemState = parseInt(values[`${mySystemVar}_state`]) || 0;
 
@@ -1531,13 +1513,13 @@ async function damageSystem(mySystemVar = EMPTY_STRING, myDmg = 0) {
 
 // DAMAGE SUPERSTRUCTURE
 async function damageSup(myDmg = 0, myFactor = 1) {
-    const values = await getAttrsAsync(['hp']);
-    const oldSup = parseInt(values['hp']) || 0;
+    const values = await getAttrsAsync([`hp`]);
+    const oldSup = parseInt(values[`hp`]) || 0;
     const newSup = oldSup - Math.floor(myDmg * myFactor);
     const supDamage = oldSup - newSup;
 
     const output = {};
-    output['hp'] = newSup;
+    output[`hp`] = newSup;
     await setAttrsAsync(output);
 
     const residualDamage = 0;
@@ -1547,13 +1529,13 @@ async function damageSup(myDmg = 0, myFactor = 1) {
 
 // DAMAGE SUPERSTRUCTURE (RESIDUAL)
 async function damageResidual(myDmg = 0, myFactor = 0.5) {
-    const values = await getAttrsAsync(['hp']);
-    const oldSup = parseInt(values['hp']) || 0;
+    const values = await getAttrsAsync([`hp`]);
+    const oldSup = parseInt(values[`hp`]) || 0;
     const newSup = oldSup - Math.floor(myDmg * myFactor);
     const supDamage = oldSup - newSup;
 
     const output = {};
-    output['hp'] = newSup;
+    output[`hp`] = newSup;
     await setAttrsAsync(output);
 
     const residualDamage = 0;
@@ -1563,11 +1545,11 @@ async function damageResidual(myDmg = 0, myFactor = 0.5) {
 
 // DAMAGE WARP ENGINE
 async function damageWarp(myDmg = 0, myLocation = 1, myFactor = 1) {
-    const ids = await getSectionIDsAsync('repeating_engines');
+    const ids = await getSectionIDsAsync(`repeating_engines`);
 
-    const ENGINE_WARP_NAME_CNTR = 'CWE';
-    const ENGINE_WARP_NAME_PORT = 'PWE';
-    const ENGINE_WARP_NAME_STBD = 'SWE';
+    const ENGINE_WARP_NAME_CNTR = `CWE`;
+    const ENGINE_WARP_NAME_PORT = `PWE`;
+    const ENGINE_WARP_NAME_STBD = `SWE`;
 
     const engineLocations = [
         ENGINE_WARP_NAME_NONE, 
@@ -1624,8 +1606,8 @@ async function damageWarp(myDmg = 0, myLocation = 1, myFactor = 1) {
 }
 
 // IMPULSE POWER status indicator
-on('change:repeating_engines:engine_power', function(eventInfo) {
-    getSectionIDs('repeating_engines', function (ids) {
+on(`change:repeating_engines:engine_power`, function(eventInfo) {
+    getSectionIDs(`repeating_engines`, function (ids) {
         const Fieldnames = [];
         ids.forEach(id => {
             Fieldnames.push(`repeating_engines_${id}_engine_type`);
@@ -1641,17 +1623,17 @@ on('change:repeating_engines:engine_power', function(eventInfo) {
                     totalPower += enginePower;
                 }
             });
-            output['impulse_power_status'] = totalPower == 0 ? 1 : 0;
+            output[`impulse_power_status`] = totalPower == 0 ? 1 : 0;
             setAttrs(output);
         });
     });
 });
 
 // MOVEMENT POINTS AVAILABLE calculation
-on('change:tpa_movement change:mpr_1 change:mpr_2', function(eventInfo) {
-    getAttrs(['tpa_movement', 'mpr_1', 'mpr_2'], function(values) {
-        const power = parseInt(values['tpa_movement']) || 0;
-        const mpr = (parseInt(values['mpr_1']) || 1) / (parseInt(values['mpr_2']) || 1);
+on(`change:tpa_movement change:mpr_1 change:mpr_2`, function(eventInfo) {
+    getAttrs([`tpa_movement`, `mpr_1`, `mpr_2`], function(values) {
+        const power = parseInt(values[`tpa_movement`]) || 0;
+        const mpr = (parseInt(values[`mpr_1`]) || 1) / (parseInt(values[`mpr_2`]) || 1);
 
         const mp = Math.floor(power / mpr);
         const mpPhase1 = Math.floor(mp / 3) + Math.floor((mp % 3) / 2); // phase 1
@@ -1660,13 +1642,13 @@ on('change:tpa_movement change:mpr_1 change:mpr_2', function(eventInfo) {
         const powerUnused = power % mpr;
 
         const output = {};
-        output['mp'] = mp;
-        output['ta'] = mp * 10000;
-        output['mp1'] = mpPhase1;
-        output['mp2'] = mpPhase2;
-        output['mp3'] = mpPhase3;
-        output['mp_remaining'] = powerUnused;
-        output['mp_remaining_status'] = power != 0 && (powerUnused < 0 ? 1 : (powerUnused > 0 ? 2 : 0));
+        output[`mp`] = mp;
+        output[`ta`] = mp * 10000;
+        output[`mp1`] = mpPhase1;
+        output[`mp2`] = mpPhase2;
+        output[`mp3`] = mpPhase3;
+        output[`mp_remaining`] = powerUnused;
+        output[`mp_remaining_status`] = power != 0 && (powerUnused < 0 ? 1 : (powerUnused > 0 ? 2 : 0));
         setAttrs(output);
     });
 });
@@ -1682,10 +1664,10 @@ on(`clicked:shield_5_repair`, function(eventInfo) { repairSystem(`shield_5`, `Sh
 on(`clicked:shield_6_repair`, function(eventInfo) { repairSystem(`shield_6`, `Shield #6 (a/p)`); });
 on(`clicked:shields_grid_repair`, function(eventInfo) { repairSystem(`shields_grid`, `Shields Grid`); energizeShields()});
 on(`clicked:weapons_grid_repair`, function(eventInfo) { repairSystem(`weapons_grid`, `Weapons Grid`); });
-function repairSystem(mySystemVar = EMPTY_STRING, mySystemName = EMPTY_STRING) {
-    getAttrs([`${mySystemVar}_to_repair`, 'crewrollpenalty'], function(values) {
+function repairSystem(mySystemVar = ``, mySystemName = ``) {
+    getAttrs([`${mySystemVar}_to_repair`, `crewrollpenalty`], function(values) {
         const repairTargetBase = parseInt(values[`${mySystemVar}_to_repair`]) || 0;
-        const crewRollPenalty = parseInt(values['crewrollpenalty']) || 0;
+        const crewRollPenalty = parseInt(values[`crewrollpenalty`]) || 0;
         let repairTargetNew = repairTargetBase;
         const repairTarget = Math.max(0, repairTargetBase + crewRollPenalty);
 
@@ -1710,13 +1692,13 @@ function repairSystem(mySystemVar = EMPTY_STRING, mySystemName = EMPTY_STRING) {
 };
 
 // REPAIR WEAPON
-on('clicked:repeating_beams:weapon-repair clicked:repeating_missiles:weapon-repair', async function(event) {
+on(`clicked:repeating_beams:weapon-repair clicked:repeating_missiles:weapon-repair`, async function(event) {
     const match = event.sourceAttribute.match(/repeating_(?<section>.+?)_(?<rowID>.+?)_(?<buttonName>.+)/);
     const { section, rowID, buttonName } = match?.groups || {};
     const row = `repeating_${section}_${rowID}`;
 
     if (!rowID) {
-        console.log('Error: Could not extract row ID');
+        console.log(`Error: Could not extract row ID`);
         return;
     }
 
@@ -1731,10 +1713,10 @@ on('clicked:repeating_beams:weapon-repair clicked:repeating_missiles:weapon-repa
     const currentState = attrs[`${row}_state`];
 
     // If state is 1, change it to 2 and set weapon_state_status to 2
-    if (currentState === '1') {
+    if (currentState === `1`) {
         const updateObj = {};
-        updateObj[`${row}_state`] = '2';
-        updateObj[`${row}_weapon_state_status`] = '2';
+        updateObj[`${row}_state`] = `2`;
+        updateObj[`${row}_weapon_state_status`] = `2`;
 
         await setAttrsAsync(updateObj);
 
@@ -1752,13 +1734,13 @@ on('clicked:repeating_beams:weapon-repair clicked:repeating_missiles:weapon-repa
 });
 
 // REPAIR and RESET after combat
-on('clicked:repair', async function(eventInfo) {
+on(`clicked:repair`, async function(eventInfo) {
 
-    const response = await extractChatData('?{Confirm Repair and TPA Reset|Confirm|Cancel}');
+    const response = await extractChatData(`?{Confirm Repair and TPA Reset|Confirm|Cancel}`);
 
-    if (response === 'Confirm') {
+    if (response === `Confirm`) {
         // Repair engines
-        getSectionIDs('repeating_engines', function (ids) {
+        getSectionIDs(`repeating_engines`, function (ids) {
             const Fieldnames = [];
             ids.forEach(id => {
                 Fieldnames.push(`repeating_engines_${id}_engine_power_full`);
@@ -1774,7 +1756,7 @@ on('clicked:repair', async function(eventInfo) {
         });
 
         // Repair beam weapons
-        getSectionIDs('repeating_beams', function (ids) {
+        getSectionIDs(`repeating_beams`, function (ids) {
             const Fieldnames = [];
             ids.forEach(id => {
                 Fieldnames.push(`repeating_beams_${id}_state`);
@@ -1792,7 +1774,7 @@ on('clicked:repair', async function(eventInfo) {
         });
 
         // Repair missile weapons
-        getSectionIDs('repeating_missiles', function (ids) {
+        getSectionIDs(`repeating_missiles`, function (ids) {
             const Fieldnames = [];
             ids.forEach(id => {
                 Fieldnames.push(`repeating_missiles_${id}_state`);
@@ -1839,7 +1821,7 @@ on('clicked:repair', async function(eventInfo) {
 });
 
 // SENSOR SCAN
-on('clicked:scan', async (event) => {
+on(`clicked:scan`, async (event) => {
     const output = {};
 
     const { tokenName, charId } = await extractTargetData(); // Destructure JSON
@@ -1851,8 +1833,8 @@ on('clicked:scan', async (event) => {
     );
 
     if (scanRoll < 7) {
-        output['sensorlock'] = tokenName;
-        output['sensorlockid'] = charId;
+        output[`sensorlock`] = tokenName;
+        output[`sensorlockid`] = charId;
     } else {
         undoSensorLock();
     }
@@ -1861,31 +1843,31 @@ on('clicked:scan', async (event) => {
 }); 
 function undoSensorLock() {
     const output = {};
-    output['sensorlock'] = output['sensorlockid'] = EMPTY_STRING;
-    output['scanquestion'] = output['scananswer'] = EMPTY_STRING;
+    output[`sensorlock`] = output[`sensorlockid`] = ``;
+    output[`scanquestion`] = output[`scananswer`] = ``;
     setAttrs(output);
 }
 
 // SENSOR SCAN Q&A
-on('change:scanquestion', function(eventInfo) {
+on(`change:scanquestion`, function(eventInfo) {
     if (eventInfo.sourceType == "player") {
-        getAttrs(['sensorlock', 'sensorlockid', 'scanquestion'], function(values) {
-            const sensorLock = values['sensorlock'];
-            const sensorLockId = values['sensorlockid'];
-            const questionIndex = parseInt(values['scanquestion']) || 0;
+        getAttrs([`sensorlock`, `sensorlockid`, `scanquestion`], function(values) {
+            const sensorLock = values[`sensorlock`];
+            const sensorLockId = values[`sensorlockid`];
+            const questionIndex = parseInt(values[`scanquestion`]) || 0;
 
             const questions = [
-                '',
-                'How much power is available?',
-                'What is the relative power allocation?',
-                'How are the shields powered?',
-                'Is a specific shield up?',
-                'How are the beam weapons powered?',
-                'How are the missile weapons powered?',
-                'Is a specific weapon powered?',
-                'How much damage has the vessel taken?',
-                'What is the status of the ships crew?',
-                'Are any transporters powered?'
+                ``,
+                `How much power is available?`,
+                `What is the relative power allocation?`,
+                `How are the shields powered?`,
+                `Is a specific shield up?`,
+                `How are the beam weapons powered?`,
+                `How are the missile weapons powered?`,
+                `Is a specific weapon powered?`,
+                `How much damage has the vessel taken?`,
+                `What is the status of the ships crew?`,
+                `Are any transporters powered?`
                 ];
 
             startRoll(`/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Sensor Query}} {{color=orange}} {{Target=[${sensorLock}](${ROLL20_CHAR_URL}${sensorLockId})}} {{Query=${questions[questionIndex]}}}`, roll => {
@@ -1896,37 +1878,37 @@ on('change:scanquestion', function(eventInfo) {
 }); 
 
 // SHIELD POINTS calculation
-on('change:tpa_shields change:spr_1 change:spr_2 change:shield_1 change:shield_2 change:shield_3 change:shield_4 change:shield_5 change:shield_6 change:crewbonus3', function(eventInfo) {
-    getAttrs(['tpa_shields', 'spr_1', 'spr_2', 'shield_1', 'shield_2', 'shield_3', 'shield_4', 'shield_5', 'shield_6', 'crewbonus'], function(values) {
-        const power = parseInt(values['tpa_shields']) || 0;
-        const spr = (parseInt(values['spr_1']) || 1) / (parseInt(values['spr_2']) || 1);
-        const shield1 = parseInt(values['shield_1']) || 0;
-        const shield2 = parseInt(values['shield_2']) || 0;
-        const shield3 = parseInt(values['shield_3']) || 0;
-        const shield4 = parseInt(values['shield_4']) || 0;
-        const shield5 = parseInt(values['shield_5']) || 0;
-        const shield6 = parseInt(values['shield_6']) || 0;
-        const crewBonus = parseInt(values['crewbonus']) || 0;
+on(`change:tpa_shields change:spr_1 change:spr_2 change:shield_1 change:shield_2 change:shield_3 change:shield_4 change:shield_5 change:shield_6 change:crewbonus3`, function(eventInfo) {
+    getAttrs([`tpa_shields`, `spr_1`, `spr_2`, `shield_1`, `shield_2`, `shield_3`, `shield_4`, `shield_5`, `shield_6`, `crewbonus`], function(values) {
+        const power = parseInt(values[`tpa_shields`]) || 0;
+        const spr = (parseInt(values[`spr_1`]) || 1) / (parseInt(values[`spr_2`]) || 1);
+        const shield1 = parseInt(values[`shield_1`]) || 0;
+        const shield2 = parseInt(values[`shield_2`]) || 0;
+        const shield3 = parseInt(values[`shield_3`]) || 0;
+        const shield4 = parseInt(values[`shield_4`]) || 0;
+        const shield5 = parseInt(values[`shield_5`]) || 0;
+        const shield6 = parseInt(values[`shield_6`]) || 0;
+        const crewBonus = parseInt(values[`crewbonus`]) || 0;
 
         const totalPower = power + (crewBonus == CREW_BONUS_SHIELD ? 1 : 0);
         const sp = Math.floor(totalPower / spr - shield1 - shield2 - shield3 - shield4 - shield5 - shield6);
         const powerRemaining = Math.round(totalPower - shield1 * spr - shield2 * spr - shield3 * spr - shield4 * spr - shield5 * spr - shield6 * spr);
 
         const output = {};
-        output['sp'] = sp;
-        output['sp_remaining'] = powerRemaining;
-        output['sp_remaining_status'] = (power != 0 || powerRemaining != 0) && (powerRemaining < 0 ? 1 : (powerRemaining > 0 ? 2 : 0));
+        output[`sp`] = sp;
+        output[`sp_remaining`] = powerRemaining;
+        output[`sp_remaining_status`] = (power != 0 || powerRemaining != 0) && (powerRemaining < 0 ? 1 : (powerRemaining > 0 ? 2 : 0));
         setAttrs(output);
     });
 });
 
 // SHIELD POINTS ALLOCATED status indicators
-['1', '2', '3', '4', '5', '6'].forEach(num => {
+[`1`, `2`, `3`, `4`, `5`, `6`].forEach(num => {
     on(`change:shield_${num} change:shield_${num}_state change:shield_max`, function(eventInfo) {
-        getAttrs([`shield_${num}`, `shield_${num}_state`, 'shield_max'], function(values) {
+        getAttrs([`shield_${num}`, `shield_${num}_state`, `shield_max`], function(values) {
             const shieldSP = parseInt(values[`shield_${num}`]) || 0;
             const shieldIsDamaged = parseInt(values[`shield_${num}_state`]) || 0;
-            const shieldSPMax = parseInt(values['shield_max']) || 0;
+            const shieldSPMax = parseInt(values[`shield_max`]) || 0;
 
             const output = {};
             output[`shield_${num}a_status`] = shieldSP > shieldSPMax || shieldIsDamaged ? 1 : shieldSP == 0 ? 2 : 0;
@@ -1937,7 +1919,7 @@ on('change:tpa_shields change:spr_1 change:spr_2 change:shield_1 change:shield_2
 });
 
 // SHIELD POINTS CURRENT status indicators
-['1', '2', '3', '4', '5', '6'].forEach(num => {
+[`1`, `2`, `3`, `4`, `5`, `6`].forEach(num => {
     on(`change:shield_${num}c`, function(eventInfo) {
         getAttrs([`shield_${num}`, `shield_${num}c`], function(values) {
             const shieldSPAllocated = parseInt(values[`shield_${num}`]) || 0;
@@ -1951,97 +1933,97 @@ on('change:tpa_shields change:spr_1 change:spr_2 change:shield_1 change:shield_2
 });
 
 // SHIELDS RE-ENERGIZED
-on('clicked:shield_reenergize', function(eventInfo) {
+on(`clicked:shield_reenergize`, function(eventInfo) {
     energizeShields();
 });
-on('change:current_phase', function(eventInfo) {
+on(`change:current_phase`, function(eventInfo) {
     energizeShields();
 });
 function energizeShields() {
-    getAttrs(['shield_1', 'shield_2', 'shield_3', 'shield_4', 'shield_5', 'shield_6', 'shield_1_state', 'shield_2_state', 'shield_3_state', 'shield_4_state', 'shield_5_state', 'shield_6_state'], function(values) {
-        const shield1Allocation = parseInt(values['shield_1']) || 0;
-        const shield2Allocation = parseInt(values['shield_2']) || 0;
-        const shield3Allocation = parseInt(values['shield_3']) || 0;
-        const shield4Allocation = parseInt(values['shield_4']) || 0;
-        const shield5Allocation = parseInt(values['shield_5']) || 0;
-        const shield6Allocation = parseInt(values['shield_6']) || 0;
-        const shield1IsDamaged = parseInt(values['shield_1_state']) || 0;
-        const shield2IsDamaged = parseInt(values['shield_2_state']) || 0;
-        const shield3IsDamaged = parseInt(values['shield_3_state']) || 0;
-        const shield4IsDamaged = parseInt(values['shield_4_state']) || 0;
-        const shield5IsDamaged = parseInt(values['shield_5_state']) || 0;
-        const shield6IsDamaged = parseInt(values['shield_6_state']) || 0;
+    getAttrs([`shield_1`, `shield_2`, `shield_3`, `shield_4`, `shield_5`, `shield_6`, `shield_1_state`, `shield_2_state`, `shield_3_state`, `shield_4_state`, `shield_5_state`, `shield_6_state`], function(values) {
+        const shield1Allocation = parseInt(values[`shield_1`]) || 0;
+        const shield2Allocation = parseInt(values[`shield_2`]) || 0;
+        const shield3Allocation = parseInt(values[`shield_3`]) || 0;
+        const shield4Allocation = parseInt(values[`shield_4`]) || 0;
+        const shield5Allocation = parseInt(values[`shield_5`]) || 0;
+        const shield6Allocation = parseInt(values[`shield_6`]) || 0;
+        const shield1IsDamaged = parseInt(values[`shield_1_state`]) || 0;
+        const shield2IsDamaged = parseInt(values[`shield_2_state`]) || 0;
+        const shield3IsDamaged = parseInt(values[`shield_3_state`]) || 0;
+        const shield4IsDamaged = parseInt(values[`shield_4_state`]) || 0;
+        const shield5IsDamaged = parseInt(values[`shield_5_state`]) || 0;
+        const shield6IsDamaged = parseInt(values[`shield_6_state`]) || 0;
 
         const output = {};
-        output['shield_1c'] = shield1IsDamaged ? 0 : shield1Allocation;
-        output['shield_2c'] = shield2IsDamaged ? 0 : shield2Allocation;
-        output['shield_3c'] = shield3IsDamaged ? 0 : shield3Allocation;
-        output['shield_4c'] = shield4IsDamaged ? 0 : shield4Allocation;
-        output['shield_5c'] = shield5IsDamaged ? 0 : shield5Allocation;
-        output['shield_6c'] = shield6IsDamaged ? 0 : shield6Allocation;
+        output[`shield_1c`] = shield1IsDamaged ? 0 : shield1Allocation;
+        output[`shield_2c`] = shield2IsDamaged ? 0 : shield2Allocation;
+        output[`shield_3c`] = shield3IsDamaged ? 0 : shield3Allocation;
+        output[`shield_4c`] = shield4IsDamaged ? 0 : shield4Allocation;
+        output[`shield_5c`] = shield5IsDamaged ? 0 : shield5Allocation;
+        output[`shield_6c`] = shield6IsDamaged ? 0 : shield6Allocation;
         setAttrs(output);
     });
 };
 
 // SHIELD STATE changed
-['1', '2', '3', '4', '5', '6'].forEach(num => {
+[`1`, `2`, `3`, `4`, `5`, `6`].forEach(num => {
     on(`change:shield_${num}_state`, function(eventInfo) {
-        getAttrs(['shield_1_state', 'shield_2_state', 'shield_3_state', 'shield_4_state', 'shield_5_state', 'shield_6_state'], function(values) {
+        getAttrs([`shield_1_state`, `shield_2_state`, `shield_3_state`, `shield_4_state`, `shield_5_state`, `shield_6_state`], function(values) {
 
             const activeShields = Object.values(values).filter(state => state == 0).length;
             
             const output = {};
-            output['shields-percent'] = Math.max(0, Math.round(activeShields / 6 * 100));
+            output[`shields-percent`] = Math.max(0, Math.round(activeShields / 6 * MAX_PERCENTAGE));
             setAttrs(output);
         });
     });
 });
 
 // SUPERSTRUCTURE MASS and SIZE calculations
-on('change:mass', function(eventInfo) {
-    getAttrs(['mass'], function(values) {
-        const shipsMass = parseInt(values['mass']) || 0;
+on(`change:mass`, function(eventInfo) {
+    getAttrs([`mass`], function(values) {
+        const shipsMass = parseInt(values[`mass`]) || 0;
         const shipsFormattedMass = formatNumber(String(shipsMass));
 
-        const theSizes = [0,'I',5000,'II',15000,'III',25000,'IV',40000,'V',60000,'VI',80000,'VII',100000,'VIII',120000,'IX',140000,'X',160000,'XI',180000,'XII',210000,'XIII',240000,'XIV',300000,'XV',350000,'XVI',400000,'XVII',450000,'XVIII',500000,'XIX',600000,'XX',700000];
+        const theSizes = [0,`I`,5000,`II`,15000,`III`,25000,`IV`,40000,`V`,60000,`VI`,80000,`VII`,100000,`VIII`,120000,`IX`,140000,`X`,160000,`XI`,180000,`XII`,210000,`XIII`,240000,`XIV`,300000,`XV`,350000,`XVI`,400000,`XVII`,450000,`XVIII`,500000,`XIX`,600000,`XX`,700000];
         let i = 0;
         do {
             i += 2;
         } while (shipsMass > theSizes[i]);      
 
         const output = {};
-        output['size'] = `${shipsFormattedMass} mt (${theSizes[i-1]})`;
+        output[`size`] = `${shipsFormattedMass} mt (${theSizes[i-1]})`;
         setAttrs(output);
     });
 });
 
 // SUPERSTRUCTURE status
-on('change:hp change:hp_max', function(eventInfo) {
-    getAttrs(['hp', 'hp_max'], function(values) {
-        const hp = parseInt(values['hp']) || 0;  
-        const hpMax = parseInt(values['hp_max']) || 0;  
+on(`change:hp change:hp_max`, function(eventInfo) {
+    getAttrs([`hp`, `hp_max`], function(values) {
+        const hp = parseInt(values[`hp`]) || 0;  
+        const hpMax = parseInt(values[`hp_max`]) || 0;  
 
         const output = {};
-        output['sup-percent'] = Math.max(0, Math.round(hp / hpMax * 100));
-        if (hp < 1) output['tpa_movement'] = 0; // disable movement
-        output['hp_status'] = hp < (hpMax / 2) || hp > hpMax ? 1 : hp < hpMax ? 2 : 0;
-        output['ship-is-disabled'] = hp < 1 ? 1 : 0;
+        output[`sup-percent`] = Math.max(0, Math.round(hp / hpMax * MAX_PERCENTAGE));
+        if (hp < 1) output[`tpa_movement`] = 0; // disable movement
+        output[`hp_status`] = hp < (hpMax / 2) || hp > hpMax ? 1 : hp < hpMax ? 2 : 0;
+        output[`ship-is-disabled`] = hp < 1 ? 1 : 0;
         setAttrs(output);
     });
 });
 
 // TOTAL POWER AVAILABLE calculation
-on('change:repeating_engines:engine_power change:repeating_engines:engine_power_full remove:repeating_engines change:crewbonus2', function(eventInfo) {
-    getSectionIDs('repeating_engines', function (ids) {
+on(`change:repeating_engines:engine_power change:repeating_engines:engine_power_full remove:repeating_engines change:crewbonus2`, function(eventInfo) {
+    getSectionIDs(`repeating_engines`, function (ids) {
         const Fieldnames = [];
         ids.forEach(id => {
             Fieldnames.push(`repeating_engines_${id}_engine_power`);
             Fieldnames.push(`repeating_engines_${id}_engine_power_full`);
         });
 
-        getAttrs([...Fieldnames, 'crewbonus'], function (values) {
+        getAttrs([...Fieldnames, `crewbonus`], function (values) {
             const ENGINE_NO_POWER = 0;
-            const crewBonus = parseInt(values['crewbonus'] || 0);
+            const crewBonus = parseInt(values[`crewbonus`] || 0);
 
             let tpa = 0;
             let tpaMax = 0;
@@ -2055,38 +2037,38 @@ on('change:repeating_engines:engine_power change:repeating_engines:engine_power_
 
                 output[`repeating_engines_${id}_engine_power_status`] = ((enginePower > enginePowerMax) || (enginePower == 0)) ? 1 : enginePower < enginePowerMax ? 2 : 0;
             });
-            output['tpa'] = tpa;
-            output['tpa_max'] = tpaMax;
-            output['tpa-percent'] = Math.max(0, Math.round(tpa / tpaMax * 100));
+            output[`tpa`] = tpa;
+            output[`tpa_max`] = tpaMax;
+            output[`tpa-percent`] = Math.max(0, Math.round(tpa / tpaMax * MAX_PERCENTAGE));
             setAttrs(output);
         });
     });
 });
 
 // TOTAL POWER AVAILABLE remaining calculation
-on('change:tpa change:tpa_movement change:tpa_warp change:tpa_weapons change:tpa_shields', function(eventInfo) {
-    getAttrs(['tpa', 'tpa_movement', 'tpa_warp', 'tpa_weapons', 'tpa_shields'], function(values) {
-        const tpa = parseInt(values['tpa']) || 0;
-        const tpaToMovement = parseInt(values['tpa_movement']) || 0;
-        const tpaToWarp = parseInt(values['tpa_warp']) || 0;
-        const tpaToWeapons = parseInt(values['tpa_weapons']) || 0;
-        const tpaToShields = parseInt(values['tpa_shields']) || 0;
+on(`change:tpa change:tpa_movement change:tpa_warp change:tpa_weapons change:tpa_shields`, function(eventInfo) {
+    getAttrs([`tpa`, `tpa_movement`, `tpa_warp`, `tpa_weapons`, `tpa_shields`], function(values) {
+        const tpa = parseInt(values[`tpa`]) || 0;
+        const tpaToMovement = parseInt(values[`tpa_movement`]) || 0;
+        const tpaToWarp = parseInt(values[`tpa_warp`]) || 0;
+        const tpaToWeapons = parseInt(values[`tpa_weapons`]) || 0;
+        const tpaToShields = parseInt(values[`tpa_shields`]) || 0;
 
         const tpaRemaining = tpa - tpaToMovement - tpaToWarp - tpaToWeapons - tpaToShields;
 
         const output = {};
-        output['tpa_remaining'] = tpaRemaining;
-        output['tpa_remaining_status'] = (tpaRemaining < 0 ? 1 : (tpaRemaining > 0 ? 2 : 0));
+        output[`tpa_remaining`] = tpaRemaining;
+        output[`tpa_remaining_status`] = (tpaRemaining < 0 ? 1 : (tpaRemaining > 0 ? 2 : 0));
         setAttrs(output);
     });
 });
 
 // TOTAL POWER AVAILABLE COMMITTED
-on('clicked:shield_commit', async (event) => {
+on(`clicked:shield_commit`, async (event) => {
 
-    const response = await extractChatData('?{Confirm TPA Commit|Confirm|Cancel}');
+    const response = await extractChatData(`?{Confirm TPA Commit|Confirm|Cancel}`);
 
-    if (response === 'Confirm') {
+    if (response === `Confirm`) {
 
         startRoll(
             `&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=READY!}} {{color=purple}}`,
@@ -2094,25 +2076,25 @@ on('clicked:shield_commit', async (event) => {
         );
     
         const output = {};
-        output['shields_allocated_status'] = 0;
+        output[`shields_allocated_status`] = 0;
         setAttrs(output);
     }
 });
 
 // TOTAL POWER AVAILABLE reset
-on('clicked:tpa_reset', async (event) => {
+on(`clicked:tpa_reset`, async (event) => {
 
-    const response = await extractChatData('?{Confirm TPA Reset|Confirm|Cancel}');
+    const response = await extractChatData(`?{Confirm TPA Reset|Confirm|Cancel}`);
 
-    if (response === 'Confirm') {
+    if (response === `Confirm`) {
         resetTPA();
     }
 });
-on('change:tpa_reset', function(eventInfo) {
+on(`change:tpa_reset`, function(eventInfo) {
     resetTPA();
 });
 function resetTPA() {
-    getSectionIDs('repeating_beams', function (ids) {
+    getSectionIDs(`repeating_beams`, function (ids) {
         const Fieldnames = [];
         ids.forEach(id => {
             Fieldnames.push(`repeating_beams_${id}_name`);
@@ -2122,18 +2104,18 @@ function resetTPA() {
             const output = {};
             ids.forEach(id => {
                 output[`repeating_beams_${id}_power`] = 0;
-                output[`repeating_beams_${id}_target_name`] = '';
+                output[`repeating_beams_${id}_target_name`] = ``;
                 output[`repeating_beams_${id}_target_distance`] = 0;
                 output[`repeating_beams_${id}_target_tohit`] = 0;
                 output[`repeating_beams_${id}_btn-target_status`] = 0;
                 output[`repeating_beams_${id}_btn-fire_status`] = 0;
             });
-            output['wp_beam'] = 0;
+            output[`wp_beam`] = 0;
             setAttrs(output);
         });
     });
 
-    getSectionIDs('repeating_missiles', function (ids) {
+    getSectionIDs(`repeating_missiles`, function (ids) {
         const Fieldnames = [];
         ids.forEach(id => {
             Fieldnames.push(`repeating_missiles_${id}_name`);
@@ -2143,67 +2125,67 @@ function resetTPA() {
             const output = {};
             ids.forEach(id => {
                 output[`repeating_missiles_${id}_armed`] = 0;
-                output[`repeating_missiles_${id}_target_name`] = '';
+                output[`repeating_missiles_${id}_target_name`] = ``;
                 output[`repeating_missiles_${id}_target_distance`] = 0;
                 output[`repeating_missiles_${id}_target_tohit`] = 0;
                 output[`repeating_missiles_${id}_btn-target_status`] = 0;
                 output[`repeating_missiles_${id}_btn-fire_status`] = 0;
             });
-            output['wp_missile'] = 0;
+            output[`wp_missile`] = 0;
             setAttrs(output);
         });
     });
 
     const output = {};
 
-    output['shield_1'] = output['shield_2'] = output['shield_3'] = output['shield_4'] = output['shield_5'] = output['shield_6'] = 0
-    output['shields_allocated_status'] = 1;
-    output['tpa_movement'] = 0;
-    output['tpa_weapons'] = 0;
-    output['tpa_shields'] = 0;
+    output[`shield_1`] = output[`shield_2`] = output[`shield_3`] = output[`shield_4`] = output[`shield_5`] = output[`shield_6`] = 0
+    output[`shields_allocated_status`] = 1;
+    output[`tpa_movement`] = 0;
+    output[`tpa_weapons`] = 0;
+    output[`tpa_shields`] = 0;
 
-    output['crewbonus'] = 0;
-    output['crewbonustohitapplied'] = 0;
-    output['crewbonus1'] = output['crewbonus2'] = output['crewbonus3'] = output['crewbonus4'] = 0;
+    output[`crewbonus`] = 0;
+    output[`crewbonustohitapplied`] = 0;
+    output[`crewbonus1`] = output[`crewbonus2`] = output[`crewbonus3`] = output[`crewbonus4`] = 0;
 
     const SCAN_NONE = 0;
-    output['scanquestion'] = SCAN_NONE;
-    output['scananswer'] = EMPTY_STRING;
+    output[`scanquestion`] = SCAN_NONE;
+    output[`scananswer`] = ``;
 
     setAttrs(output);
 }
 
 // TYPE = STATION = no warp speed
-on('change:type', function(eventInfo) {
-    getAttrs(['type'], function(values) {
-        const type = values['type'];
+on(`change:type`, function(eventInfo) {
+    getAttrs([`type`], function(values) {
+        const type = values[`type`];
 
         const output = {};
-        const TYPE_STATION = 'Station';
-        output['warp_show_content'] = type == TYPE_STATION ? 0 : 1;
+        const TYPE_STATION = `Station`;
+        output[`warp_show_content`] = type == TYPE_STATION ? 0 : 1;
         setAttrs(output);
     });
 });
 
 // WARP FACTOR changed by player
-on('change:wf_current change:wf_desired', function(eventInfo) {
-    getAttrs(['wf_current', 'wf_desired', 'wf_cruise', 'wf_emergency', 'wfr_cruise', 'wfr_jump'], function(values) {
-        const wfCurrent = parseInt(values['wf_current']) || 0;
-        const wfDesired = parseInt(values['wf_desired']) || 0;
-        const wfCruise = parseInt(values['wf_cruise']) || 0;
-        const wfEmergency = parseInt(values['wf_emergency']) || 0;
-        const wfrCruise = parseInt(values['wfr_cruise']) || 0;
-        const wfrJump = parseInt(values['wfr_jump']) || 0;
+on(`change:wf_current change:wf_desired`, function(eventInfo) {
+    getAttrs([`wf_current`, `wf_desired`, `wf_cruise`, `wf_emergency`, `wfr_cruise`, `wfr_jump`], function(values) {
+        const wfCurrent = parseInt(values[`wf_current`]) || 0;
+        const wfDesired = parseInt(values[`wf_desired`]) || 0;
+        const wfCruise = parseInt(values[`wf_cruise`]) || 0;
+        const wfEmergency = parseInt(values[`wf_emergency`]) || 0;
+        const wfrCruise = parseInt(values[`wfr_cruise`]) || 0;
+        const wfrJump = parseInt(values[`wfr_jump`]) || 0;
 
         const wfrCurrent = wfDesired > wfCurrent ? wfrJump : wfrCruise;
         const tpaRequired = wfDesired > wfCurrent ? wfDesired * wfrCurrent : wfrCruise * Math.min(wfCurrent, wfDesired);
 
         const output = {};
-        output['wfr_1'] = wfrCurrent;
-        output['tpa_warp'] = tpaRequired;
-        output['wf_current_status'] = wfCurrent > wfEmergency ? 1 : wfCurrent > wfCruise ? 2 : 0;
-        output['wf_desired_status'] = wfDesired > wfEmergency ? 1 : wfDesired != wfCurrent || wfDesired > wfCruise ? 2 : 0;
-        output['warp_factor_status'] = wfDesired != wfCurrent ? 1 : 0;
+        output[`wfr_1`] = wfrCurrent;
+        output[`tpa_warp`] = tpaRequired;
+        output[`wf_current_status`] = wfCurrent > wfEmergency ? 1 : wfCurrent > wfCruise ? 2 : 0;
+        output[`wf_desired_status`] = wfDesired > wfEmergency ? 1 : wfDesired != wfCurrent || wfDesired > wfCruise ? 2 : 0;
+        output[`warp_factor_status`] = wfDesired != wfCurrent ? 1 : 0;
         setAttrs(output);
     });
 });
@@ -2211,16 +2193,16 @@ on('change:wf_current change:wf_desired', function(eventInfo) {
 // WARP FACTOR RATIO calculations
 // Note: This should not occur after initial ship setup
 //  but event is triggered whenever engine power changes
-on('change:repeating_engines:engine_power_full remove:repeating_engines change:wf_emergency', function(eventInfo) {
-    getSectionIDs('repeating_engines', function (ids) {
+on(`change:repeating_engines:engine_power_full remove:repeating_engines change:wf_emergency`, function(eventInfo) {
+    getSectionIDs(`repeating_engines`, function (ids) {
         const Fieldnames = [];
         ids.forEach(id => {
             Fieldnames.push(`repeating_engines_${id}_engine_type`);
             Fieldnames.push(`repeating_engines_${id}_engine_power_full`);
         });
         
-        getAttrs([...Fieldnames, 'wf_emergency'], function (values) {
-            const wfEmergency = parseInt(values['wf_emergency']) || 0;
+        getAttrs([...Fieldnames, `wf_emergency`], function (values) {
+            const wfEmergency = parseInt(values[`wf_emergency`]) || 0;
 
             let totalWarpEngines = 0;
             let totalWarpPower = 0;
@@ -2233,24 +2215,24 @@ on('change:repeating_engines:engine_power_full remove:repeating_engines change:w
                 }
             });
 
-            output['wf_current'] = output['wf_desired'] = 0; // Clear settings
-            output['wfr_jump'] = output['wfr_1'] = Math.floor(totalWarpPower / wfEmergency);
-            output['wfr_cruise'] = totalWarpEngines;
+            output[`wf_current`] = output[`wf_desired`] = 0; // Clear settings
+            output[`wfr_jump`] = output[`wfr_1`] = Math.floor(totalWarpPower / wfEmergency);
+            output[`wfr_cruise`] = totalWarpEngines;
             setAttrs(output);
         });
     });
 });
 
 // WARP JUMP
-on('clicked:jump', async (event) => {
-    const response = await extractChatData('?{Confirm Speed Change|Confirm|Cancel}');
+on(`clicked:jump`, async (event) => {
+    const response = await extractChatData(`?{Confirm Speed Change|Confirm|Cancel}`);
 
-    if (response === 'Confirm') {
-        const values = await getAttrsAsync(['wf_current', 'wf_desired', 'faction']);
+    if (response === `Confirm`) {
+        const values = await getAttrsAsync([`wf_current`, `wf_desired`, `faction`]);
         
-        const wfCurrent = parseInt(values['wf_current']) || 0;
-        const wfDesired = parseInt(values['wf_desired']) || 0;
-        const faction = values['faction'];
+        const wfCurrent = parseInt(values[`wf_current`]) || 0;
+        const wfDesired = parseInt(values[`wf_desired`]) || 0;
+        const faction = values[`faction`];
 
         if (wfCurrent != wfDesired) {
             startRoll(`&{template:custom} {{title=@{banner_${faction}warp} **[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Warp Factor Change}} {{color=blue}} {{From=Warp Factor **@{wf_current}**}} {{To=Warp Factor **@{wf_desired}**}}`, roll => {
@@ -2263,23 +2245,23 @@ on('clicked:jump', async (event) => {
 });
 
 // WEAPON POINTS calculation
-on('change:tpa_weapons change:wp_beam change:wp_missile', function(eventInfo) {
-    getAttrs(['tpa_weapons', 'wp_beam', 'wp_missile'], function(values) {
-        const tpa = parseInt(values['tpa_weapons']) || 0;
-        const tpaToBeams = parseInt(values['wp_beam']) || 0;
-        const tpaToMissiles = parseInt(values['wp_missile']) || 0;
+on(`change:tpa_weapons change:wp_beam change:wp_missile`, function(eventInfo) {
+    getAttrs([`tpa_weapons`, `wp_beam`, `wp_missile`], function(values) {
+        const tpa = parseInt(values[`tpa_weapons`]) || 0;
+        const tpaToBeams = parseInt(values[`wp_beam`]) || 0;
+        const tpaToMissiles = parseInt(values[`wp_missile`]) || 0;
 
         const tpaRemaining = tpa - tpaToBeams - tpaToMissiles;
 
         const output = {};
-        output['wp_remaining'] = tpaRemaining;
-        output['wp_remaining_status'] = (tpa != 0 || tpaRemaining != 0) && (tpaRemaining < 0 ? 1 : (tpaRemaining > 0 ? 2 : 0));
+        output[`wp_remaining`] = tpaRemaining;
+        output[`wp_remaining_status`] = (tpa != 0 || tpaRemaining != 0) && (tpaRemaining < 0 ? 1 : (tpaRemaining > 0 ? 2 : 0));
         setAttrs(output);
     });
 });
 
 // WEAPON TARGETING
-on('clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target', async (event) => {
+on(`clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target`, async (event) => {
     const match = event.sourceAttribute.match(/repeating_(?<section>.+?)_(?<rowID>.+?)_(?<buttonName>.+)/);
     const { section, rowID, buttonName } = match?.groups || {};
     const row = `repeating_${section}_${rowID}`;
@@ -2301,18 +2283,18 @@ on('clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target', a
     const output = {};
 
     // Clear only the triggered row
-    output[`${row}_target_name`] = '';
-    output[`${row}_target_id`] = '';
-    output[`${row}_target_distance`] = '';
-    output[`${row}_target_tohit`] = '';
+    output[`${row}_target_name`] = ``;
+    output[`${row}_target_id`] = ``;
+    output[`${row}_target_distance`] = ``;
+    output[`${row}_target_tohit`] = ``;
     output[`${row}_btn-fire_status`] = 0;
 
     await setAttrsAsync(output);
 
     // Get target input
     const { tokenName, charId } = await extractTargetData(); // Destructure JSON
-    const wpnTargetDistance = +(await extractChatData('?{How far|1}')) || 0;
-    const wpnCrewBonus = crewBonus == CREW_BONUS_WEAPONS && !crewBonusApplied ? +(await extractChatData('?{Apply crew bonus|Yes,1|No,0}')) || 0 : 0;
+    const wpnTargetDistance = +(await extractChatData(`?{How far|1}`)) || 0;
+    const wpnCrewBonus = crewBonus == CREW_BONUS_WEAPONS && !crewBonusApplied ? +(await extractChatData(`?{Apply crew bonus|Yes,1|No,0}`)) || 0 : 0;
     const wpnTargetToHit = getToHit(wpnChart, wpnTargetDistance) + wpnCrewBonus + crewCasualtyPenalty;
     const wpnTargetToHitStr = `${wpnTargetToHit * 10}%`;
 
@@ -2345,7 +2327,7 @@ on('clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target', a
 
         const rowAttrs = await getAttrsAsync([`repeating_${section}_${id}_name`]);
 
-        weaponNames.push(rowAttrs[`repeating_${section}_${id}_name`] || 'Unknown Weapon');
+        weaponNames.push(rowAttrs[`repeating_${section}_${id}_name`] || `Unknown Weapon`);
         output[`${targetRow}_target_name`] = tokenName;
         output[`${targetRow}_target_id`] = charId;
         output[`${targetRow}_target_distance`] = wpnTargetDistance;
@@ -2357,7 +2339,7 @@ on('clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target', a
     if (!wpnTargetToHit) {
         startRoll(`&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Target Out of Range}} {{Weapon=${wpnName}}} {{Max Range=${wpnMaxRange} hexes}} {{Target=${tokenName}}} {{Distance=${wpnTargetDistance} hexes}}`, roll => finishRoll(roll.rollId));
     } else {
-        startRoll(`&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Weapons Targeted}} {{color=green}} {{Weapons=${weaponNames.join('\\n')}}} {{Target=[${tokenName}](${ROLL20_CHAR_URL}${charId})}} {{Distance=${wpnTargetDistance} hexes}} {{Firing Chart=${wpnChart}}} {{Chance To-Hit=${wpnTargetToHitStr}}}`, roll => finishRoll(roll.rollId));
+        startRoll(`&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Weapons Targeted}} {{color=green}} {{Weapons=${weaponNames.join(`\\n`)}}} {{Target=[${tokenName}](${ROLL20_CHAR_URL}${charId})}} {{Distance=${wpnTargetDistance} hexes}} {{Firing Chart=${wpnChart}}} {{Chance To-Hit=${wpnTargetToHitStr}}}`, roll => finishRoll(roll.rollId));
     }
 
     output[`crewbonustohitapplied`] = Math.max(wpnCrewBonus, crewBonusApplied);
@@ -2368,31 +2350,31 @@ on('clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target', a
 function getToHit (chart, distance) {
     // ST:STCS firing chart data
     const ranges = [
-        'A', 8, 6, 4, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        'B', 5, 5, 4, 4, 3, 3, 2, 2, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        'C', 10, 8, 6, 4, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        'D', 10, 9, 7, 5, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        'E', 8, 7, 6, 5, 4, 3, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        'F', 10, 9, 7, 6, 4, 3, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        'G', 7, 7, 6, 6, 5, 5, 4, 3, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        'H', 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        'I', 8, 8, 7, 7, 6, 6, 5, 5, 4, 3, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        'J', 10, 10, 9, 9, 8, 8, 6, 4, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        'K', 8, 8, 7, 7, 6, 6, 5, 5, 4, 4, 3, 3, 2, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        'L', 10, 10, 9, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        'M', 10, 9, 8, 7, 7, 7, 6, 6, 5, 5, 4, 3, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        'N', 10, 10, 9, 9, 8, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        'O', 10, 10, 9, 9, 8, 8, 7, 6, 5, 5, 4, 3, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        'P', 8, 8, 8, 7, 7, 7, 6, 6, 6, 5, 5, 4, 4, 3, 3, 2, 2, 1, 0, 0, 0, 0, 0, 0,
-        'Q', 10, 10, 10, 9, 9, 8, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        'R', 10, 10, 9, 9, 8, 8, 7, 7, 6, 6, 5, 5, 4, 3, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0,
-        'S', 10, 10, 10, 9, 9, 8, 8, 7, 7, 6, 6, 5, 4, 3, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0,
-        'T', 10, 10, 9, 9, 8, 8, 7, 7, 6, 6, 5, 5, 4, 4, 3, 3, 2, 1, 0, 0, 0, 0, 0, 0,
-        'U', 10, 10, 9, 9, 8, 8, 7, 7, 6, 6, 5, 5, 4, 4, 3, 3, 2, 2, 1, 1, 0, 0, 0, 0,
-        'V', 9, 9, 8, 8, 8, 7, 7, 7, 6, 6, 6, 5, 5, 5, 4, 4, 3, 3, 2, 2, 1, 0, 0, 0,
-        'W', 10, 10, 10, 10, 9, 9, 8, 8, 7, 7, 6, 6, 5, 5, 4, 4, 3, 3, 2, 1, 0, 0, 0, 0,
-        'X', 10, 10, 10, 9, 9, 8, 8, 7, 7, 6, 6, 5, 5, 4, 4, 3, 3, 2, 2, 1, 1, 0, 0,
-        'Y', 10, 10, 10, 9, 9, 9, 8, 8, 8, 7, 7, 7, 6, 6, 5, 5, 4, 4, 3, 3, 2, 2, 1, 1
+        `A`, 8, 6, 4, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        `B`, 5, 5, 4, 4, 3, 3, 2, 2, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        `C`, 10, 8, 6, 4, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        `D`, 10, 9, 7, 5, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        `E`, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        `F`, 10, 9, 7, 6, 4, 3, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        `G`, 7, 7, 6, 6, 5, 5, 4, 3, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        `H`, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        `I`, 8, 8, 7, 7, 6, 6, 5, 5, 4, 3, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        `J`, 10, 10, 9, 9, 8, 8, 6, 4, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        `K`, 8, 8, 7, 7, 6, 6, 5, 5, 4, 4, 3, 3, 2, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        `L`, 10, 10, 9, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        `M`, 10, 9, 8, 7, 7, 7, 6, 6, 5, 5, 4, 3, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        `N`, 10, 10, 9, 9, 8, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        `O`, 10, 10, 9, 9, 8, 8, 7, 6, 5, 5, 4, 3, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        `P`, 8, 8, 8, 7, 7, 7, 6, 6, 6, 5, 5, 4, 4, 3, 3, 2, 2, 1, 0, 0, 0, 0, 0, 0,
+        `Q`, 10, 10, 10, 9, 9, 8, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        `R`, 10, 10, 9, 9, 8, 8, 7, 7, 6, 6, 5, 5, 4, 3, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+        `S`, 10, 10, 10, 9, 9, 8, 8, 7, 7, 6, 6, 5, 4, 3, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+        `T`, 10, 10, 9, 9, 8, 8, 7, 7, 6, 6, 5, 5, 4, 4, 3, 3, 2, 1, 0, 0, 0, 0, 0, 0,
+        `U`, 10, 10, 9, 9, 8, 8, 7, 7, 6, 6, 5, 5, 4, 4, 3, 3, 2, 2, 1, 1, 0, 0, 0, 0,
+        `V`, 9, 9, 8, 8, 8, 7, 7, 7, 6, 6, 6, 5, 5, 5, 4, 4, 3, 3, 2, 2, 1, 0, 0, 0,
+        `W`, 10, 10, 10, 10, 9, 9, 8, 8, 7, 7, 6, 6, 5, 5, 4, 4, 3, 3, 2, 1, 0, 0, 0, 0,
+        `X`, 10, 10, 10, 9, 9, 8, 8, 7, 7, 6, 6, 5, 5, 4, 4, 3, 3, 2, 2, 1, 1, 0, 0,
+        `Y`, 10, 10, 10, 9, 9, 9, 8, 8, 8, 7, 7, 7, 6, 6, 5, 5, 4, 4, 3, 3, 2, 2, 1, 1
     ];
 
     const index = ranges.indexOf(chart);
@@ -2403,7 +2385,7 @@ function getToHit (chart, distance) {
 }
 
 // WEAPON FIRING
-on('clicked:repeating_beams:btn-fire clicked:repeating_missiles:btn-fire', async (event) => {
+on(`clicked:repeating_beams:btn-fire clicked:repeating_missiles:btn-fire`, async (event) => {
     const match = event.sourceAttribute.match(/repeating_(?<section>.+?)_(?<rowID>.+?)_(?<buttonName>.+)/);
     const { section, rowID, buttonName } = match?.groups || {};
     const row = `repeating_${section}_${rowID}`;
@@ -2412,10 +2394,10 @@ on('clicked:repeating_beams:btn-fire clicked:repeating_missiles:btn-fire', async
         `${row}_name`, `${row}_armed`, `${row}_power`, `${row}_power_max`,
         `${row}_bonus_3`, `${row}_bonus_2`, `${row}_bonus_1`,
         `${row}_target_name`, `${row}_target_id`, 
-        `${row}_target_distance`, `${row}_target_tohit`, 'faction'
+        `${row}_target_distance`, `${row}_target_tohit`, `faction`
     ]);
 
-    const faction = attributes['faction'];
+    const faction = attributes[`faction`];
     const wpnName = attributes[`${row}_name`];
     const wpnBankName = wpnName.match(/#\d+\w+/);
     const targetName = attributes[`${row}_target_name`];
@@ -2484,7 +2466,7 @@ on('clicked:repeating_beams:btn-fire clicked:repeating_missiles:btn-fire', async
         output[`repeating_${section}_${id}_armed`] = 0;
         output[`repeating_${section}_${id}_btn-target_status`] = isOCLaser ? 1 : 0;
         output[`repeating_${section}_${id}_btn-fire_status`] = 0;
-        output[`repeating_${section}_${id}_target_name`] = '';
+        output[`repeating_${section}_${id}_target_name`] = ``;
         output[`repeating_${section}_${id}_target_distance`] = 0;
         output[`repeating_${section}_${id}_target_tohit`] = 0;
         await setAttrsAsync(output);
@@ -2492,14 +2474,14 @@ on('clicked:repeating_beams:btn-fire clicked:repeating_missiles:btn-fire', async
 
         // Single roll with all weapons and damages
         startRoll(
-            `&{template:custom} {{title=@{banner_${faction}fire${section}} **[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Weapons Fired}} {{color=red}} {{Weapons=${weaponNames.join('\\n')}}} {{Target=[${targetName}](${ROLL20_CHAR_URL}${targetId})}} {{To-Hit=[[${targetToHit}]] or less}} {{Roll=[[1d10cs>11cf<0]]}} {{Damage=${damageList.join(', ')}}}`,
+            `&{template:custom} {{title=@{banner_${faction}fire${section}} **[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Weapons Fired}} {{color=red}} {{Weapons=${weaponNames.join(`\\n`)}}} {{Target=[${targetName}](${ROLL20_CHAR_URL}${targetId})}} {{To-Hit=[[${targetToHit}]] or less}} {{Roll=[[1d10cs>11cf<0]]}} {{Damage=${damageList.join(`, `)}}}`,
             roll => finishRoll(roll.rollId)
         );
     });
 
 // WEAPON POWER (BEAM) ALLOCATION calculations
-on('change:repeating_beams:name change:repeating_beams:damaged change:repeating_beams:power change:repeating_beams:power_max remove:repeating_beams', function(eventInfo) {
-    getSectionIDs('repeating_beams', function (ids) {
+on(`change:repeating_beams:name change:repeating_beams:damaged change:repeating_beams:power change:repeating_beams:power_max remove:repeating_beams`, function(eventInfo) {
+    getSectionIDs(`repeating_beams`, function (ids) {
         const Fieldnames = [];
         ids.forEach(id => {
             Fieldnames.push(`repeating_beams_${id}_name`);
@@ -2513,7 +2495,7 @@ on('change:repeating_beams:name change:repeating_beams:damaged change:repeating_
             let totalPowerToBeams = 0;
             const output = {};
             ids.forEach(id => {
-                const BEAM_TYPE_LASER_FED = 'FL-';
+                const BEAM_TYPE_LASER_FED = `FL-`;
                 const theBeamIsLaser = values[`repeating_beams_${id}_name`].includes(BEAM_TYPE_LASER_FED);
                 const theBeamIsDamaged = parseInt(values[`repeating_beams_${id}_damaged`]) || 0;
                 const theBeamIsReady = parseInt(values[`repeating_beams_${id}_btn-fire_status`]) || 0;
@@ -2525,15 +2507,15 @@ on('change:repeating_beams:name change:repeating_beams:damaged change:repeating_
                 output[`repeating_beams_${id}_btn-target_status`] = theBeamPower && !theBeamIsDamaged && (theBeamPowerMax + theBeamPowerMax * theBeamIsLaser - theBeamPower) > -1 ? 1 : 0;
                 output[`repeating_beams_${id}_btn-fire_status`] = theBeamIsReady;
             });
-            output['wp_beam'] = totalPowerToBeams;
+            output[`wp_beam`] = totalPowerToBeams;
             setAttrs(output);
         });
     });
 });
 
 // WEAPON POWER (MISSILE) ALLOCATION calculations
-on('change:repeating_missiles:damaged change:repeating_missiles:armed change:repeating_missiles:cost remove:repeating_missiles', function(eventInfo) {
-    getSectionIDs('repeating_missiles', function (ids) {
+on(`change:repeating_missiles:damaged change:repeating_missiles:armed change:repeating_missiles:cost remove:repeating_missiles`, function(eventInfo) {
+    getSectionIDs(`repeating_missiles`, function (ids) {
         const Fieldnames = [];
         ids.forEach(id => {
             Fieldnames.push(`repeating_missiles_${id}_damaged`);
@@ -2555,7 +2537,7 @@ on('change:repeating_missiles:damaged change:repeating_missiles:armed change:rep
                 output[`repeating_missiles_${id}_btn-target_status`] = theMissilePower && !theMissileIsDamaged ? 1 : 0;
                 output[`repeating_missiles_${id}_btn-fire_status`] = theMissileIsReady;
             });
-            output['wp_missile'] = totalPowerToMissiles;
+            output[`wp_missile`] = totalPowerToMissiles;
             setAttrs(output);
         });
     });
@@ -2567,11 +2549,11 @@ async function updateWeaponsPercent() {
     let countWeaponsDamaged = 0;
 
     const fieldNames = [];
-    let ids = await getSectionIDsAsync('repeating_beams');
+    let ids = await getSectionIDsAsync(`repeating_beams`);
     ids.forEach(id => {
         fieldNames.push(`repeating_beams_${id}_weapon_state_status`);
     });
-    ids = await getSectionIDsAsync('repeating_missiles');
+    ids = await getSectionIDsAsync(`repeating_missiles`);
     ids.forEach(id => {
         fieldNames.push(`repeating_missiles_${id}_weapon_state_status`);
     });
@@ -2583,7 +2565,7 @@ async function updateWeaponsPercent() {
     });
 
     const output = {};
-    output[`weapons-percent`] = Math.max(0, Math.round((countWeapons - countWeaponsDamaged) / countWeapons * 100));
+    output[`weapons-percent`] = Math.max(0, Math.round((countWeapons - countWeaponsDamaged) / countWeapons * MAX_PERCENTAGE));
     setAttrs(output);
 }
 
