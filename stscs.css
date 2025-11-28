@@ -126,13 +126,16 @@
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-/* For critical actions like "Fire" or "READY" */
 .ui-dialog .charsheet button.btn.critical {
   background: linear-gradient(135deg, #ff6600 0%, #cc3300 100%);
   border-color: #990000;
 }
 
-/* For warning actions like "Commit"" */
+.ui-dialog .charsheet button.btn.repair {
+  background: linear-gradient(135deg, #00aa00 0%, #006600 100%);
+  border-color: #006600;
+}
+
 .ui-dialog .charsheet button.btn.warning {
   background: linear-gradient(135deg, #ff9900 0%, #ff6600 100%);
   border-color: #ff3300;
@@ -524,7 +527,7 @@
   background-color: lemonchiffon; 
   border-color: coral;
   color: coral;
-}
+}  
 
 /**************** ROLL TEMPLATES ****************/
 .sheet-rolltemplate-custom,
