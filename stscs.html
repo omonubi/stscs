@@ -52,7 +52,7 @@
         <label><strong>Superstructure:</strong></label>
         <span>
             <input type='hidden' class='hp-status' name='attr_hp_status' value='0'/>
-            <input type='number' class='hp' name='attr_hp' value='0'/>
+            <input type='number' class='hp' name='attr_hp' value='0' readonly/>
             /
             <span name='attr_hp_max'></span>
         </span>
@@ -65,7 +65,7 @@
         <input type='hidden' name='attr_crew-percent' value='100'/>
         <span >
             <input type='hidden' class='crew-status' name='attr_crew_status' value='0'/>
-            <input type='number' class='w5 crew' name='attr_crew' value='0' min='0'/> /
+            <input type='number' class='w5 crew' name='attr_crew' value='0' min='0' readonly/> /
             <span name='attr_crew_max'></span>
         </span>
         <label>Efficiency:</label>
@@ -942,6 +942,7 @@ on(`change:crewbonus`, async function(eventInfo) {
         if (crewBonus === 4) {
             const currentHp = parseInt(values[`hp`]) || 0;
             const maxHp = parseInt(values[`hp_max`]) || 0;
+            if (currentHp == maxHp) output[`crewbonus_saved`] = 0; // Don't save if there's no hp dmg
             output[`hp`] = Math.min(currentHp + 1, maxHp);
         }
 
@@ -2313,8 +2314,10 @@ function resetTPA() {
     output[`tpa_shields`] = 0;
 
     output[`crewbonus`] = 0;
+    output[`crewbonus_saved`] = 0;
+    output[`crewbonus_engineid`] = ``;
     output[`crewbonustohitapplied`] = 0;
-    output[`crewbonus1`] = output[`crewbonus2`] = output[`crewbonus3`] = output[`crewbonus4`] = 0;
+    output[`crewbonus1`] = output[`crewbonus2`] = output[`crewbonus3`] = 0;
 
     const SCAN_NONE = 0;
     output[`scanquestion`] = SCAN_NONE;
