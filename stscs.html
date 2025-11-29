@@ -988,7 +988,7 @@ on(`clicked:rolldamage`, async () => {
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 
-        16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
+        13, 16, 6, 3, 2, 2, 1, 8, 14, 12,
         13, 16, 17, 2, 2, 2, 2, 5, 14, 12,
         13, 16, 7, 4, 2, 2, 1, 9, 14, 12,
         13, 16, 7, 7, 4, 1, 1, 2, 2, 9,
@@ -1521,10 +1521,10 @@ async function damageWeapon(myShieldNum = 1, myRepeatingSection = ``, myDmg = 0)
     const matchingCount = matchingWeapons.length;
     
     // Filter matching weapons to only include those with state 0 or 2
-    const eligibleWeapons = matchingWeapons.filter(weapon => weapon.state === `0` || weapon.state === `2`);
+    const eligibleWeapons = matchingWeapons.filter(weapon => weapon.state == 0 || weapon.state == 2);
     const eligibleCount = eligibleWeapons.length;
     
-    let residualDamage = 0;
+    let residualDamage = myDmg;
     let returnStr = ``;
     
     // If no eligible weapons, return residual damage
@@ -1536,23 +1536,67 @@ async function damageWeapon(myShieldNum = 1, myRepeatingSection = ``, myDmg = 0)
     if (eligibleCount > 0) {
         const randomIndex = getRandomIntInclusive(1, eligibleCount) - 1;
         const selectedWeapon = eligibleWeapons[randomIndex];
-        
-        // Update state: 0 → 1, 2 → 3
-        let newState = selectedWeapon.state;
-        if (selectedWeapon.state === `0`) {
-            newState = `1`;
-        } else if (selectedWeapon.state === `2`) {
-            newState = `3`;
+
+        // Get all matching banked weapons or default to single weapon
+        const wpnBankName = selectedWeapon.name.match(/#\d+\w+/);
+        console.log('wpnBankName: ' + wpnBankName);
+        const bankedRows = [];
+        if (wpnBankName) {
+            const nameRoot = selectedWeapon.name.match(/#\d+/);
+            const ids = await getSectionIDsAsync(`${myRepeatingSection}`);
+            const fieldnames = ids.flatMap(id => [
+                `${myRepeatingSection}_${id}_name`,
+                `${myRepeatingSection}_${id}_state`
+            ]);
+            const values = await getAttrsAsync(fieldnames);
+
+            // Find the selected weapon's ID first
+            const selectedWeaponId = eligibleWeapons[randomIndex].id;
+            const selectedState = values[`${myRepeatingSection}_${selectedWeaponId}_state`];
+            if (selectedState != 1 && selectedState != 3) {
+                bankedRows.push(selectedWeaponId);
+            }
+
+            // Then add remaining matches
+            ids.forEach(id => {
+                const name = values[`${myRepeatingSection}_${id}_name`];
+                const state = values[`${myRepeatingSection}_${id}_state`];
+                if (name && name.match(nameRoot) && id !== selectedWeaponId && state != 1 && state != 3) {
+                    bankedRows.push(id);
+                }
+            });
+        } else {
+            // Not in a bank — damage just this weapon
+            bankedRows.push(rowID);
         }
+
+        let bankedNames = [];
+        for (const id of bankedRows) {
+            const rowAttrs = await getAttrsAsync([
+                `${myRepeatingSection}_${id}_name`,
+                `${myRepeatingSection}_${id}_state`
+            ]);
         
-        // Update the attribute in Roll20
-        const updateObj = {};
-        updateObj[`${myRepeatingSection}_${selectedWeapon.id}_state`] = newState;
-        updateObj[`${myRepeatingSection}_${selectedWeapon.id}_weapon_state_status`] = newState;
-        
-        await setAttrsAsync(updateObj);
-        
-        returnStr = `{{Weapon Damaged=${selectedWeapon.name}}} `;
+            // Update state: 0 → 1, 2 → 3
+            let newState = parseInt(rowAttrs[`${myRepeatingSection}_${id}_state`]) || 0;
+            if (newState == 0) {
+                newState = 1;
+            } else if (newState == 2) {
+                newState = 3;
+            }
+            
+            // Update the attribute in Roll20
+            const updateObj = {};
+            updateObj[`${myRepeatingSection}_${id}_state`] = newState;
+            updateObj[`${myRepeatingSection}_${id}_weapon_state_status`] = newState;
+            await setAttrsAsync(updateObj);
+            
+            bankedNames.push(rowAttrs[`${myRepeatingSection}_${id}_name`]);
+
+            residualDamage = Math.max(0, residualDamage - 5);
+            if (residualDamage < 5) break;
+        }
+        returnStr = `{{Weapon Damaged=${bankedNames.join(`\\n`)}}} `;
     } else {
         returnStr = `{{Weapon Damaged=None Available}} `;
     }
@@ -1674,10 +1718,10 @@ on(`clicked:repeating_beams:weapon-repair clicked:repeating_missiles:weapon-repa
     const repairRoll = getRandomIntInclusive(1, 10);
     if (repairRoll <= repairTarget) {
         // If state is 1, change it to 2 and set weapon_state_status to 2
-        if (currentState === `1`) {
+        if (currentState == 1) {
             const updateObj = {};
-            updateObj[`${row}_state`] = `2`;
-            updateObj[`${row}_weapon_state_status`] = `2`;
+            updateObj[`${row}_state`] = 2;
+            updateObj[`${row}_weapon_state_status`] = 2;
 
             if (section == 'beams') updateObj[`${row}_power`] = Math.min(beamPower, Math.floor(beamPowerMax / 2));
 
