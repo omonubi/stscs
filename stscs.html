@@ -47,7 +47,7 @@
     <h2>Damage Control</h2>
 
     <div class='grid-6col dc-panel'>
-        <button type='action' class='btn critical' name='act_rolldamage'>Roll Damage</button>
+        <button type='action' class='btn critical roll-damage' name='act_rolldamage'>Roll Damage</button>
         <span></span>
         <label><strong>Superstructure:</strong></label>
         <span>
@@ -1654,15 +1654,18 @@ on(`clicked:repeating_beams:weapon-repair clicked:repeating_missiles:weapon-repa
     const { section, rowID, buttonName } = match?.groups || {};
     const row = `repeating_${section}_${rowID}`;
 
-    // Get the current name, state, and weapon_state_status
     const attrs = await getAttrsAsync([
         `${row}_name`,
+        `${row}_power`,
+        `${row}_power_max`,
         `${row}_state`,
         `${row}_weapon_state_status`,
         `crewrollpenalty`
     ]);
 
     const wpnName = attrs[`${row}_name`];
+    const beamPower = attrs[`${row}_power`];
+    const beamPowerMax = attrs[`${row}_power_max`];
     const currentState = attrs[`${row}_state`];
     const repairTargetBase = section === `beams` ? 8 : 6;
     const crewRollPenalty = parseInt(attrs[`crewrollpenalty`]) || 0;
@@ -1675,6 +1678,8 @@ on(`clicked:repeating_beams:weapon-repair clicked:repeating_missiles:weapon-repa
             const updateObj = {};
             updateObj[`${row}_state`] = `2`;
             updateObj[`${row}_weapon_state_status`] = `2`;
+
+            if (section == 'beams') updateObj[`${row}_power`] = Math.min(beamPower, Math.floor(beamPowerMax / 2));
 
             await setAttrsAsync(updateObj);
 
@@ -2222,7 +2227,7 @@ on(`clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target`, a
     const row = `repeating_${section}_${rowID}`;
 
     const attributes = await getAttrsAsync([
-        `${row}_name`, `${row}_chart`, `${row}_maxrange`, `${row}_power`, `${row}_damaged`, 
+        `${row}_name`, `${row}_chart`, `${row}_maxrange`, `${row}_power`, 
         `crewbonus`, `crewbonustohitapplied`, `crewrollpenalty`
     ]);
 
@@ -2230,7 +2235,6 @@ on(`clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target`, a
     const wpnChart = attributes[`${row}_chart`];
     const wpnMaxRange = parseInt(attributes[`${row}_maxrange`]) || 0;
     const wpnIsPowered = parseInt(attributes[`${row}_power`]) || 0;
-    const wpnIsDamaged = parseInt(attributes[`${row}_damaged`]) || 0;
     const crewBonus = parseInt(attributes[`crewbonus`]) || 0;
     const crewBonusApplied = parseInt(attributes[`crewbonustohitapplied`]) || 0;
     const crewCasualtyPenalty = parseInt(attributes[`crewrollpenalty`]) || 0;
@@ -2271,23 +2275,41 @@ on(`clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target`, a
         bankedRows.push(rowID); // Not banked — just target self
     }
 
+    // Calculate cumulative weapon state penalty for the entire bank
+    let weaponStatePenalty = 0;
+    for (const id of bankedRows) {
+        const targetRow = `repeating_${section}_${id}`;
+        const statusAttrs = await getAttrsAsync([`${targetRow}_weapon_state_status`]);
+        const weaponStateStatus = parseInt(statusAttrs[`${targetRow}_weapon_state_status`]) || 0;
+        
+        if (weaponStateStatus === 2) {
+            weaponStatePenalty -= 1;
+        }
+    }
+
     const weaponNames = [];
 
     for (const id of bankedRows) {
         const targetRow = `repeating_${section}_${id}`;
-        const power = parseInt((await getAttrsAsync([`${targetRow}_power`]))[`${targetRow}_power`]) || 0;
+        const rowAttrs = await getAttrsAsync([
+            `${targetRow}_power`,
+            `${targetRow}_name`
+        ]);
+        
+        const power = parseInt(rowAttrs[`${targetRow}_power`]) || 0;
 
         // Skip if not powered
         if (power === 0) continue;
 
-        const rowAttrs = await getAttrsAsync([`repeating_${section}_${id}_name`]);
+        // Apply cumulative weapon state penalty to all weapons in bank
+        const adjustedToHit = wpnTargetToHit + weaponStatePenalty;
 
-        weaponNames.push(rowAttrs[`repeating_${section}_${id}_name`] || `Unknown Weapon`);
+        weaponNames.push(rowAttrs[`${targetRow}_name`] || `Unknown Weapon`);
         output[`${targetRow}_target_name`] = tokenName;
         output[`${targetRow}_target_id`] = charId;
         output[`${targetRow}_target_distance`] = wpnTargetDistance;
-        output[`${targetRow}_target_tohit`] = wpnTargetToHit;
-        output[`${targetRow}_btn-fire_status`] = wpnTargetToHit ? 1 : 0;
+        output[`${targetRow}_target_tohit`] = adjustedToHit;
+        output[`${targetRow}_btn-fire_status`] = adjustedToHit ? 1 : 0;
     }   
 
     // Roll result
