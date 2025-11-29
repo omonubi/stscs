@@ -100,96 +100,6 @@
         </span>
     </div>
     <br/>
-    <div class='grid-6col shield-status-panel'>
-        <h4 class='span-grid'>Shield Generators Status</h4>
-
-        <label>Shield #1 (<strong>f/p</strong>):</label>
-        <span>
-            <input type='hidden' class='shield-1-status' name='attr_shield_1_status' value='0'/>
-            <input type='hidden' name='attr_shield_1_to_repair' value='0'/>
-            <select class='w7 state-select' name='attr_shield_1_state' readonly>
-                <option value='0' selected>Online</option>
-                <option value='1'>Dmg 1-8</option>
-                <option value='2'>Dmg 1-6</option>
-                <option value='3'>Dmg 1-4</option>
-                <option value='4'>Dmg 1-2</option>
-                <option value='5'>DEST</option>
-            </select>
-            <button type='action' class='btn btn-shield-repair repair' name='act_shield_1_repair'>Repair</button>
-        </span>
-        <label>Shield #2 (<strong>fwd</strong>):</label>
-        <span>
-            <input type='hidden' class='shield-2-status' name='attr_shield_2_status' value='0'/>
-            <input type='hidden' name='attr_shield_2_to_repair' value='0'/>
-            <select class='w7 state-select' name='attr_shield_2_state' readonly>
-                <option value='0' selected>Online</option>
-                <option value='1'>Dmg 1-8</option>
-                <option value='2'>Dmg 1-6</option>
-                <option value='3'>Dmg 1-4</option>
-                <option value='4'>Dmg 1-2</option>
-                <option value='5'>DEST</option>
-            </select>
-            <button type='action' class='btn btn-shield-repair repair' name='act_shield_2_repair'>Repair</button>
-        </span>
-        <label>Shield #3 (<strong>f/s</strong>):</label>
-        <span>
-            <input type='hidden' class='shield-3-status' name='attr_shield_3_status' value='0'/>
-            <input type='hidden' name='attr_shield_3_to_repair' value='0'/>
-            <select class='w7 state-select' name='attr_shield_3_state' readonly>
-                <option value='0' selected>Online</option>
-                <option value='1'>Dmg 1-8</option>
-                <option value='2'>Dmg 1-6</option>
-                <option value='3'>Dmg 1-4</option>
-                <option value='4'>Dmg 1-2</option>
-                <option value='5'>DEST</option>
-            </select>
-            <button type='action' class='btn btn-shield-repair repair' name='act_shield_3_repair'>Repair</button>
-        </span>
-
-        <label>Shield #6 (<strong>a/p</strong>):</label>
-        <span>
-            <input type='hidden' class='shield-6-status' name='attr_shield_6_status' value='0'/>
-            <input type='hidden' name='attr_shield_6_to_repair' value='0'/>
-            <select class='w7 state-select' name='attr_shield_6_state' readonly>
-                <option value='0' selected>Online</option>
-                <option value='1'>Dmg 1-8</option>
-                <option value='2'>Dmg 1-6</option>
-                <option value='3'>Dmg 1-4</option>
-                <option value='4'>Dmg 1-2</option>
-                <option value='5'>DEST</option>
-            </select>
-            <button type='action' class='btn btn-shield-repair repair' name='act_shield_6_repair'>Repair</button>
-        </span>
-        <label>Shield #5 (<strong>aft</strong>):</label>
-        <span>
-            <input type='hidden' class='shield-5-status' name='attr_shield_5_status' value='0'/>
-            <input type='hidden' name='attr_shield_5_to_repair' value='0'/>
-            <select class='w7 state-select' name='attr_shield_5_state' readonly>
-                <option value='0' selected>Online</option>
-                <option value='1'>Dmg 1-8</option>
-                <option value='2'>Dmg 1-6</option>
-                <option value='3'>Dmg 1-4</option>
-                <option value='4'>Dmg 1-2</option>
-                <option value='5'>DEST</option>
-            </select>
-            <button type='action' class='btn btn-shield-repair repair' name='act_shield_5_repair'>Repair</button>
-        </span>
-        <label>Shield #4 (<strong>a/s</strong>):</label>
-        <span>
-            <input type='hidden' class='shield-4-status' name='attr_shield_4_status' value='0'/>
-            <input type='hidden' name='attr_shield_4_to_repair' value='0'/>
-            <select class='w7 state-select' name='attr_shield_4_state' readonly>
-                <option value='0' selected>Online</option>
-                <option value='1'>Dmg 1-8</option>
-                <option value='2'>Dmg 1-6</option>
-                <option value='3'>Dmg 1-4</option>
-                <option value='4'>Dmg 1-2</option>
-                <option value='5'>DEST</option>
-            </select>
-            <button type='action' class='btn btn-shield-repair repair' name='act_shield_4_repair'>Repair</button>
-        </span>
-    </div>
-    <br/>
 
     <!-------------------------------------------------------->
     <h2>Engineering
@@ -506,6 +416,96 @@
                 <input type='number' class='shield-4c' name='attr_shield_4c' readonly/>
             </span>
         </div>
+    </div>
+    <br/>
+    <div class='grid-6col shield-status-panel'>
+        <h4 class='span-grid'>Shield Generators Status</h4>
+
+        <label>Shield #1 (<strong>f/p</strong>):</label>
+        <span>
+            <input type='hidden' class='shield-1-status' name='attr_shield_1_status' value='0'/>
+            <input type='hidden' name='attr_shield_1_to_repair' value='0'/>
+            <select class='w7 state-select' name='attr_shield_1_state' readonly>
+                <option value='0' selected>Online</option>
+                <option value='1'>Dmg 1-8</option>
+                <option value='2'>Dmg 1-6</option>
+                <option value='3'>Dmg 1-4</option>
+                <option value='4'>Dmg 1-2</option>
+                <option value='5'>DEST</option>
+            </select>
+            <button type='action' class='btn btn-shield-repair repair' name='act_shield_1_repair'>Repair</button>
+        </span>
+        <label>Shield #2 (<strong>fwd</strong>):</label>
+        <span>
+            <input type='hidden' class='shield-2-status' name='attr_shield_2_status' value='0'/>
+            <input type='hidden' name='attr_shield_2_to_repair' value='0'/>
+            <select class='w7 state-select' name='attr_shield_2_state' readonly>
+                <option value='0' selected>Online</option>
+                <option value='1'>Dmg 1-8</option>
+                <option value='2'>Dmg 1-6</option>
+                <option value='3'>Dmg 1-4</option>
+                <option value='4'>Dmg 1-2</option>
+                <option value='5'>DEST</option>
+            </select>
+            <button type='action' class='btn btn-shield-repair repair' name='act_shield_2_repair'>Repair</button>
+        </span>
+        <label>Shield #3 (<strong>f/s</strong>):</label>
+        <span>
+            <input type='hidden' class='shield-3-status' name='attr_shield_3_status' value='0'/>
+            <input type='hidden' name='attr_shield_3_to_repair' value='0'/>
+            <select class='w7 state-select' name='attr_shield_3_state' readonly>
+                <option value='0' selected>Online</option>
+                <option value='1'>Dmg 1-8</option>
+                <option value='2'>Dmg 1-6</option>
+                <option value='3'>Dmg 1-4</option>
+                <option value='4'>Dmg 1-2</option>
+                <option value='5'>DEST</option>
+            </select>
+            <button type='action' class='btn btn-shield-repair repair' name='act_shield_3_repair'>Repair</button>
+        </span>
+
+        <label>Shield #6 (<strong>a/p</strong>):</label>
+        <span>
+            <input type='hidden' class='shield-6-status' name='attr_shield_6_status' value='0'/>
+            <input type='hidden' name='attr_shield_6_to_repair' value='0'/>
+            <select class='w7 state-select' name='attr_shield_6_state' readonly>
+                <option value='0' selected>Online</option>
+                <option value='1'>Dmg 1-8</option>
+                <option value='2'>Dmg 1-6</option>
+                <option value='3'>Dmg 1-4</option>
+                <option value='4'>Dmg 1-2</option>
+                <option value='5'>DEST</option>
+            </select>
+            <button type='action' class='btn btn-shield-repair repair' name='act_shield_6_repair'>Repair</button>
+        </span>
+        <label>Shield #5 (<strong>aft</strong>):</label>
+        <span>
+            <input type='hidden' class='shield-5-status' name='attr_shield_5_status' value='0'/>
+            <input type='hidden' name='attr_shield_5_to_repair' value='0'/>
+            <select class='w7 state-select' name='attr_shield_5_state' readonly>
+                <option value='0' selected>Online</option>
+                <option value='1'>Dmg 1-8</option>
+                <option value='2'>Dmg 1-6</option>
+                <option value='3'>Dmg 1-4</option>
+                <option value='4'>Dmg 1-2</option>
+                <option value='5'>DEST</option>
+            </select>
+            <button type='action' class='btn btn-shield-repair repair' name='act_shield_5_repair'>Repair</button>
+        </span>
+        <label>Shield #4 (<strong>a/s</strong>):</label>
+        <span>
+            <input type='hidden' class='shield-4-status' name='attr_shield_4_status' value='0'/>
+            <input type='hidden' name='attr_shield_4_to_repair' value='0'/>
+            <select class='w7 state-select' name='attr_shield_4_state' readonly>
+                <option value='0' selected>Online</option>
+                <option value='1'>Dmg 1-8</option>
+                <option value='2'>Dmg 1-6</option>
+                <option value='3'>Dmg 1-4</option>
+                <option value='4'>Dmg 1-2</option>
+                <option value='5'>DEST</option>
+            </select>
+            <button type='action' class='btn btn-shield-repair repair' name='act_shield_4_repair'>Repair</button>
+        </span>
     </div>
     <br/>
 
@@ -988,7 +988,7 @@ on(`clicked:rolldamage`, async () => {
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 
-        14, 14, 14, 14, 14, 14, 14, 14, 14, 14,
+        16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
         13, 16, 17, 2, 2, 2, 2, 5, 14, 12,
         13, 16, 7, 4, 2, 2, 1, 9, 14, 12,
         13, 16, 7, 7, 4, 1, 1, 2, 2, 9,
@@ -1002,7 +1002,6 @@ on(`clicked:rolldamage`, async () => {
     let penetratingDamage = 0;
     let returnStr = ``;
     let rollStr = `/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Damage Results}} {{color=red}} {{Incoming Dmg=${baseDamage}}} {{On Shield Arc=${shieldArcStr}}} `;
-    let gridStr = ``; // Used to track grid hits
 
     const hitRollResult = getRandomIntInclusive(0, 9);
     const hitLocation = ((damageChart.charCodeAt(0) - 65) * 60) + (hitRollResult * shieldArc);
@@ -1202,15 +1201,14 @@ on(`clicked:rolldamage`, async () => {
             result += returnStr;
             if (penetratingDamage) {
                 const gridNames = [`Shields`, `Weapons`, `Movement`];
-                const damagedGrids = await selectRandomGrids();
-                let gridStr = ``;
-                for (let i = 0; i < damagedGrids.length; i++) {
-                    gridStr += `${gridNames[damagedGrids[i]-1]}, `;
+                const randomGrid = getRandomIntInclusive(0, 2);
+                result += ` {{Grid=${gridNames[randomGrid]}}}`;
+                let { residualDamage, returnStr: systemReturn } = await damageSystem(`${gridNames[randomGrid].toLowerCase()}_grid`, penetratingDamage);
+                result += systemReturn;
+                if (residualDamage) {
+                    let { residualDamage: residualResidual, returnStr: residualReturn } = await damageResidual(residualDamage);
+                    result += residualReturn;
                 }
-                gridStr = gridStr.slice(0, -2);
-                result += ` {{Affected Grids=${gridStr}}}`;
-                let { residualDamage, returnStr: supReturn } = await damageSup(1);
-                result += supReturn;
             }
             return result;
         },
@@ -1251,8 +1249,6 @@ on(`clicked:rolldamage`, async () => {
         `/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Damage Results}} {{color=red}} {{Incoming Dmg=${baseDamage}}} {{On Shield Arc=${shieldArcStr}}} ${rollStr}`,
         roll => finishRoll(roll.rollId)
     );
-
-    if (gridStr) damageGrids(gridStr); // Handle damage to individal grids
 });
 
 async function handleWarpDamage(penetratingDamage, engineLocation, shieldArc) {
@@ -1303,140 +1299,6 @@ async function damageCrew(myDmg, myFactor = 1, isBridge = false) {
     const residualDamage = 0;
     const returnStr = ` {{Crew Check=${isCrewEffective ? CREW_EFFECTIVE_TRUE : CREW_EFFECTIVE_FALSE}}} {{Crew Lost=[[${crewLost}]]}}`;
     return { residualDamage, returnStr };
-}
-
-// DAMAGE WEAPON
-async function damageWeapon(myShieldNum = 1, myRepeatingSection = ``, myDmg = 0) {
-    // Validate that a repeating section was provided
-    if (!myRepeatingSection) {
-        return { residualDamage: myDmg, returnStr: `{{Weapon Damaged=Error: No section}} ` };
-    }
-    
-    // Get all IDs for the specified repeating section
-    const weaponIds = await getSectionIDsAsync(myRepeatingSection);
-    
-    // Count the number of weapon items
-    const weaponCount = weaponIds.length;
-    
-    // Build array of attribute names to retrieve
-    const attrNames = [];
-    weaponIds.forEach(id => {
-        attrNames.push(`${myRepeatingSection}_${id}_name`);
-        attrNames.push(`${myRepeatingSection}_${id}_state`);
-    });
-    
-    // Get all attributes at once
-    const attrs = await getAttrsAsync(attrNames);
-    
-    // Build array of weapon objects with name and state
-    const weapons = weaponIds.map(id => ({
-        id: id,
-        name: attrs[`${myRepeatingSection}_${id}_name`] || ``,
-        state: attrs[`${myRepeatingSection}_${id}_state`] || `0`
-    }));
-    
-    // Map shield number to arc letters
-    const shieldArcs = {
-        1: `fp`,  // f/p
-        2: `f`,   // f
-        3: `fs`,  // f/s
-        4: `as`,  // a/s
-        5: `a`,   // a
-        6: `ap`   // a/p
-    };
-    
-    // Get the arc letters for this shield
-    const arcLetters = shieldArcs[myShieldNum] || ``;
-    
-    // Build regex to match any of the arc letters within parentheses
-    const arcPattern = new RegExp(`\\([^)]*[${arcLetters}][^)]*\\)`, `i`);
-    
-    // Count weapons that match the shield arc
-    const matchingWeapons = weapons.filter(weapon => arcPattern.test(weapon.name));
-    const matchingCount = matchingWeapons.length;
-    
-    // Filter matching weapons to only include those with state 0 or 2
-    const eligibleWeapons = matchingWeapons.filter(weapon => weapon.state === `0` || weapon.state === `2`);
-    const eligibleCount = eligibleWeapons.length;
-    
-    let residualDamage = 0;
-    let returnStr = ``;
-    
-    // If no eligible weapons, return residual damage
-    if (eligibleCount === 0) {
-        return { residualDamage: myDmg, returnStr: `{{Weapon Damaged=None Available}} ` };
-    }
-    
-    // If there are eligible weapons, select one randomly and damage it
-    if (eligibleCount > 0) {
-        const randomIndex = getRandomIntInclusive(1, eligibleCount) - 1;
-        const selectedWeapon = eligibleWeapons[randomIndex];
-        
-        // Update state: 0 → 1, 2 → 3
-        let newState = selectedWeapon.state;
-        if (selectedWeapon.state === `0`) {
-            newState = `1`;
-        } else if (selectedWeapon.state === `2`) {
-            newState = `3`;
-        }
-        
-        // Update the attribute in Roll20
-        const updateObj = {};
-        updateObj[`${myRepeatingSection}_${selectedWeapon.id}_state`] = newState;
-        updateObj[`${myRepeatingSection}_${selectedWeapon.id}_weapon_state_status`] = newState;
-        
-        await setAttrsAsync(updateObj);
-        
-        returnStr = `{{Weapon Damaged=${selectedWeapon.name}}} `;
-    } else {
-        returnStr = `{{Weapon Damaged=None Available}} `;
-    }
-
-    await updateWeaponsPercent();
-    
-    return { residualDamage, returnStr, weaponCount, weapons, matchingCount, matchingWeapons, eligibleCount, eligibleWeapons };
-}
-
-// DAMAGE GRIDS
-async function damageGrids(gridStr) {
-    const affectedGrids = gridStr.split(`, `);
-    for (i = 0; i < affectedGrids.length; i++) {
-        const gridVarName = `${affectedGrids[i].toLowerCase()}_grid`;
-
-        const output = {};
-        if (affectedGrids[i] == `Shields`) output[`shield_1c`] = output[`shield_2c`] = output[`shield_3c`] = output[`shield_4c`] = output[`shield_5c`] = output[`shield_6c`] = 0;
-        await setAttrsAsync(output);
-
-        ({ residualDamage, returnStr } = await damageSystem(gridVarName, 0));
-        await startRoll(
-            `/w gm &{template:custom} {{subtitle=**${affectedGrids[i]}** Grid}} {{color=red}} ${returnStr}`,
-            roll => finishRoll(roll.rollId)
-        );
-    }
-}
-
-// SELECT RANDOM GRIDS
-async function selectRandomGrids() {
-    const randomResult = getRandomIntInclusive(1, 10);
-    
-    let affectedGrids = [];
-    if (randomResult <= 2) {
-        affectedGrids = [1]; // shields-grid
-    } else if (randomResult <= 4) {
-        affectedGrids = [2]; // weapon-grid
-    } else if (randomResult <= 6) {
-        affectedGrids = [3]; // movement-grid
-    } else if (randomResult === 7) {
-        affectedGrids = [1, 2]; // shields-grid, weapon-grid
-    } else if (randomResult === 8) {
-        affectedGrids = [1, 3]; // shields-grid, movement-grid
-    } else if (randomResult === 9) {
-        affectedGrids = [2, 3]; // weapon-grid, movement-grid
-    } else if (randomResult === 10) {
-        affectedGrids = [1, 2, 3]; // all three grids
-    }
-    
-    return affectedGrids;
 }
 
 // DAMAGE IMPULSE ENGINE
@@ -1504,8 +1366,9 @@ async function damageSystem(mySystemVar = ``, myDmg = 0) {
 
     const output = {};
     output[`${mySystemVar}_state`] = systemStateNew;
-    output[`${mySystemVar}_status`] = systemStateNew > 0 && systemStateNew < 5 ? 1 : 0;
+    output[`${mySystemVar}_status`] = systemStateNew == 5 ? 2 : systemStateNew > 0 ? 1 : 0;
     output[`${mySystemVar}_to_repair`] = 10 - (systemStateNew * 2);
+    if (mySystemVar == `shields_grid`) output[`shield_1c`] = output[`shield_2c`] = output[`shield_3c`] = output[`shield_4c`] = output[`shield_5c`] = output[`shield_6c`] = 0;
     await setAttrsAsync(output);
 
     const residualDamage = systemStateNew == systemState ? myDmg : (myDmgResidual * 5) + (Math.max(0, (myDmg - 5)) % 5); // HOUSE RULE: Apply all remainder dmg to resid
@@ -1605,6 +1468,98 @@ async function damageWarp(myDmg = 0, myLocation = 1, myFactor = 1) {
     }
 
     return { residualDamage, returnStr };
+}
+
+// DAMAGE WEAPON
+async function damageWeapon(myShieldNum = 1, myRepeatingSection = ``, myDmg = 0) {
+    // Validate that a repeating section was provided
+    if (!myRepeatingSection) {
+        return { residualDamage: myDmg, returnStr: `{{Weapon Damaged=Error: No section}} ` };
+    }
+    
+    // Get all IDs for the specified repeating section
+    const weaponIds = await getSectionIDsAsync(myRepeatingSection);
+    
+    // Count the number of weapon items
+    const weaponCount = weaponIds.length;
+    
+    // Build array of attribute names to retrieve
+    const attrNames = [];
+    weaponIds.forEach(id => {
+        attrNames.push(`${myRepeatingSection}_${id}_name`);
+        attrNames.push(`${myRepeatingSection}_${id}_state`);
+    });
+    
+    // Get all attributes at once
+    const attrs = await getAttrsAsync(attrNames);
+    
+    // Build array of weapon objects with name and state
+    const weapons = weaponIds.map(id => ({
+        id: id,
+        name: attrs[`${myRepeatingSection}_${id}_name`] || ``,
+        state: attrs[`${myRepeatingSection}_${id}_state`] || `0`
+    }));
+    
+    // Map shield number to arc letters
+    const shieldArcs = {
+        1: `fp`,  // f/p
+        2: `f`,   // f
+        3: `fs`,  // f/s
+        4: `as`,  // a/s
+        5: `a`,   // a
+        6: `ap`   // a/p
+    };
+    
+    // Get the arc letters for this shield
+    const arcLetters = shieldArcs[myShieldNum] || ``;
+    
+    // Build regex to match any of the arc letters within parentheses
+    const arcPattern = new RegExp(`\\([^)]*[${arcLetters}][^)]*\\)`, `i`);
+    
+    // Count weapons that match the shield arc
+    const matchingWeapons = weapons.filter(weapon => arcPattern.test(weapon.name));
+    const matchingCount = matchingWeapons.length;
+    
+    // Filter matching weapons to only include those with state 0 or 2
+    const eligibleWeapons = matchingWeapons.filter(weapon => weapon.state === `0` || weapon.state === `2`);
+    const eligibleCount = eligibleWeapons.length;
+    
+    let residualDamage = 0;
+    let returnStr = ``;
+    
+    // If no eligible weapons, return residual damage
+    if (eligibleCount === 0) {
+        return { residualDamage: myDmg, returnStr: `{{Weapon Damaged=None Available}} ` };
+    }
+    
+    // If there are eligible weapons, select one randomly and damage it
+    if (eligibleCount > 0) {
+        const randomIndex = getRandomIntInclusive(1, eligibleCount) - 1;
+        const selectedWeapon = eligibleWeapons[randomIndex];
+        
+        // Update state: 0 → 1, 2 → 3
+        let newState = selectedWeapon.state;
+        if (selectedWeapon.state === `0`) {
+            newState = `1`;
+        } else if (selectedWeapon.state === `2`) {
+            newState = `3`;
+        }
+        
+        // Update the attribute in Roll20
+        const updateObj = {};
+        updateObj[`${myRepeatingSection}_${selectedWeapon.id}_state`] = newState;
+        updateObj[`${myRepeatingSection}_${selectedWeapon.id}_weapon_state_status`] = newState;
+        
+        await setAttrsAsync(updateObj);
+        
+        returnStr = `{{Weapon Damaged=${selectedWeapon.name}}} `;
+    } else {
+        returnStr = `{{Weapon Damaged=None Available}} `;
+    }
+
+    await updateWeaponsPercent();
+    
+    return { residualDamage, returnStr, weaponCount, weapons, matchingCount, matchingWeapons, eligibleCount, eligibleWeapons };
 }
 
 // IMPULSE POWER status indicator
@@ -2480,12 +2435,12 @@ on(`clicked:repeating_beams:btn-fire clicked:repeating_missiles:btn-fire`, async
     });
 
 // WEAPON POWER (BEAM) ALLOCATION calculations
-on(`change:repeating_beams:name change:repeating_beams:damaged change:repeating_beams:power change:repeating_beams:power_max remove:repeating_beams`, function(eventInfo) {
+on(`change:repeating_beams:name change:repeating_beams:power change:repeating_beams:weapon_state_status remove:repeating_beams`, function(eventInfo) {
     getSectionIDs(`repeating_beams`, function (ids) {
         const Fieldnames = [];
         ids.forEach(id => {
             Fieldnames.push(`repeating_beams_${id}_name`);
-            Fieldnames.push(`repeating_beams_${id}_damaged`);
+            Fieldnames.push(`repeating_beams_${id}_weapon_state_status`);
             Fieldnames.push(`repeating_beams_${id}_btn-fire_status`);
             Fieldnames.push(`repeating_beams_${id}_power`);
             Fieldnames.push(`repeating_beams_${id}_power_max`);
@@ -2495,13 +2450,14 @@ on(`change:repeating_beams:name change:repeating_beams:damaged change:repeating_
             let totalPowerToBeams = 0;
             const output = {};
             ids.forEach(id => {
-                const BEAM_TYPE_LASER_FED = `FL-`;
-                const theBeamIsLaser = values[`repeating_beams_${id}_name`].includes(BEAM_TYPE_LASER_FED);
-                const theBeamIsDamaged = parseInt(values[`repeating_beams_${id}_damaged`]) || 0;
+                const theBeamIsLaser = values[`repeating_beams_${id}_name`].includes(`FL-`);
+                const theBeamStateStatus = parseInt(values[`repeating_beams_${id}_weapon_state_status`]) || 0;
+                const theBeamIsDamaged = theBeamStateStatus == 1 || theBeamStateStatus == 3 ? 1 : 0;
+                const theBeamIsRepaired = theBeamStateStatus == 2 ? 1 : 0;
                 const theBeamIsReady = parseInt(values[`repeating_beams_${id}_btn-fire_status`]) || 0;
                 const theBeamPower = parseInt(values[`repeating_beams_${id}_power`]) || 0;
-                const theBeamPowerMax = parseInt(values[`repeating_beams_${id}_power_max`]) || 0;
-                totalPowerToBeams += theBeamIsDamaged && !theBeamIsReady ? 0 : theBeamPower;
+                const theBeamPowerMax = Math.floor((parseInt(values[`repeating_beams_${id}_power_max`]) || 0) / (theBeamIsRepaired + 1));
+                totalPowerToBeams += theBeamPower;
 
                 output[`repeating_beams_${id}_power_status`] = theBeamIsDamaged && !theBeamIsReady == 1 ? 1 : (theBeamPowerMax + theBeamPowerMax * theBeamIsLaser - theBeamPower) < 0 ? 1 : (theBeamPower > 0 ? 2 : 0);
                 output[`repeating_beams_${id}_btn-target_status`] = theBeamPower && !theBeamIsDamaged && (theBeamPowerMax + theBeamPowerMax * theBeamIsLaser - theBeamPower) > -1 ? 1 : 0;

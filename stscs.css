@@ -90,20 +90,20 @@
 /* Disabled/inactive buttons */
 .ui-dialog .charsheet .btn-fire-status[value='0'] ~ .btn-fire,
 .ui-dialog .charsheet .btn-target-status[value='0'] ~ .btn-target,
-.ui-dialog .charsheet .movement-grid-status[value='0'] ~ .helm-header .btn-movement-grid-repair,
+.ui-dialog .charsheet .movement-grid-status:not([value='1']) ~ .helm-header .btn-movement-grid-repair,
 .ui-dialog .charsheet .sensors-destroyed[value='1'] ~ .sensors-panel .btn-sensors-repair,
-.ui-dialog .charsheet .sensors-status[value='1'] ~ .beams-panel .btn-target,
-.ui-dialog .charsheet .sensors-status[value='1'] ~ .missiles-panel .btn-target,
-.ui-dialog .charsheet .sensors-status[value='0'] ~ .sensors-header .btn-sensors-repair,
-.ui-dialog .charsheet .sensors-status[value='1'] ~ .sensors-panel .btn-scan,
-.ui-dialog .charsheet .sensors-status[value='1'] ~ .warp-panel .btn-jump,
-.ui-dialog .charsheet .shield-1-status[value='0'] ~ .btn-shield-repair,
-.ui-dialog .charsheet .shield-2-status[value='0'] ~ .btn-shield-repair,
-.ui-dialog .charsheet .shield-3-status[value='0'] ~ .btn-shield-repair,
-.ui-dialog .charsheet .shield-4-status[value='0'] ~ .btn-shield-repair,
-.ui-dialog .charsheet .shield-5-status[value='0'] ~ .btn-shield-repair,
-.ui-dialog .charsheet .shield-6-status[value='0'] ~ .btn-shield-repair,
-.ui-dialog .charsheet .shields-grid-status[value='0'] ~ .shields-header .btn-shields-grid-repair,
+.ui-dialog .charsheet .sensors-status:not([value='0']) ~ .beams-panel .btn-target,
+.ui-dialog .charsheet .sensors-status:not([value='0']) ~ .missiles-panel .btn-target,
+.ui-dialog .charsheet .sensors-status:not([value='1']) ~ .sensors-header .btn-sensors-repair,
+.ui-dialog .charsheet .sensors-status:not([value='0']) ~ .sensors-panel .btn-scan,
+.ui-dialog .charsheet .sensors-status:not([value='0']) ~ .warp-panel .btn-jump,
+.ui-dialog .charsheet .shield-1-status:not([value='1']) ~ .btn-shield-repair,
+.ui-dialog .charsheet .shield-2-status:not([value='1']) ~ .btn-shield-repair,
+.ui-dialog .charsheet .shield-3-status:not([value='1']) ~ .btn-shield-repair,
+.ui-dialog .charsheet .shield-4-status:not([value='1']) ~ .btn-shield-repair,
+.ui-dialog .charsheet .shield-5-status:not([value='1']) ~ .btn-shield-repair,
+.ui-dialog .charsheet .shield-6-status:not([value='1']) ~ .btn-shield-repair,
+.ui-dialog .charsheet .shields-grid-status:not([value='1']) ~ .shields-header .btn-shields-grid-repair,
 .ui-dialog .charsheet .ship-is-disabled[value='1'] ~ .beams-panel .btn-target,
 .ui-dialog .charsheet .ship-is-disabled[value='1'] ~ .missiles-panel .btn-target,
 .ui-dialog .charsheet .tpa-committed-status[value='1'] ~ .tpa-panel button.btn.energize,
@@ -114,9 +114,9 @@
 .ui-dialog .charsheet .weapon-state-status[value='2'] ~ .weapon-repair,
 .ui-dialog .charsheet .weapon-state-status[value='3'] ~ .weapon-repair,
 .ui-dialog .charsheet .weapon-state-status[value='3'] ~ span .btn-target,
-.ui-dialog .charsheet .weapons-grid-status[value='1'] ~ .beams-panel .btn-target,
-.ui-dialog .charsheet .weapons-grid-status[value='1'] ~ .missiles-panel .btn-target,
-.ui-dialog .charsheet .weapons-grid-status[value='0'] ~ .fc-header .btn-weapons-grid-repair {
+.ui-dialog .charsheet .weapons-grid-status:not([value='0']) ~ .beams-panel .btn-target,
+.ui-dialog .charsheet .weapons-grid-status:not([value='0']) ~ .missiles-panel .btn-target,
+.ui-dialog .charsheet .weapons-grid-status:not([value='1']) ~ .fc-header .btn-weapons-grid-repair {
   background: linear-gradient(135deg, #999999 0%, #666666 100%);
   border-color: #555555;
   color: #cccccc;
@@ -363,36 +363,36 @@
 }
 /* See above for disabled target buttons */
 
-.ui-dialog .charsheet .sensors-status[value='1'] ~ .beams-panel,
-.ui-dialog .charsheet .sensors-status[value='1'] ~ .fc-panel,
-.ui-dialog .charsheet .sensors-status[value='1'] ~ .missiles-panel,
-.ui-dialog .charsheet .sensors-status[value='1'] ~ .sensors-panel,
-.ui-dialog .charsheet .sensors-status[value='1'] ~ .warp-panel {
+.ui-dialog .charsheet .sensors-status:not([value='0']) ~ .beams-panel,
+.ui-dialog .charsheet .sensors-status:not([value='0']) ~ .fc-panel,
+.ui-dialog .charsheet .sensors-status:not([value='0']) ~ .missiles-panel,
+.ui-dialog .charsheet .sensors-status:not([value='0']) ~ .sensors-panel,
+.ui-dialog .charsheet .sensors-status:not([value='0']) ~ .warp-panel {
   background: linear-gradient(135deg, white 0%, #ffcccc 100%);
   border: 2px solid #cc0000;
 }
-.ui-dialog .charsheet .sensors-status[value='1'] ~ .sensors-panel select[name='attr_scanquestion'],
-.ui-dialog .charsheet .sensors-status[value='1'] ~ .sensors-panel input[name='attr_scananswer'] {
+.ui-dialog .charsheet .sensors-status:not([value='0']) ~ .sensors-panel select[name='attr_scanquestion'],
+.ui-dialog .charsheet .sensors-status:not([value='0']) ~ .sensors-panel input[name='attr_scananswer'] {
   pointer-events: none;
 }
 .ui-dialog .charsheet .sensors-status[value='0'] ~ h1 .warning-sensors {
   display: none;
 }
 
-.ui-dialog .charsheet .movement-grid-status[value='1'] ~ .helm-panel {
+.ui-dialog .charsheet .movement-grid-status:not([value='0']) ~ .helm-panel {
   background: linear-gradient(135deg, white 0%, #ffcccc 100%);
   border: 2px solid #cc0000;
 }
-.ui-dialog .charsheet .movement-grid-status[value='1'] ~ .tpa-panel input[name='attr_tpa_movement'],
-.ui-dialog .charsheet .movement-grid-status[value='1'] ~ .helm-panel input[name='attr_tpa_movement'] {
+.ui-dialog .charsheet .movement-grid-status:not([value='0']) ~ .tpa-panel input[name='attr_tpa_movement'],
+.ui-dialog .charsheet .movement-grid-status:not([value='0']) ~ .helm-panel input[name='attr_tpa_movement'] {
   pointer-events: none;
 }
 .ui-dialog .charsheet .movement-grid-status[value='0'] ~ h1 .warning-movement {
   display: none;
 }
 
-.ui-dialog .charsheet .shields-grid-status[value='1'] ~ .shields-panel,
-.ui-dialog .charsheet .shields-grid-status[value='1'] ~ .spa-panel {
+.ui-dialog .charsheet .shields-grid-status:not([value='0']) ~ .shields-panel,
+.ui-dialog .charsheet .shields-grid-status:not([value='0']) ~ .spa-panel {
   background: linear-gradient(135deg, white 0%, #ffcccc 100%);
   border: 2px solid #cc0000;
 }
@@ -400,9 +400,9 @@
   display: none;
 }
 
-.ui-dialog .charsheet .weapons-grid-status[value='1'] ~ .fc-panel,
-.ui-dialog .charsheet .weapons-grid-status[value='1'] ~ .beams-panel,
-.ui-dialog .charsheet .weapons-grid-status[value='1'] ~ .missiles-panel {
+.ui-dialog .charsheet .weapons-grid-status:not([value='0']) ~ .fc-panel,
+.ui-dialog .charsheet .weapons-grid-status:not([value='0']) ~ .beams-panel,
+.ui-dialog .charsheet .weapons-grid-status:not([value='0']) ~ .missiles-panel {
   background: linear-gradient(135deg, white 0%, #ffcccc 100%);
   border: 2px solid #cc0000;
 }
