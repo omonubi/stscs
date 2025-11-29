@@ -977,7 +977,7 @@ on(`clicked:rolldamage`, async () => {
         13, 16, 17, 6, 3, 7, 1, 4, 14, 12,
         13, 16, 7, 7, 4, 9, 1, 2, 14, 12,
         13, 16, 7, 7, 9, 11, 1, 2, 2, 2,
-        13, 16, 17, 1, 1, 10, 1, 2, 9, 15,
+        13, 16, 17, 2, 2, 10, 1, 2, 5, 15,
         13, 16, 6, 6, 8, 11, 1, 2, 2, 2,
 
         13, 16, 6, 6, 3, 8, 1, 2, 14, 12,
@@ -1000,14 +1000,21 @@ on(`clicked:rolldamage`, async () => {
     let residualDamage = 0;
     let penetratingDamage = 0;
     let returnStr = ``;
-    let rollStr = `/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Damage Results}} {{color=red}} {{Incoming Dmg=${baseDamage}}} {{On Shield Arc=${shieldArcStr}}} `;
+    let rollStr = `/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Damage Results (Chart ${damageChart})}} {{color=red}} {{Incoming Dmg=${baseDamage}}} {{On Shield Arc=${shieldArcStr}}} `;
 
     const hitRollResult = getRandomIntInclusive(0, 9);
-    const hitLocation = ((damageChart.charCodeAt(0) - 65) * 60) + (hitRollResult * shieldArc);
+
+console.log ('damageChart: ' + damageChart);
+console.log ('shieldArc: ' + shieldArc);
+console.log ('hitRollResult: ' + hitRollResult);
+console.log('damageChart calc: ' + ((damageChart.charCodeAt(0) - 65) * 60));
+console.log('shieldArc calc: ' + ((shieldArc - 1) * 10));
+    const hitLocation = ((damageChart.charCodeAt(0) - 65) * 60) + ((shieldArc - 1) * 10) + hitRollResult;
+console.log ('hitLocation: ' + hitLocation);
     
     const damageHandlers = {
         1: async (shieldVar, baseDamage) => {
-            let result = `{{Hit Location=${DAMAGE_RESULT_SUP}}} `;
+            let result = `{{Hit Location=${DAMAGE_RESULT_SUP} (${hitRollResult+1})}} `;
             let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
             result += returnStr;
             if (penetratingDamage) {
@@ -1019,7 +1026,7 @@ on(`clicked:rolldamage`, async () => {
             return result;
         },
         2: async (shieldVar, baseDamage) => {
-            let result = `{{Hit Location=${DAMAGE_RESULT_SUP_HALF}}} `;
+            let result = `{{Hit Location=${DAMAGE_RESULT_SUP_HALF} (${hitRollResult+1})}} `;
             let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage, 0.5);
             result += returnStr;
             if (penetratingDamage) {
@@ -1031,7 +1038,7 @@ on(`clicked:rolldamage`, async () => {
             return result;
         },
         3: async (shieldVar, baseDamage) => {
-            let result = `{{Hit Location=${DAMAGE_RESULT_PORT}}} `;
+            let result = `{{Hit Location=${DAMAGE_RESULT_PORT} (${hitRollResult+1})}} `;
             let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
             result += returnStr;
             if (penetratingDamage) {
@@ -1040,7 +1047,7 @@ on(`clicked:rolldamage`, async () => {
             return result;
             },
         4: async (shieldVar, baseDamage) => {
-            let result = `{{Hit Location=${DAMAGE_RESULT_STBD}}} `;
+            let result = `{{Hit Location=${DAMAGE_RESULT_STBD} (${hitRollResult+1})}} `;
             let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
             result += returnStr;
             if (penetratingDamage) {
@@ -1049,7 +1056,7 @@ on(`clicked:rolldamage`, async () => {
             return result;
         },
         5: async (shieldVar, baseDamage) => {
-            let result = `{{Hit Location=${DAMAGE_RESULT_WARP}}} `;
+            let result = `{{Hit Location=${DAMAGE_RESULT_WARP} (${hitRollResult+1})}} `;
             let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
             result += returnStr;
             if (penetratingDamage) {
@@ -1058,7 +1065,7 @@ on(`clicked:rolldamage`, async () => {
             return result;
         },
         6: async (shieldVar, baseDamage) => {
-            let result = `{{Hit Location=${DAMAGE_RESULT_PORT_HALF}}} `;
+            let result = `{{Hit Location=${DAMAGE_RESULT_PORT_HALF} (${hitRollResult+1})}} `;
             let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage, 0.5);
             result += returnStr;
             if (penetratingDamage) {
@@ -1067,7 +1074,7 @@ on(`clicked:rolldamage`, async () => {
             return result;
         },
         7: async (shieldVar, baseDamage) => {
-            let result = `{{Hit Location=${DAMAGE_RESULT_STBD_HALF}}} `;
+            let result = `{{Hit Location=${DAMAGE_RESULT_STBD_HALF} (${hitRollResult+1})}} `;
             let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage, 0.5);
             result += returnStr;
             if (penetratingDamage) {
@@ -1076,7 +1083,7 @@ on(`clicked:rolldamage`, async () => {
             return result;
         },
         8: async (shieldVar, baseDamage) => {
-            let result = `{{Hit Location=${DAMAGE_RESULT_SUP_PORT}}} `;
+            let result = `{{Hit Location=${DAMAGE_RESULT_SUP_PORT} (${hitRollResult+1})}} `;
             let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage, 0.5);
             result += returnStr;
             if (penetratingDamage) {
@@ -1101,7 +1108,7 @@ on(`clicked:rolldamage`, async () => {
             return result;
         },
         9: async (shieldVar, baseDamage) => {
-            let result = `{{Hit Location=${DAMAGE_RESULT_SUP_STBD}}} `;
+            let result = `{{Hit Location=${DAMAGE_RESULT_SUP_STBD} (${hitRollResult+1})}} `;
             let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage, 0.5);
             result += returnStr;
             if (penetratingDamage) {
@@ -1126,7 +1133,7 @@ on(`clicked:rolldamage`, async () => {
             return result;
         },
         10: async (shieldVar, baseDamage) => {
-            let result = `{{Hit Location=${DAMAGE_RESULT_IMP}}} `;
+            let result = `{{Hit Location=${DAMAGE_RESULT_IMP} (${hitRollResult+1})}} `;
             let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
             result += returnStr;
             if (penetratingDamage) {
@@ -1140,7 +1147,7 @@ on(`clicked:rolldamage`, async () => {
             return result;
         },
         11: async (shieldVar, baseDamage) => {
-            let result = `{{Hit Location=${DAMAGE_RESULT_IMP_HALF}}} `;
+            let result = `{{Hit Location=${DAMAGE_RESULT_IMP_HALF} (${hitRollResult+1})}} `;
             let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage, 0.5);
             result += returnStr;
             if (penetratingDamage) {
@@ -1154,7 +1161,7 @@ on(`clicked:rolldamage`, async () => {
             return result;
         },
         12: async (shieldVar, baseDamage) => {
-            let result = `{{Hit Location=${DAMAGE_RESULT_BRIDGE}}} `;
+            let result = `{{Hit Location=${DAMAGE_RESULT_BRIDGE} (${hitRollResult+1})}} `;
             let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
             result += returnStr;
             if (penetratingDamage) {
@@ -1166,7 +1173,7 @@ on(`clicked:rolldamage`, async () => {
             return result;
         },
         13: async (shieldVar, baseDamage) => {
-            let result = `{{Hit Location=${DAMAGE_RESULT_SHIELD}}} `;
+            let result = `{{Hit Location=${DAMAGE_RESULT_SHIELD} (${hitRollResult+1})}} `;
             let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
             result += returnStr;
             if (penetratingDamage) {
@@ -1180,7 +1187,7 @@ on(`clicked:rolldamage`, async () => {
             return result;
         },
         14: async (shieldVar, baseDamage) => {
-            let result = `{{Hit Location=${DAMAGE_RESULT_SENSORS}}} `;
+            let result = `{{Hit Location=${DAMAGE_RESULT_SENSORS} (${hitRollResult+1})}} `;
             let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
             result += returnStr;
             if (penetratingDamage) {
@@ -1195,7 +1202,7 @@ on(`clicked:rolldamage`, async () => {
             return result;
         },
         15: async (shieldVar, baseDamage) => {
-            let result = `{{Hit Location=${DAMAGE_RESULT_ENG}}} `;
+            let result = `{{Hit Location=${DAMAGE_RESULT_ENG} (${hitRollResult+1})}} `;
             let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
             result += returnStr;
             if (penetratingDamage) {
@@ -1212,7 +1219,7 @@ on(`clicked:rolldamage`, async () => {
             return result;
         },
         16: async (shieldVar, baseDamage) => {
-            let result = `{{Hit Location=${DAMAGE_RESULT_BEAM}}} `;
+            let result = `{{Hit Location=${DAMAGE_RESULT_BEAM} (${hitRollResult+1})}} `;
             let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
             result += returnStr;
             if (penetratingDamage) {
@@ -1226,7 +1233,7 @@ on(`clicked:rolldamage`, async () => {
             return result;
         },
         17: async (shieldVar, baseDamage) => {
-            let result = `{{Hit Location=${DAMAGE_RESULT_MISSILE}}} `;
+            let result = `{{Hit Location=${DAMAGE_RESULT_MISSILE} (${hitRollResult+1})}} `;
             let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
             result += returnStr;
             if (penetratingDamage) {
@@ -1538,7 +1545,6 @@ async function damageWeapon(myShieldNum = 1, myRepeatingSection = ``, myDmg = 0)
 
         // Get all matching banked weapons or default to single weapon
         const wpnBankName = selectedWeapon.name.match(/#\d+\w+/);
-        console.log('wpnBankName: ' + wpnBankName);
         const bankedRows = [];
         if (wpnBankName) {
             const nameRoot = selectedWeapon.name.match(/#\d+/);
@@ -1566,7 +1572,7 @@ async function damageWeapon(myShieldNum = 1, myRepeatingSection = ``, myDmg = 0)
             });
         } else {
             // Not in a bank — damage just this weapon
-            bankedRows.push(rowID);
+            bankedRows.push(eligibleWeapons[randomIndex].id);
         }
 
         let bankedNames = [];
