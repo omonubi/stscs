@@ -74,12 +74,16 @@
             <input type='number' name='attr_crewrollpenalty' readonly/>
         </span>
 
+        <input type='hidden' name='attr_crewbonus_saved'/>
+        <input type='hidden' name='attr_crewbonus_engineid'/>
         <select class='crew-bonus' name='attr_crewbonus'>
             <option value='0' selected>None</option>
             <option value='1'>Bonus To-Hit</option>
             <option value='2'>Bonus TPA</option>
             <option value='3'>Bonus SPA</option>
-            <option value='4'>Repair</option>
+            <option value='4'>+1 Superstructure</option>
+            <option value='5'>+1 Impulse</option>
+            <option value='6'>+1 Warp Engine</option>
         </select>
         <span></span>
         <span>
@@ -917,15 +921,136 @@ on(`change:defense change:wdf`, function(eventInfo) {
 });
 
 // CREW BONUS selection
-on(`change:crewbonus`, function(eventInfo) {
-    getAttrs([`crewbonus`], function(values) {
+on(`change:crewbonus`, async function(eventInfo) {
+    try {
+        const values = await getAttrsAsync([`crewbonus`, `hp`, `hp_max`, `crewbonus_saved`, `crewbonus_engineid`]);
         const crewBonus = parseInt(values[`crewbonus`]) || 0;
-
         const output = {};
-        output[`crewbonus1`] = output[`crewbonus2`] = output[`crewbonus3`] = output[`crewbonus4`] = 0;
-        output[`crewbonus${crewBonus}`] = 1;
-        setAttrs(output);
-    });
+
+        // Save crewBonus value to crewbonus_saved
+        output[`crewbonus_saved`] = crewBonus;
+
+        // Reset crewbonus1, crewbonus2, crewbonus3 to 0 (skip crewbonus4)
+        output[`crewbonus1`] = output[`crewbonus2`] = output[`crewbonus3`] = 0;
+
+        // If crewBonus is less than 4, set the corresponding crewbonus field to 1
+        if (crewBonus < 4) {
+            output[`crewbonus${crewBonus}`] = 1;
+        }
+
+        // If crewBonus = 4, increase hp by 1 (no higher than hp_max)
+        if (crewBonus === 4) {
+            const currentHp = parseInt(values[`hp`]) || 0;
+            const maxHp = parseInt(values[`hp_max`]) || 0;
+            output[`hp`] = Math.min(currentHp + 1, maxHp);
+        }
+
+        // If crewbonus_saved = 4, decrease hp by 1 (can go below zero)
+        if (parseInt(values[`crewbonus_saved`]) === 4) {
+            const currentHp = parseInt(values[`hp`]) || 0;
+            output[`hp`] = currentHp - 1;
+        }
+
+        // If crewBonus = 5, add +1 to the Impulse engine with lowest power
+        if (crewBonus === 5) {
+            const engineIds = await getSectionIDsAsync(`repeating_engines`);
+            let lowestPower = Infinity;
+            let lowestEngineId = null;
+
+            // Find Impulse engine with lowest power
+            for (const engineId of engineIds) {
+                const engineValues = await getAttrsAsync([
+                    `repeating_engines_${engineId}_engine_type`,
+                    `repeating_engines_${engineId}_engine_power`,
+                    `repeating_engines_${engineId}_engine_power_full`
+                ]);
+
+                const engineType = parseInt(engineValues[`repeating_engines_${engineId}_engine_type`]) || 0;
+                const enginePower = parseInt(engineValues[`repeating_engines_${engineId}_engine_power`]) || 0;
+                const enginePowerFull = parseInt(engineValues[`repeating_engines_${engineId}_engine_power_full`]) || 0;
+
+                if (engineType === 1 && enginePower < lowestPower && enginePower < enginePowerFull) {
+                    lowestPower = enginePower;
+                    lowestEngineId = engineId;
+                }
+            }
+
+            // Increase power of lowest Impulse engine
+            if (lowestEngineId) {
+                const engineValues = await getAttrsAsync([
+                    `repeating_engines_${lowestEngineId}_engine_power`,
+                    `repeating_engines_${lowestEngineId}_engine_power_full`
+                ]);
+                const currentPower = parseInt(engineValues[`repeating_engines_${lowestEngineId}_engine_power`]) || 0;
+                const maxPower = parseInt(engineValues[`repeating_engines_${lowestEngineId}_engine_power_full`]) || 0;
+
+                output[`repeating_engines_${lowestEngineId}_engine_power`] = Math.min(currentPower + 1, maxPower);
+                output[`crewbonus_engineid`] = lowestEngineId;
+            }
+        }
+
+        // If crewbonus_saved = 5, subtract 1 from previously modified Impulse engine
+        if (parseInt(values[`crewbonus_saved`]) === 5) {
+            const engineId = values[`crewbonus_engineid`];
+            if (engineId) {
+                const engineValues = await getAttrsAsync([`repeating_engines_${engineId}_engine_power`]);
+                const currentPower = parseInt(engineValues[`repeating_engines_${engineId}_engine_power`]) || 0;
+                output[`repeating_engines_${engineId}_engine_power`] = Math.max(currentPower - 1, 0);
+            }
+        }
+
+        // If crewBonus = 6, add +1 to the Warp engine with lowest power
+        if (crewBonus === 6) {
+            const engineIds = await getSectionIDsAsync(`repeating_engines`);
+            let lowestPower = Infinity;
+            let lowestEngineId = null;
+
+            // Find Warp engine with lowest power
+            for (const engineId of engineIds) {
+                const engineValues = await getAttrsAsync([
+                    `repeating_engines_${engineId}_engine_type`,
+                    `repeating_engines_${engineId}_engine_power`,
+                    `repeating_engines_${engineId}_engine_power_full`
+                ]);
+
+                const engineType = parseInt(engineValues[`repeating_engines_${engineId}_engine_type`]) || 0;
+                const enginePower = parseInt(engineValues[`repeating_engines_${engineId}_engine_power`]) || 0;
+                const enginePowerFull = parseInt(engineValues[`repeating_engines_${engineId}_engine_power_full`]) || 0;
+
+                if (engineType === 2 && enginePower < lowestPower && enginePower < enginePowerFull) {
+                    lowestPower = enginePower;
+                    lowestEngineId = engineId;
+                }
+            }
+
+            // Increase power of lowest Warp engine
+            if (lowestEngineId) {
+                const engineValues = await getAttrsAsync([
+                    `repeating_engines_${lowestEngineId}_engine_power`,
+                    `repeating_engines_${lowestEngineId}_engine_power_full`
+                ]);
+                const currentPower = parseInt(engineValues[`repeating_engines_${lowestEngineId}_engine_power`]) || 0;
+                const maxPower = parseInt(engineValues[`repeating_engines_${lowestEngineId}_engine_power_full`]) || 0;
+
+                output[`repeating_engines_${lowestEngineId}_engine_power`] = Math.min(currentPower + 1, maxPower);
+                output[`crewbonus_engineid`] = lowestEngineId;
+            }
+        }
+
+        // If crewbonus_saved = 6, subtract 1 from previously modified Warp engine
+        if (parseInt(values[`crewbonus_saved`]) === 6) {
+            const engineId = values[`crewbonus_engineid`];
+            if (engineId) {
+                const engineValues = await getAttrsAsync([`repeating_engines_${engineId}_engine_power`]);
+                const currentPower = parseInt(engineValues[`repeating_engines_${engineId}_engine_power`]) || 0;
+                output[`repeating_engines_${engineId}_engine_power`] = Math.max(currentPower - 1, 0);
+            }
+        }
+
+        await setAttrsAsync(output);
+    } catch (error) {
+        console.error(`Error in crewbonus handler:`, error);
+    }
 });
 
 // CREW calculation
