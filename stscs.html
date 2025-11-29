@@ -228,7 +228,7 @@
     </span>
 
     <div class='grid-6col helm-panel'>
-        <span></span>
+        <button type='action' class='btn warning btn-stress-turn' name='act_stress_turn'>Stress Turn</button>
         <span></span>
         <label><strong>TPA to Movement:</strong></label>
         <input type='number' class='em' name='attr_tpa_movement' min='0' value='0'/>
@@ -568,7 +568,7 @@
             </select>
             <input type='text' class='w10' name='attr_name' placeholder='# Name (arcs)...'/>
             <input type='number' class='w5' name='attr_maxrange'/>
-            <select class='w3' name='attr_chart'>
+            <select class='w3 firing-chart' name='attr_chart'>
                 <option value='0' selected>select...</option>
                 <option>A</option>
                 <option>B</option>
@@ -625,11 +625,11 @@
         <div class='span-grid'>
             <label style='padding-left: 27px;'>Desig. (Arcs)</label>
             <label style='padding-left: 26px;'>Range</label>
-            <label style='padding-left: 15px;'>Chart</label>
+            <label style='padding-left: 13px;'>Chart</label>
             <label style='padding-left: 18px;'>Power</label>
             <label style='padding-left: 4px;'>Damage</label>
             <label style='padding-left: 7px;'>Arm</label>
-            <label style='padding-left: 167px;'>Target</label>
+            <label style='padding-left: 169px;'>Target</label>
             <label style='padding-left: 65px;'>Dist.</label>
             <label style='padding-left: 7px;'>To-Hit</label>
         </div>
@@ -643,7 +643,7 @@
             </select>
             <input type='text' class='w10' name='attr_name' placeholder='# Name (arcs)...'/>
             <input type='number' class='w5' name='attr_maxrange'/>
-            <select class='w5' name='attr_chart'>
+            <select class='w3 firing-chart' name='attr_chart'>
                 <option value='0' selected>select...</option>
                 <option>A</option>
                 <option>B</option>
@@ -675,7 +675,7 @@
             <input type='number' name='attr_power' min='1' max='20' value='1'/>
             <input type='hidden' class='missile-armed-status' name='attr_armed_status'/>
             <input type='checkbox' class='missile-armed' style='margin-left: 13px;' value='1' name='attr_armed'/>
-            <span>
+            <span style='margin-left: 14px;'>
                 <input type='hidden' class='btn-target-status' name='attr_btn-target_status' value='0'/>
                 <button type='action' class='btn btn-target' style='margin-left: 87px;' name='act_btn-target'>Target</button>
             </span> →
@@ -1837,7 +1837,7 @@ on(`clicked:scan`, async (event) => {
     const scanRoll = getRandomIntInclusive(1, 10);
 
     startRoll(
-        `&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Sensor Scan}} {{color=orange}} {{Target=[${tokenName}](${ROLL20_CHAR_URL}${charId})}} {{To-Scan=[[6]]}} {{Roll=[[${scanRoll}]]}}`,
+        `&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Sensor Scan}} {{color=green}} {{Target=[${tokenName}](${ROLL20_CHAR_URL}${charId})}} {{To-Scan=[[6]]}} {{Roll=[[${scanRoll}]]}}`,
         roll => finishRoll(roll.rollId)
     );
 
@@ -1879,7 +1879,7 @@ on(`change:scanquestion`, function(eventInfo) {
                 `Are any transporters powered?`
                 ];
 
-            startRoll(`/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Sensor Query}} {{color=orange}} {{Target=[${sensorLock}](${ROLL20_CHAR_URL}${sensorLockId})}} {{Query=${questions[questionIndex]}}}`, roll => {
+            startRoll(`/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Sensor Query}} {{color=green}} {{Target=[${sensorLock}](${ROLL20_CHAR_URL}${sensorLockId})}} {{Query=${questions[questionIndex]}}}`, roll => {
                 finishRoll(roll.rollId);
             });
         });
@@ -1986,6 +1986,40 @@ function energizeShields() {
             setAttrs(output);
         });
     });
+});
+
+// STRESS TURN
+on(`clicked:stress_turn`, async (event) => {
+    const response = await extractChatData(`?{Confirm Stress Turn|Confirm|Cancel}`);
+
+    if (response === `Confirm`) {
+        const engines = await getSectionIDsAsync(`repeating_engines`);
+
+        const Fieldnames = [];
+        engines.forEach(id => {
+            Fieldnames.push(`repeating_engines_${id}_engine_power`);
+            Fieldnames.push(`repeating_engines_${id}_engine_type`);
+        });
+
+        const output = {};
+        const values = await getAttrsAsync([...Fieldnames, `hp`]);
+        engines.forEach(id => {
+            const engineType = parseInt(values[`repeating_engines_${id}_engine_type`]) || 0;
+            if (engineType == ENGINE_TYPE_WARP) {
+                const currentPower = parseInt(values[`repeating_engines_${id}_engine_power`]) || 0;
+                output[`repeating_engines_${id}_engine_power`] = Math.max(0, currentPower - 1);
+            }
+        });
+
+        const currentSup = parseInt(values['hp']) || 0;
+        output[`hp`] = Math.max(0, currentSup - 1);
+
+        await setAttrsAsync(output);
+
+        startRoll(`&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Makes a Stress Turn!}} {{color=orange}}`, roll => {
+            finishRoll(roll.rollId);
+        });
+    }   
 });
 
 // SUPERSTRUCTURE MASS and SIZE calculations

@@ -267,6 +267,10 @@
   background-color: white; 
   width: 268px;
 }
+.ui-dialog .charsheet select.firing-chart {
+  text-align: center;
+  -webkit-appearance: none;
+}
 .ui-dialog .charsheet select.state-select {
   padding-left: 4px;
   pointer-events: none;
