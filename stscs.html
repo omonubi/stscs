@@ -198,19 +198,27 @@
         <span class='span2'>
             <select class='scan-question' name='attr_scanquestion'>
                 <option value='0'>Submit a query...</option>
-                <option value='1'>How much power is available?</option>
-                <option value='2'>What is the relative power allocation?</option>
+                <!--<option value='1'>How much power is available?</option>-->
+                <option value='2'>How is power allocated?</option>
                 <option value='3'>How are the shields powered?</option>
                 <!--<option value='4'>Is a specific shield up?</option>-->
                 <option value='5'>How are the beam weapons powered?</option>
                 <option value='6'>How are the missile weapons powered?</option>
                 <!--<option value='7'>Is a specific weapon powered?</option>-->
-                <option value='8'>How much damage has the vessel taken?</option>
-                <!--<option value='9'>What is the status of the ship's crew?</option>-->
+                <option value='8'>How much damage has been taken?</option>
+                <option value='9'>What is the status of the crew?</option>
                 <!--<option value='10'>Are any transporters powered?</option>-->
             </select>
         </span>
-        <span class='span2'><input type='text' class='scan-answer' name='attr_scananswer' placeholder='Paste the result here...'/>
+        <span class='span2'><input type='text' class='scan-answer' name='attr_scananswer' placeholder='Paste the result here...'/></span>
+        
+        <button type='action' class='btn gm-only btn-send' name='act_send_alloc' title='DO NOT CLICK'>Alloc</button>
+        <button type='action' class='btn gm-only btn-send' name='act_send_beams' title='DO NOT CLICK'>Beams</button>
+        <button type='action' class='btn gm-only btn-send' name='act_send_crew' title='DO NOT CLICK'>Crew</button>
+        <button type='action' class='btn gm-only btn-send' name='act_send_damage' title='DO NOT CLICK'>Damage</button>
+        <button type='action' class='btn gm-only btn-send' name='act_send_missiles' title='DO NOT CLICK'>Missiles</button>
+        <button type='action' class='btn gm-only btn-send' name='act_send_shields' title='DO NOT CLICK'>Shields</button>
+
     </div>
     <br/>
 
@@ -836,8 +844,14 @@ const ROLL20_CHAR_URL = `https://journal.roll20.net/character/`;
 
 // ON SHEET OPENED
 on(`sheet:opened`,function(){
-    getAttrs([`character_name`], function(values) {
+    getAttrs([`character_name`, `sup-percent`, `tpa-percent`, `shields-percent`, `weapons-percent`, `crew-percent`], function(values) {
         const charactername = values[`character_name`];
+        const supPercent = parseInt(values[`sup-percent`]) || -1;
+        const tpaPercent = parseInt(values[`tpa-percent`]) || -1;
+        const shieldsPercent = parseInt(values[`shields-percent`]) || -1;
+        console.log('shieldsPercent: ' + shieldsPercent);
+        const weaponsPercent = parseInt(values[`weapons-percent`]) || -1;
+        const crewPercent = parseInt(values[`crew-percent`]) || -1;
         
         const output = {};
 
@@ -846,8 +860,13 @@ on(`sheet:opened`,function(){
             output[`caprating`] = 45 + getRandomIntInclusive(1,10) + getRandomIntInclusive(1,10) + getRandomIntInclusive(1,10);
             output[`crewrating`] = output[`crewefficiency`] = 25 + getRandomIntInclusive(1,10) + getRandomIntInclusive(1,10) + getRandomIntInclusive(1,10);
         }
-
         output[`roll20charurl`] = ROLL20_CHAR_URL;
+
+        output[`sup-percent`] = supPercent == -1 ? 100 : supPercent;
+        output[`tpa-percent`] = tpaPercent == -1 ? 100 : tpaPercent;
+        output[`shields-percent`] = shieldsPercent == -1 ? 100 : shieldsPercent;
+        output[`weapons-percent`] = weaponsPercent == -1 ? 100 : weaponsPercent;
+        output[`crew-percent`] = crewPercent == -1 ? 100 : crewPercent;
 
         setAttrs(output);
     });
@@ -1946,11 +1965,11 @@ on(`clicked:repair`, async function(eventInfo) {
             output[`shields_grid_state`] = output[`shields_grid_status`] = output[`shields_grid_to_repair`] = output[`shields_grid_destroyed`] = 0;
             output[`weapons_grid_state`] = output[`weapons_grid_status`] = output[`weapons_grid_to_repair`] = output[`weapons_grid_destroyed`] = 0;
             output[`movement_grid_state`] = output[`movement_grid_status`] = output[`movement_grid_to_repair`] = output[`movement_grid_destroyed`] = 0;
+            output[`sensorlock`] = output[`sensorlockid`] = output[`scanquestion`] = output[`scananswer`] = ``;
             setAttrs(output);
         });
 
         await updateWeaponsPercent();
-        undoSensorLock();
         resetTPA();
     }
 });
@@ -1960,6 +1979,9 @@ on(`clicked:scan`, async (event) => {
     const output = {};
 
     const { tokenName, charId } = await extractTargetData(); // Destructure JSON
+
+    output[`sensorlock`] = output[`sensorlockid`] = output[`scanquestion`] = output[`scananswer`] = ``;
+
     const scanRoll = getRandomIntInclusive(1, 10);
 
     startRoll(
@@ -1970,8 +1992,6 @@ on(`clicked:scan`, async (event) => {
     if (scanRoll < 7) {
         output[`sensorlock`] = tokenName;
         output[`sensorlockid`] = charId;
-    } else {
-        undoSensorLock();
     }
 
     await setAttrsAsync(output);
@@ -1993,15 +2013,15 @@ on(`change:scanquestion`, function(eventInfo) {
 
             const questions = [
                 ``,
-                `How much power is available?`,
-                `What is the relative power allocation?`,
+                `How is power allocated?`,
+                `What is power allocated?`,
                 `How are the shields powered?`,
                 `Is a specific shield up?`,
                 `How are the beam weapons powered?`,
                 `How are the missile weapons powered?`,
                 `Is a specific weapon powered?`,
-                `How much damage has the vessel taken?`,
-                `What is the status of the ships crew?`,
+                `How much damage has been taken?`,
+                `What is the status of the crew?`,
                 `Are any transporters powered?`
                 ];
 
@@ -2010,7 +2030,204 @@ on(`change:scanquestion`, function(eventInfo) {
             });
         });
     }
-}); 
+});
+
+// SENSORS SEND ALLOCATION
+on(`clicked:send_alloc`, async (event) => {
+    const { tokenName, charId } = await extractTargetData(); // Destructure JSON
+    
+    const values = await getAttrsAsync([`tpa_movement`, `tpa_warp`, `tpa_shields`, `tpa_weapons`]);
+    
+    // Get the TPA variable values
+    const tpaVars = {
+        'Movement': parseInt(values[`tpa_movement`]) || 0,
+        'Warp': parseInt(values[`tpa_warp`]) || 0,
+        'Shields': parseInt(values[`tpa_shields`]) || 0,
+        'Weapons': parseInt(values[`tpa_weapons`]) || 0
+    };
+    
+    // Filter out zero values and create array of [name, value] pairs
+    const filtered = Object.entries(tpaVars).filter(([name, val]) => val > 0);
+
+    // Check if filtered array is empty
+    let priorityString = ``;
+    if (filtered.length === 0) {
+        priorityString += `{{Priority=No Power Allocated}} `;
+    } else {
+        // Sort by value descending
+        filtered.sort((a, b) => {
+            return b [1] - a [1]; // Sort by value descending
+        });
+        
+        // Build priority string by grouping equal values
+        let currentPriority = 1;
+        let i = 0;
+        
+        while (i < filtered.length) {
+            const currentValue = filtered[i][1];
+            const group = [filtered[i][0]]; // Only include the name, not the value
+            
+            // Collect all variables with the same value
+            while (i + 1 < filtered.length && filtered[i + 1] [1] === currentValue) {
+                i++;
+                group.push(filtered[i][0]); // Only include the name, not the value
+            }
+            
+            priorityString += `{{${currentPriority}:=${group.join('/')}}} `;
+            currentPriority++;
+            i++;
+        }
+    }
+    
+    startRoll(
+        `/w ${tokenName} &{template:custom} {{title=**Scan Results: Allocation**}} {{subtitle=[@{character_name}](${ROLL20_CHAR_URL}@{character_id})}} {{color=green}} ${priorityString}`,
+        roll => finishRoll(roll.rollId)
+    );
+});
+
+// SENSORS SEND BEAMS
+on(`clicked:send_beams`, async (event) => {
+    const { tokenName, charId } = await extractTargetData(); // Destructure JSON
+    
+    // Get all repeating_beams section IDs
+    const beamIds = await getSectionIDsAsync('repeating_beams');
+    
+    // Get power values for all beams
+    const powerAttrs = beamIds.map(id => `repeating_beams_${id}_power`);
+    const beamData = await getAttrsAsync(powerAttrs);
+    
+    // Count beams with power > 0 and total power
+    let weaponCount = 0;
+    let totalPower = 0;
+    
+    beamIds.forEach(id => {
+        const power = parseInt(beamData[`repeating_beams_${id}_power`]) || 0;
+        if (power > 0) {
+            weaponCount++;
+            totalPower += power;
+        }
+    });
+    
+    // Build result string with weapon count and power totals
+    const rollString = `{{Beams:=${weaponCount}}} {{TPA:=${totalPower}}}`;
+
+    startRoll(
+        `/w ${tokenName} &{template:custom} {{title=**Scan Results: Beams**}} {{subtitle=[@{character_name}](${ROLL20_CHAR_URL}@{character_id})}} {{color=green}} ${rollString}`,
+        roll => finishRoll(roll.rollId)
+    );
+});
+
+// SENSORS SEND CREW
+on(`clicked:send_crew`, async (event) => {
+    const { tokenName, charId } = await extractTargetData(); // Destructure JSON
+    
+    // Get the status variables
+    const statusData = await getAttrsAsync([
+        'crew-percent'
+    ]);
+    
+    // Extract values with defaults to 0
+    const crew = statusData['crew-percent'] || 0;
+    
+    // Build roll string with status values
+    const statusString = `{{Crew:=${crew}%}}`;
+
+    startRoll(
+        `/w ${tokenName} &{template:custom} {{title=**Scan Results: Crew**}} {{subtitle=[@{character_name}](${ROLL20_CHAR_URL}@{character_id})}} {{color=green}} ${statusString}`,
+        roll => finishRoll(roll.rollId)
+    );
+});
+
+// SENSORS SEND DAMAGE
+on(`clicked:send_damage`, async (event) => {
+    const { tokenName, charId } = await extractTargetData(); // Destructure JSON
+    
+    // Get the status variables
+    const statusData = await getAttrsAsync([
+        'sup-percent',
+        'tpa-percent',
+        'shields-percent',
+        'weapons-percent'
+    ]);
+    
+    // Extract values with defaults to 0
+    const superstructure = statusData['sup-percent'] || 0;
+    const tpa = statusData['tpa-percent'] || 0;
+    const shields = statusData['shields-percent'] || 0;
+    const weapons = statusData['weapons-percent'] || 0;
+    
+    // Build roll string with status values
+    const statusString = `{{Sup:=${superstructure}%}} {{TPA:=${tpa}%}} {{Shd:=${shields}%}} {{Wpn:=${weapons}%}}`;
+
+    startRoll(
+        `/w ${tokenName} &{template:custom} {{title=**Scan Results: Damage**}} {{subtitle=[@{character_name}](${ROLL20_CHAR_URL}@{character_id})}} {{color=green}} ${statusString}`,
+        roll => finishRoll(roll.rollId)
+    );
+});
+
+// SENSORS SEND MISSILES
+on(`clicked:send_missiles`, async (event) => {
+    const { tokenName, charId } = await extractTargetData(); // Destructure JSON
+    
+    // Get all repeating_missiles section IDs
+    const missileIds = await getSectionIDsAsync('repeating_missiles');
+    
+    // Get power and armed status for all missiles
+    const powerAttrs = missileIds.map(id => `repeating_missiles_${id}_cost`);
+    const armedAttrs = missileIds.map(id => `repeating_missiles_${id}_armed`);
+    
+    const missileData = await getAttrsAsync([...powerAttrs, ...armedAttrs]);
+    
+    // Count missiles with power > 0 and armed = 1, and total power
+    let weaponCount = 0;
+    let totalPower = 0;
+    
+    missileIds.forEach(id => {
+        const power = parseInt(missileData[`repeating_missiles_${id}_cost`]) || 0;
+        const armed = parseInt(missileData[`repeating_missiles_${id}_armed`]) || 0;
+        
+        if (power > 0 && armed === 1) {
+            weaponCount++;
+            totalPower += power;
+        }
+    });
+    
+    // Build result string with weapon count and power totals
+    const rollString = `{{Missiles:=${weaponCount}}} {{TPA:=${totalPower}}}`;
+
+    startRoll(
+        `/w ${tokenName} &{template:custom} {{title=**Scan Results: Missiles**}} {{subtitle=[@{character_name}](${ROLL20_CHAR_URL}@{character_id})}} {{color=green}} ${rollString}`,
+        roll => finishRoll(roll.rollId)
+    );
+});
+
+// SENSORS SEND SHIELDS
+on(`clicked:send_shields`, async (event) => {
+    const { tokenName, charId } = await extractTargetData(); // Destructure JSON
+
+    // Fetch shield and SPR values
+    const shieldVars = await getAttrsAsync(['shield_1c', 'shield_2c', 'shield_3c', 'shield_4c', 'shield_5c', 'shield_6c', 'spr_1', 'spr_2']);
+    
+    // Count shields with value > 0
+    const shieldsPowered = ['shield_1c', 'shield_2c', 'shield_3c', 'shield_4c', 'shield_5c', 'shield_6c']
+        .filter(shield => parseInt(shieldVars[shield]) > 0)
+        .length;
+    
+    // Sum total power allocated
+    const powerAllocated = ['shield_1c', 'shield_2c', 'shield_3c', 'shield_4c', 'shield_5c', 'shield_6c']
+        .reduce((sum, shield) => sum + parseInt(shieldVars[shield] || 0), 0);
+    
+    // Format SPR as "spr_1/spr_2"
+    const sprValue = `${shieldVars.spr_1}/${shieldVars.spr_2}`;
+    
+    // Build the shields string
+    const shieldsString = `{{Shields:=${shieldsPowered}}} {{TPA:=${powerAllocated}}} {{SPR:=${sprValue}}}`;
+
+    startRoll(
+        `/w ${tokenName} &{template:custom} {{title=**Scan Results: Shields**}} {{subtitle=[@{character_name}](${ROLL20_CHAR_URL}@{character_id})}} {{color=green}} ${shieldsString}`,
+        roll => finishRoll(roll.rollId)
+    );
+});
 
 // SHIELD POINTS calculation
 on(`change:tpa_shields change:spr_1 change:spr_2 change:shield_1 change:shield_2 change:shield_3 change:shield_4 change:shield_5 change:shield_6 change:crewbonus3`, function(eventInfo) {

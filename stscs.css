@@ -133,6 +133,14 @@
   border-color: #990000;
 }
 
+.ui-dialog .charsheet button.btn.gm-only {
+  background: linear-gradient(135deg, #ffffff 0%, #cccccc 100%);
+  border-color: #aaaaaa;
+  color: #aaaaaa;
+  justify-self: center;
+  width: 75%;
+}
+
 .ui-dialog .charsheet button.btn.repair {
   background: linear-gradient(135deg, #00aa00 0%, #006600 100%);
   border-color: #006600;
