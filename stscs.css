@@ -500,6 +500,7 @@
 .ui-dialog .charsheet .shields-grid-status[value='1'] ~ .spa-panel .shields-allocated .shield-5,
 .ui-dialog .charsheet .shields-grid-status[value='1'] ~ .spa-panel .shields-allocated .shield-6,
 .ui-dialog .charsheet .sp-remaining-status[value='1'] ~ .sp-remaining,
+.ui-dialog .charsheet .target-tohit-status[value='1'] ~ .target-tohit,
 .ui-dialog .charsheet .tpa-remaining-status[value='1'] ~ .tpa-remaining,
 .ui-dialog .charsheet .weapons-grid-status[value='1'] ~ .fc-header span .state-select,
 .ui-dialog .charsheet .weapon-state-status[value='1'] ~ .weapon-state,

@@ -52,7 +52,7 @@
         <label><strong>Superstructure:</strong></label>
         <span>
             <input type='hidden' class='hp-status' name='attr_hp_status' value='0'/>
-            <input type='number' class='hp' name='attr_hp' value='0' readonly/>
+            <input type='number' class='hp' name='attr_hp' value='0'/>
             /
             <span name='attr_hp_max'></span>
         </span>
@@ -65,7 +65,7 @@
         <input type='hidden' name='attr_crew-percent' value='100'/>
         <span >
             <input type='hidden' class='crew-status' name='attr_crew_status' value='0'/>
-            <input type='number' class='w5 crew' name='attr_crew' value='0' min='0' readonly/> /
+            <input type='number' class='w5 crew' name='attr_crew' value='0' min='0'/> /
             <span name='attr_crew_max'></span>
         </span>
         <label>Efficiency:</label>
@@ -621,7 +621,8 @@
             <input type='text' class='w10' name='attr_target_name' readonly/>
             <input type='hidden' name='attr_target_id'/>
             <input type='text' class='w3' name='attr_target_distance' value='0' readonly/>
-            <input type='text' class='w3' name='attr_target_tohit' value='0' readonly/>
+            <input type='hidden' class='target-tohit-status' name='attr_target_tohit_status'/>
+            <input type='text' class='w3 target-tohit' name='attr_target_tohit' value='0' readonly/>
             <span>
                 <input type='hidden' class='btn-fire-status' name='attr_btn-fire_status' value='0'/> 
                 <button type='action' class='btn btn-fire critical' name='act_btn-fire'>Fire</button>
@@ -694,7 +695,8 @@
             <input type='text' class='w10' name='attr_target_name' readonly/>
             <input type='hidden' name='attr_target_id'/>
             <input type='text' class='w3' name='attr_target_distance' value='0' readonly/>
-            <input type='text' class='w3' name='attr_target_tohit' value='0' readonly/>
+            <input type='hidden' class='target-tohit-status' name='attr_target_tohit_status'/>
+            <input type='text' class='w3 target-tohit' name='attr_target_tohit' value='0' readonly/>
             <span>
                 <input type='hidden' class='btn-fire-status' name='attr_btn-fire_status' value='0'/>
                 <button type='action' class='btn btn-fire critical' name='act_btn-fire'>Fire</button>
@@ -2013,8 +2015,8 @@ on(`change:scanquestion`, function(eventInfo) {
 
             const questions = [
                 ``,
+                `How much power is available?`,
                 `How is power allocated?`,
-                `What is power allocated?`,
                 `How are the shields powered?`,
                 `Is a specific shield up?`,
                 `How are the beam weapons powered?`,
@@ -2493,6 +2495,7 @@ function resetTPA() {
                 output[`repeating_beams_${id}_target_name`] = ``;
                 output[`repeating_beams_${id}_target_distance`] = 0;
                 output[`repeating_beams_${id}_target_tohit`] = 0;
+                output[`repeating_beams_${id}_target_tohit_status`] = 0;
                 output[`repeating_beams_${id}_btn-target_status`] = 0;
                 output[`repeating_beams_${id}_btn-fire_status`] = 0;
             });
@@ -2514,6 +2517,7 @@ function resetTPA() {
                 output[`repeating_missiles_${id}_target_name`] = ``;
                 output[`repeating_missiles_${id}_target_distance`] = 0;
                 output[`repeating_missiles_${id}_target_tohit`] = 0;
+                output[`repeating_missiles_${id}_target_tohit_status`] = 0;
                 output[`repeating_missiles_${id}_btn-target_status`] = 0;
                 output[`repeating_missiles_${id}_btn-fire_status`] = 0;
             });
@@ -2674,6 +2678,7 @@ on(`clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target`, a
     output[`${row}_target_id`] = ``;
     output[`${row}_target_distance`] = ``;
     output[`${row}_target_tohit`] = ``;
+    output[`${row}_target_tohit_status`] = 0;
     output[`${row}_btn-fire_status`] = 0;
 
     await setAttrsAsync(output);
@@ -2737,6 +2742,7 @@ on(`clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target`, a
         output[`${targetRow}_target_id`] = charId;
         output[`${targetRow}_target_distance`] = wpnTargetDistance;
         output[`${targetRow}_target_tohit`] = adjustedToHit;
+        output[`${targetRow}_target_tohit_status`] = adjustedToHit < 1 ? 1 : 0;
         output[`${targetRow}_btn-fire_status`] = adjustedToHit ? 1 : 0;
     }   
 
@@ -2874,6 +2880,7 @@ on(`clicked:repeating_beams:btn-fire clicked:repeating_missiles:btn-fire`, async
         output[`repeating_${section}_${id}_target_name`] = ``;
         output[`repeating_${section}_${id}_target_distance`] = 0;
         output[`repeating_${section}_${id}_target_tohit`] = 0;
+        output[`repeating_${section}_${id}_target_tohit_status`] = 0;
         await setAttrsAsync(output);
     }   
 
