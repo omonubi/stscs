@@ -385,6 +385,7 @@
   background: linear-gradient(135deg, white 0%, #ffcccc 100%);
   border: 2px solid #cc0000;
 }
+.ui-dialog .charsheet .has-sensor-lock[value='0'] ~ .sensors-panel select[name='attr_scanquestion'],
 .ui-dialog .charsheet .sensors-status:not([value='0']) ~ .sensors-panel select[name='attr_scanquestion'],
 .ui-dialog .charsheet .sensors-status:not([value='0']) ~ .sensors-panel input[name='attr_scananswer'] {
   pointer-events: none;

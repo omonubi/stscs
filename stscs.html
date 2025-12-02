@@ -1,6 +1,7 @@
 <div>
     <input type='hidden' class='movement-grid-status' name='attr_movement_grid_status' value='0'/>
     <input type='hidden' class='sensors-status' name='attr_sensors_status' value='0'/>
+    <input type='hidden' class='has-sensor-lock' name='attr_has_sensor_lock' value='0'/>
     <input type='hidden' class='shields-grid-status' name='attr_shields_grid_status' value='0'/>
     <input type='hidden' class='ship-is-disabled' name='attr_ship-is-disabled' value='0'/>
     <input type='hidden' class='tpa-committed-status' name='attr_tpa_committed_status' value='0'/>
@@ -851,7 +852,6 @@ on(`sheet:opened`,function(){
         const supPercent = parseInt(values[`sup-percent`]) || -1;
         const tpaPercent = parseInt(values[`tpa-percent`]) || -1;
         const shieldsPercent = parseInt(values[`shields-percent`]) || -1;
-        console.log('shieldsPercent: ' + shieldsPercent);
         const weaponsPercent = parseInt(values[`weapons-percent`]) || -1;
         const crewPercent = parseInt(values[`crew-percent`]) || -1;
         
@@ -1134,7 +1134,7 @@ on(`clicked:rolldamage`, async () => {
         13, 16, 17, 6, 7, 10, 1, 2, 2, 15,
         13, 16, 6, 6, 3, 11, 1, 2, 2, 8,
 
-        13, 16, 6, 3, 2, 2, 1, 8, 14, 12,
+        17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
         13, 16, 17, 2, 2, 2, 1, 5, 14, 12,
         13, 16, 7, 4, 2, 2, 1, 9, 14, 12,
         13, 16, 7, 7, 4, 11, 1, 2, 2, 9,
@@ -1150,14 +1150,7 @@ on(`clicked:rolldamage`, async () => {
     let rollStr = `/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Damage Results (Chart ${damageChart})}} {{color=red}} {{Incoming Dmg=${baseDamage}}} {{On Shield Arc=${shieldArcStr}}} `;
 
     const hitRollResult = getRandomIntInclusive(0, 9);
-
-console.log ('damageChart: ' + damageChart);
-console.log ('shieldArc: ' + shieldArc);
-console.log ('hitRollResult: ' + hitRollResult);
-console.log('damageChart calc: ' + ((damageChart.charCodeAt(0) - 65) * 60));
-console.log('shieldArc calc: ' + ((shieldArc - 1) * 10));
     const hitLocation = ((damageChart.charCodeAt(0) - 65) * 60) + ((shieldArc - 1) * 10) + hitRollResult;
-console.log ('hitLocation: ' + hitLocation);
     
     const damageHandlers = {
         1: async (shieldVar, baseDamage) => {
@@ -1339,7 +1332,7 @@ console.log ('hitLocation: ' + hitLocation);
             result += returnStr;
             if (penetratingDamage) {
                 let { residualDamage, returnStr: systemReturn } = await damageSystem(`sensors`, penetratingDamage);
-                undoSensorLock();
+                await undoSensorLock();
                 result += systemReturn;
                 if (residualDamage) {
                     let { residualDamage: residualResidual, returnStr: residualReturn } = await damageResidual(residualDamage);
@@ -1822,7 +1815,7 @@ function repairSystem(mySystemVar = ``, mySystemName = ``) {
         const repairTargetBase = parseInt(values[`${mySystemVar}_to_repair`]) || 0;
         const crewRollPenalty = parseInt(values[`crewrollpenalty`]) || 0;
         let repairTargetNew = repairTargetBase;
-        const repairTarget = Math.max(0, repairTargetBase + crewRollPenalty);
+        const repairTarget = repairTargetBase + crewRollPenalty;
 
         const output = {};
         const repairRoll = getRandomIntInclusive(1, 10);
@@ -1838,7 +1831,7 @@ function repairSystem(mySystemVar = ``, mySystemName = ``) {
         setAttrs(output);
 
         startRoll(
-            `/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Repair Roll}} {{color=gold}} {{System=${mySystemName}}} {{To-Repair=[[${repairTarget}]]}} {{Roll=[[${repairRoll}]]}}`,
+            `/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Repair Roll}} {{color=gold}} {{System=${mySystemName}}} {{Base Target=${repairTargetBase}}} {{Crew Penalty=${crewRollPenalty}}} {{To-Repair=[[${repairTarget}]]}} {{Roll=[[${repairRoll}]]}}`,
             roll => finishRoll(roll.rollId)
         );
     });
@@ -1865,7 +1858,7 @@ on(`clicked:repeating_beams:weapon-repair clicked:repeating_missiles:weapon-repa
     const currentState = attrs[`${row}_state`];
     const repairTargetBase = section === `beams` ? 8 : 6;
     const crewRollPenalty = parseInt(attrs[`crewrollpenalty`]) || 0;
-    const repairTarget = Math.max(0, repairTargetBase + crewRollPenalty);
+    const repairTarget = repairTargetBase + crewRollPenalty;
 
     const repairRoll = getRandomIntInclusive(1, 10);
     if (repairRoll <= repairTarget) {
@@ -1884,7 +1877,7 @@ on(`clicked:repeating_beams:weapon-repair clicked:repeating_missiles:weapon-repa
     }
 
     startRoll(
-        `/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Repair Roll}} {{color=gold}} {{Weapon=${wpnName}}} {{To-Repair=[[${repairTarget}]]}} {{Roll=[[${repairRoll}]]}}`,
+        `/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Repair Roll}} {{color=gold}} {{Weapon=${wpnName}}} {{Base Target=${repairTargetBase} (${section})}} {{Crew Penalty=${crewRollPenalty}}} {{To-Repair=[[${repairTarget}]]}} {{Roll=[[${repairRoll}]]}}`,
         roll => finishRoll(roll.rollId)
     );
 });
@@ -1967,10 +1960,9 @@ on(`clicked:repair`, async function(eventInfo) {
             output[`shields_grid_state`] = output[`shields_grid_status`] = output[`shields_grid_to_repair`] = output[`shields_grid_destroyed`] = 0;
             output[`weapons_grid_state`] = output[`weapons_grid_status`] = output[`weapons_grid_to_repair`] = output[`weapons_grid_destroyed`] = 0;
             output[`movement_grid_state`] = output[`movement_grid_status`] = output[`movement_grid_to_repair`] = output[`movement_grid_destroyed`] = 0;
-            output[`sensorlock`] = output[`sensorlockid`] = output[`scanquestion`] = output[`scananswer`] = ``;
             setAttrs(output);
         });
-
+        await undoSensorLock();
         await updateWeaponsPercent();
         resetTPA();
     }
@@ -1980,9 +1972,8 @@ on(`clicked:repair`, async function(eventInfo) {
 on(`clicked:scan`, async (event) => {
     const output = {};
 
+    await undoSensorLock();
     const { tokenName, charId } = await extractTargetData(); // Destructure JSON
-
-    output[`sensorlock`] = output[`sensorlockid`] = output[`scanquestion`] = output[`scananswer`] = ``;
 
     const scanRoll = getRandomIntInclusive(1, 10);
 
@@ -1994,15 +1985,17 @@ on(`clicked:scan`, async (event) => {
     if (scanRoll < 7) {
         output[`sensorlock`] = tokenName;
         output[`sensorlockid`] = charId;
+        output[`has_sensor_lock`] = 1;
     }
 
     await setAttrsAsync(output);
 }); 
-function undoSensorLock() {
+async function undoSensorLock() {
     const output = {};
     output[`sensorlock`] = output[`sensorlockid`] = ``;
     output[`scanquestion`] = output[`scananswer`] = ``;
-    setAttrs(output);
+    output[`has_sensor_lock`] = 0;
+    await setAttrsAsync(output);
 }
 
 // SENSOR SCAN Q&A
@@ -2688,7 +2681,6 @@ on(`clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target`, a
     const wpnTargetDistance = +(await extractChatData(`?{How far|1}`)) || 0;
     const wpnCrewBonus = crewBonus == CREW_BONUS_WEAPONS && !crewBonusApplied ? +(await extractChatData(`?{Apply crew bonus|Yes,1|No,0}`)) || 0 : 0;
     const wpnTargetToHit = getToHit(wpnChart, wpnTargetDistance) + wpnCrewBonus + crewCasualtyPenalty;
-    const wpnTargetToHitStr = `${wpnTargetToHit * 10}%`;
 
     // Get all matching banked weapons
     const bankedRows = [];
@@ -2722,20 +2714,23 @@ on(`clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target`, a
 
     const weaponNames = [];
 
+    let adjustedToHit = 0;
     for (const id of bankedRows) {
         const targetRow = `repeating_${section}_${id}`;
         const rowAttrs = await getAttrsAsync([
             `${targetRow}_power`,
-            `${targetRow}_name`
+            `${targetRow}_name`,            
+            `${targetRow}_state`
         ]);
         
         const power = parseInt(rowAttrs[`${targetRow}_power`]) || 0;
+        const state = parseInt(rowAttrs[`${targetRow}_state`]) || 0;
 
-        // Skip if not powered
-        if (power === 0) continue;
+        // Skip if not powered or currently damaged
+        if (power == 0 || state == 1 || state == 3) continue;
 
         // Apply cumulative weapon state penalty to all weapons in bank
-        const adjustedToHit = wpnTargetToHit + weaponStatePenalty;
+        adjustedToHit = wpnTargetToHit + weaponStatePenalty;
 
         weaponNames.push(rowAttrs[`${targetRow}_name`] || `Unknown Weapon`);
         output[`${targetRow}_target_name`] = tokenName;
@@ -2743,14 +2738,16 @@ on(`clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target`, a
         output[`${targetRow}_target_distance`] = wpnTargetDistance;
         output[`${targetRow}_target_tohit`] = adjustedToHit;
         output[`${targetRow}_target_tohit_status`] = adjustedToHit < 1 ? 1 : 0;
-        output[`${targetRow}_btn-fire_status`] = adjustedToHit ? 1 : 0;
+        output[`${targetRow}_btn-fire_status`] = adjustedToHit > -4 ? 1 : 0;
     }   
+
+    const wpnTargetToHitStr = adjustedToHit < -3 ? `Not Possible` : wpnTargetToHit < 0 ? `Slim to None` : `${wpnTargetToHit * 10}%`;
 
     // Roll result
     if (!wpnTargetToHit) {
         startRoll(`&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Target Out of Range}} {{Weapon=${wpnName}}} {{Max Range=${wpnMaxRange} hexes}} {{Target=${tokenName}}} {{Distance=${wpnTargetDistance} hexes}}`, roll => finishRoll(roll.rollId));
     } else {
-        startRoll(`&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Weapons Targeted}} {{color=green}} {{Weapons=${weaponNames.join(`\\n`)}}} {{Target=[${tokenName}](${ROLL20_CHAR_URL}${charId})}} {{Distance=${wpnTargetDistance} hexes}} {{Firing Chart=${wpnChart}}} {{Chance To-Hit=${wpnTargetToHitStr}}}`, roll => finishRoll(roll.rollId));
+        startRoll(`&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Weapons Targeted}} {{color=green}} {{Weapons=${weaponNames.join(`\\n`)}}} {{Target=[${tokenName}](${ROLL20_CHAR_URL}${charId})}} {{Distance=${wpnTargetDistance} hexes}} {{Firing Chart=${wpnChart}}} {{Crew Penalty=${crewCasualtyPenalty}}} {{Repair Penalty=${weaponStatePenalty}}} {{Chance To-Hit=${wpnTargetToHitStr}}}`, roll => finishRoll(roll.rollId));
     }
 
     output[`crewbonustohitapplied`] = Math.max(wpnCrewBonus, crewBonusApplied);
