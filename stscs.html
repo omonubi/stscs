@@ -695,9 +695,9 @@
             </span> →
             <input type='text' class='w10' name='attr_target_name' readonly/>
             <input type='hidden' name='attr_target_id'/>
-            <input type='text' class='w3' name='attr_target_distance' value='0' readonly/>
+            <input type='text' class='w3' name='attr_target_distance' readonly/>
             <input type='hidden' class='target-tohit-status' name='attr_target_tohit_status'/>
-            <input type='text' class='w3 target-tohit' name='attr_target_tohit' value='0' readonly/>
+            <input type='text' class='w3 target-tohit' name='attr_target_tohit' readonly/>
             <span>
                 <input type='hidden' class='btn-fire-status' name='attr_btn-fire_status' value='0'/>
                 <button type='action' class='btn btn-fire critical' name='act_btn-fire'>Fire</button>
@@ -803,6 +803,8 @@
     <div class='grid-6col maint-panel'>
         <p class='span-grid'><strong>Do not use these controls during battle!</strong></p>
         <button type='action' class='btn' name='act_repair'>Repair/Reset Vessel</button>
+        <span></span>
+        <span></span>
         <span></span>
         <span>
             <input type="checkbox" name="attr_dark_mode" class="dark-mode-toggle" /><label>Dark Mode</label>
@@ -2490,8 +2492,8 @@ function resetTPA() {
             ids.forEach(id => {
                 output[`repeating_beams_${id}_power`] = 0;
                 output[`repeating_beams_${id}_target_name`] = ``;
-                output[`repeating_beams_${id}_target_distance`] = 0;
-                output[`repeating_beams_${id}_target_tohit`] = 0;
+                output[`repeating_beams_${id}_target_distance`] = ``;
+                output[`repeating_beams_${id}_target_tohit`] = ``;
                 output[`repeating_beams_${id}_target_tohit_status`] = 0;
                 output[`repeating_beams_${id}_btn-target_status`] = 0;
                 output[`repeating_beams_${id}_btn-fire_status`] = 0;
@@ -2512,8 +2514,8 @@ function resetTPA() {
             ids.forEach(id => {
                 output[`repeating_missiles_${id}_armed`] = 0;
                 output[`repeating_missiles_${id}_target_name`] = ``;
-                output[`repeating_missiles_${id}_target_distance`] = 0;
-                output[`repeating_missiles_${id}_target_tohit`] = 0;
+                output[`repeating_missiles_${id}_target_distance`] = ``;
+                output[`repeating_missiles_${id}_target_tohit`] = ``;
                 output[`repeating_missiles_${id}_target_tohit_status`] = 0;
                 output[`repeating_missiles_${id}_btn-target_status`] = 0;
                 output[`repeating_missiles_${id}_btn-fire_status`] = 0;
@@ -2684,78 +2686,77 @@ on(`clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target`, a
     const { tokenName, charId } = await extractTargetData(); // Destructure JSON
     const wpnTargetDistance = +(await extractChatData(`?{How far|1}`)) || 0;
     const wpnCrewBonus = crewBonus == CREW_BONUS_WEAPONS && !crewBonusApplied ? +(await extractChatData(`?{Apply crew bonus|Yes,1|No,0}`)) || 0 : 0;
-    const wpnTargetToHit = getToHit(wpnChart, wpnTargetDistance) + wpnCrewBonus + crewCasualtyPenalty;
+    const wpnTargetToHit = getToHit(wpnChart, wpnTargetDistance);
 
-    // Get all matching banked weapons
-    const bankedRows = [];
-    const nameRoot = wpnName.match(/#\d+/);
-    if (nameRoot) {
-        const ids = await getSectionIDsAsync(`repeating_${section}`);
-        const fieldnames = ids.map(id => `repeating_${section}_${id}_name`);
-        const values = await getAttrsAsync(fieldnames);
+    if (wpnTargetToHit) {
+        let wpnTargetToHitModified = wpnTargetToHit + wpnCrewBonus + crewCasualtyPenalty;
 
-        ids.forEach(id => {
-            const name = values[`repeating_${section}_${id}_name`];
-            if (name && name.match(nameRoot)) {
-                bankedRows.push(id);
-            }
-        });
-    } else {
-        bankedRows.push(rowID); // Not banked — just target self
-    }
+        // Get all matching banked weapons
+        const bankedRows = [];
+        const nameRoot = wpnName.match(/#\d+/);
+        if (nameRoot) {
+            const ids = await getSectionIDsAsync(`repeating_${section}`);
+            const fieldnames = ids.map(id => `repeating_${section}_${id}_name`);
+            const values = await getAttrsAsync(fieldnames);
 
-    // Calculate cumulative weapon state penalty for the entire bank
-    let weaponStatePenalty = 0;
-    for (const id of bankedRows) {
-        const targetRow = `repeating_${section}_${id}`;
-        const statusAttrs = await getAttrsAsync([`${targetRow}_weapon_state_status`]);
-        const weaponStateStatus = parseInt(statusAttrs[`${targetRow}_weapon_state_status`]) || 0;
-        
-        if (weaponStateStatus === 2) {
-            weaponStatePenalty -= 1;
+            ids.forEach(id => {
+                const name = values[`repeating_${section}_${id}_name`];
+                if (name && name.match(nameRoot)) {
+                    bankedRows.push(id);
+                }
+            });
+        } else {
+            bankedRows.push(rowID); // Not banked — just target self
         }
-    }
 
-    const weaponNames = [];
+        // Calculate cumulative weapon state penalty for the entire bank
+        let weaponStatePenalty = 0;
+        for (const id of bankedRows) {
+            const targetRow = `repeating_${section}_${id}`;
+            const statusAttrs = await getAttrsAsync([`${targetRow}_weapon_state_status`]);
+            const weaponStateStatus = parseInt(statusAttrs[`${targetRow}_weapon_state_status`]) || 0;
+            
+            if (weaponStateStatus === 2) {
+                weaponStatePenalty -= 1;
+            }
+        }
 
-    let adjustedToHit = 0;
-    for (const id of bankedRows) {
-        const targetRow = `repeating_${section}_${id}`;
-        const rowAttrs = await getAttrsAsync([
-            `${targetRow}_power`,
-            `${targetRow}_name`,            
-            `${targetRow}_state`
-        ]);
+        const weaponNames = [];
+
+        for (const id of bankedRows) {
+            const targetRow = `repeating_${section}_${id}`;
+            const rowAttrs = await getAttrsAsync([
+                `${targetRow}_power`,
+                `${targetRow}_name`,            
+                `${targetRow}_state`
+            ]);
+            
+            const power = parseInt(rowAttrs[`${targetRow}_power`]) || 0;
+            const state = parseInt(rowAttrs[`${targetRow}_state`]) || 0;
+
+            // Skip if not powered or currently damaged
+            if (power == 0 || state == 1 || state == 3) continue;
+
+            // Apply cumulative weapon state penalty to all weapons in bank
+            wpnTargetToHitModified += weaponStatePenalty;
+
+            weaponNames.push(rowAttrs[`${targetRow}_name`] || `Unknown Weapon`);
+            output[`${targetRow}_target_name`] = tokenName;
+            output[`${targetRow}_target_id`] = charId;
+            output[`${targetRow}_target_distance`] = wpnTargetDistance;
+            output[`${targetRow}_target_tohit`] = wpnTargetToHitModified;
+            output[`${targetRow}_target_tohit_status`] = wpnTargetToHitModified < 1 ? 1 : 0;
+            output[`${targetRow}_btn-fire_status`] = wpnTargetToHitModified > -4 ? 1 : 0;
+        }   
+
+        const wpnTargetToHitStr = wpnTargetToHitModified < -3 ? `Not Possible` : wpnTargetToHitModified < 1 ? `Slim to None` : `${wpnTargetToHitModified * 10}%`;
         
-        const power = parseInt(rowAttrs[`${targetRow}_power`]) || 0;
-        const state = parseInt(rowAttrs[`${targetRow}_state`]) || 0;
-
-        // Skip if not powered or currently damaged
-        if (power == 0 || state == 1 || state == 3) continue;
-
-        // Apply cumulative weapon state penalty to all weapons in bank
-        adjustedToHit = wpnTargetToHit + weaponStatePenalty;
-
-        weaponNames.push(rowAttrs[`${targetRow}_name`] || `Unknown Weapon`);
-        output[`${targetRow}_target_name`] = tokenName;
-        output[`${targetRow}_target_id`] = charId;
-        output[`${targetRow}_target_distance`] = wpnTargetDistance;
-        output[`${targetRow}_target_tohit`] = adjustedToHit;
-        output[`${targetRow}_target_tohit_status`] = adjustedToHit < 1 ? 1 : 0;
-        output[`${targetRow}_btn-fire_status`] = adjustedToHit > -4 ? 1 : 0;
-    }   
-
-    const wpnTargetToHitStr = adjustedToHit < -3 ? `Not Possible` : wpnTargetToHit < 0 ? `Slim to None` : `${wpnTargetToHit * 10}%`;
-
-    // Roll result
-    if (!wpnTargetToHit) {
-        startRoll(`&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Target Out of Range}} {{Weapon=${wpnName}}} {{Max Range=${wpnMaxRange} hexes}} {{Target=${tokenName}}} {{Distance=${wpnTargetDistance} hexes}}`, roll => finishRoll(roll.rollId));
-    } else {
         startRoll(`&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Weapons Targeted}} {{color=green}} {{Weapons=${weaponNames.join(`\\n`)}}} {{Target=[${tokenName}](${ROLL20_CHAR_URL}${charId})}} {{Distance=${wpnTargetDistance} hexes}} {{Firing Chart=${wpnChart}}} {{Crew Penalty=${crewCasualtyPenalty}}} {{Repair Penalty=${weaponStatePenalty}}} {{Chance To-Hit=${wpnTargetToHitStr}}}`, roll => finishRoll(roll.rollId));
+    } else {
+        startRoll(`&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Target Out of Range}} {{Weapon=${wpnName}}} {{Max Range=${wpnMaxRange} hexes}} {{Target=${tokenName}}} {{Distance=${wpnTargetDistance} hexes}}`, roll => finishRoll(roll.rollId));
     }
 
     output[`crewbonustohitapplied`] = Math.max(wpnCrewBonus, crewBonusApplied);
-
     await setAttrsAsync(output);
 }); 
 
@@ -2817,6 +2818,9 @@ on(`clicked:repeating_beams:btn-fire clicked:repeating_missiles:btn-fire`, async
     const targetDistance = parseInt(attributes[`${row}_target_distance`]) || 0;
     const targetToHit = parseInt(attributes[`${row}_target_tohit`]) || 0;
 
+    // Calc slim to none to-hit
+    const targetSlimToHit = targetToHit < 1 ? 8 - Math.abs(targetToHit) * 2 : 0;
+
     // Get all matching banked weapons or default to single weapon
     const bankedRows = [];
     if (wpnBankName) {
@@ -2859,7 +2863,7 @@ on(`clicked:repeating_beams:btn-fire clicked:repeating_missiles:btn-fire`, async
         const targetToHit = parseInt(rowAttrs[`repeating_${section}_${id}_target_tohit`]) || 0;
 
         // Skip if not targeted
-        if (!targetName || !targetToHit) continue;
+        if (!targetName) continue;
 
         const isOCLaser = armed ? 0 : (power > powerMax ? 1 : 0);
         const powerDischarge = isOCLaser ? Math.floor(power / 2) : power;
@@ -2879,15 +2883,15 @@ on(`clicked:repeating_beams:btn-fire clicked:repeating_missiles:btn-fire`, async
         output[`repeating_${section}_${id}_btn-target_status`] = isOCLaser ? 1 : 0;
         output[`repeating_${section}_${id}_btn-fire_status`] = 0;
         output[`repeating_${section}_${id}_target_name`] = ``;
-        output[`repeating_${section}_${id}_target_distance`] = 0;
-        output[`repeating_${section}_${id}_target_tohit`] = 0;
+        output[`repeating_${section}_${id}_target_distance`] = ``;
+        output[`repeating_${section}_${id}_target_tohit`] = ``;
         output[`repeating_${section}_${id}_target_tohit_status`] = 0;
         await setAttrsAsync(output);
     }   
 
         // Single roll with all weapons and damages
         startRoll(
-            `&{template:custom} {{title=@{banner_${faction}fire${section}} **[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Weapons Fired}} {{color=red}} {{Weapons=${weaponNames.join(`\\n`)}}} {{Target=[${targetName}](${ROLL20_CHAR_URL}${targetId})}} {{To-Hit=[[${targetToHit}]] or less}} {{Roll=[[1d10cs>11cf<0]]}} {{Damage=${damageList.join(`, `)}}}`,
+            `&{template:custom} {{title=@{banner_${faction}fire${section}} **[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Weapons Fired}} {{color=red}} {{Weapons=${weaponNames.join(`\\n`)}}} {{Target=[${targetName}](${ROLL20_CHAR_URL}${targetId})}} {{To-Hit=[[${targetToHit}]] or less}} {{Roll=[[1d10cs>11cf<0]]}} {{Slim-To-Hit=[[${targetSlimToHit}]]}} {{Slim-Roll=[[1d10cs>11cf<0]]}} {{Damage=${damageList.join(`, `)}}}`,
             roll => finishRoll(roll.rollId)
         );
     });
@@ -3072,10 +3076,10 @@ function getSectionIDsAsync(sectionName){
       </div>
 
       <div class="sheet-content">
-        {{#allprops() title subtitle color Damage}}
+        {{#allprops() title subtitle color Slim-Roll Slim-To-Hit Damage}}
         <div class="sheet-key">{{key}}</div>
         <div class="sheet-value">{{value}}</div>
-        {{/allprops() title subtitle color Damage}}
+        {{/allprops() title subtitle color Slim-Roll Slim-To-Hit Damage}}
 
         {{#^rollGreater() Roll Efficiency}}
         <div class="sheet-key">Result</div>
@@ -3097,8 +3101,34 @@ function getSectionIDsAsync(sectionName){
         {{/^rollGreater() Roll To-Hit}}
 
         {{#rollGreater() Roll To-Hit}}
-        <div class="sheet-key">Result</div>
-        <div class="sheet-value"><span class="failure">Miss!</span></div>
+            {{#rollLess() To-Hit 1}}
+                {{#rollTotal() Roll 1}}
+                    {{#Slim-To-Hit}}
+                        <div class="sheet-key">Slim-To-Hit</div>
+                        <div class="sheet-value">{{Slim-To-Hit}}</div>
+                    {{/Slim-To-Hit}}
+                    {{#Slim-Roll}}
+                        <div class="sheet-key">Slim-Roll</div>
+                        <div class="sheet-value">{{Slim-Roll}}</div>
+                    {{/Slim-Roll}}
+                    {{#^rollGreater() Slim-Roll Slim-To-Hit}}
+                        <div class="sheet-key">Result</div>
+                        <div class="sheet-value"><span class="success">Hit!</span></div>
+                        {{#Damage}}
+                            <div class="sheet-key">Damage</div>
+                            <div class="sheet-value">{{Damage}}</div>
+                        {{/Damage}}
+                    {{/^rollGreater() Slim-Roll Slim-To-Hit}}
+                    {{#rollGreater() Slim-Roll Slim-To-Hit}}
+                        <div class="sheet-key">Result</div>
+                        <div class="sheet-value"><span class="failure">Miss!</span></div>
+                    {{/rollGreater() Slim-Roll Slim-To-Hit}}
+                {{/rollTotal() Roll 1}}
+            {{/rollLess() To-Hit 1}}
+            {{#^rollLess() To-Hit 1}}
+                <div class="sheet-key">Result</div>
+                <div class="sheet-value"><span class="failure">Miss!</span></div>
+            {{/^rollLess() To-Hit 1}}
         {{/rollGreater() Roll To-Hit}}
 
         {{#^rollGreater() Roll To-Repair}}

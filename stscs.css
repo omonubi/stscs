@@ -1,42 +1,44 @@
 /* Default light mode styles */
 .ui-dialog .charsheet {
-  --bg-color: #ffffff;
-  --bg-color-input: #ffffff;
-  --bg-color-panel1: #ffffff;
-  --bg-color-panel2: #eeeeff;
+  --bg-color: #fff;
+  --bg-color-input: #fff;
+  --bg-color-panel1: #fff;
+  --bg-color-panel2: #eef;
   --bg-repitem-btn: gainsboro;
-  --h1-color: #000000;
-  --select-color: #ffffff;
-  --text-color: #000000;
-  --border-color: #cccccc;
+  --drop-color: #aaa;
+  --header-color: #333;
+  --select-color: #fff;
+  --text-color: #000;
+  --border-color: #ccc;
   --st-alert-red: 255, 0, 0;
   --st-alert-yellow: 255, 255, 0;
   --st-alert-green: 0, 255, 0;
-  --st-panel-border: #0099ff;
+  --st-panel-border: #09f;
 }
 
 /* Dark mode styles applied when checkbox is checked */
 .charsheet:has(.dark-mode-toggle:checked) {
-  --bg-color: #1e1e1e;
-  --bg-color-input: #000000;
-  --bg-color-panel1: #000000;
-  --bg-color-panel2: #1e1e1e;
-  --bg-repitem-btn: #444444;
-  --h1-color: #ffffff;
-  --select-color: #000000;
-  --text-color: #cccccc;
-  --border-color: #444444;
+  --bg-color: #222;
+  --bg-color-input: #000;
+  --bg-color-panel1: #000;
+  --bg-color-panel2: #222;
+  --bg-repitem-btn: #444;
+  --drop-color: #000;
+  --header-color: #ccc;
+  --select-color: #000;
+  --text-color: #ccc;
+  --border-color: #444;
   --st-alert-red: 204, 0, 0;
   --st-alert-yellow: 255, 255, 0;
   --st-alert-green: 0, 204, 0;
-  --st-panel-border: #0077dd;
+  --st-panel-border: #07d;
 }
 
 /* highlight colors */
 :root {
-  --st-neutral: #333333;
-  --st-accent: #0099ff;
-  --st-panel-bg: #1a1a1a;
+  --st-neutral: #333;
+  --st-accent: #09f;
+  --st-panel-bg: #222;
 }
 
 /* Apply the variables to your content */
@@ -219,25 +221,29 @@
 }
 
 .ui-dialog .charsheet h1 {
-  color: var(--h1-color);
+  color: var(--header-color);
   font-size: 1.8em;
+  text-shadow: 2px 2px 2px var(--drop-color);
 }
 .ui-dialog .charsheet h2 {
   display: inline;
   font-size: 1.6em;
-  color: var(--st-panel-border);
+  color: var(--header-color);
   padding-bottom: 5px;
   margin-top: 10px;
+  text-shadow: 2px 2px 2px var(--drop-color);
 }
 .ui-dialog .charsheet h3 {
   font-size: 1.4em;
   color: #0099ff;
   padding-bottom: 5px;
+  text-shadow: 1px 1px 2px var(--drop-color);
 }
 .ui-dialog .charsheet h4 {
   font-size: 1.2em;
   color: #0099ff;
   padding-bottom: 5px;
+  text-shadow: 1px 1px 2px var(--drop-color);
 }
 
 .ui-dialog .charsheet hr {
