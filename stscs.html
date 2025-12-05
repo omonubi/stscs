@@ -1,4 +1,4 @@
-<div>
+<div class='sheet-content'>
     <input type='hidden' class='movement-grid-status' name='attr_movement_grid_status' value='0'/>
     <input type='hidden' class='sensors-status' name='attr_sensors_status' value='0'/>
     <input type='hidden' class='has-sensor-lock' name='attr_has_sensor_lock' value='0'/>
@@ -803,6 +803,10 @@
     <div class='grid-6col maint-panel'>
         <p class='span-grid'><strong>Do not use these controls during battle!</strong></p>
         <button type='action' class='btn' name='act_repair'>Repair/Reset Vessel</button>
+        <span></span>
+        <span>
+            <input type="checkbox" name="attr_dark_mode" class="dark-mode-toggle" /><label>Dark Mode</label>
+        </span>
     </div>
 
 <!-- Banner placeholders (see readme) -->
@@ -2152,7 +2156,7 @@ on(`clicked:send_damage`, async (event) => {
     const weapons = statusData['weapons-percent'] || 0;
     
     // Build roll string with status values
-    const statusString = `{{Sup:=${superstructure}%}} {{TPA:=${tpa}%}} {{Shd:=${shields}%}} {{Wpn:=${weapons}%}}`;
+    const statusString = `{{Sup:=${superstructure}%}} {{Power:=${tpa}%}} {{Shd:=${shields}%}} {{Wpn:=${weapons}%}}`;
 
     startRoll(
         `/w ${tokenName} &{template:custom} {{title=**Scan Results: Damage**}} {{subtitle=[@{character_name}](${ROLL20_CHAR_URL}@{character_id})}} {{color=green}} ${statusString}`,
@@ -2188,7 +2192,7 @@ on(`clicked:send_missiles`, async (event) => {
     });
     
     // Build result string with weapon count and power totals
-    const rollString = `{{Missiles:=${weaponCount}}} {{TPA:=${totalPower}}}`;
+    const rollString = `{{Missiles:=${weaponCount}}} {{Power:=${totalPower}}}`;
 
     startRoll(
         `/w ${tokenName} &{template:custom} {{title=**Scan Results: Missiles**}} {{subtitle=[@{character_name}](${ROLL20_CHAR_URL}@{character_id})}} {{color=green}} ${rollString}`,
@@ -2216,7 +2220,7 @@ on(`clicked:send_shields`, async (event) => {
     const sprValue = `${shieldVars.spr_1}/${shieldVars.spr_2}`;
     
     // Build the shields string
-    const shieldsString = `{{Shields:=${shieldsPowered}}} {{TPA:=${powerAllocated}}} {{SPR:=${sprValue}}}`;
+    const shieldsString = `{{Shields:=${shieldsPowered}}} {{Power:=${powerAllocated}}} {{SPR:=${sprValue}}}`;
 
     startRoll(
         `/w ${tokenName} &{template:custom} {{title=**Scan Results: Shields**}} {{subtitle=[@{character_name}](${ROLL20_CHAR_URL}@{character_id})}} {{color=green}} ${shieldsString}`,

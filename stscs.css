@@ -1,28 +1,70 @@
-.ui-dialog .charsheet * {
-  font-size: 1.0em;
+/* Default light mode styles */
+.ui-dialog .charsheet {
+  --bg-color: #ffffff;
+  --bg-color-input: #ffffff;
+  --bg-color-panel1: #ffffff;
+  --bg-color-panel2: #eeeeff;
+  --bg-repitem-btn: gainsboro;
+  --h1-color: #000000;
+  --select-color: #ffffff;
+  --text-color: #000000;
+  --border-color: #cccccc;
+  --st-alert-red: 255, 0, 0;
+  --st-alert-yellow: 255, 255, 0;
+  --st-alert-green: 0, 255, 0;
+  --st-panel-border: #0099ff;
 }
 
+/* Dark mode styles applied when checkbox is checked */
+.charsheet:has(.dark-mode-toggle:checked) {
+  --bg-color: #1e1e1e;
+  --bg-color-input: #000000;
+  --bg-color-panel1: #000000;
+  --bg-color-panel2: #1e1e1e;
+  --bg-repitem-btn: #444444;
+  --h1-color: #ffffff;
+  --select-color: #000000;
+  --text-color: #cccccc;
+  --border-color: #444444;
+  --st-alert-red: 204, 0, 0;
+  --st-alert-yellow: 255, 255, 0;
+  --st-alert-green: 0, 204, 0;
+  --st-panel-border: #0077dd;
+}
+
+/* highlight colors */
 :root {
-  --st-alert-red: #cc0000;
-  --st-alert-yellow: #ffcc00;
-  --st-alert-green: #00cc00;
   --st-neutral: #333333;
   --st-accent: #0099ff;
   --st-panel-bg: #1a1a1a;
-  --st-panel-border: #0099ff;
+}
+
+/* Apply the variables to your content */
+.ui-dialog .sheet-content {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    border: 0px var(--border-color);
+}
+
+.ui-dialog .charsheet {
+  padding: 0px;
+}
+.ui-dialog .charsheet * {
+  font-size: 1.0em;
 }
 
 /**************** GRID LAYOUT STYLES ****************/
 .ui-dialog .charsheet div.grid-6col {
   align-items: center;
-  background: linear-gradient(135deg, white 0%, mintcream 100%);
-  border: 2px solid #0099ff;
+  background: linear-gradient(135deg, var(--bg-color-panel1), var(--bg-color-panel2));
+  border: 2px solid var(--st-panel-border);
   border-radius: 8px;
   display: grid;
   grid-template-columns: [first] repeat(6, 1fr) [last];
   padding: 10px;
   row-gap: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 97%;
 }
 .ui-dialog .charsheet div.grid-6col .span2 {
   grid-column: span 2;
@@ -50,8 +92,8 @@
 }
 
 .ui-dialog .charsheet .repcontrol button {
-  background: gainsboro !important;
-  border-color: gainsboro !important;
+  background: var(--bg-repitem-btn) !important;
+  border-color: var(--bg-repitem-btn) !important;
   color: gray !important;
 }
 
@@ -134,9 +176,9 @@
 }
 
 .ui-dialog .charsheet button.btn.gm-only {
-  background: linear-gradient(135deg, #ffffff 0%, #cccccc 100%);
-  border-color: #aaaaaa;
-  color: #aaaaaa;
+  background: linear-gradient(135deg, var(--bg-color) 0%, var(--border-color) 100%);
+  border-color: var(--border-color);
+  color: var(--border-color);
   justify-self: center;
   width: 75%;
 }
@@ -177,12 +219,13 @@
 }
 
 .ui-dialog .charsheet h1 {
+  color: var(--h1-color);
   font-size: 1.8em;
 }
 .ui-dialog .charsheet h2 {
   display: inline;
   font-size: 1.6em;
-  color: #0099ff;
+  color: var(--st-panel-border);
   padding-bottom: 5px;
   margin-top: 10px;
 }
@@ -202,7 +245,8 @@
 }
 
 .ui-dialog .charsheet input {
-  background-color: transparent;
+  background-color: var(--bg-color-input);
+  color: var(--text-color);
   text-align: left;
   border: 1px solid #ccc;
   border-radius: 3px;
@@ -224,9 +268,9 @@
   cursor: not-allowed;
 }
 .ui-dialog .charsheet input.em {
-  background-color: white; 
-  border-color: #0099ff;;
-  color: black;
+  background-color: var(--bg-color-input); 
+  border-color: #0099ff;
+  color: var(--text-color);
   font-weight: bold;
 }
 .ui-dialog .charsheet input.sensor-status[value='Online'] {
@@ -244,6 +288,7 @@
 }
 
 .ui-dialog .charsheet label {
+  color: var(--text-color);
   display: inline;
   font-weight: normal;
   margin: 0px;
@@ -251,18 +296,20 @@
 }
 
 .ui-dialog .charsheet select {
-  background-color: transparent;
+  background-color: var(--select-color);
+  color: var(--text-color);
   height: 29px;
   line-height: 29px;
   margin: 1px 0px;
   padding: 0px;
 }
 .ui-dialog .charsheet select option {
-  color: gray;
-  background-color: white;
+  background-color: var(--select-color);
+  color: var(--text-color);
 }
 .ui-dialog .charsheet select.crew-bonus {
-  background-color: white; 
+  background-color: var(--select-color);
+  color: var(--text-color);
   margin-left: 5px; 
   width: 130px;
 }
@@ -272,7 +319,8 @@
 .ui-dialog .charsheet input.scan-lock,
 .ui-dialog .charsheet input.scan-answer,
 .ui-dialog .charsheet select.scan-question {
-  background-color: white; 
+  background-color: var(--select-color);
+  color: var(--text-color);
   width: 268px;
 }
 .ui-dialog .charsheet select.firing-chart {
@@ -344,7 +392,7 @@
 }
 .ui-dialog .charsheet .w12:not([value='NONE']) ~ .span2 input,
 .ui-dialog .charsheet .w12:not([value='NONE']) ~ .span2 select {
-  background-color:white;
+  background-color:var(--select-color);
   pointer-events: all;
 }
 
@@ -461,10 +509,10 @@
 .ui-dialog .charsheet .wf-current-status[value='0'] ~ .wf-current,
 .ui-dialog .charsheet .wf-desired-status[value='0'] ~ .em,
 .ui-dialog .charsheet .wf-remaining-status[value='0'] ~ .wf-remaining {
-  accent-color: palegreen;
-  background-color: palegreen;
-  border-color: forestgreen;
-  color: forestgreen;
+  accent-color: rgb(var(--st-alert-green));
+  background-color: rgba(var(--st-alert-green), 0.5);
+  border-color: rgb(var(--st-alert-green));
+  color: var(--text-color);
 }
 
 .ui-dialog .charsheet .crew-status[value='1'] ~ .crew,
@@ -510,10 +558,9 @@
 .ui-dialog .charsheet .wf-desired-status[value='1'] ~ .em,
 .ui-dialog .charsheet .wf-remaining-status[value='1'] ~ .wf-remaining,
 .ui-dialog .charsheet .wp-remaining-status[value='1'] ~ .wp-remaining {
-  accent-color: lightpink;
-  background-color: lightpink; 
-  border-color: red;
-  color: red;
+  background-color: rgba(var(--st-alert-red), 0.5);
+  border-color: rgb(var(--st-alert-red));
+  color: var(--text-color);
 }
 
 .ui-dialog .charsheet .crew-status[value='2'] ~ .crew,
@@ -540,9 +587,9 @@
 .ui-dialog .charsheet .wf-current-status[value='2'] ~ .wf-current,
 .ui-dialog .charsheet .wf-desired-status[value='2'] ~ .em,
 .ui-dialog .charsheet .wf-remaining-status[value='2'] ~ .wf-remaining {
-  background-color: lemonchiffon; 
-  border-color: coral;
-  color: coral;
+  background-color: rgba(var(--st-alert-yellow), 0.5);
+  border-color: rgb(var(--st-alert-yellow));
+  color: var(--text-color);
 }  
 
 /**************** ROLL TEMPLATES ****************/
@@ -571,6 +618,10 @@
   text-align: left;
   color: var(--header-text-color);
   padding: 5px;
+}
+.sheet-rolltemplate-custom .sheet-header a,
+.sheet-rolltemplate-menu .sheet-header a {
+  color: #fff;
 }
 .sheet-rolltemplate-custom .sheet-title,
 .sheet-rolltemplate-menu .sheet-title {
@@ -646,6 +697,7 @@
 .sheet-rolltemplate-menu .sheet-content {
   display: grid;
   background: #FFF;
+  color: #000;
   /* Header formatting - modify the column layout below */
   grid-template-columns: auto auto;
   /* Line height to match default roll template */
@@ -664,10 +716,10 @@
   text-align: right;
 }
   
-/* Empty rule, use this if you want to change the right column 
-.sheet-rolltemplate-custom .sheet-value {
+/* Empty rule, use this if you want to change the right column */
+.sheet-rolltemplate-custom .sheet-value a {
+  color: #000;
 }
-*/
   
 /* Make even-numbered rows grey */
 .sheet-rolltemplate-custom .sheet-content div:nth-child(4n+3),
@@ -686,9 +738,9 @@
 /* Chat menu styles */
 .sheet-rolltemplate-custom a[href^='!'],.sheet-rolltemplate-custom a[href^='~'],
 .sheet-rolltemplate-menu a[href^='!'],.sheet-rolltemplate-menu a[href^='~'] {
-  background-color:transparent;
+  background-color: transparent;
   border:0;
-  color:#3f8aa6;
+  color:#fff;
   display:inline;
   font-weight: bold;
   padding: 0
