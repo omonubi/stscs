@@ -132,6 +132,14 @@
 }
 
 /* Disabled/inactive buttons */
+.ui-dialog .charsheet .bridge-hit-status[value='1'] ~ .beams-panel .weapon-repair,
+.ui-dialog .charsheet .bridge-hit-status[value='1'] ~ .missiles-panel .weapon-repair,
+.ui-dialog .charsheet .bridge-hit-status[value='1'] ~ .fc-header .btn-weapons-grid-repair,
+.ui-dialog .charsheet .bridge-hit-status[value='1'] ~ .helm-header .btn-movement-grid-repair,
+.ui-dialog .charsheet .bridge-hit-status[value='1'] ~ .sensors-header .btn-sensors-repair,
+.ui-dialog .charsheet .bridge-hit-status[value='1'] ~ .shield-status-panel .btn-shield-repair,
+.ui-dialog .charsheet .bridge-hit-status[value='1'] ~ .shields-header .btn-shields-grid-repair,
+.ui-dialog .charsheet .bridge-hit-status[value='1'] ~ .shields-header .btn-shields-grid-repair,
 .ui-dialog .charsheet .btn-fire-status[value='0'] ~ .btn-fire,
 .ui-dialog .charsheet .btn-target-status[value='0'] ~ .btn-target,
 .ui-dialog .charsheet .movement-grid-status:not([value='1']) ~ .helm-header .btn-movement-grid-repair,
@@ -339,6 +347,10 @@
   -webkit-appearance: none;
 }
 
+ .ui-dialog .charsheet span.alert1 {
+  text-shadow: 0 0 5px rgb(var(--st-alert-red)), 0 0 5px rgb(var(--st-alert-red)), 0 0 5px rgb(var(--st-alert-red));
+}
+
 .ui-dialog .charsheet span.header-container {
   display: flex;
   justify-content: space-between; /* Pushes h2 to left, span to right */
@@ -476,6 +488,11 @@
   border: 2px solid #cc0000;
 }
 .ui-dialog .charsheet .weapons-grid-status[value='0'] ~ h1 .warning-weapons {
+  display: none;
+}
+
+
+.ui-dialog .charsheet .bridge-hit-status[value='0'] ~ h1 .warning-bridge-hit {
   display: none;
 }
 
@@ -664,8 +681,8 @@
 }
 .sheet-rolltemplate-custom .sheet-container.sheet-color-gold,
 .sheet-rolltemplate-menu .sheet-container.sheet-color-gold {
-  --header-bg-color: gold;
-  --header-text-color: black;
+  --header-bg-color: saddlebrown;
+  --header-text-color: white;
 }
 .sheet-rolltemplate-custom .sheet-container.sheet-color-green,
 .sheet-rolltemplate-menu .sheet-container.sheet-color-green {

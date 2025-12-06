@@ -1,4 +1,5 @@
 <div class='sheet-content'>
+    <input type='hidden' class='bridge-hit-status' name='attr_bridge_hit_status' value='0'/>
     <input type='hidden' class='movement-grid-status' name='attr_movement_grid_status' value='0'/>
     <input type='hidden' class='sensors-status' name='attr_sensors_status' value='0'/>
     <input type='hidden' class='has-sensor-lock' name='attr_has_sensor_lock' value='0'/>
@@ -8,11 +9,12 @@
     <input type='hidden' class='weapons-grid-status' name='attr_weapons_grid_status' value='0'/>
     <h1>
         <span name='attr_character_name'></span>
-        <span class='disable-ship' title='disabled'> &#x1F198;</span>
-        <span class='warning-sensors' style='cursor: default;' title='sensors offline'> &#x26A0;&#xFE0F;</span>
-        <span class='warning-movement' style='cursor: default;' title='helm offline'> &#x26A0;&#xFE0F;</span>
-        <span class='warning-shields' style='cursor: default;' title='shields offline'> &#x26A0;&#xFE0F;</span>
-        <span class='warning-weapons' style='cursor: default;' title='weapons offline'> &#x26A0;&#xFE0F;</span>
+        <span class='alert1 disable-ship' title='disabled'> &#x1F198;</span>
+        <span class='alert1 warning-bridge-hit' style='cursor: default;' title='bridge hit'> &#x1F527;</span>
+        <span class='alert1 warning-sensors' style='cursor: default;' title='sensors offline'> &#x1F9ED;</span>
+        <span class='alert1 warning-movement' style='cursor: default;' title='helm offline'> &#x1F6DE;</span>
+        <span class='alert1 warning-shields' style='cursor: default;' title='shields offline'> &#x1F6E1;&#xFE0F;</span>
+        <span class='alert1 warning-weapons' style='cursor: default;' title='weapons offline'> &#x2694;&#xFE0F;</span>
     </h1> 
     <input type='hidden' name='attr_current_phase' value='0'/>
     <input type='hidden' name='attr_tpa_reset' value='0'/>
@@ -826,7 +828,7 @@ const CREW_BONUS_SHIELD = 3;
 const CREW_BONUS_REPAIR = 4;const DAMAGE_CHART_DEFAULT = `C`;
 const DAMAGE_RESULT_BEAM = `Beam Weapon`;
 const DAMAGE_RESULT_BRIDGE = `Bridge 2C`;
-const DAMAGE_RESULT_ENG = `Engineering`;
+const DAMAGE_RESULT_ENG = `Engineering 2C`;
 const DAMAGE_RESULT_IMP = `Impulse`;
 const DAMAGE_RESULT_IMP_HALF = `Impulse (x1/2)`;
 const DAMAGE_RESULT_MISSILE = `Missile Weapon`;
@@ -848,7 +850,6 @@ const ENGINE_TYPE_IMPULSE = 1;
 const ENGINE_TYPE_WARP = 2;
 const ENGINE_TYPE_GENERATOR = 3;
 const ENGINE_WARP_NAME_NONE = `No Warp Drive`;
-const MAX_PERCENTAGE = 100;
 const ROLL20_CHAR_URL = `https://journal.roll20.net/character/`;    
 
 // ON SHEET OPENED
@@ -915,7 +916,7 @@ on(`change:caprating`, function(eventInfo) {
         const caprating = parseInt(values[`caprating`]);
 
         const output = {};
-        output[`caprating_ta`] = caprating * MAX_PERCENTAGE;
+        output[`caprating_ta`] = caprating * 100;
         setAttrs(output);
     });
 });
@@ -939,7 +940,7 @@ on(`change:defense change:wdf`, function(eventInfo) {
         const defense = parseFloat(values[`defense`]) || 0;
         const wpnDmgFactor = parseFloat(values[`wdf`]) || 0;
 
-        const combatEfficiency = parseFloat((defense * wpnDmgFactor / MAX_PERCENTAGE).toFixed(2));
+        const combatEfficiency = parseFloat((defense * wpnDmgFactor / 100).toFixed(2));
 
         const output = {};
         output[`ce`] = combatEfficiency;
@@ -1088,8 +1089,8 @@ on(`change:crew change:crew_max`, function(eventInfo) {
         const crewMax = parseInt(values[`crew_max`]) || 0;
 
         const output = {};
-        output[`crew-percent`] = Math.max(0, Math.round(crew / crewMax * MAX_PERCENTAGE));
-        output[`crew_status`] = crew < (crewMax / 2) || crew > crewMax ? 1 : crew < crewMax ? 2 : 0;
+        output[`crew-percent`] = Math.max(0, crew / crewMax * 100);
+        output[`crew_status`] = crew <= (crewMax * .4) || crew > crewMax ? 1 : crew <= crewMax * .8 ? 2 : 0;
         setAttrs(output);
     });
 });
@@ -1099,14 +1100,14 @@ on(`change:crewrating change:crew-percent`, function(eventInfo) {
     getAttrs([`crewrating`, `crew-percent`], function(values) {
         const crewRating = parseInt(values[`crewrating`]) || 0;
         const crewPercent = values[`crew-percent`] || `0`;
-        const crewCasualties = MAX_PERCENTAGE - crewPercent;
+        const crewCasualties = 100 - crewPercent;
 
-        const casualtyBrackets = [19, 39, 59, 69, MAX_PERCENTAGE];
+        const casualtyBrackets = [20, 40, 60, 70, 100];
         const rollPenalties = [0, -1, -2, -5, -10];
         const efficiencyModifiers = [0, 10, 20, 50, 50];
 
         let i = 0;
-        while (crewCasualties > casualtyBrackets[i]) i++;
+        while (crewCasualties >= casualtyBrackets[i]) i++;
 
         const output = {};
         output[`crewefficiency`] = Math.max(0, crewRating - efficiencyModifiers[i]);
@@ -1140,7 +1141,7 @@ on(`clicked:rolldamage`, async () => {
         13, 16, 17, 6, 7, 10, 1, 2, 2, 15,
         13, 16, 6, 6, 3, 11, 1, 2, 2, 8,
 
-        17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
+        13, 16, 6, 3, 2, 2, 1, 8, 14, 12,
         13, 16, 17, 2, 2, 2, 1, 5, 14, 12,
         13, 16, 7, 4, 2, 2, 1, 9, 14, 12,
         13, 16, 7, 7, 4, 11, 1, 2, 2, 9,
@@ -1153,14 +1154,14 @@ on(`clicked:rolldamage`, async () => {
     let residualDamage = 0;
     let penetratingDamage = 0;
     let returnStr = ``;
-    let rollStr = `/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Damage Results (Chart ${damageChart})}} {{color=red}} {{Incoming Dmg=${baseDamage}}} {{On Shield Arc=${shieldArcStr}}} `;
+    let rollStr = `/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=&#x1F494; Damage Results (Chart ${damageChart}) &#x1F494;}} {{color=red}} {{Incoming Dmg=${baseDamage}}} {{On Shield Arc=${shieldArcStr}}} `;
 
     const hitRollResult = getRandomIntInclusive(0, 9);
     const hitLocation = ((damageChart.charCodeAt(0) - 65) * 60) + ((shieldArc - 1) * 10) + hitRollResult;
     
     const damageHandlers = {
         1: async (shieldVar, baseDamage) => {
-            let result = `{{Hit Location=${DAMAGE_RESULT_SUP} (${hitRollResult+1})}} `;
+            let result = `{{Hit Location=${DAMAGE_RESULT_SUP}}} `;
             let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
             result += returnStr;
             if (penetratingDamage) {
@@ -1172,65 +1173,65 @@ on(`clicked:rolldamage`, async () => {
             return result;
         },
         2: async (shieldVar, baseDamage) => {
-            let result = `{{Hit Location=${DAMAGE_RESULT_SUP_HALF} (${hitRollResult+1})}} `;
-            let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage, 0.5);
+            let result = `{{Hit Location=${DAMAGE_RESULT_SUP_HALF}}} `;
+            let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
             result += returnStr;
             if (penetratingDamage) {
-                let { residualDamage, returnStr: supReturn } = await damageSup(penetratingDamage);
+                let { residualDamage, returnStr: supReturn } = await damageSup(penetratingDamage, 0.5);
                 result += supReturn;
-                let { residualDamage: crewResidual, returnStr: crewReturn } = await damageCrew(penetratingDamage);
+                let { residualDamage: crewResidual, returnStr: crewReturn } = await damageCrew(penetratingDamage, 0.5);
                 result += crewReturn;
             }
             return result;
         },
         3: async (shieldVar, baseDamage) => {
-            let result = `{{Hit Location=${DAMAGE_RESULT_PORT} (${hitRollResult+1})}} `;
+            let result = `{{Hit Location=${DAMAGE_RESULT_PORT}}} `;
             let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
             result += returnStr;
             if (penetratingDamage) {
-                result += await handleWarpDamage(penetratingDamage, ENGINE_LOCATION_PORT, shieldArc);
+                result += await handleWarpDamage(penetratingDamage, ENGINE_LOCATION_PORT);
             }
             return result;
             },
         4: async (shieldVar, baseDamage) => {
-            let result = `{{Hit Location=${DAMAGE_RESULT_STBD} (${hitRollResult+1})}} `;
+            let result = `{{Hit Location=${DAMAGE_RESULT_STBD}}} `;
             let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
             result += returnStr;
             if (penetratingDamage) {
-                result += await handleWarpDamage(penetratingDamage, ENGINE_LOCATION_STBD, shieldArc);
+                result += await handleWarpDamage(penetratingDamage, ENGINE_LOCATION_STBD);
             }
             return result;
         },
         5: async (shieldVar, baseDamage) => {
-            let result = `{{Hit Location=${DAMAGE_RESULT_WARP} (${hitRollResult+1})}} `;
+            let result = `{{Hit Location=${DAMAGE_RESULT_WARP}}} `;
             let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
             result += returnStr;
             if (penetratingDamage) {
-                result += await handleWarpDamage(penetratingDamage, null, shieldArc);
+                result += await handleWarpDamage(penetratingDamage, null);
             }
             return result;
         },
         6: async (shieldVar, baseDamage) => {
-            let result = `{{Hit Location=${DAMAGE_RESULT_PORT_HALF} (${hitRollResult+1})}} `;
-            let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage, 0.5);
+            let result = `{{Hit Location=${DAMAGE_RESULT_PORT_HALF}}} `;
+            let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
             result += returnStr;
             if (penetratingDamage) {
-                result += await handleWarpDamage(penetratingDamage, ENGINE_LOCATION_PORT, shieldArc);
+                result += await handleWarpDamage(Math.floor(penetratingDamage / 2), ENGINE_LOCATION_PORT);
             }
             return result;
         },
         7: async (shieldVar, baseDamage) => {
-            let result = `{{Hit Location=${DAMAGE_RESULT_STBD_HALF} (${hitRollResult+1})}} `;
-            let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage, 0.5);
+            let result = `{{Hit Location=${DAMAGE_RESULT_STBD_HALF}}} `;
+            let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
             result += returnStr;
             if (penetratingDamage) {
-                result += await handleWarpDamage(penetratingDamage, ENGINE_LOCATION_STBD, shieldArc);
+                result += await handleWarpDamage(Math.floor(penetratingDamage / 2), ENGINE_LOCATION_STBD);
             }
             return result;
         },
         8: async (shieldVar, baseDamage) => {
-            let result = `{{Hit Location=${DAMAGE_RESULT_SUP_PORT} (${hitRollResult+1})}} `;
-            let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage, 0.5);
+            let result = `{{Hit Location=${DAMAGE_RESULT_SUP_PORT}}} `;
+            let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
             result += returnStr;
             if (penetratingDamage) {
                 let penetratingDamageEng = Math.ceil(penetratingDamage / 2);
@@ -1246,7 +1247,7 @@ on(`clicked:rolldamage`, async () => {
                     }
                 }
                 result += warpReturn;
-                let { residualDamage: supResidual, returnStr: supReturn } = await damageSup(penetratingDamageSup);
+                let { residualDamage: supResidual, returnStr: supReturn } = await damageSup(penetratingDamageSup, 0.5);
                 result += supReturn;
                 let { residualDamage: crewResidual, returnStr: crewReturn } = await damageCrew(penetratingDamageSup);
                 result += crewReturn;
@@ -1254,8 +1255,8 @@ on(`clicked:rolldamage`, async () => {
             return result;
         },
         9: async (shieldVar, baseDamage) => {
-            let result = `{{Hit Location=${DAMAGE_RESULT_SUP_STBD} (${hitRollResult+1})}} `;
-            let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage, 0.5);
+            let result = `{{Hit Location=${DAMAGE_RESULT_SUP_STBD}}} `;
+            let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
             result += returnStr;
             if (penetratingDamage) {
                 let penetratingDamageEng = Math.ceil(penetratingDamage / 2);
@@ -1271,7 +1272,7 @@ on(`clicked:rolldamage`, async () => {
                     }
                 }
                 result += warpReturn;
-                let { residualDamage: supResidual, returnStr: supReturn } = await damageSup(penetratingDamageSup);
+                let { residualDamage: supResidual, returnStr: supReturn } = await damageSup(penetratingDamageSup, 0.5);
                 result += supReturn;
                 let { residualDamage: crewResidual, returnStr: crewReturn } = await damageCrew(penetratingDamageSup);
                 result += crewReturn;
@@ -1279,7 +1280,7 @@ on(`clicked:rolldamage`, async () => {
             return result;
         },
         10: async (shieldVar, baseDamage) => {
-            let result = `{{Hit Location=${DAMAGE_RESULT_IMP} (${hitRollResult+1})}} `;
+            let result = `{{Hit Location=${DAMAGE_RESULT_IMP}}} `;
             let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
             result += returnStr;
             if (penetratingDamage) {
@@ -1293,11 +1294,11 @@ on(`clicked:rolldamage`, async () => {
             return result;
         },
         11: async (shieldVar, baseDamage) => {
-            let result = `{{Hit Location=${DAMAGE_RESULT_IMP_HALF} (${hitRollResult+1})}} `;
-            let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage, 0.5);
+            let result = `{{Hit Location=${DAMAGE_RESULT_IMP_HALF}}} `;
+            let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
             result += returnStr;
             if (penetratingDamage) {
-                let { residualDamage, returnStr: impulseReturn } = await damageImpulse(penetratingDamage);
+                let { residualDamage, returnStr: impulseReturn } = await damageImpulse(penetratingDamage, 0.5);
                 result += impulseReturn;
                 if (residualDamage) {
                     let { residualDamage: residualResidual, returnStr: residualReturn } = await damageResidual(residualDamage);
@@ -1307,7 +1308,7 @@ on(`clicked:rolldamage`, async () => {
             return result;
         },
         12: async (shieldVar, baseDamage) => {
-            let result = `{{Hit Location=${DAMAGE_RESULT_BRIDGE} (${hitRollResult+1})}} `;
+            let result = `{{Hit Location=${DAMAGE_RESULT_BRIDGE}}} `;
             let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
             result += returnStr;
             if (penetratingDamage) {
@@ -1315,11 +1316,15 @@ on(`clicked:rolldamage`, async () => {
                 result += supReturn;
                 let { residualDamage: crewResidual, returnStr: crewReturn } = await damageCrew(penetratingDamage, 2, true);
                 result += crewReturn;
+                result += `{{No Repairs=(This Phase)}}`;
+                const output = {};
+                output[`bridge_hit_status`] = 1;
+                setAttrs(output);
             }
             return result;
         },
         13: async (shieldVar, baseDamage) => {
-            let result = `{{Hit Location=${DAMAGE_RESULT_SHIELD} (${hitRollResult+1})}} `;
+            let result = `{{Hit Location=${DAMAGE_RESULT_SHIELD}}} `;
             let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
             result += returnStr;
             if (penetratingDamage) {
@@ -1333,7 +1338,7 @@ on(`clicked:rolldamage`, async () => {
             return result;
         },
         14: async (shieldVar, baseDamage) => {
-            let result = `{{Hit Location=${DAMAGE_RESULT_SENSORS} (${hitRollResult+1})}} `;
+            let result = `{{Hit Location=${DAMAGE_RESULT_SENSORS}}} `;
             let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
             result += returnStr;
             if (penetratingDamage) {
@@ -1348,7 +1353,7 @@ on(`clicked:rolldamage`, async () => {
             return result;
         },
         15: async (shieldVar, baseDamage) => {
-            let result = `{{Hit Location=${DAMAGE_RESULT_ENG} (${hitRollResult+1})}} `;
+            let result = `{{Hit Location=${DAMAGE_RESULT_ENG}}} `;
             let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
             result += returnStr;
             if (penetratingDamage) {
@@ -1357,15 +1362,13 @@ on(`clicked:rolldamage`, async () => {
                 result += ` {{Grid=${gridNames[randomGrid]}}}`;
                 let { residualDamage, returnStr: systemReturn } = await damageSystem(`${gridNames[randomGrid].toLowerCase()}_grid`, penetratingDamage);
                 result += systemReturn;
-                if (residualDamage) {
-                    let { residualDamage: residualResidual, returnStr: residualReturn } = await damageResidual(residualDamage);
-                    result += residualReturn;
-                }
+                let { residualDamage: crewResidual, returnStr: crewReturn } = await damageCrew(penetratingDamage, 2, true);
+                result += crewReturn;
             }
             return result;
         },
         16: async (shieldVar, baseDamage) => {
-            let result = `{{Hit Location=${DAMAGE_RESULT_BEAM} (${hitRollResult+1})}} `;
+            let result = `{{Hit Location=${DAMAGE_RESULT_BEAM}}} `;
             let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
             result += returnStr;
             if (penetratingDamage) {
@@ -1379,7 +1382,7 @@ on(`clicked:rolldamage`, async () => {
             return result;
         },
         17: async (shieldVar, baseDamage) => {
-            let result = `{{Hit Location=${DAMAGE_RESULT_MISSILE} (${hitRollResult+1})}} `;
+            let result = `{{Hit Location=${DAMAGE_RESULT_MISSILE}}} `;
             let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
             result += returnStr;
             if (penetratingDamage) {
@@ -1398,12 +1401,12 @@ on(`clicked:rolldamage`, async () => {
     rollStr += await damageHandlers[hitResult]?.(shieldVar, baseDamage) || ``;
 
     await startRoll(
-        `/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Damage Results}} {{color=red}} {{Incoming Dmg=${baseDamage}}} {{On Shield Arc=${shieldArcStr}}} ${rollStr}`,
+        rollStr,
         roll => finishRoll(roll.rollId)
     );
 });
 
-async function handleWarpDamage(penetratingDamage, engineLocation, shieldArc) {
+async function handleWarpDamage(penetratingDamage, engineLocation) {
     let result = ``;
     const { residualDamage, returnStr } = await damageWarp(penetratingDamage, engineLocation);
     result += returnStr;
@@ -1411,7 +1414,7 @@ async function handleWarpDamage(penetratingDamage, engineLocation, shieldArc) {
         if (returnStr.includes(ENGINE_WARP_NAME_NONE)) {
             result += (await damageSup(residualDamage)).returnStr;
         } else {
-            result += (await damageResidual(residualDamage)).returnStr;
+            result += (await damageResidual(residualDamage, 0.5)).returnStr;
         }
     }
     return result;
@@ -1421,12 +1424,11 @@ async function handleWarpDamage(penetratingDamage, engineLocation, shieldArc) {
 async function damageCrew(myDmg, myFactor = 1, isBridge = false) {
     const values = await getAttrsAsync([`crew`, `crew_max`, `crewrating`, `hp_max`]);
     const crew = parseInt(values[`crew`]) || 0;
-    const crewMax = parseInt(values[`crew_max`]) || 0;
-    const crewRating = parseInt(values[`crewrating`]) || 0;
+    const crewRating = parseInt(values[`crewefficiency`]) || 0;
     const maxSup = parseInt(values[`hp_max`]) || 0;
 
     const supIntervals = [0, 1, 2, 3, 4, 5, 6, 8, 11, 14, 19, 34, 50, 999];
-    const percentsLost = [0, MAX_PERCENTAGE, 50, 30, 25, 20, 18, 14, 10, 8, 6, 4, 2, 1];
+    const percentsLost = [0, 100, 50, 30, 25, 20, 18, 14, 10, 8, 6, 4, 2, 1];
 
     // Determine percentage bracket based on max sup
     let index = -1;
@@ -1434,12 +1436,14 @@ async function damageCrew(myDmg, myFactor = 1, isBridge = false) {
         index++;
     }
     while (maxSup > supIntervals[index])
+console.log('percentsLost[index]: ' + percentsLost[index]);
+console.log('percentsLost[index]: ' + percentsLost[index]);
 
     // Determine amount of crew lost
-    const isCrewEffective = getRandomIntInclusive(1, MAX_PERCENTAGE) <= crewRating;
+    const isCrewEffective = getRandomIntInclusive(1, 100) <= crewRating;
     const CREW_MAX_DMG = 5;
-    const percentLost = Math.min((isBridge == true) ? 20 : MAX_PERCENTAGE, Math.floor(percentsLost[index] * Math.min(CREW_MAX_DMG, myDmg) * myFactor)) / (isCrewEffective ? 2 : 1);
-    const crewLost = Math.ceil(crewMax * percentLost / MAX_PERCENTAGE);
+    const percentLost = Math.min((isBridge == true) ? 20 : 100, Math.floor(percentsLost[index] * Math.min(CREW_MAX_DMG, myDmg) * myFactor)) / (isCrewEffective ? 2 : 1);
+    const crewLost = Math.ceil(crew * percentLost / 100);
     const newCrew = Math.max(0, crew - crewLost);
 
     const output = {};
@@ -1837,7 +1841,7 @@ function repairSystem(mySystemVar = ``, mySystemName = ``) {
         setAttrs(output);
 
         startRoll(
-            `/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Repair Roll}} {{color=gold}} {{System=${mySystemName}}} {{Base Target=${repairTargetBase}}} {{Crew Penalty=${crewRollPenalty}}} {{To-Repair=[[${repairTarget}]]}} {{Roll=[[${repairRoll}]]}}`,
+            `/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=&#x1F527; Repair Roll &#x1F527;}} {{color=gold}} {{System=${mySystemName}}} {{Base Target=${repairTargetBase}}} {{Crew Penalty=${crewRollPenalty}}} {{To-Repair=[[${repairTarget}]]}} {{Roll=[[${repairRoll}]]}}`,
             roll => finishRoll(roll.rollId)
         );
     });
@@ -2314,6 +2318,8 @@ function energizeShields() {
         output[`shield_4c`] = shield4IsDamaged ? 0 : shield4Allocation;
         output[`shield_5c`] = shield5IsDamaged ? 0 : shield5Allocation;
         output[`shield_6c`] = shield6IsDamaged ? 0 : shield6Allocation;
+
+        output[`bridge_hit_status`] = 0;
         setAttrs(output);
     });
 };
@@ -2326,7 +2332,7 @@ function energizeShields() {
             const activeShields = Object.values(values).filter(state => state == 0).length;
             
             const output = {};
-            output[`shields-percent`] = Math.max(0, Math.round(activeShields / 6 * MAX_PERCENTAGE));
+            output[`shields-percent`] = Math.max(0, Math.round(activeShields / 6 * 100));
             setAttrs(output);
         });
     });
@@ -2391,7 +2397,7 @@ on(`change:hp change:hp_max`, function(eventInfo) {
         const hpMax = parseInt(values[`hp_max`]) || 0;  
 
         const output = {};
-        output[`sup-percent`] = Math.max(0, Math.round(hp / hpMax * MAX_PERCENTAGE));
+        output[`sup-percent`] = Math.max(0, Math.round(hp / hpMax * 100));
         if (hp < 1) output[`tpa_movement`] = 0; // disable movement
         output[`hp_status`] = hp < (hpMax / 2) || hp > hpMax ? 1 : hp < hpMax ? 2 : 0;
         output[`ship-is-disabled`] = hp < 1 ? 1 : 0;
@@ -2426,7 +2432,7 @@ on(`change:repeating_engines:engine_power change:repeating_engines:engine_power_
             });
             output[`tpa`] = tpa;
             output[`tpa_max`] = tpaMax;
-            output[`tpa-percent`] = Math.max(0, Math.round(tpa / tpaMax * MAX_PERCENTAGE));
+            output[`tpa-percent`] = Math.max(0, Math.round(tpa / tpaMax * 100));
             setAttrs(output);
         });
     });
@@ -2751,7 +2757,7 @@ on(`clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target`, a
 
         const wpnTargetToHitStr = wpnTargetToHitModified < -3 ? `Not Possible` : wpnTargetToHitModified < 1 ? `Slim to None` : `${wpnTargetToHitModified * 10}%`;
         
-        startRoll(`&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Weapons Targeted}} {{color=green}} {{Weapons=${weaponNames.join(`\\n`)}}} {{Target=[${tokenName}](${ROLL20_CHAR_URL}${charId})}} {{Distance=${wpnTargetDistance} hexes}} {{Firing Chart=${wpnChart}}} {{Crew Penalty=${crewCasualtyPenalty}}} {{Repair Penalty=${weaponStatePenalty}}} {{Chance To-Hit=${wpnTargetToHitStr}}}`, roll => finishRoll(roll.rollId));
+        startRoll(`&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=&#x1F3AF; Weapons Targeted &#x1F3AF;}} {{color=green}} {{Weapons=${weaponNames.join(`\\n`)}}} {{Target=[${tokenName}](${ROLL20_CHAR_URL}${charId})}} {{Distance=${wpnTargetDistance} hexes}} {{Firing Chart=${wpnChart}}} {{Crew Penalty=${crewCasualtyPenalty}}} {{Repair Penalty=${weaponStatePenalty}}} {{Chance To-Hit=${wpnTargetToHitStr}}}`, roll => finishRoll(roll.rollId));
     } else {
         startRoll(`&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Target Out of Range}} {{Weapon=${wpnName}}} {{Max Range=${wpnMaxRange} hexes}} {{Target=${tokenName}}} {{Distance=${wpnTargetDistance} hexes}}`, roll => finishRoll(roll.rollId));
     }
@@ -2983,7 +2989,7 @@ async function updateWeaponsPercent() {
     });
 
     const output = {};
-    output[`weapons-percent`] = Math.max(0, Math.round((countWeapons - countWeaponsDamaged) / countWeapons * MAX_PERCENTAGE));
+    output[`weapons-percent`] = Math.max(0, Math.round((countWeapons - countWeaponsDamaged) / countWeapons * 100));
     setAttrs(output);
 }
 
