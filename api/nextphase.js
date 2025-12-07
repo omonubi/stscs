@@ -79,6 +79,7 @@ on('change:campaign:turnorder', function() {
     	            sortTurnOrder(sorter_asc);
     	            break;
     	        case PHASE_1_FIRE: case PHASE_2_FIRE: case PHASE_3_FIRE:
+    	            sendChat('Phase', `&{template:custom} {{title=**Evasive Maneuvers?**}} {{color=blue}}`);
                     removeSensorStatus();
     	            sortTurnOrder(sorter_desc);
     	            break;

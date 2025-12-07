@@ -692,7 +692,7 @@
 .sheet-rolltemplate-custom .sheet-container.sheet-color-orange,
 .sheet-rolltemplate-menu .sheet-container.sheet-color-orange {
   --header-bg-color: darkorange;
-  --header-text-color: black;
+  --header-text-color: white;
 }
 .sheet-rolltemplate-custom .sheet-container.sheet-color-purple,
 .sheet-rolltemplate-menu .sheet-container.sheet-color-purple {

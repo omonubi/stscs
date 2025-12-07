@@ -697,9 +697,9 @@
             </span> →
             <input type='text' class='w10' name='attr_target_name' readonly/>
             <input type='hidden' name='attr_target_id'/>
-            <input type='text' class='w3' name='attr_target_distance' readonly/>
+            <input type='text' class='w3' name='attr_target_distance' value='0' readonly/>
             <input type='hidden' class='target-tohit-status' name='attr_target_tohit_status'/>
-            <input type='text' class='w3 target-tohit' name='attr_target_tohit' readonly/>
+            <input type='text' class='w3 target-tohit' name='attr_target_tohit' value='0' readonly/>
             <span>
                 <input type='hidden' class='btn-fire-status' name='attr_btn-fire_status' value='0'/>
                 <button type='action' class='btn btn-fire critical' name='act_btn-fire'>Fire</button>
@@ -2338,39 +2338,130 @@ function energizeShields() {
     });
 });
 
-// STRESS TURN
+// STRESS TURNS
+// Emergency heading changes
+// Tactical heading changes
+// Evasive maneuvers
 on(`clicked:stress_turn`, async (event) => {
-    const response = await extractChatData(`?{Confirm Stress Turn|Confirm|Cancel}`);
+    const response = await extractChatData(`?{Select Type of Turn|Emergency Heading Change, 0|Tactical Heading Change, 1|Evasive Maneuver, 2}`);
 
-    if (response === `Confirm`) {
-        const engines = await getSectionIDsAsync(`repeating_engines`);
+    const turnTypes = [`Energency Heading Change`, `Tactical Heading Change`, `Evasive Maneuver`];
+    const engines = await getSectionIDsAsync(`repeating_engines`);
+    let strOutput = `&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=${turnTypes[parseInt(response) || 0]}}} {{color=orange}} `;
+    let dmgWarp = 0;
+    let dmgSup = 0;
 
-        const Fieldnames = [];
-        engines.forEach(id => {
-            Fieldnames.push(`repeating_engines_${id}_engine_power`);
-            Fieldnames.push(`repeating_engines_${id}_engine_type`);
-        });
+    const Fieldnames = [];
+    engines.forEach(id => {
+        Fieldnames.push(`repeating_engines_${id}_engine_power`);
+        Fieldnames.push(`repeating_engines_${id}_engine_type`);
+    });
 
-        const output = {};
-        const values = await getAttrsAsync([...Fieldnames, `hp`]);
+    const output = {};
+    const values = await getAttrsAsync([...Fieldnames, `hp`, `wf_current`]);
+    const currentSup = parseInt(values['hp']) || 0;
+    const currentWF = parseInt(values['wf_current']) || 0;
+
+    // Engine damage for heading changes
+    if (response < 2) {
         engines.forEach(id => {
             const engineType = parseInt(values[`repeating_engines_${id}_engine_type`]) || 0;
             if (engineType == ENGINE_TYPE_WARP) {
                 const currentPower = parseInt(values[`repeating_engines_${id}_engine_power`]) || 0;
-                output[`repeating_engines_${id}_engine_power`] = Math.max(0, currentPower - 1);
+                const myNewPower = Math.max(0, currentPower - 1);
+                output[`repeating_engines_${id}_engine_power`] = myNewPower;
+                if (currentPower - 1 >= 0) dmgWarp++;
             }
         });
+        strOutput += `{{Engine Dmg=${dmgWarp}}} `;
+    }
 
-        const currentSup = parseInt(values['hp']) || 0;
-        output[`hp`] = Math.max(0, currentSup - 1);
+    // Superstructure damage
+    const myNewSup = currentSup - 1;
+    // For emergency heading change @ warp > 4
+    if (response == 0 && currentWF >=5) {
+        output[`hp`] = myNewSup;
+        dmgSup++;
+    } else if (response > 0) {
+        output[`hp`] = myNewSup;
+        dmgSup++;
+    }
 
-        await setAttrsAsync(output);
+    if (dmgSup) {
+        strOutput += `{{Sup Dmg=${dmgSup}}} `;
+    }
 
-        startRoll(`&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Makes a Stress Turn!}} {{color=orange}}`, roll => {
-            finishRoll(roll.rollId);
-        });
-    }   
+    // Evasive maneuver check
+    if (response == 2) {
+        const evadeResult = getRandomIntInclusive(1, 10) < 4 ? `Success` : `Failure`;
+        strOutput += `{{All To-Hits=-2}} {{To-Evade=[[3]]}} {{Roll=[[1d10cs>11cf<0]]}} `;
+
+        await updateWeaponTargetToHit();
+    }
+
+    await setAttrsAsync(output);
+
+    startRoll(strOutput, roll => {
+        finishRoll(roll.rollId);
+    });  
 });
+
+async function updateWeaponTargetToHit() {
+    try {
+        // Define the repeating sections to process
+        const sections = ['repeating_beams', 'repeating_missiles'];
+        
+        // Get section IDs for both weapon types
+        const [beamIds, missileIds] = await Promise.all([
+            getSectionIDsAsync('repeating_beams'),
+            getSectionIDsAsync('repeating_missiles')
+        ]);
+        
+        // Combine section IDs with their section names
+        const allWeapons = [
+            ...(beamIds || []).map(id => ({ section: 'repeating_beams', id })),
+            ...(missileIds || []).map(id => ({ section: 'repeating_missiles', id }))
+        ];
+        
+        if (allWeapons.length === 0) {
+            console.log('No weapons found');
+            return;
+        }
+        
+        // Build array of attribute names to fetch
+        const attrNames = [];
+        allWeapons.forEach(weapon => {
+            attrNames.push(`${weapon.section}_${weapon.id}_target_name`);
+            attrNames.push(`${weapon.section}_${weapon.id}_target_tohit`);
+        });
+        
+        // Get all the attributes
+        const values = await getAttrsAsync(attrNames);
+        
+        // Build update object for weapons with valid target_name
+        const updates = {};
+        allWeapons.forEach(weapon => {
+            const targetName = values[`${weapon.section}_${weapon.id}_target_name`];
+            const targetToHit = parseInt(values[`${weapon.section}_${weapon.id}_target_tohit`]) || 0;
+            
+            // Check if target_name has a valid value (not empty/null/undefined)
+            if (targetName && targetName.trim() !== '') {
+                updates[`${weapon.section}_${weapon.id}_target_tohit`] = targetToHit - 2;
+            }
+        });
+        
+        // Apply the updates if any were found
+        if (Object.keys(updates).length > 0) {
+            await setAttrsAsync(updates);
+            console.log(`Updated ${Object.keys(updates).length} weapon(s) (beams and missiles)`);
+        } else {
+            console.log('No weapons with valid targets found');
+        }
+        
+    } catch (error) {
+        console.error('Error updating weapon target to-hit values:', error);
+    }
+}
 
 // SUPERSTRUCTURE MASS and SIZE calculations
 on(`change:mass`, function(eventInfo) {
@@ -2498,9 +2589,8 @@ function resetTPA() {
             ids.forEach(id => {
                 output[`repeating_beams_${id}_power`] = 0;
                 output[`repeating_beams_${id}_target_name`] = ``;
-                output[`repeating_beams_${id}_target_distance`] = ``;
-                output[`repeating_beams_${id}_target_tohit`] = ``;
-                output[`repeating_beams_${id}_target_tohit_status`] = 0;
+                output[`repeating_beams_${id}_target_distance`] = 0;
+                output[`repeating_beams_${id}_target_tohit`] = 0;
                 output[`repeating_beams_${id}_btn-target_status`] = 0;
                 output[`repeating_beams_${id}_btn-fire_status`] = 0;
             });
@@ -2520,9 +2610,8 @@ function resetTPA() {
             ids.forEach(id => {
                 output[`repeating_missiles_${id}_armed`] = 0;
                 output[`repeating_missiles_${id}_target_name`] = ``;
-                output[`repeating_missiles_${id}_target_distance`] = ``;
-                output[`repeating_missiles_${id}_target_tohit`] = ``;
-                output[`repeating_missiles_${id}_target_tohit_status`] = 0;
+                output[`repeating_missiles_${id}_target_distance`] = 0;
+                output[`repeating_missiles_${id}_target_tohit`] = 0;
                 output[`repeating_missiles_${id}_btn-target_status`] = 0;
                 output[`repeating_missiles_${id}_btn-fire_status`] = 0;
             });
@@ -2681,9 +2770,8 @@ on(`clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target`, a
     // Clear only the triggered row
     output[`${row}_target_name`] = ``;
     output[`${row}_target_id`] = ``;
-    output[`${row}_target_distance`] = ``;
-    output[`${row}_target_tohit`] = ``;
-    output[`${row}_target_tohit_status`] = 0;
+    output[`${row}_target_distance`] = 0;
+    output[`${row}_target_tohit`] = 0;
     output[`${row}_btn-fire_status`] = 0;
 
     await setAttrsAsync(output);
@@ -2751,7 +2839,6 @@ on(`clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target`, a
             output[`${targetRow}_target_id`] = charId;
             output[`${targetRow}_target_distance`] = wpnTargetDistance;
             output[`${targetRow}_target_tohit`] = wpnTargetToHitModified;
-            output[`${targetRow}_target_tohit_status`] = wpnTargetToHitModified < 1 ? 1 : 0;
             output[`${targetRow}_btn-fire_status`] = wpnTargetToHitModified > -4 ? 1 : 0;
         }   
 
@@ -2889,9 +2976,8 @@ on(`clicked:repeating_beams:btn-fire clicked:repeating_missiles:btn-fire`, async
         output[`repeating_${section}_${id}_btn-target_status`] = isOCLaser ? 1 : 0;
         output[`repeating_${section}_${id}_btn-fire_status`] = 0;
         output[`repeating_${section}_${id}_target_name`] = ``;
-        output[`repeating_${section}_${id}_target_distance`] = ``;
-        output[`repeating_${section}_${id}_target_tohit`] = ``;
-        output[`repeating_${section}_${id}_target_tohit_status`] = 0;
+        output[`repeating_${section}_${id}_target_distance`] = 0;
+        output[`repeating_${section}_${id}_target_tohit`] = 0;
         await setAttrsAsync(output);
     }   
 
@@ -2993,6 +3079,22 @@ async function updateWeaponsPercent() {
     setAttrs(output);
 }
 
+// WEAPON TO-HIT status
+on(`change:repeating_beams:target_tohit change:repeating_missiles:target_tohit`, function(eventInfo) {
+    const newValue = parseInt(eventInfo.newValue) || 0;
+    const rowId = eventInfo.sourceAttribute.split('_');
+
+    getAttrs([`repeating_${rowId[1]}_${rowId[2]}_target_name`], function(values) {
+        const targetName = values[`repeating_${rowId[1]}_${rowId[2]}_target_name`] || '';
+        console.log('targetName: ' + targetName);
+        const statusValue = targetName == `` ? 0 : (newValue < 1 ? 1 : 0);
+        
+        setAttrs({
+            [`repeating_${rowId[1]}_${rowId[2]}_target_tohit_status`]: statusValue
+        });
+    });
+});
+
 /****************************/
 function isRunningOnServer() { return self.dispatchEvent == undefined; }
 function setActiveCharacterId(charId){
@@ -3082,10 +3184,10 @@ function getSectionIDsAsync(sectionName){
       </div>
 
       <div class="sheet-content">
-        {{#allprops() title subtitle color Slim-Roll Slim-To-Hit Damage}}
+        {{#allprops() title subtitle color Damage Slim-Roll Slim-To-Hit}}
         <div class="sheet-key">{{key}}</div>
         <div class="sheet-value">{{value}}</div>
-        {{/allprops() title subtitle color Slim-Roll Slim-To-Hit Damage}}
+        {{/allprops() title subtitle color Damage Slim-Roll Slim-To-Hit}}
 
         {{#^rollGreater() Roll Efficiency}}
         <div class="sheet-key">Result</div>
@@ -3136,6 +3238,16 @@ function getSectionIDsAsync(sectionName){
                 <div class="sheet-value"><span class="failure">Miss!</span></div>
             {{/^rollLess() To-Hit 1}}
         {{/rollGreater() Roll To-Hit}}
+
+        {{#^rollGreater() Roll To-Evade}}
+        <div class="sheet-key">Result</div>
+        <div class="sheet-value"><span class="success">Success!</span></div>
+        {{/^rollGreater() Roll To-Evade}}
+
+        {{#rollGreater() Roll To-Evade}}
+        <div class="sheet-key">Result</div>
+        <div class="sheet-value"><span class="failure">Failure</span></div>
+        {{/rollGreater() Roll To-Evade}}
 
         {{#^rollGreater() Roll To-Repair}}
         <div class="sheet-key">Result</div>
