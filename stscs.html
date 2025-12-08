@@ -71,7 +71,7 @@
             <input type='number' class='w5 crew' name='attr_crew' value='0' min='0'/> /
             <span name='attr_crew_max'></span>
         </span>
-        <label>Efficiency:</label>
+        <label>Crew Efficiency:</label>
         <span>
             <input type='number' name='attr_crewefficiency' readonly/> / 
             <input type='number' name='attr_crewrollpenalty' readonly/>
@@ -130,7 +130,7 @@
         <label>TPA to Warp:</label>
         <input type='number' name='attr_tpa_warp' min='0' value='0' readonly/>
 
-        <button type='action' class='btn energize' name='act_shield_reenergize'>Re-energize</button>
+        <button type='action' class='btn energize' name='act_shield_reenergize'>No Repairs</button>
         <span></span>
         <label>TPA to Shields:</label>
         <input type='number' class='em' name='attr_tpa_shields' min='0' value='0'/>
@@ -211,6 +211,12 @@
                 <option value='8'>How much damage has been taken?</option>
                 <option value='9'>What is the status of the crew?</option>
                 <!--<option value='10'>Are any transporters powered?</option>-->
+                <option value='11'>Is the #1 (f/p) shield powered?</option>
+                <option value='12'>Is the #2 (fwd) shield powered?</option>
+                <option value='13'>Is the #3 (f/s) shield powered?</option>
+                <option value='14'>Is the #4 (a/s) shield powered?</option>
+                <option value='15'>Is the #5 (aft) shield powered?</option>
+                <option value='16'>Is the #6 (a/p) shield powered?</option>
             </select>
         </span>
         <span class='span2'><input type='text' class='scan-answer' name='attr_scananswer' placeholder='Paste the result here...'/></span>
@@ -222,6 +228,12 @@
         <button type='action' class='btn gm-only btn-send' name='act_send_missiles' title='DO NOT CLICK'>Missiles</button>
         <button type='action' class='btn gm-only btn-send' name='act_send_shields' title='DO NOT CLICK'>Shields</button>
 
+        <button type='action' class='btn gm-only btn-send' name='act_send_shield_1' title='DO NOT CLICK'>Shield 1</button>
+        <button type='action' class='btn gm-only btn-send' name='act_send_shield_2' title='DO NOT CLICK'>Shield 2</button>
+        <button type='action' class='btn gm-only btn-send' name='act_send_shield_3' title='DO NOT CLICK'>Shield 3</button>
+        <button type='action' class='btn gm-only btn-send' name='act_send_shield_4' title='DO NOT CLICK'>Shield 4</button>
+        <button type='action' class='btn gm-only btn-send' name='act_send_shield_5' title='DO NOT CLICK'>Shield 5</button>
+        <button type='action' class='btn gm-only btn-send' name='act_send_shield_6' title='DO NOT CLICK'>Shield 6</button>
     </div>
     <br/>
 
@@ -402,33 +414,33 @@
             <label>Shield #1 (<strong>f/p</strong>):</label>
             <span>
                 <input type='hidden' class='shield-1c-status' name='attr_shield_1c_status'/>
-                <input type='number' class='shield-1c' name='attr_shield_1c' readonly/>
+                <input type='number' class='shield-1c' name='attr_shield_1c'/>
             </span>
             <label>Shield #2 (<strong>fwd</strong>):</label>
             <span>
                 <input type='hidden' class='shield-2c-status' name='attr_shield_2c_status'/>
-                <input type='number' class='shield-2c' name='attr_shield_2c' readonly/>
+                <input type='number' class='shield-2c' name='attr_shield_2c'/>
             </span>
             <label>Shield #3 (<strong>f/s</strong>):</label>
             <span>
                 <input type='hidden' class='shield-3c-status' name='attr_shield_3c_status'/>
-                <input type='number' class='shield-3c' name='attr_shield_3c' readonly/>
+                <input type='number' class='shield-3c' name='attr_shield_3c'/>
             </span>
 
             <label>Shield #6 (<strong>a/p</strong>):</label>
             <span>
                 <input type='hidden' class='shield-6c-status' name='attr_shield_6c_status'/>
-                <input type='number' class='shield-6c' name='attr_shield_6c' readonly/>
+                <input type='number' class='shield-6c' name='attr_shield_6c'/>
             </span>
             <label>Shield #5 (<strong>aft</strong>):</label>
             <span>
                 <input type='hidden' class='shield-5c-status' name='attr_shield_5c_status'/>
-                <input type='number' class='shield-5c' name='attr_shield_5c' readonly/>
+                <input type='number' class='shield-5c' name='attr_shield_5c'/>
             </span>
             <label>Shield #4 (<strong>a/s</strong>):</label>
             <span>
                 <input type='hidden' class='shield-4c-status' name='attr_shield_4c_status'/>
-                <input type='number' class='shield-4c' name='attr_shield_4c' readonly/>
+                <input type='number' class='shield-4c' name='attr_shield_4c'/>
             </span>
         </div>
     </div>
@@ -2026,7 +2038,13 @@ on(`change:scanquestion`, function(eventInfo) {
                 `Is a specific weapon powered?`,
                 `How much damage has been taken?`,
                 `What is the status of the crew?`,
-                `Are any transporters powered?`
+                `Are any transporters powered?`,
+                `Is the #1 (f/p) shield powered?`,
+                `Is the #2 (f) shield powered?`,
+                `Is the #3 (f/s) shield powered?`,
+                `Is the #4 (a/s) shield powered?`,
+                `Is the #5 (a) shield powered?`,
+                `Is the #6 (a/p) shield powered?`
                 ];
 
             startRoll(`/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Sensor Query}} {{color=green}} {{Target=[${sensorLock}](${ROLL20_CHAR_URL}${sensorLockId})}} {{Query=${questions[questionIndex]}}}`, roll => {
@@ -2195,6 +2213,25 @@ on(`clicked:send_missiles`, async (event) => {
     );
 });
 
+// SENSORS SEND SHIELD X
+on(`clicked:send_shield_1 clicked:send_shield_2 clicked:send_shield_3 clicked:send_shield_4 clicked:send_shield_5 clicked:send_shield_6`, async (event) => {
+
+    // Extract the shield number from the event's triggerName (e.g., "clicked:send_shield_3" -> "3")
+    const shieldNum = event.triggerName.match(/\d+/);
+    
+    // Get the shield status attribute for this shield number
+    const attrs = await getAttrsAsync([`shield_${shieldNum}c`]);
+    const shieldIsUp = attrs[`shield_${shieldNum}c`] > 0 || 0;
+    
+    const shieldIsUpStr = shieldIsUp ? `Yes` : `No`;
+    const shieldStr = `{{Answer=${shieldIsUpStr}}} `;
+
+    startRoll(
+        `/w "@{target|character_name}" &{template:custom} {{title=**Scan Results: Shield ${shieldNum}**}} {{subtitle=[@{character_name}](${ROLL20_CHAR_URL}@{character_id})}} {{color=green}} ${shieldStr} `,
+        roll => finishRoll(roll.rollId)
+    );
+});
+
 // SENSORS SEND SHIELDS
 on(`clicked:send_shields`, async (event) => {
     // Fetch shield and SPR values
@@ -2279,6 +2316,11 @@ on(`change:tpa_shields change:spr_1 change:spr_2 change:shield_1 change:shield_2
 // SHIELDS RE-ENERGIZED
 on(`clicked:shield_reenergize`, function(eventInfo) {
     energizeShields();
+
+    startRoll(
+        `/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=No Repairs}} {{color=gold}}`,
+        roll => finishRoll(roll.rollId)
+    );
 });
 on(`change:current_phase`, function(eventInfo) {
     energizeShields();
