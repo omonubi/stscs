@@ -890,7 +890,7 @@ const extractChatData = async (query) => {
 
 // Async function to return a token name and its character id 
 const extractTargetData = async () => {
-    const query = await startRoll(`!{{target=[[0+{"tokenName":"@{target|token_name}","charId":"@{target|character_id}"}]]}} /direct`);
+    const query = await startRoll(`!{{target=[[0+{"tokenName":"@{target|Target|token_name}","charId":"@{target|Target|character_id}"}]]}} /direct`);
     finishRoll(query.rollId);
     const expr = query.results.target.expression;
     const jsonStr = expr.replace(/0\+\{(.+)\}/, `{$1}`);
@@ -2039,8 +2039,6 @@ on(`change:scanquestion`, function(eventInfo) {
 
 // SENSORS SEND ALLOCATION
 on(`clicked:send_alloc`, async (event) => {
-    const { tokenName, charId } = await extractTargetData(); // Destructure JSON
-    
     const values = await getAttrsAsync([`tpa_movement`, `tpa_warp`, `tpa_shields`, `tpa_weapons`]);
     
     // Get the TPA variable values
@@ -2085,15 +2083,13 @@ on(`clicked:send_alloc`, async (event) => {
     }
     
     startRoll(
-        `/w ${tokenName} &{template:custom} {{title=**Scan Results: Allocation**}} {{subtitle=[@{character_name}](${ROLL20_CHAR_URL}@{character_id})}} {{color=green}} ${priorityString}`,
+        `/w "@{target|character_name}" &{template:custom} {{title=**Scan Results: Allocation**}} {{subtitle=[@{character_name}](${ROLL20_CHAR_URL}@{character_id})}} {{color=green}} ${priorityString}`,
         roll => finishRoll(roll.rollId)
     );
 });
 
 // SENSORS SEND BEAMS
-on(`clicked:send_beams`, async (event) => {
-    const { tokenName, charId } = await extractTargetData(); // Destructure JSON
-    
+on(`clicked:send_beams`, async (event) => {    
     // Get all repeating_beams section IDs
     const beamIds = await getSectionIDsAsync('repeating_beams');
     
@@ -2117,15 +2113,13 @@ on(`clicked:send_beams`, async (event) => {
     const rollString = `{{Beams:=${weaponCount}}} {{TPA:=${totalPower}}}`;
 
     startRoll(
-        `/w ${tokenName} &{template:custom} {{title=**Scan Results: Beams**}} {{subtitle=[@{character_name}](${ROLL20_CHAR_URL}@{character_id})}} {{color=green}} ${rollString}`,
+        `/w "@{target|character_name}" &{template:custom} {{title=**Scan Results: Beams**}} {{subtitle=[@{character_name}](${ROLL20_CHAR_URL}@{character_id})}} {{color=green}} ${rollString}`,
         roll => finishRoll(roll.rollId)
     );
 });
 
 // SENSORS SEND CREW
-on(`clicked:send_crew`, async (event) => {
-    const { tokenName, charId } = await extractTargetData(); // Destructure JSON
-    
+on(`clicked:send_crew`, async (event) => {    
     // Get the status variables
     const statusData = await getAttrsAsync([
         'crew-percent'
@@ -2138,15 +2132,13 @@ on(`clicked:send_crew`, async (event) => {
     const statusString = `{{Crew:=${crew}%}}`;
 
     startRoll(
-        `/w ${tokenName} &{template:custom} {{title=**Scan Results: Crew**}} {{subtitle=[@{character_name}](${ROLL20_CHAR_URL}@{character_id})}} {{color=green}} ${statusString}`,
+        `/w "@{target|character_name}" &{template:custom} {{title=**Scan Results: Crew**}} {{subtitle=[@{character_name}](${ROLL20_CHAR_URL}@{character_id})}} {{color=green}} ${statusString}`,
         roll => finishRoll(roll.rollId)
     );
 });
 
 // SENSORS SEND DAMAGE
-on(`clicked:send_damage`, async (event) => {
-    const { tokenName, charId } = await extractTargetData(); // Destructure JSON
-    
+on(`clicked:send_damage`, async (event) => {    
     // Get the status variables
     const statusData = await getAttrsAsync([
         'sup-percent',
@@ -2165,15 +2157,13 @@ on(`clicked:send_damage`, async (event) => {
     const statusString = `{{Sup:=${superstructure}%}} {{Power:=${tpa}%}} {{Shd:=${shields}%}} {{Wpn:=${weapons}%}}`;
 
     startRoll(
-        `/w ${tokenName} &{template:custom} {{title=**Scan Results: Damage**}} {{subtitle=[@{character_name}](${ROLL20_CHAR_URL}@{character_id})}} {{color=green}} ${statusString}`,
+        `/w "@{target|character_name}" &{template:custom} {{title=**Scan Results: Damage**}} {{subtitle=[@{character_name}](${ROLL20_CHAR_URL}@{character_id})}} {{color=green}} ${statusString}`,
         roll => finishRoll(roll.rollId)
     );
 });
 
 // SENSORS SEND MISSILES
-on(`clicked:send_missiles`, async (event) => {
-    const { tokenName, charId } = await extractTargetData(); // Destructure JSON
-    
+on(`clicked:send_missiles`, async (event) => {    
     // Get all repeating_missiles section IDs
     const missileIds = await getSectionIDsAsync('repeating_missiles');
     
@@ -2201,15 +2191,13 @@ on(`clicked:send_missiles`, async (event) => {
     const rollString = `{{Missiles:=${weaponCount}}} {{Power:=${totalPower}}}`;
 
     startRoll(
-        `/w ${tokenName} &{template:custom} {{title=**Scan Results: Missiles**}} {{subtitle=[@{character_name}](${ROLL20_CHAR_URL}@{character_id})}} {{color=green}} ${rollString}`,
+        `/w "@{target|character_name}" &{template:custom} {{title=**Scan Results: Missiles**}} {{subtitle=[@{character_name}](${ROLL20_CHAR_URL}@{character_id})}} {{color=green}} ${rollString}`,
         roll => finishRoll(roll.rollId)
     );
 });
 
 // SENSORS SEND SHIELDS
 on(`clicked:send_shields`, async (event) => {
-    const { tokenName, charId } = await extractTargetData(); // Destructure JSON
-
     // Fetch shield and SPR values
     const shieldVars = await getAttrsAsync(['shield_1c', 'shield_2c', 'shield_3c', 'shield_4c', 'shield_5c', 'shield_6c', 'spr_1', 'spr_2']);
     
@@ -2229,7 +2217,7 @@ on(`clicked:send_shields`, async (event) => {
     const shieldsString = `{{Shields:=${shieldsPowered}}} {{Power:=${powerAllocated}}} {{SPR:=${sprValue}}}`;
 
     startRoll(
-        `/w ${tokenName} &{template:custom} {{title=**Scan Results: Shields**}} {{subtitle=[@{character_name}](${ROLL20_CHAR_URL}@{character_id})}} {{color=green}} ${shieldsString}`,
+        `/w "@{target|character_name}" &{template:custom} {{title=**Scan Results: Shields**}} {{subtitle=[@{character_name}](${ROLL20_CHAR_URL}@{character_id})}} {{color=green}} ${shieldsString}`,
         roll => finishRoll(roll.rollId)
     );
 });
