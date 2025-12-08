@@ -1179,7 +1179,7 @@ on(`clicked:rolldamage`, async () => {
             if (penetratingDamage) {
                 let { residualDamage, returnStr: supReturn } = await damageSup(penetratingDamage, 0.5);
                 result += supReturn;
-                let { residualDamage: crewResidual, returnStr: crewReturn } = await damageCrew(penetratingDamage, 0.5);
+                let { residualDamage: crewResidual, returnStr: crewReturn } = await damageCrew(Math.floor(penetratingDamage / 2));
                 result += crewReturn;
             }
             return result;
@@ -1249,7 +1249,7 @@ on(`clicked:rolldamage`, async () => {
                 result += warpReturn;
                 let { residualDamage: supResidual, returnStr: supReturn } = await damageSup(penetratingDamageSup, 0.5);
                 result += supReturn;
-                let { residualDamage: crewResidual, returnStr: crewReturn } = await damageCrew(penetratingDamageSup);
+                let { residualDamage: crewResidual, returnStr: crewReturn } = await damageCrew(Math.floor(penetratingDamageSup / 2));
                 result += crewReturn;
             }
             return result;
@@ -1274,7 +1274,7 @@ on(`clicked:rolldamage`, async () => {
                 result += warpReturn;
                 let { residualDamage: supResidual, returnStr: supReturn } = await damageSup(penetratingDamageSup, 0.5);
                 result += supReturn;
-                let { residualDamage: crewResidual, returnStr: crewReturn } = await damageCrew(penetratingDamageSup);
+                let { residualDamage: crewResidual, returnStr: crewReturn } = await damageCrew(Math.floor(penetratingDamageSup / 2));
                 result += crewReturn;
             }
             return result;
@@ -1421,10 +1421,10 @@ async function handleWarpDamage(penetratingDamage, engineLocation) {
 }
 
 // DAMAGE CREW
-async function damageCrew(myDmg, myFactor = 1, isBridge = false) {
-    const values = await getAttrsAsync([`crew`, `crew_max`, `crewrating`, `hp_max`]);
+async function damageCrew(myDmg, myFactor = 1, isCritArea = false) {
+    const values = await getAttrsAsync([`crew`, `crew_max`, `crewefficiency`, `hp_max`]);
     const crew = parseInt(values[`crew`]) || 0;
-    const crewRating = parseInt(values[`crewefficiency`]) || 0;
+    const crewEfficiency = parseInt(values[`crewefficiency`]) || 0;
     const maxSup = parseInt(values[`hp_max`]) || 0;
 
     const supIntervals = [0, 1, 2, 3, 4, 5, 6, 8, 11, 14, 19, 34, 50, 999];
@@ -1436,13 +1436,12 @@ async function damageCrew(myDmg, myFactor = 1, isBridge = false) {
         index++;
     }
     while (maxSup > supIntervals[index])
-console.log('percentsLost[index]: ' + percentsLost[index]);
-console.log('percentsLost[index]: ' + percentsLost[index]);
 
     // Determine amount of crew lost
-    const isCrewEffective = getRandomIntInclusive(1, 100) <= crewRating;
+    const crewRoll = getRandomIntInclusive(1, 100);
+    const isCrewEffective = crewRoll <= crewEfficiency;
     const CREW_MAX_DMG = 5;
-    const percentLost = Math.min((isBridge == true) ? 20 : 100, Math.floor(percentsLost[index] * Math.min(CREW_MAX_DMG, myDmg) * myFactor)) / (isCrewEffective ? 2 : 1);
+    const percentLost = Math.min((isCritArea == true) ? 20 : 100, percentsLost[index] * Math.min(CREW_MAX_DMG, myDmg) * myFactor / (isCrewEffective ? 2 : 1));
     const crewLost = Math.ceil(crew * percentLost / 100);
     const newCrew = Math.max(0, crew - crewLost);
 
