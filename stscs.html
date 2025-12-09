@@ -2815,7 +2815,7 @@ on(`clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target`, a
         let wpnTargetToHitModified = wpnTargetToHit + wpnCrewBonus + crewCasualtyPenalty;
 
         // Get all matching banked weapons
-        const bankedRows = [];
+        let bankedRows = [];
         const nameRoot = wpnName.match(/#\d+/);
         if (nameRoot) {
             const ids = await getSectionIDsAsync(`repeating_${section}`);
@@ -2828,6 +2828,32 @@ on(`clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target`, a
                     bankedRows.push(id);
                 }
             });
+
+            // Check how many powered weapons are in the bank
+            const poweredWeapons = [];
+            for (const id of bankedRows) {
+                const targetRow = `repeating_${section}_${id}`;
+                const rowAttrs = await getAttrsAsync([
+                    `${targetRow}_power`,
+                    `${targetRow}_state`
+                ]);
+                
+                const power = parseInt(rowAttrs[`${targetRow}_power`]) || 0;
+                const state = parseInt(rowAttrs[`${targetRow}_state`]) || 0;
+
+                // Include if powered and not currently damaged
+                if (power > 0 && state !== 1 && state !== 3) {
+                    poweredWeapons.push(id);
+                }
+            }
+
+            // If multiple powered weapons, ask user
+            if (poweredWeapons.length > 1) {
+                const targetAll = +(await extractChatData(`?{Target all ${poweredWeapons.length} powered weapons in bank?|All,1|Just this one,0}`)) || 0;
+                if (!targetAll) {
+                    bankedRows = [rowID]; // Only target the clicked weapon
+                }
+            }
         } else {
             bankedRows.push(rowID); // Not banked — just target self
         }
@@ -2880,7 +2906,7 @@ on(`clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target`, a
 
     output[`crewbonustohitapplied`] = Math.max(wpnCrewBonus, crewBonusApplied);
     await setAttrsAsync(output);
-}); 
+});
 
 function getToHit (chart, distance) {
     // ST:STCS firing chart data
