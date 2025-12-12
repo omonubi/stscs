@@ -1815,12 +1815,13 @@ on(`change:repeating_engines:engine_power`, function(eventInfo) {
 });
 
 // MOVEMENT POINTS AVAILABLE calculation
-on(`change:tpa_movement change:mpr_1 change:mpr_2`, function(eventInfo) {
-    getAttrs([`tpa_movement`, `mpr_1`, `mpr_2`], function(values) {
+on(`change:tpa_movement change:mpr_1 change:mpr_2 change:impulse_power_status`, function(eventInfo) {
+    getAttrs([`tpa_movement`, `mpr_1`, `mpr_2`, `impulse_power_status`], function(values) {
         const power = parseInt(values[`tpa_movement`]) || 0;
         const mpr = (parseInt(values[`mpr_1`]) || 1) / (parseInt(values[`mpr_2`]) || 1);
+        const impulsePowerStatus = parseInt(values[`impulse_power_status`]) || 0;
 
-        const mp = Math.floor(power / mpr);
+        const mp = !impulsePowerStatus ? Math.floor(power / mpr) : 0;
         const mpPhase1 = Math.floor(mp / 3) + Math.floor((mp % 3) / 2); // phase 1
         const mpPhase2 = Math.floor(mp / 3) + (mp % 3 == 1 ? 1 : 0); // phase 2
         const mpPhase3 = Math.floor(mp / 3) + Math.floor((mp % 3) / 2); // phase 3
@@ -2916,8 +2917,9 @@ on(`clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target`, a
         }   
 
         const wpnTargetToHitStr = wpnTargetToHitModified < -3 ? `Not Possible` : wpnTargetToHitModified < 1 ? `Slim to None` : `${wpnTargetToHitModified * 10}%`;
+        const wpnHasCrewBonusStr = wpnCrewBonus ? `{{Crew Bonus=+1}}` : ``;
         
-        startRoll(`&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=&#x1F3AF; Weapons Targeted &#x1F3AF;}} {{color=green}} {{Weapons=${weaponNames.join(`\\n`)}}} {{Target=[${tokenName}](${ROLL20_CHAR_URL}${charId})}} {{Distance=${wpnTargetDistance} hexes}} {{Firing Chart=${wpnChart}}} {{Crew Penalty=${crewCasualtyPenalty}}} {{Repair Penalty=${weaponStatePenalty}}} {{Chance To-Hit=${wpnTargetToHitStr}}}`, roll => finishRoll(roll.rollId));
+        startRoll(`&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=&#x1F3AF; Weapons Targeted &#x1F3AF;}} {{color=green}} {{Weapons=${weaponNames.join(`\\n`)}}} {{Target=[${tokenName}](${ROLL20_CHAR_URL}${charId})}} {{Distance=${wpnTargetDistance} hexes}} {{Firing Chart=${wpnChart}}} {{Crew Penalty=${crewCasualtyPenalty}}} ${wpnHasCrewBonusStr} {{Repair Penalty=${weaponStatePenalty}}} {{Chance To-Hit=${wpnTargetToHitStr}}}`, roll => finishRoll(roll.rollId));
     } else {
         startRoll(`&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Target Out of Range}} {{Weapon=${wpnName}}} {{Max Range=${wpnMaxRange} hexes}} {{Target=${tokenName}}} {{Distance=${wpnTargetDistance} hexes}}`, roll => finishRoll(roll.rollId));
     }
