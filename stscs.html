@@ -322,9 +322,9 @@
             <input type='number' class='w5' name='attr_wf_emergency' min='0' value='0'/>
             <label>Stress Charts:</label>
             <span>
-                <input type='text' class='w5' name='attr_stress_cruise' maxlength='1'/>
+                <input type='text' class='w5' name='attr_stress_eng' maxlength='1'/>
                 /
-                <input type='text' class='w5' name='attr_stress_emergency' maxlength='1'/> 
+                <input type='text' class='w5' name='attr_stress_sup' maxlength='1'/> 
             </span>
         </div>
     </div>
@@ -737,7 +737,15 @@
         </span>
 
         <label>Type:</label>
-        <input type='text' class='w12' name='attr_type' placeholder='Type...'/>
+        <select class='w16' name='attr_type'>
+            <option>Select...</option>
+            <option value='BC'>Cruiser, Battle</option>
+            <option value='CL'>Cruiser, Light</option>
+            <option value='ES'>Escort</option>
+            <option value='TL'>Transport, Light</option>
+            <option value='TU'>Transport, Unmaned</option>
+        </select>
+        <!--<input type='text' class='w12' name='attr_type' placeholder='Type...'/>-->
 
         <label>Date Entering Service:</label>
         <input type='text' class='w7' name='attr_date' placeholder='Date...'/>
@@ -1988,8 +1996,7 @@ on(`clicked:repair`, async function(eventInfo) {
             const output = {};
             output[`hp`] = hpMax;
             output[`crew`] = crewMax;
-            output[`wf_current`] = 0;
-            output[`wf_desired`] = 0;
+            output[`wf_current`] = output[`wf_desired`] = 0;
             output[`shield_1_state`] = output[`shield_1_status`] = output[`shield_1_to_repair`] = 0;
             output[`shield_2_state`] = output[`shield_2_status`] = output[`shield_2_to_repair`] = 0;
             output[`shield_3_state`] = output[`shield_3_status`] = output[`shield_3_to_repair`] = 0;
@@ -2406,44 +2413,38 @@ on(`clicked:stress_turn`, async (event) => {
     });
 
     const output = {};
-    const values = await getAttrsAsync([...Fieldnames, `hp`, `wf_current`]);
+    const values = await getAttrsAsync([...Fieldnames, `hp`, `wf_current`, `stress_eng`, `stress_sup`]);
     const currentSup = parseInt(values['hp']) || 0;
     const currentWF = parseInt(values['wf_current']) || 0;
+    const stressChartEng = String(values['stress_eng']) || `R`;
+    const stressChartSup = String(values['stress_sup']) || `R`;
 
-    // Engine damage for heading changes
+    const stressDmgEng = 1 + await getStress(stressChartEng, currentWF);
+    const stressDmgSup = await getStress(stressChartSup, currentWF);
+
     if (response < 2) {
+        // Emergency or tactical heading change results
         engines.forEach(id => {
             const engineType = parseInt(values[`repeating_engines_${id}_engine_type`]) || 0;
             if (engineType == ENGINE_TYPE_WARP) {
                 const currentPower = parseInt(values[`repeating_engines_${id}_engine_power`]) || 0;
-                const myNewPower = Math.max(0, currentPower - 1);
+                const myNewPower = Math.max(0, currentPower - stressDmgEng);
                 output[`repeating_engines_${id}_engine_power`] = myNewPower;
                 if (currentPower - 1 >= 0) dmgWarp++;
             }
         });
-        strOutput += `{{Engine Dmg=${dmgWarp}}} `;
-    }
-
-    // Superstructure damage
-    const myNewSup = currentSup - 1;
-    // For emergency heading change @ warp > 4
-    if (response == 0 && currentWF >=5) {
+        const myNewSup = currentSup - stressDmgSup;
         output[`hp`] = myNewSup;
-        dmgSup++;
-    } else if (response > 0) {
+
+        strOutput += `{{Warp Factor=${currentWF}}} {{Stress Charts=${stressChartEng}/${stressChartSup}}} {{Engine Dmg=${stressDmgEng} (ea.)}} {{Sup Dmg=${stressDmgSup}}}`;
+    } else {
+        // Evasive maneuver results
+        const myNewSup = currentSup - 1
         output[`hp`] = myNewSup;
-        dmgSup++;
-    }
+        strOutput += `{{Sup Dmg=1}} `;
 
-    if (dmgSup) {
-        strOutput += `{{Sup Dmg=${dmgSup}}} `;
-    }
-
-    // Evasive maneuver check
-    if (response == 2) {
         const evadeResult = getRandomIntInclusive(1, 10) < 4 ? `Success` : `Failure`;
         strOutput += `{{All To-Hits=-2}} {{To-Evade=[[3]]}} {{Roll=[[1d10cs>11cf<0]]}} `;
-
         await updateWeaponTargetToHit();
     }
 
@@ -2453,6 +2454,34 @@ on(`clicked:stress_turn`, async (event) => {
         finishRoll(roll.rollId);
     });  
 });
+async function getStress (chart, speed) {
+    // ST:STCS stress chart data
+    const stresses = [
+        `A`, 0,0,0,0,0,0,0,0,0,1,2,
+        `B`, 0,0,0,0,0,0,0,0,1,1,2,
+        `C`, 0,0,0,0,0,0,0,0,1,2,2,
+        `D`, 0,0,0,0,0,0,0,1,1,2,3,
+        `E`, 0,0,0,0,0,0,0,1,2,3,4,
+        `F`, 0,0,0,0,0,0,1,1,1,2,2,
+        `G`, 0,0,0,0,0,0,1,1,2,2,3,
+        `H`, 0,0,0,0,0,0,1,2,2,3,3,
+        `I`, 0,0,0,0,0,0,1,2,3,4,5,
+        `J`, 0,0,0,0,0,1,1,1,2,2,3,
+        `K`, 0,0,0,0,0,1,1,2,2,3,3,
+        `L`, 0,0,0,0,0,1,1,2,3,4,5,
+        `M`, 0,0,0,0,1,1,2,2,3,3,4,
+        `N`, 0,0,0,0,1,1,2,3,4,5,6,
+        `O`, 0,0,0,1,1,1,2,2,2,3,3,
+        `P`, 0,0,1,1,1,2,2,3,3,4,4,
+        `Q`, 0,1,1,1,1,2,2,2,3,3,4,
+        `R`, 0,1,1,1,2,2,3,3,4,4,5
+    ];
+
+    const index = stresses.indexOf(chart);
+    const damage = stresses[index + Math.min(speed, 11)];
+
+    return isNaN(damage) ? 0 : damage;
+}
 
 async function updateWeaponTargetToHit() {
     try {

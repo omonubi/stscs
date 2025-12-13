@@ -159,6 +159,7 @@
 .ui-dialog .charsheet .ship-is-disabled[value='1'] ~ .beams-panel .btn-target,
 .ui-dialog .charsheet .ship-is-disabled[value='1'] ~ .missiles-panel .btn-target,
 .ui-dialog .charsheet .tpa-committed-status[value='1'] ~ .dc-panel button.btn.roll-damage,
+.ui-dialog .charsheet .tpa-committed-status[value='1'] ~ .helm-panel button.btn.warning,
 .ui-dialog .charsheet .tpa-committed-status[value='1'] ~ .sensors-panel button.btn.btn-scan,
 .ui-dialog .charsheet .tpa-committed-status[value='1'] ~ .tpa-panel button.btn.energize,
 .ui-dialog .charsheet .tpa-committed-status[value='0'] ~ .tpa-panel button.btn.warning,
