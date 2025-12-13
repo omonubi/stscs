@@ -163,6 +163,7 @@
 .ui-dialog .charsheet .tpa-committed-status[value='1'] ~ .sensors-panel button.btn.btn-scan,
 .ui-dialog .charsheet .tpa-committed-status[value='1'] ~ .tpa-panel button.btn.energize,
 .ui-dialog .charsheet .tpa-committed-status[value='0'] ~ .tpa-panel button.btn.warning,
+.ui-dialog .charsheet .warp-drive-status[value='1'] ~ .warp-panel .btn-jump,
 .ui-dialog .charsheet .warp-factor-status[value='0'] ~ .btn-jump,
 .ui-dialog .charsheet .weapon-state-status[value='0'] ~ .weapon-repair,
 .ui-dialog .charsheet .weapon-state-status[value='1'] ~ span .btn-target,
@@ -443,6 +444,21 @@
   display: none;
 }
 /* See above for disabled target buttons */
+.ui-dialog .charsheet .bridge-hit-status[value='0'] ~ h1 .warning-bridge-hit {
+  display: none;
+}
+
+.ui-dialog .charsheet .movement-grid-status:not([value='0']) ~ .helm-panel {
+  background: linear-gradient(135deg, white 0%, #ffcccc 100%);
+  border: 2px solid #cc0000;
+}
+.ui-dialog .charsheet .movement-grid-status:not([value='0']) ~ .tpa-panel input[name='attr_tpa_movement'],
+.ui-dialog .charsheet .movement-grid-status:not([value='0']) ~ .helm-panel input[name='attr_tpa_movement'] {
+  pointer-events: none;
+}
+.ui-dialog .charsheet .movement-grid-status[value='0'] ~ h1 .warning-movement {
+  display: none;
+}
 
 .ui-dialog .charsheet .sensors-status:not([value='0']) ~ .beams-panel,
 .ui-dialog .charsheet .sensors-status:not([value='0']) ~ .fc-panel,
@@ -461,18 +477,6 @@
   display: none;
 }
 
-.ui-dialog .charsheet .movement-grid-status:not([value='0']) ~ .helm-panel {
-  background: linear-gradient(135deg, white 0%, #ffcccc 100%);
-  border: 2px solid #cc0000;
-}
-.ui-dialog .charsheet .movement-grid-status:not([value='0']) ~ .tpa-panel input[name='attr_tpa_movement'],
-.ui-dialog .charsheet .movement-grid-status:not([value='0']) ~ .helm-panel input[name='attr_tpa_movement'] {
-  pointer-events: none;
-}
-.ui-dialog .charsheet .movement-grid-status[value='0'] ~ h1 .warning-movement {
-  display: none;
-}
-
 .ui-dialog .charsheet .shields-grid-status:not([value='0']) ~ .shields-panel,
 .ui-dialog .charsheet .shields-grid-status:not([value='0']) ~ .spa-panel {
   background: linear-gradient(135deg, white 0%, #ffcccc 100%);
@@ -482,6 +486,11 @@
   display: none;
 }
 
+.ui-dialog .charsheet .warp-drive-status[value='1'] ~ .warp-panel {
+  background: linear-gradient(135deg, white 0%, #ffcccc 100%);
+  border: 2px solid #cc0000;
+}
+
 .ui-dialog .charsheet .weapons-grid-status:not([value='0']) ~ .fc-panel,
 .ui-dialog .charsheet .weapons-grid-status:not([value='0']) ~ .beams-panel,
 .ui-dialog .charsheet .weapons-grid-status:not([value='0']) ~ .missiles-panel {
@@ -489,11 +498,6 @@
   border: 2px solid #cc0000;
 }
 .ui-dialog .charsheet .weapons-grid-status[value='0'] ~ h1 .warning-weapons {
-  display: none;
-}
-
-
-.ui-dialog .charsheet .bridge-hit-status[value='0'] ~ h1 .warning-bridge-hit {
   display: none;
 }
 

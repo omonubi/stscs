@@ -6,6 +6,7 @@
     <input type='hidden' class='shields-grid-status' name='attr_shields_grid_status' value='0'/>
     <input type='hidden' class='ship-is-disabled' name='attr_ship-is-disabled' value='0'/>
     <input type='hidden' class='tpa-committed-status' name='attr_tpa_committed_status' value='1'/>
+    <input type='hidden' class='warp-drive-status' name='attr_warp_drive_status' value='0'/>
     <input type='hidden' class='weapons-grid-status' name='attr_weapons_grid_status' value='0'/>
     <h1>
         <span name='attr_character_name'></span>
@@ -300,7 +301,6 @@
             <span></span>
             <span></span>
 
-            
             <label>Warp Factor Ratio:</label>
             <input type='hidden' name='attr_wfr_jump'/>
             <input type='hidden' name='attr_wfr_cruise'/>
@@ -739,11 +739,11 @@
         <label>Type:</label>
         <select class='w16' name='attr_type'>
             <option>Select...</option>
-            <option value='BC'>Cruiser, Battle</option>
-            <option value='CL'>Cruiser, Light</option>
-            <option value='ES'>Escort</option>
-            <option value='TL'>Transport, Light</option>
-            <option value='TU'>Transport, Unmaned</option>
+            <option value='BC'>Battlecruiser (BC)</option>
+            <option value='CL'>Cruiser, Light (CL)</option>
+            <option value='ES'>Escort (ES)</option>
+            <option value='TL'>Transport, Light (TL)</option>
+            <option value='TU'>Transport, Robot (TU)</option>
         </select>
         <!--<input type='text' class='w12' name='attr_type' placeholder='Type...'/>-->
 
@@ -1996,7 +1996,7 @@ on(`clicked:repair`, async function(eventInfo) {
             const output = {};
             output[`hp`] = hpMax;
             output[`crew`] = crewMax;
-            output[`wf_current`] = output[`wf_desired`] = 0;
+            output[`wf_current`] = output[`wf_desired`] = output[`warp_drive_status`] = 0;
             output[`shield_1_state`] = output[`shield_1_status`] = output[`shield_1_to_repair`] = 0;
             output[`shield_2_state`] = output[`shield_2_status`] = output[`shield_2_to_repair`] = 0;
             output[`shield_3_state`] = output[`shield_3_status`] = output[`shield_3_to_repair`] = 0;
@@ -2580,6 +2580,7 @@ on(`change:repeating_engines:engine_power change:repeating_engines:engine_power_
         ids.forEach(id => {
             Fieldnames.push(`repeating_engines_${id}_engine_power`);
             Fieldnames.push(`repeating_engines_${id}_engine_power_full`);
+            Fieldnames.push(`repeating_engines_${id}_engine_type`);
         });
 
         getAttrs([...Fieldnames, `crewbonus`], function (values) {
@@ -2588,19 +2589,23 @@ on(`change:repeating_engines:engine_power change:repeating_engines:engine_power_
 
             let tpa = 0;
             let tpaMax = 0;
+            let isWarpOffline = 0;
             const output = {};
             ids.forEach(id => {
                 const enginePower = parseInt(values[`repeating_engines_${id}_engine_power`]) || 0;
                 const enginePowerMax = parseInt(values[`repeating_engines_${id}_engine_power_full`]) || 0;
+                const engineType = parseInt(values[`repeating_engines_${id}_engine_type`]) || 0;
                 
                 tpa += enginePower + (enginePower > ENGINE_NO_POWER && crewBonus == CREW_BONUS_ENGINES ? 1 : 0);
                 tpaMax += enginePowerMax
+                if (enginePower == 0 && engineType == ENGINE_TYPE_WARP) isWarpOffline = 1;
 
                 output[`repeating_engines_${id}_engine_power_status`] = ((enginePower > enginePowerMax) || (enginePower == 0)) ? 1 : enginePower < enginePowerMax ? 2 : 0;
             });
             output[`tpa`] = tpa;
             output[`tpa_max`] = tpaMax;
             output[`tpa-percent`] = Math.max(0, Math.round(tpa / tpaMax * 100));
+            output[`warp_drive_status`] = isWarpOffline ? 1 : 0;
             setAttrs(output);
         });
     });
