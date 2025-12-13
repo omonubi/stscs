@@ -745,7 +745,7 @@
             <option value='TL'>Transport, Light (TL)</option>
             <option value='TU'>Transport, Robot (TU)</option>
         </select>
-        <!--<input type='text' class='w12' name='attr_type' placeholder='Type...'/>-->
+        <input type='hidden' name='attr_type_is_multi'/>
 
         <label>Date Entering Service:</label>
         <input type='text' class='w7' name='attr_date' placeholder='Date...'/>
@@ -1161,7 +1161,7 @@ on(`clicked:rolldamage`, async () => {
         13, 16, 17, 6, 7, 10, 1, 2, 2, 15,
         13, 16, 6, 6, 3, 11, 1, 2, 2, 8,
 
-        13, 16, 6, 3, 2, 2, 1, 8, 14, 12,
+        16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
         13, 16, 17, 2, 2, 2, 1, 5, 14, 12,
         13, 16, 7, 4, 2, 2, 1, 9, 14, 12,
         13, 16, 7, 7, 4, 11, 1, 2, 2, 9,
@@ -1176,7 +1176,7 @@ on(`clicked:rolldamage`, async () => {
         13, 16, 17, 11, 15, 2, 1, 14, 12
     ];
 
-    //13, 16, 7, 4, 2, 2, 1, 9, 14, 12,
+    //13, 16, 6, 3, 2, 2, 1, 8, 14, 12,
 
     let residualDamage = 0;
     let penetratingDamage = 0;
@@ -2007,6 +2007,7 @@ on(`clicked:repair`, async function(eventInfo) {
             output[`shields_grid_state`] = output[`shields_grid_status`] = output[`shields_grid_to_repair`] = output[`shields_grid_destroyed`] = 0;
             output[`weapons_grid_state`] = output[`weapons_grid_status`] = output[`weapons_grid_to_repair`] = output[`weapons_grid_destroyed`] = 0;
             output[`movement_grid_state`] = output[`movement_grid_status`] = output[`movement_grid_to_repair`] = output[`movement_grid_destroyed`] = 0;
+            output[`bridge_hit_status`] = 0;
             setAttrs(output);
         });
         await undoSensorLock();
@@ -2454,6 +2455,7 @@ on(`clicked:stress_turn`, async (event) => {
         finishRoll(roll.rollId);
     });  
 });
+
 async function getStress (chart, speed) {
     // ST:STCS stress chart data
     const stresses = [
@@ -2670,7 +2672,7 @@ function resetTPA() {
             const output = {};
             ids.forEach(id => {
                 output[`repeating_beams_${id}_power`] = 0;
-                output[`repeating_beams_${id}_target_name`] = ``;
+                output[`repeating_beams_${id}_target_name`] = output[`repeating_beams_${id}_target_id`] = ``;
                 output[`repeating_beams_${id}_target_distance`] = 0;
                 output[`repeating_beams_${id}_target_tohit`] = 0;
                 output[`repeating_beams_${id}_btn-target_status`] = 0;
@@ -2691,7 +2693,7 @@ function resetTPA() {
             const output = {};
             ids.forEach(id => {
                 output[`repeating_missiles_${id}_armed`] = 0;
-                output[`repeating_missiles_${id}_target_name`] = ``;
+                output[`repeating_missiles_${id}_target_name`] = output[`repeating_missiles_${id}_target_id`] = ``;
                 output[`repeating_missiles_${id}_target_distance`] = 0;
                 output[`repeating_missiles_${id}_target_tohit`] = 0;
                 output[`repeating_missiles_${id}_btn-target_status`] = 0;
@@ -2722,6 +2724,28 @@ function resetTPA() {
 
     setAttrs(output);
 }
+
+// TYPE CAPABILITIES
+on(`change:type`, function(eventInfo) {
+    getAttrs([`type`], function(values) {
+        const type = values[`type`];
+
+        const types = [
+            `BC`, 1,
+            `CL`, 0,
+            `ES`, 0,
+            `TL`, 0,
+            `TU`, 0
+        ];
+
+        const index = types.indexOf(type);
+
+        const output = {};
+        output[`type_is_multi`] = types[index + 1];
+        setAttrs(output);
+    });
+});
+
 
 // TYPE = STATION = no warp speed
 on(`change:type`, function(eventInfo) {
@@ -2836,6 +2860,7 @@ on(`clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target`, a
 
     const attributes = await getAttrsAsync([
         `${row}_name`, `${row}_chart`, `${row}_maxrange`, `${row}_power`, 
+        `type_is_multi`, `sensorlock`, `sensorlockid`, 
         `crewbonus`, `crewbonustohitapplied`, `crewrollpenalty`
     ]);
 
@@ -2843,6 +2868,9 @@ on(`clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target`, a
     const wpnChart = attributes[`${row}_chart`];
     const wpnMaxRange = parseInt(attributes[`${row}_maxrange`]) || 0;
     const wpnIsPowered = parseInt(attributes[`${row}_power`]) || 0;
+    const typeIsMulti = parseInt(attributes[`type_is_multi`]) || 0;
+    const sensorLockName = String(attributes[`sensorlock`]) || ``;
+    const sensorLockId = String(attributes[`sensorlockid`]) || ``;
     const crewBonus = parseInt(attributes[`crewbonus`]) || 0;
     const crewBonusApplied = parseInt(attributes[`crewbonustohitapplied`]) || 0;
     const crewCasualtyPenalty = parseInt(attributes[`crewrollpenalty`]) || 0;
@@ -2865,84 +2893,41 @@ on(`clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target`, a
     const wpnTargetToHit = getToHit(wpnChart, wpnTargetDistance);
 
     if (wpnTargetToHit) {
-        let wpnTargetToHitModified = wpnTargetToHit + wpnCrewBonus + crewCasualtyPenalty;
-
-        // Get all matching banked weapons
-        let bankedRows = [];
-        const nameRoot = wpnName.match(/#\d+/);
-        if (nameRoot) {
-            const ids = await getSectionIDsAsync(`repeating_${section}`);
-            const fieldnames = ids.map(id => `repeating_${section}_${id}_name`);
-            const values = await getAttrsAsync(fieldnames);
-
-            ids.forEach(id => {
-                const name = values[`repeating_${section}_${id}_name`];
-                if (name && name.match(nameRoot)) {
-                    bankedRows.push(id);
-                }
-            });
-
-            // Check how many powered weapons are in the bank
-            const poweredWeapons = [];
-            for (const id of bankedRows) {
-                const targetRow = `repeating_${section}_${id}`;
-                const rowAttrs = await getAttrsAsync([
-                    `${targetRow}_power`,
-                    `${targetRow}_state`
-                ]);
-                
-                const power = parseInt(rowAttrs[`${targetRow}_power`]) || 0;
-                const state = parseInt(rowAttrs[`${targetRow}_state`]) || 0;
-
-                // Include if powered and not currently damaged
-                if (power > 0 && state !== 1 && state !== 3) {
-                    poweredWeapons.push(id);
-                }
-            }
-
-            // If multiple powered weapons, ask user
-            if (poweredWeapons.length > 1) {
-                const targetAll = +(await extractChatData(`?{Target all ${poweredWeapons.length} powered weapons in bank?|All,1|Just this one,0}`)) || 0;
-                if (!targetAll) {
-                    bankedRows = [rowID]; // Only target the clicked weapon
-                }
-            }
-        } else {
-            bankedRows.push(rowID); // Not banked — just target self
-        }
-
-        // Calculate cumulative weapon state penalty for the entire bank
-        let weaponStatePenalty = 0;
-        for (const id of bankedRows) {
-            const targetRow = `repeating_${section}_${id}`;
-            const statusAttrs = await getAttrsAsync([`${targetRow}_weapon_state_status`]);
-            const weaponStateStatus = parseInt(statusAttrs[`${targetRow}_weapon_state_status`]) || 0;
-            
-            if (weaponStateStatus === 2) {
-                weaponStatePenalty -= 1;
-            }
-        }
-
+        let multiTargetPenalty = await calculateMultiTargetPenalty(typeIsMulti, charId);
+        let bankedRows = await getBankedWeaponRows(wpnName, section, rowID);
+        let weaponStatePenalty = await calculateWeaponStatePenalty(bankedRows, section);
+        let wpnTargetToHitModified = await processAllTargetedWeapons(output, wpnCrewBonus, crewCasualtyPenalty, weaponStatePenalty, multiTargetPenalty, charId);
+        
         const weaponNames = [];
-
+        // Process banked weapons (if any)
         for (const id of bankedRows) {
             const targetRow = `repeating_${section}_${id}`;
             const rowAttrs = await getAttrsAsync([
+                `${targetRow}_name`,
+                `${targetRow}_chart`,
                 `${targetRow}_power`,
-                `${targetRow}_name`,            
                 `${targetRow}_state`
             ]);
             
+            const name = rowAttrs[`${targetRow}_name`] || `Unknown Weapon`;
+            const chart = rowAttrs[`${targetRow}_chart`];
             const power = parseInt(rowAttrs[`${targetRow}_power`]) || 0;
             const state = parseInt(rowAttrs[`${targetRow}_state`]) || 0;
 
             // Skip if not powered or currently damaged
             if (power == 0 || state == 1 || state == 3) continue;
 
+            // Calculate base to-hit for this weapon
+            const baseToHit = getToHit(chart, wpnTargetDistance);
+            wpnTargetToHitModified = baseToHit + wpnCrewBonus + crewCasualtyPenalty;
+
+            // Apply multi-target penalty to all weapons
+            wpnTargetToHitModified += multiTargetPenalty;
+
             // Apply cumulative weapon state penalty to all weapons in bank
             wpnTargetToHitModified += weaponStatePenalty;
 
-            weaponNames.push(rowAttrs[`${targetRow}_name`] || `Unknown Weapon`);
+            weaponNames.push(name);
             output[`${targetRow}_target_name`] = tokenName;
             output[`${targetRow}_target_id`] = charId;
             output[`${targetRow}_target_distance`] = wpnTargetDistance;
@@ -2952,8 +2937,9 @@ on(`clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target`, a
 
         const wpnTargetToHitStr = wpnTargetToHitModified < -3 ? `Not Possible` : wpnTargetToHitModified < 1 ? `Slim to None` : `${wpnTargetToHitModified * 10}%`;
         const wpnHasCrewBonusStr = wpnCrewBonus ? `{{Crew Bonus=+1}}` : ``;
+        const multiTargetPenaltyStr = typeIsMulti !== 1 && multiTargetPenalty !== 0 ? `{{Multi-Target Penalty=${multiTargetPenalty}}}` : ``;
         
-        startRoll(`&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=&#x1F3AF; Weapons Targeted &#x1F3AF;}} {{color=green}} {{Weapons=${weaponNames.join(`\\n`)}}} {{Target=[${tokenName}](${ROLL20_CHAR_URL}${charId})}} {{Distance=${wpnTargetDistance} hexes}} {{Firing Chart=${wpnChart}}} {{Crew Penalty=${crewCasualtyPenalty}}} ${wpnHasCrewBonusStr} {{Repair Penalty=${weaponStatePenalty}}} {{Chance To-Hit=${wpnTargetToHitStr}}}`, roll => finishRoll(roll.rollId));
+        startRoll(`&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=&#x1F3AF; Weapons Targeted &#x1F3AF;}} {{color=green}} {{Weapons=${weaponNames.join(`\\n`)}}} {{Target=[${tokenName}](${ROLL20_CHAR_URL}${charId})}} {{Distance=${wpnTargetDistance} hexes}} {{Firing Chart=${wpnChart}}} {{Crew Penalty=${crewCasualtyPenalty}}} ${wpnHasCrewBonusStr} {{Repair Penalty=${weaponStatePenalty}}} ${multiTargetPenaltyStr} {{Chance To-Hit=${wpnTargetToHitStr}}}`, roll => finishRoll(roll.rollId));
     } else {
         startRoll(`&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Target Out of Range}} {{Weapon=${wpnName}}} {{Max Range=${wpnMaxRange} hexes}} {{Target=${tokenName}}} {{Distance=${wpnTargetDistance} hexes}}`, roll => finishRoll(roll.rollId));
     }
@@ -2961,6 +2947,190 @@ on(`clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target`, a
     output[`crewbonustohitapplied`] = Math.max(wpnCrewBonus, crewBonusApplied);
     await setAttrsAsync(output);
 });
+
+async function calculateMultiTargetPenalty(typeIsMulti, charId) {
+    let multiTargetPenalty = 0;
+    
+    if (typeIsMulti !== 1) {
+        const uniqueTargets = new Set();
+        
+        // Check all repeating_beams items
+        const beamIds = await getSectionIDsAsync(`repeating_beams`);
+        const beamFieldnames = beamIds.map(id => `repeating_beams_${id}_target_id`);
+        const beamValues = await getAttrsAsync(beamFieldnames);
+        
+        beamIds.forEach(id => {
+            const targetId = beamValues[`repeating_beams_${id}_target_id`];
+            if (targetId && targetId !== `` && targetId != charId) {
+                uniqueTargets.add(targetId);
+            }
+        });
+        
+        // Check all repeating_missiles items
+        const missileIds = await getSectionIDsAsync(`repeating_missiles`);
+        const missileFieldnames = missileIds.map(id => `repeating_missiles_${id}_target_id`);
+        const missileValues = await getAttrsAsync(missileFieldnames);
+        
+        missileIds.forEach(id => {
+            const targetId = missileValues[`repeating_missiles_${id}_target_id`];
+            if (targetId && targetId !== `` && targetId != charId) {
+                uniqueTargets.add(targetId);
+            }
+        });
+        
+        // Apply penalty to all weapons in both lists
+        multiTargetPenalty = -uniqueTargets.size;
+    }
+    
+    return multiTargetPenalty;
+}
+
+async function calculateWeaponStatePenalty(bankedRows, section) {
+    let weaponStatePenalty = 0;
+    
+    for (const id of bankedRows) {
+        const targetRow = `repeating_${section}_${id}`;
+console.log('targetRow: ' + targetRow);
+        const statusAttrs = await getAttrsAsync([`${targetRow}_weapon_state_status`]);
+        const weaponStateStatus = parseInt(statusAttrs[`${targetRow}_weapon_state_status`]) || 0;
+        
+        if (weaponStateStatus === 2) {
+            weaponStatePenalty -= 1;
+        }
+    }
+    
+    return weaponStatePenalty;
+}
+
+async function getBankedWeaponRows(wpnName, section, rowID, isRecursive = false) {
+    let bankedRows = [];
+    const nameRoot = wpnName.match(/#\d+/);
+    
+    if (nameRoot) {
+        const ids = await getSectionIDsAsync(`repeating_${section}`);
+        const fieldnames = ids.map(id => `repeating_${section}_${id}_name`);
+        const values = await getAttrsAsync(fieldnames);
+
+        ids.forEach(id => {
+            const name = values[`repeating_${section}_${id}_name`];
+            if (name && name.match(nameRoot)) {
+                bankedRows.push(id);
+            }
+        });
+
+        // Check how many powered weapons are in the bank
+        const poweredWeapons = [];
+        for (const id of bankedRows) {
+            const targetRow = `repeating_${section}_${id}`;
+            const rowAttrs = await getAttrsAsync([
+                `${targetRow}_power`,
+                `${targetRow}_state`
+            ]);
+            
+            const power = parseInt(rowAttrs[`${targetRow}_power`]) || 0;
+            const state = parseInt(rowAttrs[`${targetRow}_state`]) || 0;
+
+            // Include if powered and not currently damaged
+            if (power > 0 && state !== 1 && state !== 3) {
+                poweredWeapons.push(id);
+            }
+        }
+
+        // If multiple powered weapons, ask user
+        if (poweredWeapons.length > 1 && !isRecursive) {
+            const targetAll = +(await extractChatData(`?{Target all ${poweredWeapons.length} powered weapons in bank?|All,1|Just this one,0}`)) || 0;
+            if (!targetAll) {
+                bankedRows = [rowID]; // Only target the clicked weapon
+            }
+        }
+    } else {
+        bankedRows.push(rowID); // Not banked — just target self
+    }
+    
+    return bankedRows;
+}
+
+async function processAllTargetedWeapons(output, wpnCrewBonus, crewCasualtyPenalty, weaponStatePenalty, multiTargetPenalty, charId) {
+    const allTargetedWeapons = [];
+    
+    // Check all repeating_beams items
+    const beamIds = await getSectionIDsAsync(`repeating_beams`);
+    const beamFieldnames = beamIds.map(id => `repeating_beams_${id}_target_id`);
+    const beamValues = await getAttrsAsync(beamFieldnames);
+    
+    beamIds.forEach(id => {
+        const targetId = beamValues[`repeating_beams_${id}_target_id`];
+        if (targetId && targetId !== ``) {
+            allTargetedWeapons.push({
+                row: `repeating_beams_${id}`,
+                name: `repeating_beams_${id}_name`,
+                power: `repeating_beams_${id}_power`,
+                state: `repeating_beams_${id}_state`,
+                distance: `repeating_beams_${id}_target_distance`,
+                targetId: targetId
+            });
+        }
+    });
+    
+    // Check all repeating_missiles items
+    const missileIds = await getSectionIDsAsync(`repeating_missiles`);
+    const missileFieldnames = missileIds.map(id => `repeating_missiles_${id}_target_id`);
+    const missileValues = await getAttrsAsync(missileFieldnames);
+    
+    missileIds.forEach(id => {
+        const targetId = missileValues[`repeating_missiles_${id}_target_id`];
+        if (targetId && targetId !== ``) {
+            allTargetedWeapons.push({
+                row: `repeating_missiles_${id}`,
+                name: `repeating_missiles_${id}_name`,
+                power: `repeating_missiles_${id}_power`,
+                state: `repeating_missiles_${id}_state`,
+                distance: `repeating_missiles_${id}_target_distance`,
+                targetId: targetId
+            });
+        }
+    });
+
+    // Process all targeted weapons
+    let wpnTargetToHitModified = 0;
+    for (const weapon of allTargetedWeapons) {
+        const rowAttrs = await getAttrsAsync([
+            `${weapon.row}_name`,
+            `${weapon.row}_chart`,
+            `${weapon.row}_power`,
+            `${weapon.row}_state`,                
+            `${weapon.row}_target_distance`
+        ]);
+        const name = rowAttrs[weapon.name] || `Unknown Weapon`;
+        const chart = rowAttrs[`${weapon.row}_chart`];
+        const power = parseInt(rowAttrs[weapon.power]) || 0;
+        const state = parseInt(rowAttrs[weapon.state]) || 0;
+        const distance = parseInt(rowAttrs[weapon.distance]) || 0;
+
+        const rowArray = weapon.row.split(`_`);
+        let myBankedRows = await getBankedWeaponRows(name, rowArray[1], rowArray[2], true);
+console.log('name: ' + name);
+console.log('rowArray[1]: ' + rowArray[1]);
+console.log('rowArray[2]: ' + rowArray[2]);
+console.log('myBankedRows: ' + myBankedRows);
+        let myWpnStatePenalty = await calculateWeaponStatePenalty(myBankedRows, rowArray[1]);
+console.log('myWpnStatePenalty: ' + myWpnStatePenalty);
+        
+        // Skip if not powered or currently damaged
+        if (power == 0 || state == 1 || state == 3) continue;
+
+        // Recalculate base to-hit for this weapon
+        const baseToHit = getToHit(chart, distance);
+        wpnTargetToHitModified = baseToHit + wpnCrewBonus + crewCasualtyPenalty + myWpnStatePenalty;
+
+        // Apply multi-target penalty to all weapons
+        wpnTargetToHitModified += multiTargetPenalty;
+        output[`${weapon.row}_target_tohit`] = wpnTargetToHitModified;
+        output[`${weapon.row}_btn-fire_status`] = wpnTargetToHitModified > -4 ? 1 : 0;
+    }
+    
+    return wpnTargetToHitModified;
+}
 
 function getToHit (chart, distance) {
     // ST:STCS firing chart data
@@ -3085,6 +3255,7 @@ on(`clicked:repeating_beams:btn-fire clicked:repeating_missiles:btn-fire`, async
         output[`repeating_${section}_${id}_btn-target_status`] = isOCLaser ? 1 : 0;
         output[`repeating_${section}_${id}_btn-fire_status`] = 0;
         output[`repeating_${section}_${id}_target_name`] = ``;
+        output[`repeating_${section}_${id}_target_id`] = ``;
         output[`repeating_${section}_${id}_target_distance`] = 0;
         output[`repeating_${section}_${id}_target_tohit`] = 0;
         await setAttrsAsync(output);
@@ -3195,7 +3366,6 @@ on(`change:repeating_beams:target_tohit change:repeating_missiles:target_tohit`,
 
     getAttrs([`repeating_${rowId[1]}_${rowId[2]}_target_name`], function(values) {
         const targetName = values[`repeating_${rowId[1]}_${rowId[2]}_target_name`] || '';
-        console.log('targetName: ' + targetName);
         const statusValue = targetName == `` ? 0 : (newValue < 1 ? 1 : 0);
         
         setAttrs({
