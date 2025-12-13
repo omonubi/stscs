@@ -24,7 +24,7 @@
     <div class='grid-6col overview-panel'>
         <span class='span2'>
             <span name='attr_class'></span>
-            <span name='attr_type'></span>
+            (<span name='attr_type'></span>)
         </span>
         <span class='span2'>
             <label>Size:</label>
@@ -739,13 +739,15 @@
         <label>Type:</label>
         <select class='w16' name='attr_type'>
             <option>Select...</option>
-            <option value='BC'>Battlecruiser (BC)</option>
-            <option value='CL'>Cruiser, Light (CL)</option>
-            <option value='ES'>Escort (ES)</option>
-            <option value='TL'>Transport, Light (TL)</option>
-            <option value='TU'>Transport, Robot (TU)</option>
+            <option value='BC'>Battlecruiser</option>
+            <option value='CL'>Light Cruiser</option>
+            <option value='ES'>Escort</option>
+            <option value='TL'>Light Transport</option>
+            <option value='TU'>Robot Transport</option>
         </select>
+        <input type='hidden' name='attr_type_is_escort'/>
         <input type='hidden' name='attr_type_is_multi'/>
+        <input type='hidden' name='attr_type_is_research'/>
 
         <label>Date Entering Service:</label>
         <input type='text' class='w7' name='attr_date' placeholder='Date...'/>
@@ -1161,7 +1163,7 @@ on(`clicked:rolldamage`, async () => {
         13, 16, 17, 6, 7, 10, 1, 2, 2, 15,
         13, 16, 6, 6, 3, 11, 1, 2, 2, 8,
 
-        16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
+        13, 16, 6, 3, 2, 2, 1, 8, 14, 12,
         13, 16, 17, 2, 2, 2, 1, 5, 14, 12,
         13, 16, 7, 4, 2, 2, 1, 9, 14, 12,
         13, 16, 7, 7, 4, 11, 1, 2, 2, 9,
@@ -2023,10 +2025,13 @@ on(`clicked:scan`, async (event) => {
     await undoSensorLock();
     const { tokenName, charId } = await extractTargetData(); // Destructure JSON
 
+    const attrs = await getAttrsAsync([`type_is_escort`, `type_is_research`]);
+    const toScanTarget = attrs[`type_is_escort`] == 1 ? 10 : attrs[`type_is_research`] == 1 ? 7 : 6;
+    const scanTypeStr = attrs[`type_is_escort`] == 1 ? `Advanced` : attrs[`type_is_research`] == 1 ? `Research` : `Standard`;
     const scanRoll = getRandomIntInclusive(1, 10);
 
     startRoll(
-        `&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Sensor Scan}} {{color=green}} {{Target=[${tokenName}](${ROLL20_CHAR_URL}${charId})}} {{To-Scan=[[6]]}} {{Roll=[[${scanRoll}]]}}`,
+        `&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Sensor Scan}} {{color=green}} {{Target=[${tokenName}](${ROLL20_CHAR_URL}${charId})}} {{Sensor Type=${scanTypeStr}}} {{To-Scan=[[${toScanTarget}]]}} {{Roll=[[${scanRoll}]]}}`,
         roll => finishRoll(roll.rollId)
     );
 
@@ -2731,17 +2736,19 @@ on(`change:type`, function(eventInfo) {
         const type = values[`type`];
 
         const types = [
-            `BC`, 1,
-            `CL`, 0,
-            `ES`, 0,
-            `TL`, 0,
-            `TU`, 0
+            `BC`, 0,1,0,
+            `CL`, 0,0,1,
+            `ES`, 1,0,0,
+            `TL`, 0,0,0,
+            `TU`, 0,0,0,
         ];
 
         const index = types.indexOf(type);
 
         const output = {};
-        output[`type_is_multi`] = types[index + 1];
+        output[`type_is_escort`] = types[index + 1];
+        output[`type_is_multi`] = types[index + 2];
+        output[`type_is_research`] = types[index + 3];
         setAttrs(output);
     });
 });
@@ -2990,7 +2997,6 @@ async function calculateWeaponStatePenalty(bankedRows, section) {
     
     for (const id of bankedRows) {
         const targetRow = `repeating_${section}_${id}`;
-console.log('targetRow: ' + targetRow);
         const statusAttrs = await getAttrsAsync([`${targetRow}_weapon_state_status`]);
         const weaponStateStatus = parseInt(statusAttrs[`${targetRow}_weapon_state_status`]) || 0;
         
@@ -3109,12 +3115,7 @@ async function processAllTargetedWeapons(output, wpnCrewBonus, crewCasualtyPenal
 
         const rowArray = weapon.row.split(`_`);
         let myBankedRows = await getBankedWeaponRows(name, rowArray[1], rowArray[2], true);
-console.log('name: ' + name);
-console.log('rowArray[1]: ' + rowArray[1]);
-console.log('rowArray[2]: ' + rowArray[2]);
-console.log('myBankedRows: ' + myBankedRows);
         let myWpnStatePenalty = await calculateWeaponStatePenalty(myBankedRows, rowArray[1]);
-console.log('myWpnStatePenalty: ' + myWpnStatePenalty);
         
         // Skip if not powered or currently damaged
         if (power == 0 || state == 1 || state == 3) continue;
