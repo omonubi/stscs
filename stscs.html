@@ -745,9 +745,9 @@
             <option value='TL'>Light Transport</option>
             <option value='TU'>Robot Transport</option>
         </select>
-        <input type='hidden' name='attr_type_is_escort'/>
-        <input type='hidden' name='attr_type_is_multi'/>
-        <input type='hidden' name='attr_type_is_research'/>
+        <input type='hidden' name='attr_type_is_advanced'/>
+        <input type='hidden' name='attr_type_is_battle'/>
+        <input type='hidden' name='attr_type_is_exploration'/>
 
         <label>Date Entering Service:</label>
         <input type='text' class='w7' name='attr_date' placeholder='Date...'/>
@@ -2025,9 +2025,9 @@ on(`clicked:scan`, async (event) => {
     await undoSensorLock();
     const { tokenName, charId } = await extractTargetData(); // Destructure JSON
 
-    const attrs = await getAttrsAsync([`type_is_escort`, `type_is_research`]);
-    const toScanTarget = attrs[`type_is_escort`] == 1 ? 10 : attrs[`type_is_research`] == 1 ? 7 : 6;
-    const scanTypeStr = attrs[`type_is_escort`] == 1 ? `Advanced` : attrs[`type_is_research`] == 1 ? `Research` : `Standard`;
+    const attrs = await getAttrsAsync([`type_is_advanced`, `type_is_exploration`]);
+    const toScanTarget = attrs[`type_is_advanced`] == 1 ? 8 : attrs[`type_is_exploration`] == 1 ? 7 : 6;
+    const scanTypeStr = attrs[`type_is_advanced`] == 1 ? `Advanced` : attrs[`type_is_exploration`] == 1 ? `Research` : `Standard`;
     const scanRoll = getRandomIntInclusive(1, 10);
 
     startRoll(
@@ -2746,9 +2746,9 @@ on(`change:type`, function(eventInfo) {
         const index = types.indexOf(type);
 
         const output = {};
-        output[`type_is_escort`] = types[index + 1];
-        output[`type_is_multi`] = types[index + 2];
-        output[`type_is_research`] = types[index + 3];
+        output[`type_is_advanced`] = types[index + 1];
+        output[`type_is_battle`] = types[index + 2];
+        output[`type_is_exploration`] = types[index + 3];
         setAttrs(output);
     });
 });
@@ -2867,7 +2867,7 @@ on(`clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target`, a
 
     const attributes = await getAttrsAsync([
         `${row}_name`, `${row}_chart`, `${row}_maxrange`, `${row}_power`, 
-        `type_is_multi`, `sensorlock`, `sensorlockid`, 
+        `type_is_battle`, `sensorlock`, `sensorlockid`, 
         `crewbonus`, `crewbonustohitapplied`, `crewrollpenalty`
     ]);
 
@@ -2875,7 +2875,7 @@ on(`clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target`, a
     const wpnChart = attributes[`${row}_chart`];
     const wpnMaxRange = parseInt(attributes[`${row}_maxrange`]) || 0;
     const wpnIsPowered = parseInt(attributes[`${row}_power`]) || 0;
-    const typeIsMulti = parseInt(attributes[`type_is_multi`]) || 0;
+    const typeIsMulti = parseInt(attributes[`type_is_battle`]) || 0;
     const sensorLockName = String(attributes[`sensorlock`]) || ``;
     const sensorLockId = String(attributes[`sensorlockid`]) || ``;
     const crewBonus = parseInt(attributes[`crewbonus`]) || 0;
