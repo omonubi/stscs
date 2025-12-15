@@ -5,6 +5,7 @@
     <input type='hidden' class='has-sensor-lock' name='attr_has_sensor_lock' value='0'/>
     <input type='hidden' class='shields-grid-status' name='attr_shields_grid_status' value='0'/>
     <input type='hidden' class='ship-is-disabled' name='attr_ship-is-disabled' value='0'/>
+    <input type='hidden' class='ship-is-evading' name='attr_ship_is_evading' value='0'/>
     <input type='hidden' class='tpa-committed-status' name='attr_tpa_committed_status' value='1'/>
     <input type='hidden' class='warp-drive-status' name='attr_warp_drive_status' value='0'/>
     <input type='hidden' class='weapons-grid-status' name='attr_weapons_grid_status' value='0'/>
@@ -16,6 +17,7 @@
         <span class='alert1 warning-movement' style='cursor: default;' title='helm offline'> &#x1F6DE;</span>
         <span class='alert1 warning-shields' style='cursor: default;' title='shields offline'> &#x1F6E1;&#xFE0F;</span>
         <span class='alert1 warning-weapons' style='cursor: default;' title='weapons offline'> &#x2694;&#xFE0F;</span>
+        <span class='alert1 evade' style='cursor: default;' title='evasive maneuvers'> &#x26A0;&#xFE0F;</span>
     </h1> 
     <input type='hidden' name='attr_current_phase' value='0'/>
     <input type='hidden' name='attr_tpa_reset' value='0'/>
@@ -2010,6 +2012,7 @@ on(`clicked:repair`, async function(eventInfo) {
             output[`weapons_grid_state`] = output[`weapons_grid_status`] = output[`weapons_grid_to_repair`] = output[`weapons_grid_destroyed`] = 0;
             output[`movement_grid_state`] = output[`movement_grid_status`] = output[`movement_grid_to_repair`] = output[`movement_grid_destroyed`] = 0;
             output[`bridge_hit_status`] = 0;
+            output[`ship_is_evading`] = 0;
             setAttrs(output);
         });
         await undoSensorLock();
@@ -2020,28 +2023,35 @@ on(`clicked:repair`, async function(eventInfo) {
 
 // SENSOR SCAN
 on(`clicked:scan`, async (event) => {
-    const output = {};
+    const attrs = await getAttrsAsync([`sensorlock`]);
+    const oldLock = String(attrs.sensorlock) || ``;
+    let response = 0;
 
-    await undoSensorLock();
-    const { tokenName, charId } = await extractTargetData(); // Destructure JSON
+    if (oldLock != ``) response = await extractChatData(`?{Release Current Lock|Confirm,1|Cancel,0}`);
+    
+    if (oldLock == `` || response == 1) {
+        const output = {};
+        await undoSensorLock();
+        const { tokenName, charId } = await extractTargetData(); // Destructure JSON
 
-    const attrs = await getAttrsAsync([`type_is_advanced`, `type_is_exploration`]);
-    const toScanTarget = attrs[`type_is_advanced`] == 1 ? 8 : attrs[`type_is_exploration`] == 1 ? 7 : 6;
-    const scanTypeStr = attrs[`type_is_advanced`] == 1 ? `Advanced` : attrs[`type_is_exploration`] == 1 ? `Research` : `Standard`;
-    const scanRoll = getRandomIntInclusive(1, 10);
+        const attrs = await getAttrsAsync([`type_is_advanced`, `type_is_exploration`]);
+        const toScanTarget = attrs[`type_is_advanced`] == 1 ? 8 : attrs[`type_is_exploration`] == 1 ? 7 : 6;
+        const scanTypeStr = attrs[`type_is_advanced`] == 1 ? `Advanced` : attrs[`type_is_exploration`] == 1 ? `Research` : `Standard`;
+        const scanRoll = getRandomIntInclusive(1, 10);
 
-    startRoll(
-        `&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Sensor Scan}} {{color=green}} {{Target=[${tokenName}](${ROLL20_CHAR_URL}${charId})}} {{Sensor Type=${scanTypeStr}}} {{To-Scan=[[${toScanTarget}]]}} {{Roll=[[${scanRoll}]]}}`,
-        roll => finishRoll(roll.rollId)
-    );
+        startRoll(
+            `&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Sensor Scan}} {{color=green}} {{Target=[${tokenName}](${ROLL20_CHAR_URL}${charId})}} {{Sensor Type=${scanTypeStr}}} {{To-Scan=[[${toScanTarget}]]}} {{Roll=[[${scanRoll}]]}}`,
+            roll => finishRoll(roll.rollId)
+        );
 
-    if (scanRoll < 7) {
-        output[`sensorlock`] = tokenName;
-        output[`sensorlockid`] = charId;
-        output[`has_sensor_lock`] = 1;
+        if (scanRoll <= toScanTarget) {
+            output[`sensorlock`] = tokenName;
+            output[`sensorlockid`] = charId;
+            output[`has_sensor_lock`] = 1;
+        }
+
+        await setAttrsAsync(output);
     }
-
-    await setAttrsAsync(output);
 }); 
 async function undoSensorLock() {
     const output = {};
@@ -2381,6 +2391,7 @@ function energizeShields() {
         output[`shield_6c`] = shield6IsDamaged ? 0 : shield6Allocation;
 
         output[`bridge_hit_status`] = 0;
+        output[`ship_is_evading`] = 0;
         setAttrs(output);
     });
 };
@@ -2400,9 +2411,6 @@ function energizeShields() {
 });
 
 // STRESS TURNS
-// Emergency heading changes
-// Tactical heading changes
-// Evasive maneuvers
 on(`clicked:stress_turn`, async (event) => {
     const response = await extractChatData(`?{Select Type of Turn|Emergency Heading Change, 0|Tactical Heading Change, 1|Evasive Maneuver, 2}`);
 
@@ -2445,12 +2453,14 @@ on(`clicked:stress_turn`, async (event) => {
         strOutput += `{{Warp Factor=${currentWF}}} {{Stress Charts=${stressChartEng}/${stressChartSup}}} {{Engine Dmg=${stressDmgEng} (ea.)}} {{Sup Dmg=${stressDmgSup}}}`;
     } else {
         // Evasive maneuver results
+        const TO_EVADE_TARGET = 5;
         const myNewSup = currentSup - 1
         output[`hp`] = myNewSup;
+        output[`ship_is_evading`] = 1;
         strOutput += `{{Sup Dmg=1}} `;
 
-        const evadeResult = getRandomIntInclusive(1, 10) < 4 ? `Success` : `Failure`;
-        strOutput += `{{All To-Hits=-2}} {{To-Evade=[[3]]}} {{Roll=[[1d10cs>11cf<0]]}} `;
+        const evadeResult = getRandomIntInclusive(1, 10) <= TO_EVADE_TARGET ? `Success` : `Failure`;
+        strOutput += `{{All To-Hits=-2}} {{To-Evade=[[${TO_EVADE_TARGET}]]}} {{Roll=[[1d10cs>11cf<0]]}} `;
         await updateWeaponTargetToHit();
     }
 
@@ -2946,7 +2956,8 @@ on(`clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target`, a
         const wpnHasCrewBonusStr = wpnCrewBonus ? `{{Crew Bonus=+1}}` : ``;
         const multiTargetPenaltyStr = typeIsMulti !== 1 && multiTargetPenalty !== 0 ? `{{Multi-Target Penalty=${multiTargetPenalty}}}` : ``;
         
-        startRoll(`&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=&#x1F3AF; Weapons Targeted &#x1F3AF;}} {{color=green}} {{Weapons=${weaponNames.join(`\\n`)}}} {{Target=[${tokenName}](${ROLL20_CHAR_URL}${charId})}} {{Distance=${wpnTargetDistance} hexes}} {{Firing Chart=${wpnChart}}} {{Crew Penalty=${crewCasualtyPenalty}}} ${wpnHasCrewBonusStr} {{Repair Penalty=${weaponStatePenalty}}} ${multiTargetPenaltyStr} {{Chance To-Hit=${wpnTargetToHitStr}}}`, roll => finishRoll(roll.rollId));
+        startRoll(`&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=&#x1F3AF; Weapons Targeted &#x1F3AF;}} {{color=green}} {{Weapons=${weaponNames.join(`\\n`)}}} {{Target=[${tokenName}](${ROLL20_CHAR_URL}${charId})}} {{Distance=${wpnTargetDistance} hexes}} {{Firing Chart=${wpnChart}}}  `, roll => finishRoll(roll.rollId));
+        startRoll(`/w gm &{template:custom} {{color=green}} {{Crew Penalty=${crewCasualtyPenalty}}} ${wpnHasCrewBonusStr} {{Repair Penalty=${weaponStatePenalty}}} ${multiTargetPenaltyStr} {{Chance To-Hit=${wpnTargetToHitStr}}}`, roll => finishRoll(roll.rollId));
     } else {
         startRoll(`&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Target Out of Range}} {{Weapon=${wpnName}}} {{Max Range=${wpnMaxRange} hexes}} {{Target=${tokenName}}} {{Distance=${wpnTargetDistance} hexes}}`, roll => finishRoll(roll.rollId));
     }
@@ -3180,7 +3191,8 @@ on(`clicked:repeating_beams:btn-fire clicked:repeating_missiles:btn-fire`, async
         `${row}_name`, `${row}_armed`, `${row}_power`, `${row}_power_max`,
         `${row}_bonus_3`, `${row}_bonus_2`, `${row}_bonus_1`,
         `${row}_target_name`, `${row}_target_id`, 
-        `${row}_target_distance`, `${row}_target_tohit`, `faction`
+        `${row}_target_distance`, `${row}_target_tohit`, `faction`, 
+        `ship_is_evading`
     ]);
 
     const faction = attributes[`faction`];
@@ -3189,7 +3201,8 @@ on(`clicked:repeating_beams:btn-fire clicked:repeating_missiles:btn-fire`, async
     const targetName = attributes[`${row}_target_name`];
     const targetId = attributes[`${row}_target_id`];
     const targetDistance = parseInt(attributes[`${row}_target_distance`]) || 0;
-    const targetToHit = parseInt(attributes[`${row}_target_tohit`]) || 0;
+    const shipIsEvading = (parseInt(attributes[`ship_is_evading`]) || 0);
+    const targetToHit = parseInt(attributes[`${row}_target_tohit`]) || 0 - shipIsEvading * 2;
 
     // Calc slim to none to-hit
     const targetSlimToHit = targetToHit < 1 ? 8 - Math.abs(targetToHit) * 2 : 0;
@@ -3233,7 +3246,7 @@ on(`clicked:repeating_beams:btn-fire clicked:repeating_missiles:btn-fire`, async
         const bonus1 = parseInt(rowAttrs[`repeating_${section}_${id}_bonus_1`]) || 0;
         const armed = parseInt(rowAttrs[`repeating_${section}_${id}_armed`]) || 0;
         const targetName = rowAttrs[`repeating_${section}_${id}_target_name`];
-        const targetToHit = parseInt(rowAttrs[`repeating_${section}_${id}_target_tohit`]) || 0;
+        const targetToHit = parseInt(rowAttrs[`repeating_${section}_${id}_target_tohit`]) || 0 - shipIsEvading * 2;;
 
         // Skip if not targeted
         if (!targetName) continue;
@@ -3261,10 +3274,11 @@ on(`clicked:repeating_beams:btn-fire clicked:repeating_missiles:btn-fire`, async
         output[`repeating_${section}_${id}_target_tohit`] = 0;
         await setAttrsAsync(output);
     }   
-
         // Single roll with all weapons and damages
+        const evasionStr = shipIsEvading ? `{{Ship is Evading=-2 to-hit}}` : ``;
+
         startRoll(
-            `&{template:custom} {{title=@{banner_${faction}fire${section}} **[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Weapons Fired}} {{color=red}} {{Weapons=${weaponNames.join(`\\n`)}}} {{Target=[${targetName}](${ROLL20_CHAR_URL}${targetId})}} {{To-Hit=[[${targetToHit}]] or less}} {{Roll=[[1d10cs>11cf<0]]}} {{Slim-To-Hit=[[${targetSlimToHit}]]}} {{Slim-Roll=[[1d10cs>11cf<0]]}} {{Damage=${damageList.join(`, `)}}}`,
+            `&{template:custom} {{title=@{banner_${faction}fire${section}} **[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Weapons Fired}} {{color=red}} {{Weapons=${weaponNames.join(`\\n`)}}} {{Target=[${targetName}](${ROLL20_CHAR_URL}${targetId})}} ${evasionStr} {{To-Hit=[[${targetToHit}]] or less}} {{Roll=[[1d10cs>11cf<0]]}} {{Slim-To-Hit=[[${targetSlimToHit}]]}} {{Slim-Roll=[[1d10cs>11cf<0]]}} {{Damage=${damageList.join(`, `)}}}`,
             roll => finishRoll(roll.rollId)
         );
     });

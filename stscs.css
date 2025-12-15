@@ -448,6 +448,10 @@
   display: none;
 }
 
+.ui-dialog .charsheet .ship-is-evading[value='0'] ~ h1 .evade {
+  display: none;
+}
+
 .ui-dialog .charsheet .movement-grid-status:not([value='0']) ~ .helm-panel {
   background: linear-gradient(135deg, white 0%, #ffcccc 100%);
   border: 2px solid #cc0000;
