@@ -752,6 +752,8 @@
         <input type='hidden' name='attr_type_is_advanced'/>
         <input type='hidden' name='attr_type_is_battle'/>
         <input type='hidden' name='attr_type_is_exploration'/>
+        <input type='hidden' name='attr_type_is_repair'/>
+        <input type='hidden' name='attr_type_is_nonmedical'/>
 
         <label>Date Entering Service:</label>
         <input type='text' class='w7' name='attr_date' placeholder='Date...'/>
@@ -1455,10 +1457,13 @@ async function handleWarpDamage(penetratingDamage, engineLocation) {
 
 // DAMAGE CREW
 async function damageCrew(myDmg, myFactor = 1, isCritArea = false) {
-    const values = await getAttrsAsync([`crew`, `crew_max`, `crewefficiency`, `hp_max`]);
+    const values = await getAttrsAsync([`crew`, `crew_max`, `crewefficiency`, `hp_max`, `type_is_nonmedical`]);
     const crew = parseInt(values[`crew`]) || 0;
     const crewEfficiency = parseInt(values[`crewefficiency`]) || 0;
     const maxSup = parseInt(values[`hp_max`]) || 0;
+    const NON_MEDICAL_PENALTY = 5;
+    const typeIsNonMedical = parseInt(values[`type_is_nonmedical`]) || 0;
+    const typeIsNonMedicalStr = typeIsNonMedical ? `{{Type Penalty=-${NON_MEDICAL_PENALTY}%}}` : ``;
 
     const supIntervals = [0, 1, 2, 3, 4, 5, 6, 8, 11, 14, 19, 34, 50, 999];
     const percentsLost = [0, 100, 50, 30, 25, 20, 18, 14, 10, 8, 6, 4, 2, 1];
@@ -1472,9 +1477,10 @@ async function damageCrew(myDmg, myFactor = 1, isCritArea = false) {
 
     // Determine amount of crew lost
     const crewRoll = getRandomIntInclusive(1, 100);
-    const isCrewEffective = crewRoll <= crewEfficiency;
+    const isCrewEffective = crewRoll <= (crewEfficiency - typeIsNonMedical * NON_MEDICAL_PENALTY);
     const CREW_MAX_DMG = 5;
-    const percentLost = Math.min((isCritArea == true) ? 20 : 100, percentsLost[index] * Math.min(CREW_MAX_DMG, myDmg) * myFactor / (isCrewEffective ? 2 : 1));
+    const BRIDGE_CAP = 20;
+    const percentLost = Math.min((isCritArea == true) ? BRIDGE_CAP : 100, percentsLost[index] * Math.min(CREW_MAX_DMG, myDmg) * myFactor / (isCrewEffective ? 2 : 1));
     const crewLost = Math.ceil(crew * percentLost / 100);
     const newCrew = Math.max(0, crew - crewLost);
 
@@ -1485,7 +1491,7 @@ async function damageCrew(myDmg, myFactor = 1, isCritArea = false) {
     const CREW_EFFECTIVE_TRUE = `Success!`;
     const CREW_EFFECTIVE_FALSE = `Failed`;
     const residualDamage = 0;
-    const returnStr = ` {{Crew Check=${isCrewEffective ? CREW_EFFECTIVE_TRUE : CREW_EFFECTIVE_FALSE}}} {{Crew Lost=[[${crewLost}]]}}`;
+    const returnStr = ` {{Crew Check=${isCrewEffective ? CREW_EFFECTIVE_TRUE : CREW_EFFECTIVE_FALSE}}} ${typeIsNonMedicalStr} {{Crew Lost=[[${crewLost}]]}}`;
     return { residualDamage, returnStr };
 }
 
@@ -1865,11 +1871,13 @@ on(`clicked:shield_6_repair`, function(eventInfo) { repairSystem(`shield_6`, `Sh
 on(`clicked:shields_grid_repair`, function(eventInfo) { repairSystem(`shields_grid`, `Shields Grid`); energizeShields()});
 on(`clicked:weapons_grid_repair`, function(eventInfo) { repairSystem(`weapons_grid`, `Weapons Grid`); });
 function repairSystem(mySystemVar = ``, mySystemName = ``) {
-    getAttrs([`${mySystemVar}_to_repair`, `crewrollpenalty`], function(values) {
+    getAttrs([`${mySystemVar}_to_repair`, `crewrollpenalty`, `type_is_repair`], function(values) {
         const repairTargetBase = parseInt(values[`${mySystemVar}_to_repair`]) || 0;
         const crewRollPenalty = parseInt(values[`crewrollpenalty`]) || 0;
+        const typeIsRepair = parseInt(values[`type_is_repair`]) || 0;
         let repairTargetNew = repairTargetBase;
-        const repairTarget = repairTargetBase + crewRollPenalty;
+        const repairTarget = repairTargetBase + typeIsRepair + crewRollPenalty;
+        const typeIsRepairStr = typeIsRepair ? `{{Type Bonus=+1}}` : ``;
 
         const output = {};
         const repairRoll = getRandomIntInclusive(1, 10);
@@ -1885,7 +1893,7 @@ function repairSystem(mySystemVar = ``, mySystemName = ``) {
         setAttrs(output);
 
         startRoll(
-            `/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=&#x1F527; Repair Roll &#x1F527;}} {{color=gold}} {{System=${mySystemName}}} {{Base Target=${repairTargetBase}}} {{Crew Penalty=${crewRollPenalty}}} {{To-Repair=[[${repairTarget}]]}} {{Roll=[[${repairRoll}]]}}`,
+            `/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=&#x1F527; Repair Roll &#x1F527;}} {{color=gold}} {{System=${mySystemName}}} {{Base Target=${repairTargetBase}}} {{Crew Penalty=${crewRollPenalty}}} ${typeIsRepairStr} {{To-Repair=[[${repairTarget}]]}} {{Roll=[[${repairRoll}]]}}`,
             roll => finishRoll(roll.rollId)
         );
     });
@@ -1903,7 +1911,8 @@ on(`clicked:repeating_beams:weapon-repair clicked:repeating_missiles:weapon-repa
         `${row}_power_max`,
         `${row}_state`,
         `${row}_weapon_state_status`,
-        `crewrollpenalty`
+        `crewrollpenalty`, 
+        `type_is_repair`
     ]);
 
     const wpnName = attrs[`${row}_name`];
@@ -1912,7 +1921,9 @@ on(`clicked:repeating_beams:weapon-repair clicked:repeating_missiles:weapon-repa
     const currentState = attrs[`${row}_state`];
     const repairTargetBase = section === `beams` ? 8 : 6;
     const crewRollPenalty = parseInt(attrs[`crewrollpenalty`]) || 0;
-    const repairTarget = repairTargetBase + crewRollPenalty;
+    const typeIsRepair = parseInt(attrs[`type_is_repair`]) || 0;
+    const repairTarget = repairTargetBase + typeIsRepair + crewRollPenalty;
+    const typeIsRepairStr = typeIsRepair ? `{{Type Bonus=+1}}` : ``;
 
     const repairRoll = getRandomIntInclusive(1, 10);
     if (repairRoll <= repairTarget) {
@@ -1931,7 +1942,7 @@ on(`clicked:repeating_beams:weapon-repair clicked:repeating_missiles:weapon-repa
     }
 
     startRoll(
-        `/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Repair Roll}} {{color=gold}} {{Weapon=${wpnName}}} {{Base Target=${repairTargetBase} (${section})}} {{Crew Penalty=${crewRollPenalty}}} {{To-Repair=[[${repairTarget}]]}} {{Roll=[[${repairRoll}]]}}`,
+        `/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Repair Roll}} {{color=gold}} {{Weapon=${wpnName}}} {{Base Target=${repairTargetBase} (${section})}} {{Crew Penalty=${crewRollPenalty}}} ${typeIsRepairStr} {{To-Repair=[[${repairTarget}]]}} {{Roll=[[${repairRoll}]]}}`,
         roll => finishRoll(roll.rollId)
     );
 });
@@ -2748,11 +2759,12 @@ on(`change:type`, function(eventInfo) {
         const type = values[`type`];
 
         const types = [
-            `BC`, 0,1,0,
-            `CL`, 0,0,1,
-            `ES`, 1,0,0,
-            `TL`, 0,0,0,
-            `TU`, 0,0,0,
+            `BC`, 0,1,0,0,0,
+            `CL`, 0,0,1,0,0,
+            `ES`, 1,0,0,0,0,
+            `SC`, 0,0,1,1,1,
+            `TL`, 0,0,0,0,0,
+            `TU`, 0,0,0,0,0
         ];
 
         const index = types.indexOf(type);
@@ -2761,6 +2773,8 @@ on(`change:type`, function(eventInfo) {
         output[`type_is_advanced`] = types[index + 1];
         output[`type_is_battle`] = types[index + 2];
         output[`type_is_exploration`] = types[index + 3];
+        output[`type_is_repair`] = types[index + 4];
+        output[`type_is_nonmedical`] = types[index + 5];
         setAttrs(output);
     });
 });
