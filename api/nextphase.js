@@ -80,10 +80,10 @@ on('change:campaign:turnorder', function() {
     	            break;
     	        case PHASE_1_FIRE: case PHASE_2_FIRE: case PHASE_3_FIRE:
     	            sendChat('Phase', `&{template:custom} {{title=**Evasive Maneuvers?**}} {{color=blue}}`);
-                    removeSensorStatus();
     	            sortTurnOrder(sorter_desc);
     	            break;
     	        case PHASE_1_REPAIR: case PHASE_2_REPAIR: case PHASE_3_REPAIR:
+                    removeEvasion();
     	            removeFireTokens();
                     rechargeShields(PhaseIndex);
                     sortTurnOrder(sorter_asc);
@@ -149,12 +149,18 @@ function removeFireTokens() {
 }
 
 // Remove no-sensor status tokens
-function removeSensorStatus() {
-	const selectedObjs = findObjs({type: 'graphic'});
-	
-	_.each (selectedObjs, function(obj) {
-		if (obj.get('_subtype') == 'token') { obj.set('status_interdiction', false); }
-	});
+function removeEvasion() {
+    const selectedObjs = findObjs({type: 'graphic'});
+    _.each(selectedObjs, function(obj) {
+        if (obj.get('_subtype') == 'token') {
+            let markers = obj.get('statusmarkers');
+            // Remove any Evade marker (with or without the ::id suffix)
+            markers = markers.split(',')
+                .filter(m => !m.startsWith('Evade'))
+                .join(',');
+            obj.set('statusmarkers', markers);
+        }
+    });
 }
 
 // Recharge all shields
