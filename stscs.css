@@ -4,6 +4,8 @@
   --bg-color-input: #fff;
   --bg-color-panel1: #fff;
   --bg-color-panel2: #eef;
+  --bg-color-panel1-dmg: #fff;
+  --bg-color-panel2-dmg: #ffcccc;
   --bg-repitem-btn: gainsboro;
   --drop-color: #aaa;
   --header-color: #333;
@@ -22,6 +24,8 @@
   --bg-color-input: #000;
   --bg-color-panel1: #000;
   --bg-color-panel2: #222;
+  --bg-color-panel1-dmg: #000;
+  --bg-color-panel2-dmg: #200;
   --bg-repitem-btn: #444;
   --drop-color: #000;
   --header-color: #ccc;
@@ -170,6 +174,7 @@
 .ui-dialog .charsheet .weapon-state-status[value='2'] ~ .weapon-repair,
 .ui-dialog .charsheet .weapon-state-status[value='3'] ~ .weapon-repair,
 .ui-dialog .charsheet .weapon-state-status[value='3'] ~ span .btn-target,
+.ui-dialog .charsheet .weapon-state-status[value='9'] ~ span .btn-target,
 .ui-dialog .charsheet .weapons-grid-status:not([value='0']) ~ .beams-panel .btn-target,
 .ui-dialog .charsheet .weapons-grid-status:not([value='0']) ~ .missiles-panel .btn-target,
 .ui-dialog .charsheet .weapons-grid-status:not([value='1']) ~ .fc-header .btn-weapons-grid-repair {
@@ -178,6 +183,25 @@
   color: #cccccc;
   cursor: not-allowed;
   opacity: 0.6;
+  pointer-events: none;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Repair button intermediary state */
+.ui-dialog .charsheet .movement-grid-status[value='9'] ~ .helm-header .btn-movement-grid-repair,
+.ui-dialog .charsheet .sensors-status[value='9'] ~ .sensors-header .btn-sensors-repair,
+.ui-dialog .charsheet .shield-1-status[value='9'] ~ .btn-shield-repair,
+.ui-dialog .charsheet .shield-2-status[value='9'] ~ .btn-shield-repair,
+.ui-dialog .charsheet .shield-3-status[value='9'] ~ .btn-shield-repair,
+.ui-dialog .charsheet .shield-4-status[value='9'] ~ .btn-shield-repair,
+.ui-dialog .charsheet .shield-5-status[value='9'] ~ .btn-shield-repair,
+.ui-dialog .charsheet .shield-6-status[value='9'] ~ .btn-shield-repair,
+.ui-dialog .charsheet .shields-grid-status[value='9'] ~ .shields-header .btn-shields-grid-repair,
+.ui-dialog .charsheet .weapon-state-status[value='9'] ~ .weapon-repair,
+.ui-dialog .charsheet .weapons-grid-status[value='9'] ~ .fc-header .btn-weapons-grid-repair {
+  background: linear-gradient(135deg, #ff6600 0%, #cc3300 100%);
+  border-color: #990000;
+  cursor: not-allowed;
   pointer-events: none;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
@@ -430,7 +454,7 @@
 
 /**************** DAMAGE INDICATORS ****************/
 .ui-dialog .charsheet .ship-is-disabled[value='1'] ~ .grid-6col {
-  background: linear-gradient(135deg, white 0%, #ffcccc 100%);
+  background: linear-gradient(135deg, var(--bg-color-panel1-dmg), var(--bg-color-panel2-dmg));
   border: 2px solid #cc0000;
 }
 .ui-dialog .charsheet .ship-is-disabled[value='1'] ~ .grid-6col input[name='attr_tpa_movement'] {
@@ -453,7 +477,7 @@
 }
 
 .ui-dialog .charsheet .movement-grid-status:not([value='0']) ~ .helm-panel {
-  background: linear-gradient(135deg, white 0%, #ffcccc 100%);
+  background: linear-gradient(135deg, var(--bg-color-panel1-dmg), var(--bg-color-panel2-dmg));
   border: 2px solid #cc0000;
 }
 .ui-dialog .charsheet .movement-grid-status:not([value='0']) ~ .tpa-panel input[name='attr_tpa_movement'],
@@ -469,7 +493,7 @@
 .ui-dialog .charsheet .sensors-status:not([value='0']) ~ .missiles-panel,
 .ui-dialog .charsheet .sensors-status:not([value='0']) ~ .sensors-panel,
 .ui-dialog .charsheet .sensors-status:not([value='0']) ~ .warp-panel {
-  background: linear-gradient(135deg, white 0%, #ffcccc 100%);
+  background: linear-gradient(135deg, var(--bg-color-panel1-dmg), var(--bg-color-panel2-dmg));
   border: 2px solid #cc0000;
 }
 .ui-dialog .charsheet .has-sensor-lock[value='0'] ~ .sensors-panel select[name='attr_scanquestion'],
@@ -483,7 +507,7 @@
 
 .ui-dialog .charsheet .shields-grid-status:not([value='0']) ~ .shields-panel,
 .ui-dialog .charsheet .shields-grid-status:not([value='0']) ~ .spa-panel {
-  background: linear-gradient(135deg, white 0%, #ffcccc 100%);
+  background: linear-gradient(135deg, var(--bg-color-panel1-dmg), var(--bg-color-panel2-dmg));
   border: 2px solid #cc0000;
 }
 .ui-dialog .charsheet .shields-grid-status[value='0'] ~ h1 .warning-shields {
@@ -491,14 +515,14 @@
 }
 
 .ui-dialog .charsheet .warp-drive-status[value='1'] ~ .warp-panel {
-  background: linear-gradient(135deg, white 0%, #ffcccc 100%);
+  background: linear-gradient(135deg, var(--bg-color-panel1-dmg), var(--bg-color-panel2-dmg));
   border: 2px solid #cc0000;
 }
 
 .ui-dialog .charsheet .weapons-grid-status:not([value='0']) ~ .fc-panel,
 .ui-dialog .charsheet .weapons-grid-status:not([value='0']) ~ .beams-panel,
 .ui-dialog .charsheet .weapons-grid-status:not([value='0']) ~ .missiles-panel {
-  background: linear-gradient(135deg, white 0%, #ffcccc 100%);
+  background: linear-gradient(135deg, var(--bg-color-panel1-dmg), var(--bg-color-panel2-dmg));
   border: 2px solid #cc0000;
 }
 .ui-dialog .charsheet .weapons-grid-status[value='0'] ~ h1 .warning-weapons {
@@ -552,9 +576,11 @@
 .ui-dialog .charsheet .hp-status[value='1'] ~ .hp,
 .ui-dialog .charsheet .missile-arm-status[value='1'] ~ .missile-armed,
 .ui-dialog .charsheet .movement-grid-status[value='1'] ~ .helm-header span .state-select,
+.ui-dialog .charsheet .movement-grid-status[value='9'] ~ .helm-header span .state-select,
 .ui-dialog .charsheet .mp-remaining-status[value='1'] ~ .mp-remaining,
 .ui-dialog .charsheet .power-status[value='1'] ~ .power,
 .ui-dialog .charsheet .sensors-status[value='1'] ~ .sensors-header span .state-select,
+.ui-dialog .charsheet .sensors-status[value='9'] ~ .sensors-header span .state-select,
 .ui-dialog .charsheet .shield-1-status[value='1'] ~ .w7,
 .ui-dialog .charsheet .shield-2-status[value='1'] ~ .w7,
 .ui-dialog .charsheet .shield-3-status[value='1'] ~ .w7,
@@ -574,6 +600,7 @@
 .ui-dialog .charsheet .shield-5c-status[value='1'] ~ .shield-5c,
 .ui-dialog .charsheet .shield-6c-status[value='1'] ~ .shield-6c,
 .ui-dialog .charsheet .shields-grid-status[value='1'] ~ .shields-header span .state-select,
+.ui-dialog .charsheet .shields-grid-status[value='9'] ~ .shields-header span .state-select,
 .ui-dialog .charsheet .shields-grid-status[value='1'] ~ .spa-panel .shields-allocated .shield-1,
 .ui-dialog .charsheet .shields-grid-status[value='1'] ~ .spa-panel .shields-allocated .shield-2,
 .ui-dialog .charsheet .shields-grid-status[value='1'] ~ .spa-panel .shields-allocated .shield-3,
@@ -584,8 +611,10 @@
 .ui-dialog .charsheet .target-tohit-status[value='1'] ~ .target-tohit,
 .ui-dialog .charsheet .tpa-remaining-status[value='1'] ~ .tpa-remaining,
 .ui-dialog .charsheet .weapons-grid-status[value='1'] ~ .fc-header span .state-select,
+.ui-dialog .charsheet .weapons-grid-status[value='9'] ~ .fc-header span .state-select,
 .ui-dialog .charsheet .weapon-state-status[value='1'] ~ .weapon-state,
 .ui-dialog .charsheet .weapon-state-status[value='3'] ~ .weapon-state,
+.ui-dialog .charsheet .weapon-state-status[value='9'] ~ .weapon-state,
 .ui-dialog .charsheet .wf-current-status[value='1'] ~ .wf-current,
 .ui-dialog .charsheet .wf-desired-status[value='1'] ~ .em,
 .ui-dialog .charsheet .wf-remaining-status[value='1'] ~ .wf-remaining,

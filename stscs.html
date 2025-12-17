@@ -267,9 +267,9 @@
 
         <label>Movement Point Ratio: </label>
         <span>
-            <input type='number' class='w5' name='attr_mpr_1' min='1' max='12' value='1'/>
+            <input type='number' class='w5' name='attr_mpr_1' min='1' value='1'/>
             /
-            <input type='number' class='w5' name='attr_mpr_2' min='1' max='2' value='1'/>
+            <input type='number' class='w5' name='attr_mpr_2' min='1' value='1'/>
         </span>
         <label>Movement Points:</label>
         <span>
@@ -855,6 +855,7 @@ const CREW_BONUS_WEAPONS = 1;
 const CREW_BONUS_ENGINES = 2;
 const CREW_BONUS_SHIELD = 3;
 const CREW_BONUS_REPAIR = 4;const DAMAGE_CHART_DEFAULT = `C`;
+const DAMAGE_BLOCK_SIZE = 5;
 const DAMAGE_RESULT_BEAM = `Beam Weapon`;
 const DAMAGE_RESULT_BRIDGE = `Bridge 2C`;
 const DAMAGE_RESULT_ENG = `Engineering 2C`;
@@ -879,6 +880,11 @@ const ENGINE_TYPE_IMPULSE = 1;
 const ENGINE_TYPE_WARP = 2;
 const ENGINE_TYPE_GENERATOR = 3;
 const ENGINE_WARP_NAME_NONE = `No Warp Drive`;
+const WEAPON_IS_UNDAMAGED = 0;
+const WEAPON_IS_DAMAGED = 1;
+const WEAPON_IS_REPAIRED = 2;
+const WEAPON_IS_DESTROYED = 3;
+const REPAIR_IS_LOCKED = 9;
 const ROLL20_CHAR_URL = `https://journal.roll20.net/character/`;    
 
 // ON SHEET OPENED
@@ -1170,7 +1176,7 @@ on(`clicked:rolldamage`, async () => {
         13, 16, 17, 6, 7, 10, 1, 2, 2, 15,
         13, 16, 6, 6, 3, 11, 1, 2, 2, 8,
 
-        13, 16, 6, 3, 2, 2, 1, 8, 14, 12,
+        13, 16, 6, 3, 2, 2, 1, 8, 14, 12, 
         13, 16, 17, 2, 2, 2, 1, 5, 14, 12,
         13, 16, 7, 4, 2, 2, 1, 9, 14, 12,
         13, 16, 7, 7, 4, 11, 1, 2, 2, 9,
@@ -1534,6 +1540,7 @@ async function damageImpulse(myDmg = 0, myFactor = 1) {
 }
 
 // DAMAGE SHIELD
+// Note: This is damage to the shield value, NOT the shield generator (see damageSystem).
 async function damageShield(myShieldVar = ``, myDmg = 0, myFactor = 1) {
     const values = await getAttrsAsync([myShieldVar]);
     const shieldPower = parseInt(values[myShieldVar]) || 0;
@@ -1551,22 +1558,30 @@ async function damageShield(myShieldVar = ``, myDmg = 0, myFactor = 1) {
 }
 
 // DAMAGE SYSTEM
+// Includes shield generators, sensors, and all three power grids.
+// Does NOT include weapons (see damageWeapon)
 async function damageSystem(mySystemVar = ``, myDmg = 0) {
+    const BestToRepair = 10; // The max to-repair target value
+    const MaxSystemState = 5; // The max State value for a damaged system (Destroyed)
+    const StateIncrement = 1; // The amount to increment the next chance to-repair
+    const SystemIsDestroyed = 2; // The system is Destroyed
+    const ToRepairImprovement = 2; // The improvement to the next chance to-repair
+
     const values = await getAttrsAsync([`${mySystemVar}_state`]);
     const systemState = parseInt(values[`${mySystemVar}_state`]) || 0;
-    const heavyDamage = Math.floor(Math.max(0, (myDmg - 5)) / 5);
+    const heavyDamage = Math.floor(Math.max(0, (myDmg - DAMAGE_BLOCK_SIZE)) / DAMAGE_BLOCK_SIZE);
 
-    const systemStateNew = Math.min(5, systemState + 1 + heavyDamage);
-    const myDmgResidual = (systemState + 1 + heavyDamage) - systemStateNew; // Excess heavy dmg not applied
+    const systemStateNew = Math.min(MaxSystemState, systemState + StateIncrement + heavyDamage);
+    const myDmgResidual = (systemState + StateIncrement + heavyDamage) - systemStateNew; // Excess heavy dmg not applied
 
     const output = {};
     output[`${mySystemVar}_state`] = systemStateNew;
-    output[`${mySystemVar}_status`] = systemStateNew == 5 ? 2 : systemStateNew > 0 ? 1 : 0;
-    output[`${mySystemVar}_to_repair`] = 10 - (systemStateNew * 2);
+    output[`${mySystemVar}_status`] = systemStateNew == MaxSystemState ? SystemIsDestroyed : REPAIR_IS_LOCKED;
+    output[`${mySystemVar}_to_repair`] = BestToRepair - (systemStateNew * ToRepairImprovement);
     if (mySystemVar == `shields_grid`) output[`shield_1c`] = output[`shield_2c`] = output[`shield_3c`] = output[`shield_4c`] = output[`shield_5c`] = output[`shield_6c`] = 0;
     await setAttrsAsync(output);
 
-    const residualDamage = systemStateNew == systemState ? myDmg : (myDmgResidual * 5) + (Math.max(0, (myDmg - 5)) % 5); // HOUSE RULE: Apply all remainder dmg to resid
+    const residualDamage = systemStateNew == systemState ? myDmg : (myDmgResidual * DAMAGE_BLOCK_SIZE) + (Math.max(0, (myDmg - DAMAGE_BLOCK_SIZE)) % DAMAGE_BLOCK_SIZE); // HOUSE RULE: Apply all remainder dmg to resid
     const returnStr = ` {{Damage Status=${DAMAGE_STATUSES[systemStateNew]}}}`;
     return { residualDamage, returnStr };
 }
@@ -1667,6 +1682,8 @@ async function damageWarp(myDmg = 0, myLocation = 1, myFactor = 1) {
 
 // DAMAGE WEAPON
 async function damageWeapon(myShieldNum = 1, myRepeatingSection = ``, myDmg = 0) {
+    const WeaponCannotBeRepaired = 0; // The weapon is Destroyed and cannot be repaired.
+
     // Validate that a repeating section was provided
     if (!myRepeatingSection) {
         return { residualDamage: myDmg, returnStr: `{{Weapon Damaged=Error: No section}} ` };
@@ -1758,7 +1775,7 @@ async function damageWeapon(myShieldNum = 1, myRepeatingSection = ``, myDmg = 0)
             // Find the selected weapon's ID first
             const selectedWeaponId = eligibleWeapons[randomIndex].id;
             const selectedState = values[`${myRepeatingSection}_${selectedWeaponId}_state`];
-            if (selectedState != 1 && selectedState != 3) {
+            if (selectedState != WEAPON_IS_DAMAGED && selectedState != WEAPON_IS_DESTROYED) {
                 bankedRows.push(selectedWeaponId);
             }
 
@@ -1766,7 +1783,7 @@ async function damageWeapon(myShieldNum = 1, myRepeatingSection = ``, myDmg = 0)
             ids.forEach(id => {
                 const name = values[`${myRepeatingSection}_${id}_name`];
                 const state = values[`${myRepeatingSection}_${id}_state`];
-                if (name && name.match(nameRoot) && id !== selectedWeaponId && state != 1 && state != 3) {
+                if (name && name.match(nameRoot) && id !== selectedWeaponId && state != WEAPON_IS_DAMAGED && state != WEAPON_IS_DESTROYED) {
                     bankedRows.push(id);
                 }
             });
@@ -1782,24 +1799,24 @@ async function damageWeapon(myShieldNum = 1, myRepeatingSection = ``, myDmg = 0)
                 `${myRepeatingSection}_${id}_state`
             ]);
         
-            // Update state: 0 → 1, 2 → 3
+            // Update state
             let newState = parseInt(rowAttrs[`${myRepeatingSection}_${id}_state`]) || 0;
-            if (newState == 0) {
-                newState = 1;
-            } else if (newState == 2) {
-                newState = 3;
+            if (newState == WEAPON_IS_UNDAMAGED) {
+                newState = WEAPON_IS_DAMAGED;
+            } else if (newState == WEAPON_IS_REPAIRED) {
+                newState = WEAPON_IS_DESTROYED;
             }
             
             // Update the attribute in Roll20
             const updateObj = {};
             updateObj[`${myRepeatingSection}_${id}_state`] = newState;
-            updateObj[`${myRepeatingSection}_${id}_weapon_state_status`] = newState;
+            updateObj[`${myRepeatingSection}_${id}_weapon_state_status`] = REPAIR_IS_LOCKED;
             await setAttrsAsync(updateObj);
             
             bankedNames.push(rowAttrs[`${myRepeatingSection}_${id}_name`]);
 
-            residualDamage = Math.max(0, residualDamage - 5);
-            if (residualDamage < 5) break;
+            residualDamage = Math.max(0, residualDamage - DAMAGE_BLOCK_SIZE);
+            if (residualDamage < DAMAGE_BLOCK_SIZE) break;
         }
         returnStr = `{{Weapon Damaged=${bankedNames.join(`\\n`)}}} `;
     } else {
@@ -2372,6 +2389,7 @@ on(`change:tpa_shields change:spr_1 change:spr_2 change:shield_1 change:shield_2
 // SHIELDS RE-ENERGIZED
 on(`clicked:shield_reenergize`, function(eventInfo) {
     energizeShields();
+    releaseLockedRepairStatuses();
 
     startRoll(
         `/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=No Repairs}} {{color=gold}}`,
@@ -2380,6 +2398,7 @@ on(`clicked:shield_reenergize`, function(eventInfo) {
 });
 on(`change:current_phase`, function(eventInfo) {
     energizeShields();
+    releaseLockedRepairStatuses();
 });
 function energizeShields() {
     getAttrs([`shield_1`, `shield_2`, `shield_3`, `shield_4`, `shield_5`, `shield_6`, `shield_1_state`, `shield_2_state`, `shield_3_state`, `shield_4_state`, `shield_5_state`, `shield_6_state`], function(values) {
@@ -2409,6 +2428,80 @@ function energizeShields() {
         setAttrs(output);
     });
 };
+async function releaseLockedRepairStatuses() {
+    // Iterates through all repair status looking for locked ones to unlock 
+    const CanBeRepairedNow = 1; // The system repair button is no longer locked.
+
+    const values = await getAttrsAsync([
+        `movement_grid_status`,
+        `sensors_status`, 
+        `shield_1_status`, 
+        `shield_2_status`, 
+        `shield_3_status`, 
+        `shield_4_status`, 
+        `shield_5_status`, 
+        `shield_6_status`,
+        `shields_grid_status`,
+        `weapons_grid_status`
+    ]);
+
+    const output = {};
+    Object.entries(values).forEach(([attrName, value]) => {
+        if (value == REPAIR_IS_LOCKED) output[attrName] = CanBeRepairedNow;
+    });
+
+    // Process repeating_beams section
+    const beamIds = await getSectionIDsAsync('repeating_beams');
+    const beamAttrs = beamIds.flatMap(id => [
+        `repeating_beams_${id}_weapon_state_status`,
+        `repeating_beams_${id}_state`
+    ]);
+    
+    if (beamAttrs.length > 0) {
+        const beamValues = await getAttrsAsync(beamAttrs);
+        beamIds.forEach(id => {
+            const statusAttr = `repeating_beams_${id}_weapon_state_status`;
+            const stateAttr = `repeating_beams_${id}_state`;
+            const statusValue = beamValues[statusAttr];
+            const stateValue = beamValues[stateAttr];
+            
+            if (statusValue == REPAIR_IS_LOCKED) {
+                if (stateValue == WEAPON_IS_DESTROYED) {
+                    output[statusAttr] = stateValue;
+                } else {
+                    output[statusAttr] = CanBeRepairedNow;
+                }
+            }
+        });
+    }
+
+    // Process repeating_missiles section
+    const missileIds = await getSectionIDsAsync('repeating_missiles');
+    const missileAttrs = missileIds.flatMap(id => [
+        `repeating_missiles_${id}_weapon_state_status`,
+        `repeating_missiles_${id}_state`
+    ]);
+    
+    if (missileAttrs.length > 0) {
+        const missileValues = await getAttrsAsync(missileAttrs);
+        missileIds.forEach(id => {
+            const statusAttr = `repeating_missiles_${id}_weapon_state_status`;
+            const stateAttr = `repeating_missiles_${id}_state`;
+            const statusValue = missileValues[statusAttr];
+            const stateValue = missileValues[stateAttr];
+            
+            if (statusValue == REPAIR_IS_LOCKED) {
+                if (stateValue == WEAPON_IS_DESTROYED) {
+                    output[statusAttr] = stateValue;
+                } else {
+                    output[statusAttr] = CanBeRepairedNow;
+                }
+            }
+        });
+    }
+
+    await setAttrsAsync(output);
+}
 
 // SHIELD STATE changed
 [`1`, `2`, `3`, `4`, `5`, `6`].forEach(num => {
@@ -2687,7 +2780,7 @@ on(`clicked:tpa_reset`, async (event) => {
         resetTPA();
     }
 });
-on(`change:tpa_reset`, function(eventInfo) {
+on(`change:tpa_reset`, async (event) => {
     resetTPA();
 });
 function resetTPA() {
@@ -2765,7 +2858,8 @@ on(`change:type`, function(eventInfo) {
             `ES`, 1,0,0,0,0,
             `SC`, 0,0,1,1,1,
             `TL`, 0,0,0,0,0,
-            `TU`, 0,0,0,0,0
+            `TU`, 0,0,0,0,0,
+            `ZD`, 0,0,0,0,0
         ];
 
         const index = types.indexOf(type);
@@ -3318,8 +3412,8 @@ on(`change:repeating_beams:name change:repeating_beams:power change:repeating_be
             ids.forEach(id => {
                 const theBeamIsLaser = values[`repeating_beams_${id}_name`].includes(`FL-`);
                 const theBeamStateStatus = parseInt(values[`repeating_beams_${id}_weapon_state_status`]) || 0;
-                const theBeamIsDamaged = theBeamStateStatus == 1 || theBeamStateStatus == 3 ? 1 : 0;
-                const theBeamIsRepaired = theBeamStateStatus == 2 ? 1 : 0;
+                const theBeamIsDamaged = theBeamStateStatus == WEAPON_IS_DAMAGED || theBeamStateStatus == WEAPON_IS_DESTROYED ? 1 : 0;
+                const theBeamIsRepaired = theBeamStateStatus == WEAPON_IS_REPAIRED ? 1 : 0;
                 const theBeamIsReady = parseInt(values[`repeating_beams_${id}_btn-fire_status`]) || 0;
                 const theBeamPower = parseInt(values[`repeating_beams_${id}_power`]) || 0;
                 const theBeamPowerMax = Math.floor((parseInt(values[`repeating_beams_${id}_power_max`]) || 0) / (theBeamIsRepaired + 1));
