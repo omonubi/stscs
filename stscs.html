@@ -748,6 +748,7 @@
             <option value='SC'>Scout</option>
             <option value='TL'>Light Transport</option>
             <option value='TU'>Robot Transport</option>
+            <option value='ZD'>Defensive Outpost</option>
         </select>
         <input type='hidden' name='attr_type_is_advanced'/>
         <input type='hidden' name='attr_type_is_battle'/>
@@ -2784,10 +2785,10 @@ on(`change:type`, function(eventInfo) {
 on(`change:type`, function(eventInfo) {
     getAttrs([`type`], function(values) {
         const type = values[`type`];
+        const isStation = type == `ZD` ? 1 : 0;
 
         const output = {};
-        const TYPE_STATION = `Station`;
-        output[`warp_show_content`] = type == TYPE_STATION ? 0 : 1;
+        output[`warp_show_content`] = isStation ? 0 : 1;
         setAttrs(output);
     });
 });
