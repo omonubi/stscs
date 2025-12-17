@@ -743,11 +743,12 @@
         <select class='w16' name='attr_type'>
             <option>Select...</option>
             <option value='BC'>Battlecruiser</option>
-            <option value='CL'>Light Cruiser</option>
+            <option value='CL'>Cruiser, Light</option>
+            <option value='CS'>Cruiser, Medium</option>
             <option value='ES'>Escort</option>
             <option value='SC'>Scout</option>
-            <option value='TL'>Light Transport</option>
-            <option value='TU'>Robot Transport</option>
+            <option value='TL'>Transport, Light</option>
+            <option value='TU'>Transport, Robot</option>
             <option value='ZD'>Defensive Outpost</option>
         </select>
         <input type='hidden' name='attr_type_is_advanced'/>
@@ -2855,6 +2856,7 @@ on(`change:type`, function(eventInfo) {
         const types = [
             `BC`, 0,1,0,0,0,
             `CL`, 0,0,1,0,0,
+            `CS`, 0,0,1,1,0,
             `ES`, 1,0,0,0,0,
             `SC`, 0,0,1,1,1,
             `TL`, 0,0,0,0,0,
