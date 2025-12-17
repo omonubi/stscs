@@ -745,6 +745,7 @@
             <option value='BC'>Battlecruiser</option>
             <option value='CL'>Cruiser, Light</option>
             <option value='CS'>Cruiser, Medium</option>
+            <option value='DD'>Destroyer</option>
             <option value='ES'>Escort</option>
             <option value='SC'>Scout</option>
             <option value='TL'>Transport, Light</option>
@@ -756,6 +757,7 @@
         <input type='hidden' name='attr_type_is_exploration'/>
         <input type='hidden' name='attr_type_is_repair'/>
         <input type='hidden' name='attr_type_is_nonmedical'/>
+        <input type='hidden' name='attr_type_is_anticloak'/>
 
         <label>Date Entering Service:</label>
         <input type='text' class='w7' name='attr_date' placeholder='Date...'/>
@@ -2854,14 +2856,15 @@ on(`change:type`, function(eventInfo) {
         const type = values[`type`];
 
         const types = [
-            `BC`, 0,1,0,0,0,
-            `CL`, 0,0,1,0,0,
-            `CS`, 0,0,1,1,0,
-            `ES`, 1,0,0,0,0,
-            `SC`, 0,0,1,1,1,
-            `TL`, 0,0,0,0,0,
-            `TU`, 0,0,0,0,0,
-            `ZD`, 0,0,0,0,0
+            `BC`, 0,1,0,0,0,0,
+            `CL`, 0,0,1,0,0,0,
+            `CS`, 0,0,1,1,0,0,
+            `DD`, 0,0,0,0,0,1,
+            `ES`, 1,0,0,0,0,0,
+            `SC`, 0,0,1,1,1,0,
+            `TL`, 0,0,0,0,0,0,
+            `TU`, 0,0,0,0,0,0,
+            `ZD`, 0,0,0,0,0,0
         ];
 
         const index = types.indexOf(type);
@@ -2872,6 +2875,7 @@ on(`change:type`, function(eventInfo) {
         output[`type_is_exploration`] = types[index + 3];
         output[`type_is_repair`] = types[index + 4];
         output[`type_is_nonmedical`] = types[index + 5];
+        output[`type_is_anticloak`] = types[index + 6];
         setAttrs(output);
     });
 });
