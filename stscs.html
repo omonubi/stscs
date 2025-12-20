@@ -745,6 +745,7 @@
             <option value='BC'>Battlecruiser</option>
             <option value='CL'>Cruiser, Light</option>
             <option value='CS'>Cruiser, Medium</option>
+            <option value='CA'>Cruiser, Heavy</option>
             <option value='DD'>Destroyer</option>
             <option value='ES'>Escort</option>
             <option value='SC'>Scout</option>
@@ -759,6 +760,7 @@
         <input type='hidden' name='attr_type_is_repair'/>
         <input type='hidden' name='attr_type_is_nonmedical'/>
         <input type='hidden' name='attr_type_is_anticloak'/>
+        <input type='hidden' name='attr_type_is_command'/>
 
         <label>Date Entering Service:</label>
         <input type='text' class='w7' name='attr_date' placeholder='Date...'/>
@@ -855,10 +857,13 @@
 <input type='hidden' name='attr_banner_klingonwarp' value='[x](https://files.d20.io/images/461677914/LFn_ncPFcBHm_yHjz6xr9A/original.png)'/>
 
 <script type='text/worker'>
+const COMMAND_RATING_BONUS = 5;
+const COMMAND_RATING_LIMIT = 99;
 const CREW_BONUS_WEAPONS = 1;
 const CREW_BONUS_ENGINES = 2;
 const CREW_BONUS_SHIELD = 3;
 const CREW_BONUS_REPAIR = 4;const DAMAGE_CHART_DEFAULT = `C`;
+const CREW_RATING_LIMIT = 99;
 const DAMAGE_BLOCK_SIZE = 5;
 const DAMAGE_RESULT_BEAM = `Beam Weapon`;
 const DAMAGE_RESULT_BRIDGE = `Bridge 2C`;
@@ -951,11 +956,12 @@ function formatNumber(value) {
 
 // CAPTAIN RATING change
 on(`change:caprating`, function(eventInfo) {
-    getAttrs([`caprating`], function(values) {
+    getAttrs([`caprating`, `type_is_command`], function(values) {
         const caprating = parseInt(values[`caprating`]);
+        const typeIsCommand = parseInt(values[`type_is_command`]);
 
         const output = {};
-        output[`caprating_ta`] = caprating * 100;
+        output[`caprating_ta`] = Math.min(COMMAND_RATING_LIMIT, (caprating + typeIsCommand * COMMAND_RATING_BONUS)) * 100;
         setAttrs(output);
     });
 });
@@ -2857,16 +2863,17 @@ on(`change:type`, function(eventInfo) {
         const type = values[`type`];
 
         const types = [
-            `BC`, 0,1,0,0,0,0,
-            `CL`, 0,0,1,0,0,0,
-            `CS`, 0,0,1,1,0,0,
-            `DD`, 0,0,0,0,0,1,
-            `ES`, 1,0,0,0,0,0,
-            `SC`, 0,0,1,1,1,0,
-            `TF`, 0,0,0,0,0,0,
-            `TL`, 0,0,0,0,0,0,
-            `TU`, 0,0,0,0,0,0,
-            `ZD`, 0,0,0,0,0,0
+            `BC`, 0,1,0,0,0,0,0,
+            `CL`, 0,0,1,0,0,0,0,
+            `CS`, 0,0,1,1,0,0,0,
+            `CA`, 0,0,1,1,0,0,1,
+            `DD`, 0,0,0,0,0,1,0,
+            `ES`, 1,0,0,0,0,0,0,
+            `SC`, 0,0,1,1,1,0,0,
+            `TF`, 0,0,0,0,0,0,0,
+            `TL`, 0,0,0,0,0,0,0,
+            `TU`, 0,0,0,0,0,0,0,
+            `ZD`, 0,0,0,0,0,0,0
         ];
 
         const index = types.indexOf(type);
@@ -2878,6 +2885,7 @@ on(`change:type`, function(eventInfo) {
         output[`type_is_repair`] = types[index + 4];
         output[`type_is_nonmedical`] = types[index + 5];
         output[`type_is_anticloak`] = types[index + 6];
+        output[`type_is_command`] = types[index + 7];
         setAttrs(output);
     });
 });
