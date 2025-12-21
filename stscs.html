@@ -753,6 +753,7 @@
             <option value='TL'>Transport, Light</option>
             <option value='TU'>Transport, Robot</option>
             <option value='ZD'>Defensive Outpost</option>
+            <option value='ZO'>Observation Post</option>
         </select>
         <input type='hidden' name='attr_type_is_advanced'/>
         <input type='hidden' name='attr_type_is_battle'/>
@@ -2863,7 +2864,7 @@ on(`change:type`, function(eventInfo) {
         const type = values[`type`];
 
         const types = [
-            `BC`, 0,1,0,0,0,0,0,
+            `BC`, 0,1,0,1,0,0,0,
             `CL`, 0,0,1,0,0,0,0,
             `CS`, 0,0,1,1,0,0,0,
             `CA`, 0,0,1,1,0,0,1,
@@ -2873,7 +2874,8 @@ on(`change:type`, function(eventInfo) {
             `TF`, 0,0,0,0,0,0,0,
             `TL`, 0,0,0,0,0,0,0,
             `TU`, 0,0,0,0,0,0,0,
-            `ZD`, 0,0,0,0,0,0,0
+            `ZD`, 0,0,0,1,0,0,0,
+            `ZO`, 0,0,1,0,0,0,0
         ];
 
         const index = types.indexOf(type);
@@ -2895,7 +2897,7 @@ on(`change:type`, function(eventInfo) {
 on(`change:type`, function(eventInfo) {
     getAttrs([`type`], function(values) {
         const type = values[`type`];
-        const isStation = type == `ZD` ? 1 : 0;
+        const isStation = type == `ZD` || type == `ZO` ? 1 : 0;
 
         const output = {};
         output[`warp_show_content`] = isStation ? 0 : 1;
