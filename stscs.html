@@ -967,7 +967,7 @@ on(`change:caprating`, function(eventInfo) {
 
         const output = {};
         const capratingTA = Math.min(COMMAND_RATING_LIMIT, (caprating + (typeIsCommand * COMMAND_RATING_BONUS))) * 100;
-        output[`caprating_ta`] = capratingTA
+        output[`caprating_ta`] = capratingTA;
         setAttrs(output);
     });
 });

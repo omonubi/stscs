@@ -49,11 +49,10 @@ on('chat:message', function(msg) {
 function nextPhase() {
 	PhaseIndex ++;
 	const selectedObjs = findObjs({type: 'graphic'});
-	sortTurnOrder(sorter_asc);
 	_.each (selectedObjs, function(obj) {
 		if (obj.get('_subtype') == 'token' && obj.get('name').startsWith('Phase')) {
 		    obj.set('name', names[PhaseIndex]);
-            sendChat('Phase', `&{template:custom} {{title=**${names[PhaseIndex]}**}} {{color=black}}`);
+    	    displayNewPhase();
 		}
 	});
 }
@@ -71,39 +70,7 @@ on('change:campaign:turnorder', function() {
             // This is a new phase
             PhaseIndex ++;
     	    myObj.set('name', names[PhaseIndex]);
-    	    sendChat('Phase', `&{template:custom} {{title=**${names[PhaseIndex]}**}} {{color=black}}`);
-    	    switch (PhaseIndex) {
-    	        case PHASE_1_TARGET: case PHASE_2_TARGET: case PHASE_3_TARGET:
-    	            sendChat('Phase', `&{template:custom} {{title=**Tactical Heading Changes?**}} {{color=blue}}`);
-    	            sendChat('Phase', `&{template:custom} {{title=**Fire / No Fire Selection**}} {{color=blue}}`);
-    	            sortTurnOrder(sorter_asc);
-    	            break;
-    	        case PHASE_1_FIRE: case PHASE_2_FIRE: case PHASE_3_FIRE:
-    	            sendChat('Phase', `&{template:custom} {{title=**Evasive Maneuvers?**}} {{color=blue}}`);
-    	            sortTurnOrder(sorter_desc);
-    	            break;
-    	        case PHASE_1_REPAIR: case PHASE_2_REPAIR: case PHASE_3_REPAIR:
-                    removeEvasion();
-    	            removeFireTokens();
-                    rechargeShields(PhaseIndex);
-                    sortTurnOrder(sorter_asc);
-                    break;
-                case PHASE_ROUND_COMPLETE:
-                    resetTPA();
-                    RoundIndex++;
-                    const resortedTokens = getTurnArray();
-                    for (let i = 0; i < resortedTokens.length; i++) {
-                        const aToken = resortedTokens[i];
-                        const aTokenId = aToken['id'];
-                        const myObj = getObj('graphic', aTokenId);
-                        if (myObj.get('name').startsWith('Round')) {
-                            myObj.set('name', 'Round ' + RoundIndex);
-                        }	            
-                    }
-                    break;
-    	        default:
-    	            sortTurnOrder(sorter_asc);
-            }
+    	    displayNewPhase();
         } else if (!myObj.get('name').startsWith('Round')) {
             // This is NOT a new phase so must be a vessel
             const characterId = myObj.get('represents');
@@ -139,6 +106,43 @@ on('change:campaign:turnorder', function() {
     }
 });
 
+// Outputs information specific to the new phase
+function displayNewPhase () {
+    sendChat('Phase', `&{template:custom} {{title=**${names[PhaseIndex]}**}} {{color=black}}`);
+    switch (PhaseIndex) {
+        case PHASE_1_TARGET: case PHASE_2_TARGET: case PHASE_3_TARGET:
+            sendChat('Phase', `&{template:custom} {{title=**Tactical Heading Changes?**}} {{color=blue}}`);
+            sendChat('Phase', `&{template:custom} {{title=**Fire / No Fire Selection**}} {{color=blue}}`);
+            sortTurnOrder(sorter_asc);
+            break;
+        case PHASE_1_FIRE: case PHASE_2_FIRE: case PHASE_3_FIRE:
+            sendChat('Phase', `&{template:custom} {{title=**Evasive Maneuvers?**}} {{color=blue}}`);
+            sortTurnOrder(sorter_desc);
+            break;
+        case PHASE_1_REPAIR: case PHASE_2_REPAIR: case PHASE_3_REPAIR:
+            removeEvasion();
+            removeFireTokens();
+            rechargeShields();
+            sortTurnOrder(sorter_asc);
+            break;
+        case PHASE_ROUND_COMPLETE:
+            resetTPA();
+            RoundIndex++;
+            const resortedTokens = getTurnArray();
+            for (let i = 0; i < resortedTokens.length; i++) {
+                const aToken = resortedTokens[i];
+                const aTokenId = aToken['id'];
+                const myObj = getObj('graphic', aTokenId);
+                if (myObj.get('name').startsWith('Round')) {
+                    myObj.set('name', 'Round ' + RoundIndex);
+                }	            
+            }
+            break;
+        default:
+            sortTurnOrder(sorter_asc);
+    }
+}
+
 // Remove fire tokens from map
 function removeFireTokens() {
 	const selectedObjs = findObjs({type: 'graphic'});
@@ -164,7 +168,7 @@ function removeEvasion() {
 }
 
 // Recharge all shields
-function rechargeShields(currentPhaseIndex) {
+function rechargeShields() {
     var tokens = findObjs({ _type: 'graphic' });
 
     tokens.forEach(function(token) {
@@ -183,12 +187,12 @@ function rechargeShields(currentPhaseIndex) {
         if (!tpaResetAttr) {
             tpaResetAttr = createObj('attribute', {
                 name: 'current_phase',
-                current: currentPhaseIndex,
+                current: PhaseIndex,
                 max: '',
                 characterid: charId
             });
         } else {
-            tpaResetAttr.setWithWorker({ current: currentPhaseIndex });
+            tpaResetAttr.setWithWorker({ current: PhaseIndex });
         }
     });
 }
