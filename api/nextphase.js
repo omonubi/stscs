@@ -40,7 +40,9 @@ on('chat:message', function(msg) {
         RoundIndex = 1;
         sendChat('Phase', `&{template:custom} {{title=**Let the Battle Begin!**}} {{color=red}}`);
     // New combat round
-    } else if (msg.type == 'api' && msg.content.indexOf('!nextphase') == 0){
+    } else if (msg.type == 'api' && msg.content.indexOf('!nextphase back') == 0){
+        if (PhaseIndex != PHASE_NEWROUND) previousPhase();
+	} else if (msg.type == 'api' && msg.content.indexOf('!nextphase') == 0){
         if (PhaseIndex == PHASE_ROUND_COMPLETE) PhaseIndex = PHASE_NEWROUND;
         nextPhase();
 	};
@@ -48,6 +50,17 @@ on('chat:message', function(msg) {
 
 function nextPhase() {
 	PhaseIndex ++;
+	const selectedObjs = findObjs({type: 'graphic'});
+	_.each (selectedObjs, function(obj) {
+		if (obj.get('_subtype') == 'token' && obj.get('name').startsWith('Phase')) {
+		    obj.set('name', names[PhaseIndex]);
+    	    displayNewPhase();
+		}
+	});
+}
+
+function previousPhase() {
+	PhaseIndex --;
 	const selectedObjs = findObjs({type: 'graphic'});
 	_.each (selectedObjs, function(obj) {
 		if (obj.get('_subtype') == 'token' && obj.get('name').startsWith('Phase')) {
