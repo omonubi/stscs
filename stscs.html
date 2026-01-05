@@ -19,7 +19,6 @@
         <span class='alert1 warning-weapons' style='cursor: default;' title='weapons offline'> &#x2694;&#xFE0F;</span>
         <span class='alert1 evade' style='cursor: default;' title='evasive maneuvers'> &#x26A0;&#xFE0F;</span>
     </h1> 
-    <input type='hidden' name='attr_current_phase' value='0'/>
     <input type='hidden' name='attr_tpa_reset' value='0'/>
     <input type='hidden' name='attr_roll20charurl'/>
     <!--------------------------------------------------------> 
@@ -2414,10 +2413,6 @@ on(`clicked:shield_reenergize`, function(eventInfo) {
         `/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=No Repairs}} {{color=gold}}`,
         roll => finishRoll(roll.rollId)
     );
-});
-on(`change:current_phase`, function(eventInfo) {
-    energizeShields();
-    releaseLockedRepairStatuses();
 });
 function energizeShields() {
     getAttrs([`shield_1`, `shield_2`, `shield_3`, `shield_4`, `shield_5`, `shield_6`, `shield_1_state`, `shield_2_state`, `shield_3_state`, `shield_4_state`, `shield_5_state`, `shield_6_state`], function(values) {

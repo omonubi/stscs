@@ -135,7 +135,6 @@ function displayNewPhase () {
         case PHASE_1_REPAIR: case PHASE_2_REPAIR: case PHASE_3_REPAIR:
             removeEvasion();
             removeFireTokens();
-            rechargeShields();
             sortTurnOrder(sorter_asc);
             break;
         case PHASE_ROUND_COMPLETE:
@@ -176,36 +175,6 @@ function removeEvasion() {
                 .filter(m => !m.startsWith('Evade'))
                 .join(',');
             obj.set('statusmarkers', markers);
-        }
-    });
-}
-
-// Recharge all shields
-function rechargeShields() {
-    var tokens = findObjs({ _type: 'graphic' });
-
-    tokens.forEach(function(token) {
-        var charId = token.get('represents');
-        if (!charId) return;
-
-        var character = getObj('character', charId);
-        if (!character) return;
-
-        var tpaResetAttr = findObjs({
-            _type: 'attribute',
-            characterid: charId,
-            name: 'current_phase'
-        })[0];
-
-        if (!tpaResetAttr) {
-            tpaResetAttr = createObj('attribute', {
-                name: 'current_phase',
-                current: PhaseIndex,
-                max: '',
-                characterid: charId
-            });
-        } else {
-            tpaResetAttr.setWithWorker({ current: PhaseIndex });
         }
     });
 }
