@@ -1926,6 +1926,9 @@ function repairSystem(mySystemVar = ``, mySystemName = ``) {
         output[`${mySystemVar}_to_repair`] = repairTargetNew;
         setAttrs(output);
 
+        energizeShields();
+        releaseLockedRepairStatuses();
+
         startRoll(
             `/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=&#x1F527; Repair Roll &#x1F527;}} {{color=gold}} {{System=${mySystemName}}} {{Base Target=${repairTargetBase}}} {{Crew Penalty=${crewRollPenalty}}} ${typeIsRepairStr} {{To-Repair=[[${repairTarget}]]}} {{Roll=[[${repairRoll}]]}}`,
             roll => finishRoll(roll.rollId)
@@ -1974,6 +1977,9 @@ on(`clicked:repeating_beams:weapon-repair clicked:repeating_missiles:weapon-repa
             await updateWeaponsPercent();
         }
     }
+    
+    energizeShields();
+    releaseLockedRepairStatuses();
 
     startRoll(
         `/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Repair Roll}} {{color=gold}} {{Weapon=${wpnName}}} {{Base Target=${repairTargetBase} (${section})}} {{Crew Penalty=${crewRollPenalty}}} ${typeIsRepairStr} {{To-Repair=[[${repairTarget}]]}} {{Roll=[[${repairRoll}]]}}`,
