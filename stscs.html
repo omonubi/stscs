@@ -1890,33 +1890,6 @@ on(`change:mp change:mpr_1 change:mpr_2 change:impulse_power_status`, function(e
     });
 });
 
-/*
-// MOVEMENT POINTS AVAILABLE calculation
-on(`change:tpa_movement change:mpr_1 change:mpr_2 change:impulse_power_status`, function(eventInfo) {
-    getAttrs([`tpa_movement`, `mpr_1`, `mpr_2`, `impulse_power_status`], function(values) {
-        const power = parseInt(values[`tpa_movement`]) || 0;
-        const mpr = (parseInt(values[`mpr_1`]) || 1) / (parseInt(values[`mpr_2`]) || 1);
-        const impulsePowerStatus = parseInt(values[`impulse_power_status`]) || 0;
-
-        const mp = !impulsePowerStatus ? Math.floor(power / mpr) : 0;
-        const mpPhase1 = Math.floor(mp / 3) + Math.floor((mp % 3) / 2); // phase 1
-        const mpPhase2 = Math.floor(mp / 3) + (mp % 3 == 1 ? 1 : 0); // phase 2
-        const mpPhase3 = Math.floor(mp / 3) + Math.floor((mp % 3) / 2); // phase 3
-        const powerUnused = power % mpr;
-
-        const output = {};
-        output[`mp`] = mp;
-        output[`ta`] = mp * 10000;
-        output[`mp1`] = mpPhase1;
-        output[`mp2`] = mpPhase2;
-        output[`mp3`] = mpPhase3;
-        output[`mp_remaining`] = powerUnused;
-        output[`mp_remaining_status`] = power != 0 && (powerUnused < 0 ? 1 : (powerUnused > 0 ? 2 : 0));
-        setAttrs(output);
-    });
-});
-*/
-
 // REPAIR SYSTEM
 on(`clicked:movement_grid_repair`, function(eventInfo) { repairSystem(`movement_grid`, `Movement Grid`); });
 on(`clicked:sensors_repair`, function(eventInfo) { repairSystem(`sensors`, `Sensors`); });
@@ -2875,7 +2848,7 @@ function resetTPA() {
 
     output[`shield_1`] = output[`shield_2`] = output[`shield_3`] = output[`shield_4`] = output[`shield_5`] = output[`shield_6`] = 0
     output[`tpa_committed_status`] = 1;
-    output[`tpa_movement`] = 0;
+    output[`mp`] = 0;
     output[`tpa_weapons`] = 0;
     output[`tpa_shields`] = 0;
 
