@@ -128,7 +128,7 @@
         <button type='action' class='btn warning' name='act_shield_commit'>Commit TPA</button>
         <span></span>
         <label>TPA to Movement:</label>
-        <input type='number' name='attr_tpa_movement' min='0' value='0' readonly/>
+        <input type='number' class='em' name='attr_tpa_movement' min='0' value='0'/>
         <label>TPA to Warp:</label>
         <input type='number' name='attr_tpa_warp' min='0' value='0' readonly/>
 
@@ -258,10 +258,11 @@
     <div class='grid-6col helm-panel'>
         <button type='action' class='btn warning btn-stress-turn' name='act_stress_turn'>Stress Turn</button>
         <span></span>
-        <span></span>
-        <span></span>
-        <label>TPA to Movement:</label>
-        <input type='number' name='attr_tpa_movement' min='0' value='0' readonly/>
+        <label><strong>TPA to Movement:</strong></label>
+        <input type='number' class='em' name='attr_tpa_movement' min='0' value='0'/>
+        <label>TPA Remaining:</label> 
+        <input type='hidden' class='mp-remaining-status' name='attr_mp_remaining_status'/>
+        <input type='number' class='mp-remaining' name='attr_mp_remaining' value='0' readonly/>
 
         <label>Movement Point Ratio: </label>
         <span>
@@ -269,9 +270,9 @@
             /
             <input type='number' class='w5' name='attr_mpr_2' min='1' value='1'/>
         </span>
-        <label><strong>Movement Points:</strong></label>
+        <label>Movement Points:</label>
         <span>
-            <input type='number' class='em' name='attr_mp' min='0' value='0'/>
+            <input type='number' name='attr_mp' readonly/>
             <input type='hidden' class='impulse-power-status' name='attr_impulse_power_status' value='0'/>
             <span class='no-impulse-power' title='no impulse power = max 1'>&#x1F534;</span>
         </span>
@@ -296,10 +297,10 @@
             <input type='hidden' class='warp-factor-status' name='attr_warp_factor_status' value='0'/>
             <button type='action' class='btn btn-jump' name='act_jump'>Engage Warp Drive</button>
             <span></span>
+            <label><strong>TPA to Warp:</strong></label>
+            <input type='number' class='em' name='attr_tpa_warp' min='0' value='0' readonly/>
             <span></span>
             <span></span>
-            <label>TPA to Warp:</label>
-            <input type='number' name='attr_tpa_warp' min='0' value='0' readonly/>
 
             <label>Warp Factor Ratio:</label>
             <input type='hidden' name='attr_wfr_jump'/>
@@ -309,12 +310,12 @@
                 /
                 <input type='number' class='w5' name='attr_wfr_2' value='1' readonly/>
             </span>
-            <label><strong>Desired Warp Factor:</strong></label>
-            <input type='hidden' class='wf-desired-status' name='attr_wf_desired_status'/>
-            <input type='number' class='em' min='0' value='0' name='attr_wf_desired'/>
             <label>Current Warp Factor:</label>
             <input type='hidden' class='wf-current-status' name='attr_wf_current_status'/>
             <input type='number' class='wf-current' min='0' value='0' name='attr_wf_current' readonly/>
+            <label>Desired Warp Factor:</label>
+            <input type='hidden' class='wf-desired-status' name='attr_wf_desired_status'/>
+            <input type='number' class='em' min='0' value='0' name='attr_wf_desired'/>
 
             <label>Safe Cruise WF:</label>
             <input type='number' class='w5' name='attr_wf_cruise' min='0' value='0'/>
@@ -1867,25 +1868,27 @@ on(`change:repeating_engines:engine_power`, function(eventInfo) {
     });
 });
 
-// MOVEMENT POINTS
-on(`change:mp change:mpr_1 change:mpr_2 change:impulse_power_status`, function(eventInfo) {
-    getAttrs([`mp`, `mpr_1`, `mpr_2`, `impulse_power_status`], function(values) {
-        const mp = parseInt(values[`mp`]) || 0;
+// MOVEMENT POINTS AVAILABLE calculation
+on(`change:tpa_movement change:mpr_1 change:mpr_2 change:impulse_power_status`, function(eventInfo) {
+    getAttrs([`tpa_movement`, `mpr_1`, `mpr_2`, `impulse_power_status`], function(values) {
+        const power = parseInt(values[`tpa_movement`]) || 0;
         const mpr = (parseInt(values[`mpr_1`]) || 1) / (parseInt(values[`mpr_2`]) || 1);
         const impulsePowerStatus = parseInt(values[`impulse_power_status`]) || 0;
 
-        const power = mp * mpr;
-        const actualMP = !impulsePowerStatus ? mp : 0;
-        const mpPhase1 = Math.floor(actualMP / 3) + Math.floor((actualMP % 3) / 2); // phase 1
-        const mpPhase2 = Math.floor(actualMP / 3) + (actualMP % 3 == 1 ? 1 : 0); // phase 2
-        const mpPhase3 = Math.floor(actualMP / 3) + Math.floor((actualMP % 3) / 2); // phase 3
+        const mp = !impulsePowerStatus ? Math.floor(power / mpr) : 0;
+        const mpPhase1 = Math.floor(mp / 3) + Math.floor((mp % 3) / 2); // phase 1
+        const mpPhase2 = Math.floor(mp / 3) + (mp % 3 == 1 ? 1 : 0); // phase 2
+        const mpPhase3 = Math.floor(mp / 3) + Math.floor((mp % 3) / 2); // phase 3
+        const powerUnused = power % mpr;
 
         const output = {};
-        output[`tpa_movement`] = power;
-        output[`ta`] = actualMP * 10000;
+        output[`mp`] = mp;
+        output[`ta`] = mp * 10000;
         output[`mp1`] = mpPhase1;
         output[`mp2`] = mpPhase2;
         output[`mp3`] = mpPhase3;
+        output[`mp_remaining`] = powerUnused;
+        output[`mp_remaining_status`] = power != 0 && (powerUnused < 0 ? 1 : (powerUnused > 0 ? 2 : 0));
         setAttrs(output);
     });
 });
@@ -2848,7 +2851,7 @@ function resetTPA() {
 
     output[`shield_1`] = output[`shield_2`] = output[`shield_3`] = output[`shield_4`] = output[`shield_5`] = output[`shield_6`] = 0
     output[`tpa_committed_status`] = 1;
-    output[`mp`] = 0;
+    output[`tpa_movement`] = 0;
     output[`tpa_weapons`] = 0;
     output[`tpa_shields`] = 0;
 
