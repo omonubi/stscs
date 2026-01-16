@@ -197,6 +197,7 @@
     <input type='hidden' class='sensors-destroyed' name='attr_sensors_destroyed' value='0'/>
     <div class='grid-6col sensors-panel'>
         <button type='action' class='btn btn-scan' name='act_scan'>Scan Target</button>
+        <button type='roll' class='btn btn-nosensors critical' name='roll_nosensors' value='/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=SENSORS OFFLINE}} {{color=green}}'>Sensors Offline</button>
         <span></span>
         <span></span>
         <span></span>
@@ -210,7 +211,7 @@
         <span class='span2'>
             <select class='scan-question' name='attr_scanquestion'>
                 <option value='0'>Submit a query...</option>
-                <!--<option value='1'>How much power is available?</option>-->
+                <option value='1'>How much power is available?</option>
                 <option value='2'>How is power allocated?</option>
                 <option value='3'>How are the shields powered?</option>
                 <!--<option value='4'>Is a specific shield up?</option>-->
