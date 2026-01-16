@@ -7,6 +7,7 @@
     <input type='hidden' class='ship-is-disabled' name='attr_ship-is-disabled' value='0'/>
     <input type='hidden' class='ship-is-evading' name='attr_ship_is_evading' value='0'/>
     <input type='hidden' class='tpa-committed-status' name='attr_tpa_committed_status' value='1'/>
+    <input type='hidden' class='transporters-grid-status' name='attr_transporters_grid_status' value='0'/>
     <input type='hidden' class='warp-drive-status' name='attr_warp_drive_status' value='0'/>
     <input type='hidden' class='weapons-grid-status' name='attr_weapons_grid_status' value='0'/>
     <h1>
@@ -136,8 +137,15 @@
         <span></span>
         <label>TPA to Shields:</label>
         <input type='number' class='em' name='attr_tpa_shields' min='0' value='0'/>
+        <label>TPA to Transporters:</label>
+        <input type='number' name='attr_tpa_transporters' min='0' value='0' readonly/>
+
+        <span></span>
+        <span></span>
         <label>TPA to Weapons:</label>
         <input type='number' class='em' name='attr_tpa_weapons' min='0' value='0'/>
+        <span></span>
+        <span></span>
     </div>
     <br/>
     
@@ -297,8 +305,8 @@
             <input type='hidden' class='warp-factor-status' name='attr_warp_factor_status' value='0'/>
             <button type='action' class='btn btn-jump' name='act_jump'>Engage Warp Drive</button>
             <span></span>
-            <label><strong>TPA to Warp:</strong></label>
-            <input type='number' class='em' name='attr_tpa_warp' min='0' value='0' readonly/>
+            <label>TPA to Warp:</label>
+            <input type='number' name='attr_tpa_warp' readonly/>
             <span></span>
             <span></span>
 
@@ -367,7 +375,7 @@
             <input type='number' class='w5' name='attr_spr_2' min='1' max='6' value='1'/>
         </span>
         <label>Max Shield Power:</label>
-        <input type='number' name='attr_shield_max' min='0' max='16' value='0'/>
+        <input type='number' name='attr_shield_max' min='0' value='0'/>
         <label>SPA Remaining:</label>
         <input type='number' name='attr_sp' readonly/>
     </div>
@@ -654,7 +662,7 @@
             <label style='padding-left: 27px;'>Desig. (Arcs)</label>
             <label style='padding-left: 26px;'>Range</label>
             <label style='padding-left: 13px;'>Chart</label>
-            <label style='padding-left: 18px;'>Power</label>
+            <label style='padding-left: 10px;'>Power</label>
             <label style='padding-left: 4px;'>Damage</label>
             <label style='padding-left: 7px;'>Arm</label>
             <label style='padding-left: 169px;'>Target</label>
@@ -773,7 +781,7 @@
         <label>Number Constructed:</label>
         <input type='number' class='w7' name='attr_num' min='0'/>
 
-        <label>Control Computer Type:</label>
+        <label>Control Computer:</label>
         <input type='text' class='w7' name='attr_computer'/>
     </div>
     <br/>
@@ -811,31 +819,88 @@
         <label>Cargo Capacity:</label>
         <span name='attr_scu_cap'></span>
 
-        <label>Cargo Transporters:</label>
-        <input type='number' class='w7' name='attr_scu_trans' min='0' value='0'></span>
+        <label>Landing Capability:</label>
+        <select class='w7' name='attr_landing_capacity'>
+            <option selected>None</option>
+            <option>Yes</option>
+        </select>
+
+        <label>Crew:</label>
+        <input type='number' class='w7' name='attr_crew_max' min='0' value='0'/>
+        
+        <label>Troops:</label>
+        <input type='number' class='w7' name='attr_troops_max' min='0' value='0'/>
+        
+        <label>Passengers:</label>
+        <input type='number' class='w7' name='attr_passengers_max' min='0' value='0'/>
     </div>
     <br/>
 
     <!-------------------------------------------------------->
-    <h2>Crew Data</h2>
-    <div class='grid-6col crew-panel'>
-        <label>Crew:</label>
-        <input type='number' class='w7' name='attr_crew_max' min='0' value='0'/>
+    <span class='transporters-header header-container'>
+        <h2>Transporters</h2>
+        <span>
+            <input type='hidden' name='attr_transporters_grid_to_repair' value='0'/>
+            <select class='w7 state-select' name='attr_transporters_grid_state' readonly>
+                <option value='0' selected>Online</option>
+                <option value='1'>Dmg 1-8</option>
+                <option value='2'>Dmg 1-6</option>
+                <option value='3'>Dmg 1-4</option>
+                <option value='4'>Dmg 1-2</option>
+                <option value='5'>DEST</option>
+            </select>
+            <button type='action' class='btn btn-transporters-grid-repair repair' name='act_transporters_grid_repair'>Repair</button>
+        </span>
+    </span>
+
+    <div class='grid-6col transporter-panel'>
+        <span></span>
+        <label>Capacity</label>
+        <label>Count</label>
+        <label>Online</label>
+        <label>TPA</label>
+        <span></span>
+
+        <label>Standard</label>
+        <input type='hidden' class='trans-ison-std' name='attr_trans_ison_std' value='0'/>
+        <input type='number' name='attr_trans_cap_std' min='0' value='6' title='# persons'/>
+        <input type='number' name='attr_trans_num_std' min='0' value='0'/>
+        <input type='number' class='trans-on-std' name='attr_trans_on_std' min='0' value='0'/>
+        <input type='number' name='attr_trans_tpa_std' value='0' readonly/>
+        <button type='action' class='btn trans-btn-std' name='act_trans_btn_std'>Energize</button>
         
-        <label>Passengers/Troops:</label>
-        <input type='number' class='w7' name='attr_troops_max' min='0' value='0'/>
+        <label>Combat</label>
+        <input type='hidden' class='trans-ison-cbt' name='attr_trans_ison_cbt' value='0'/>
+        <input type='number' name='attr_trans_cap_cbt' min='0' value='0' title='# persons'/>
+        <input type='number' name='attr_trans_num_cbt' min='0' value='0'/>
+        <input type='number' class='trans-on-cbt' name='attr_trans_on_cbt' min='0' value='0'/>
+        <input type='number' name='attr_trans_tpa_cbt' value='0' readonly/>
+        <button type='action' class='btn trans-btn-cbt' name='act_trans_btn_cbt'>Energize</button>
+        
+        <label>Energency</label>
+        <input type='hidden' class='trans-ison-er' name='attr_trans_ison_er' value='0'/>
+        <input type='number' name='attr_trans_cap_er' min='0' value='0' title='# persons'/>
+        <input type='number' name='attr_trans_num_er' min='0' value='0'/>
+        <input type='number' class='trans-on-er' name='attr_trans_on_er' min='0' value='0'/>
+        <input type='number' name='attr_trans_tpa_er' value='0' readonly/>
+        <button type='action' class='btn trans-btn-er' name='act_trans_btn_er'>Energize</button>
+        
+        <label>Cargo</label>
+        <input type='hidden' class='trans-ison-scu' name='attr_trans_ison_scu' value='0'/>
+        <input type='number' name='attr_trans_cap_scu' value='1' title='# SCUs' readonly/>
+        <input type='number' name='attr_trans_num_scu' min='0' value='0'/>
+        <input type='number' class='trans-on-scu' name='attr_trans_on_scu' min='0' value='0'/>
+        <input type='number' name='attr_trans_tpa_scu' value='0' readonly/>
+        <button type='action' class='btn trans-btn-scu' name='act_trans_btn_scu'>Energize</button>
+    </div>
+    <br/>
+
+    <!-------------------------------------------------------->
+    <h2>Flight Deck</h2>
+    <div class='grid-6col crew-panel'>
 
         <label>Shuttlecraft:</label>
         <input type='number' class='w7' name='attr_shuttlecraft_max' min='0' value='0'/>
-
-        <label>Transporters:</label>
-        <input type='number' class='w7' name='attr_trans_standard' min='0' value='0'/>
-
-        <label>Combat:</label>
-        <input type='number' class='w7' name='attr_trans_combat' min='0' value='0'/>
-
-        <label>Emergency:</label>
-        <input type='number' class='w7' name='attr_trans_emergency' min='0' value='0'/>
 
     </div>
     <br/>
@@ -2154,14 +2219,15 @@ on(`change:scanquestion`, function(eventInfo) {
 
 // SENSORS SEND ALLOCATION
 on(`clicked:send_alloc`, async (event) => {
-    const values = await getAttrsAsync([`tpa_movement`, `tpa_warp`, `tpa_shields`, `tpa_weapons`]);
+    const values = await getAttrsAsync([`tpa_movement`, `tpa_warp`, `tpa_shields`, `tpa_weapons`, `tpa_transporters`]);
     
     // Get the TPA variable values
     const tpaVars = {
         'Movement': parseInt(values[`tpa_movement`]) || 0,
         'Warp': parseInt(values[`tpa_warp`]) || 0,
         'Shields': parseInt(values[`tpa_shields`]) || 0,
-        'Weapons': parseInt(values[`tpa_weapons`]) || 0
+        'Weapons': parseInt(values[`tpa_weapons`]) || 0,
+        'Transporters': parseInt(values[`tpa_transporters`]) || 0
     };
     
     // Filter out zero values and create array of [name, value] pairs
@@ -2757,15 +2823,16 @@ on(`change:repeating_engines:engine_power change:repeating_engines:engine_power_
 });
 
 // TOTAL POWER AVAILABLE remaining calculation
-on(`change:tpa change:tpa_movement change:tpa_warp change:tpa_weapons change:tpa_shields`, function(eventInfo) {
-    getAttrs([`tpa`, `tpa_movement`, `tpa_warp`, `tpa_weapons`, `tpa_shields`], function(values) {
+on(`change:tpa change:tpa_movement change:tpa_warp change:tpa_weapons change:tpa_shields change:tpa_transporters`, function(eventInfo) {
+    getAttrs([`tpa`, `tpa_movement`, `tpa_warp`, `tpa_weapons`, `tpa_shields`, `tpa_transporters`], function(values) {
         const tpa = parseInt(values[`tpa`]) || 0;
         const tpaToMovement = parseInt(values[`tpa_movement`]) || 0;
         const tpaToWarp = parseInt(values[`tpa_warp`]) || 0;
         const tpaToWeapons = parseInt(values[`tpa_weapons`]) || 0;
         const tpaToShields = parseInt(values[`tpa_shields`]) || 0;
+        const tpaToTransporters = parseInt(values[`tpa_transporters`]) || 0;
 
-        const tpaRemaining = tpa - tpaToMovement - tpaToWarp - tpaToWeapons - tpaToShields;
+        const tpaRemaining = tpa - tpaToMovement - tpaToWarp - tpaToWeapons - tpaToShields - tpaToTransporters;
 
         const output = {};
         output[`tpa_remaining`] = tpaRemaining;
@@ -2865,8 +2932,48 @@ function resetTPA() {
     output[`scanquestion`] = SCAN_NONE;
     output[`scananswer`] = ``;
 
+    output[`trans_on_std`] = output[`trans_on_cbt`] = output[`trans_on_er`] = output[`trans_on_scu`] = 0;
+
     setAttrs(output);
 }
+
+// TRANSPORTER on/off
+on(`change:trans_num_std change:trans_on_std change:trans_num_cbt change:trans_on_cbt change:trans_num_er change:trans_on_er change:trans_num_scu change:trans_on_scu`, function(eventInfo) {
+    // Determine which type triggered the event
+    const triggerAttr = eventInfo.sourceAttribute;
+    const type = triggerAttr.split('_').pop(); // Extracts 'std', 'cbt', 'er', or 'scu'
+    
+    getAttrs([`trans_num_${type}`, `trans_on_${type}`], function(values) {
+        const transNum = parseInt(values[`trans_num_${type}`]) || 0;
+        const transOn = parseInt(values[`trans_on_${type}`]) || 0;
+        
+        const StatusIsOff = 0;
+        const StatusIsOn = 1;
+        const StatusIsOver = 2;
+        const TPAPerCbtTrans = 3; // TPA needed to power each combat transporter
+        const output = {};
+        output[`trans_ison_${type}`] = transOn > transNum ? StatusIsOver : transOn ? StatusIsOn : StatusIsOff;
+        output[`trans_tpa_${type}`] = type === 'cbt' ? transOn * TPAPerCbtTrans : transOn;
+        setAttrs(output);
+    });
+});
+
+// TRANSPORTER TPA calculation
+on(`change:trans_on_std change:trans_on_cbt change:trans_on_er change:trans_on_scu`, function(eventInfo) {
+    getAttrs([`trans_on_std`, `trans_on_cbt`, `trans_on_er`, `trans_on_scu`], function(values) {
+        const transOnStd = parseInt(values[`trans_on_std`]) || 0;
+        const transOnCbt = parseInt(values[`trans_on_cbt`]) || 0;
+        const transOnER = parseInt(values[`trans_on_er`]) || 0;
+        const transOnSCU = parseInt(values[`trans_on_scu`]) || 0;
+
+        const TPAPerCbtTrans = 3; // TPA needed to power each combat transporter
+        const transTPA = transOnStd + (transOnCbt * TPAPerCbtTrans) + transOnER + transOnSCU;
+
+        const output = {};
+        output[`tpa_transporters`] = transTPA;
+        setAttrs(output);
+    });
+});
 
 // TYPE CAPABILITIES
 on(`change:type`, function(eventInfo) {

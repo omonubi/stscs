@@ -34,28 +34,45 @@ const PHASE_ROUND_COMPLETE = 16;
 
 // Reset name of token and phase counter
 on('chat:message', function(msg) {
+    log ('chat:message');
     // New combat 
     if (msg.type == 'api' && msg.content.indexOf('!nextphase reset') == 0){
+        
+    log ('reset');
         PhaseIndex = PHASE_NEWROUND;
         RoundIndex = 1;
         sendChat('Phase', `&{template:custom} {{title=**Let the Battle Begin!**}} {{color=red}}`);
     // New combat round
     } else if (msg.type == 'api' && msg.content.indexOf('!nextphase back') == 0){
+        log ('back');
         if (PhaseIndex != PHASE_NEWROUND) previousPhase();
 	} else if (msg.type == 'api' && msg.content.indexOf('!nextphase') == 0){
-        if (PhaseIndex == PHASE_ROUND_COMPLETE) PhaseIndex = PHASE_NEWROUND;
-        nextPhase();
+	    log ('next');
+        if (PhaseIndex == PHASE_ROUND_COMPLETE) {
+            log ('round complete');
+            PhaseIndex = PHASE_NEWROUND;
+            sendChat('Phase', `&{template:custom} {{title=**${names[PhaseIndex]}**}} {{color=black}}`);
+        } else {
+            log ('call nextPhase()');
+            nextPhase();
+        }
 	};
 });
 
 function nextPhase() {
+    log ('nextPhase()');
 	PhaseIndex ++;
+	let stopLoop = false;
 	const selectedObjs = findObjs({type: 'graphic'});
 	_.each (selectedObjs, function(obj) {
-		if (obj.get('_subtype') == 'token' && obj.get('name').startsWith('Phase')) {
-		    obj.set('name', names[PhaseIndex]);
-    	    displayNewPhase();
-		}
+	    if (!stopLoop) {
+		    if (obj.get('_subtype') == 'token' && obj.get('name').startsWith('Phase')) {
+    		    obj.set('name', names[PhaseIndex]);
+		        log ('call displayNewPhase()');
+		        stopLoop = true;
+    	        displayNewPhase();
+		    }
+	    }
 	});
 }
 
@@ -72,6 +89,7 @@ function previousPhase() {
 
 // Advance to the next combat phase
 on('change:campaign:turnorder', function() {
+    log ('change:campaign:turnorder');
     const allTokens = getTurnArray();
     const myToken = allTokens[0];
     const myTokenId = myToken['id'];
@@ -121,6 +139,7 @@ on('change:campaign:turnorder', function() {
 
 // Outputs information specific to the new phase
 function displayNewPhase () {
+    log ('displayNewPhase()');
     sendChat('Phase', `&{template:custom} {{title=**${names[PhaseIndex]}**}} {{color=black}}`);
     switch (PhaseIndex) {
         case PHASE_1_TARGET: case PHASE_2_TARGET: case PHASE_3_TARGET:
@@ -170,7 +189,6 @@ function removeEvasion() {
     _.each(selectedObjs, function(obj) {
         if (obj.get('_subtype') == 'token') {
             let markers = obj.get('statusmarkers');
-            // Remove any Evade marker (with or without the ::id suffix)
             markers = markers.split(',')
                 .filter(m => !m.startsWith('Evade'))
                 .join(',');
