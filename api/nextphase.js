@@ -152,6 +152,8 @@ function displayNewPhase () {
             sortTurnOrder(sorter_desc);
             break;
         case PHASE_1_REPAIR: case PHASE_2_REPAIR: case PHASE_3_REPAIR:
+            sendChat('Phase', `&{template:custom} {{title=**Transporters?**}} {{color=blue}}`);
+            sendChat('Phase', `&{template:custom} {{title=**Explosions?**}} {{color=blue}}`);
             removeEvasion();
             removeFireTokens();
             sortTurnOrder(sorter_asc);
