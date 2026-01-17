@@ -160,6 +160,7 @@
 .ui-dialog .charsheet .shield-5-status:not([value='1']) ~ .btn-shield-repair,
 .ui-dialog .charsheet .shield-6-status:not([value='1']) ~ .btn-shield-repair,
 .ui-dialog .charsheet .shields-grid-status:not([value='1']) ~ .shields-header .btn-shields-grid-repair,
+.ui-dialog .charsheet .ship-is-cloaked[value='0'] ~ .cloak-panel .btn-cloak,
 .ui-dialog .charsheet .ship-is-disabled[value='1'] ~ .beams-panel .btn-target,
 .ui-dialog .charsheet .ship-is-disabled[value='1'] ~ .missiles-panel .btn-target,
 .ui-dialog .charsheet .tpa-committed-status[value='1'] ~ .dc-panel button.btn.roll-damage,
@@ -201,6 +202,16 @@
 .ui-dialog .charsheet .sensors-status[value='0'] ~ .sensors-panel .btn-scan {
   display: inline-block;
 }
+
+/* Has Cloaking Device */
+.ui-dialog .charsheet .cloak-panel,
+.ui-dialog .charsheet .tpa-panel .tpa-cloak {
+    display: inline-block; 
+}
+.ui-dialog .charsheet .show-cloak-toggle[value='0'] ~ .cloak-panel,
+.ui-dialog .charsheet .show-cloak-toggle[value='0'] ~ .tpa-panel .tpa-cloak {
+    display: none;
+}  
 
 /* Repair button intermediary state */
 .ui-dialog .charsheet .movement-grid-status[value='9'] ~ .helm-header .btn-movement-grid-repair,

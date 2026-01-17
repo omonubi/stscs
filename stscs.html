@@ -2,8 +2,10 @@
     <input type='hidden' class='bridge-hit-status' name='attr_bridge_hit_status' value='0'/>
     <input type='hidden' class='movement-grid-status' name='attr_movement_grid_status' value='0'/>
     <input type='hidden' class='sensors-status' name='attr_sensors_status' value='0'/>
+    <input type="hidden" class="show-cloak-toggle" name="attr_show_cloak" value='0'/>
     <input type='hidden' class='has-sensor-lock' name='attr_has_sensor_lock' value='0'/>
     <input type='hidden' class='shields-grid-status' name='attr_shields_grid_status' value='0'/>
+    <input type='hidden' class='ship-is-cloaked' name='attr_ship_is_cloaked' value='0'/>
     <input type='hidden' class='ship-is-disabled' name='attr_ship-is-disabled' value='0'/>
     <input type='hidden' class='ship-is-evading' name='attr_ship_is_evading' value='0'/>
     <input type='hidden' class='tpa-committed-status' name='attr_tpa_committed_status' value='1'/>
@@ -144,8 +146,8 @@
         <span></span>
         <label>TPA to Weapons:</label>
         <input type='number' class='em' name='attr_tpa_weapons' min='0' value='0'/>
-        <span></span>
-        <span></span>
+        <label class='tpa-cloak'>TPA to Cloak:</label>
+        <input type='number' class='tpa-cloak' name='attr_tpa_cloak' min='0' value='0' readonly/>
     </div>
     <br/>
     
@@ -174,6 +176,23 @@
             <input type='hidden' class='engine-power-status' name='attr_engine_power_status' value='0'/>
             <input type='number' class='w5 engine-power' name='attr_engine_power' min='0' value='0'/> / <input type='number' class='w5' name='attr_engine_power_full' min='0' value='0'/>
         </fieldset>
+    </div>
+    <br/>
+    
+    <div class='grid-6col cloak-panel'>
+        <button type='action' class='btn btn-cloak' name='act_cloak'>Engage Cloak</button>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+
+        <label>Cloak Device Type:</label>
+        <input type='text' class='w10' name='attr_cloak_type'/>
+        <label>Power Required:</label>
+        <input type='number' name='attr_tpa_cloak_required' min='0' value='0'/>
+        <span><label>Arm Cloak:</label> <input type='checkbox' name='attr_cloak_armed' value='1'/></span>
+        <span></span>
     </div>
     <br/>
 
@@ -912,7 +931,9 @@
         <p class='span-grid'><strong>Do not use these controls during battle!</strong></p>
         <button type='action' class='btn' name='act_repair'>Repair/Reset Vessel</button>
         <span></span>
-        <span></span>
+        <span>
+            <input type="checkbox" name="attr_show_cloak" /><label>Has Cloak</label>
+        </span>
         <span></span>
         <span>
             <input type="checkbox" name="attr_dark_mode" class="dark-mode-toggle" /><label>Dark Mode</label>
@@ -1034,6 +1055,18 @@ on(`change:caprating`, function(eventInfo) {
         const output = {};
         const capratingTA = Math.min(COMMAND_RATING_LIMIT, (caprating + (typeIsCommand * COMMAND_RATING_BONUS))) * 100;
         output[`caprating_ta`] = capratingTA;
+        setAttrs(output);
+    });
+});
+
+// CLOAK ARMED/DISARMED
+on(`change:tpa_cloak_required change:cloak_armed`, function(eventInfo) {
+    getAttrs([`tpa_cloak_required`], function(values) {
+        const cloakIsOn = parseInt(eventInfo.newValue) || 0;
+        const tpaRequired = parseInt(values[`tpa_cloak_required`]) || 0;
+
+        const output = {};
+        output[`tpa_cloak`] = cloakIsOn ? tpaRequired : 0;
         setAttrs(output);
     });
 });
@@ -2824,16 +2857,17 @@ on(`change:repeating_engines:engine_power change:repeating_engines:engine_power_
 });
 
 // TOTAL POWER AVAILABLE remaining calculation
-on(`change:tpa change:tpa_movement change:tpa_warp change:tpa_weapons change:tpa_shields change:tpa_transporters`, function(eventInfo) {
-    getAttrs([`tpa`, `tpa_movement`, `tpa_warp`, `tpa_weapons`, `tpa_shields`, `tpa_transporters`], function(values) {
+on(`change:tpa change:tpa_movement change:tpa_warp change:tpa_weapons change:tpa_shields change:tpa_transporters change:tpa_cloak`, function(eventInfo) {
+    getAttrs([`tpa`, `tpa_movement`, `tpa_warp`, `tpa_weapons`, `tpa_shields`, `tpa_transporters`, `tpa_cloak`], function(values) {
         const tpa = parseInt(values[`tpa`]) || 0;
         const tpaToMovement = parseInt(values[`tpa_movement`]) || 0;
         const tpaToWarp = parseInt(values[`tpa_warp`]) || 0;
         const tpaToWeapons = parseInt(values[`tpa_weapons`]) || 0;
         const tpaToShields = parseInt(values[`tpa_shields`]) || 0;
         const tpaToTransporters = parseInt(values[`tpa_transporters`]) || 0;
+        const tpaToCloak = parseInt(values[`tpa_cloak`]) || 0;
 
-        const tpaRemaining = tpa - tpaToMovement - tpaToWarp - tpaToWeapons - tpaToShields - tpaToTransporters;
+        const tpaRemaining = tpa - tpaToMovement - tpaToWarp - tpaToWeapons - tpaToShields - tpaToTransporters - tpaToCloak;
 
         const output = {};
         output[`tpa_remaining`] = tpaRemaining;
