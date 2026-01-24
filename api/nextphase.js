@@ -103,7 +103,8 @@ on('change:campaign:turnorder', function() {
     	    myObj.set('name', names[PhaseIndex]);
     	    displayNewPhase();
         } else if (!myObj.get('name').startsWith('Round')) {
-            // This is NOT a new phase so must be a vessel
+            // This is NOT a new phase or round so must be a vessel
+            const myOpacity = myObj.get('baseOpacity');
             const characterId = myObj.get('represents');
             const mpAttr = findObjs({ type: 'attribute', characterid: characterId, name: 'mp' });
             const mp = mpAttr ? mpAttr[0].get('current') : 0;
@@ -112,16 +113,28 @@ on('change:campaign:turnorder', function() {
             let noCurrentMove = 0;
             switch (PhaseIndex) {
                 case PHASE_1_MOVEMENT:
-                    noCurrentMove = (mp == 0 || mp == 1) ? 1 : 0;
-                    sendChat('Vessel', `&{template:custom} {{title=[**${myObj.get('name')} - ${Math.floor(mp / 3) + Math.floor((mp % 3) / 2)} MP**](http://journal.roll20.net/character/${characterId})}}`);
+                    if (myOpacity != 0) {
+                        noCurrentMove = (mp == 0 || mp == 1) ? 1 : 0;
+                        sendChat('Vessel', `&{template:custom} {{title=[**${myObj.get('name')} - ${Math.floor(mp / 3) + Math.floor((mp % 3) / 2)} MP**](http://journal.roll20.net/character/${characterId})}}`);
+                    } else {
+                        sendChat('Vessel', `&{template:custom} {{title=[**${myObj.get('name')} - ? MP**](http://journal.roll20.net/character/${characterId})}}`);
+                    }
                     break;
                 case PHASE_2_MOVEMENT:
-                    noCurrentMove = (mp == 0 || mp == 2) ? 1 : 0;
-                    sendChat('Vessel', `&{template:custom} {{title=[**${myObj.get('name')} - ${Math.floor(mp / 3) + (mp % 3 == 1 ? 1 : 0)} MP**](http://journal.roll20.net/character/${characterId})}}`);
+                    if (myOpacity != 0) {
+                        noCurrentMove = (mp == 0 || mp == 2) ? 1 : 0;
+                        sendChat('Vessel', `&{template:custom} {{title=[**${myObj.get('name')} - ${Math.floor(mp / 3) + (mp % 3 == 1 ? 1 : 0)} MP**](http://journal.roll20.net/character/${characterId})}}`);
+                    } else {
+                        sendChat('Vessel', `&{template:custom} {{title=[**${myObj.get('name')} - ? MP**](http://journal.roll20.net/character/${characterId})}}`);
+                    }
                     break;
                 case PHASE_3_MOVEMENT:
-                    noCurrentMove = (mp == 0 || mp == 1) ? 1 : 0;
-                    sendChat('Vessel', `&{template:custom} {{title=[**${myObj.get('name')} - ${Math.floor(mp / 3) + Math.floor((mp % 3) / 2)} MP**](http://journal.roll20.net/character/${characterId})}}`);
+                    if (myOpacity != 0) {
+                        noCurrentMove = (mp == 0 || mp == 1) ? 1 : 0;
+                        sendChat('Vessel', `&{template:custom} {{title=[**${myObj.get('name')} - ${Math.floor(mp / 3) + Math.floor((mp % 3) / 2)} MP**](http://journal.roll20.net/character/${characterId})}}`);
+                    } else {
+                        sendChat('Vessel', `&{template:custom} {{title=[**${myObj.get('name')} - ? MP**](http://journal.roll20.net/character/${characterId})}}`);
+                    }
                     break;
                 default:
                     sendChat('Vessel', `&{template:custom} {{title=[**${myObj.get('name')}**](http://journal.roll20.net/character/${characterId})}}`);
