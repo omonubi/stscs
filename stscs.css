@@ -1,5 +1,7 @@
 /* Default light mode styles */
 .ui-dialog .charsheet {
+  --bg-cloak-panel1: #ccf;
+  --bg-cloak-panel2: #a9f;
   --bg-color: #fff;
   --bg-color-input: #fff;
   --bg-color-panel1: #fff;
@@ -20,6 +22,8 @@
 
 /* Dark mode styles applied when checkbox is checked */
 .charsheet:has(.dark-mode-toggle:checked) {
+  --bg-cloak-panel1: #000;
+  --bg-cloak-panel2: #309;
   --bg-color: #222;
   --bg-color-input: #000;
   --bg-color-panel1: #000;
@@ -146,6 +150,7 @@
 .ui-dialog .charsheet .bridge-hit-status[value='1'] ~ .shields-header .btn-shields-grid-repair,
 .ui-dialog .charsheet .btn-fire-status[value='0'] ~ .btn-fire,
 .ui-dialog .charsheet .btn-target-status[value='0'] ~ .btn-target,
+.ui-dialog .charsheet .cloak-armed[value='0'] ~ .cloak-panel .btn-cloak,
 .ui-dialog .charsheet .movement-grid-status:not([value='1']) ~ .helm-header .btn-movement-grid-repair,
 .ui-dialog .charsheet .sensors-destroyed[value='1'] ~ .sensors-panel .btn-sensors-repair,
 .ui-dialog .charsheet .sensors-status:not([value='0']) ~ .beams-panel .btn-target,
@@ -160,12 +165,13 @@
 .ui-dialog .charsheet .shield-5-status:not([value='1']) ~ .btn-shield-repair,
 .ui-dialog .charsheet .shield-6-status:not([value='1']) ~ .btn-shield-repair,
 .ui-dialog .charsheet .shields-grid-status:not([value='1']) ~ .shields-header .btn-shields-grid-repair,
-.ui-dialog .charsheet .ship-is-cloaked[value='0'] ~ .cloak-panel .btn-cloak,
 .ui-dialog .charsheet .ship-is-disabled[value='1'] ~ .beams-panel .btn-target,
 .ui-dialog .charsheet .ship-is-disabled[value='1'] ~ .missiles-panel .btn-target,
+.ui-dialog .charsheet .tpa-committed-status[value='1'] ~ .cloak-panel .btn-cloak-engage,
 .ui-dialog .charsheet .tpa-committed-status[value='1'] ~ .dc-panel button.btn.roll-damage,
 .ui-dialog .charsheet .tpa-committed-status[value='1'] ~ .helm-panel button.btn.warning,
 .ui-dialog .charsheet .tpa-committed-status[value='1'] ~ .sensors-panel button.btn.btn-scan,
+.ui-dialog .charsheet .tpa-committed-status[value='1'] ~ .sensors-panel .btn-nosensors,
 .ui-dialog .charsheet .tpa-committed-status[value='1'] ~ .tpa-panel button.btn.energize,
 .ui-dialog .charsheet .tpa-committed-status[value='0'] ~ .tpa-panel button.btn.warning,
 .ui-dialog .charsheet .trans-ison-std[value='0'] ~ .trans-btn-std,
@@ -234,7 +240,7 @@
 }
 
 .ui-dialog .charsheet button.btn.critical {
-  background: linear-gradient(135deg, #ff6600 0%, #cc3300 100%);
+  background: linear-gradient(135deg, #ff3300 0%, #bb0000 100%);
   border-color: #990000;
 }
 
@@ -479,7 +485,21 @@
   display: inline-block;
 }
 
-/**************** DAMAGE INDICATORS ****************/
+/**************** DAMAGE/STATE INDICATORS ****************/
+.ui-dialog .charsheet .ship-is-cloaked[value='1'] ~ .grid-6col {
+  background: linear-gradient(135deg, var(--bg-cloak-panel1), var(--bg-cloak-panel2));
+  border: 2px solid #3300cc;
+}
+.ui-dialog .charsheet .ship-is-cloaked[value='0'] ~ .cloak-panel .btn-cloak-disengage {
+  display: none;
+}
+.ui-dialog .charsheet .ship-is-cloaked[value='1'] ~ .cloak-panel .btn-cloak-engage {
+  display: none;
+}
+.ui-dialog .charsheet .ship-is-cloaked[value='0'] ~ h1 .cloak-engaged {
+  display: none;
+}
+
 .ui-dialog .charsheet .ship-is-disabled[value='1'] ~ .grid-6col {
   background: linear-gradient(135deg, var(--bg-color-panel1-dmg), var(--bg-color-panel2-dmg));
   border: 2px solid #cc0000;
@@ -678,6 +698,7 @@
 .ui-dialog .charsheet .shield-4c-status[value='2'] ~ .shield-4c,
 .ui-dialog .charsheet .shield-5c-status[value='2'] ~ .shield-5c,
 .ui-dialog .charsheet .shield-6c-status[value='2'] ~ .shield-6c,
+.ui-dialog .charsheet .ship-is-cloaked[value='1'] ~ .tpa-panel .tpa-cloak-warning[value='0'],
 .ui-dialog .charsheet .sp-remaining-status[value='2'] ~ .sp-remaining,
 .ui-dialog .charsheet .tpa-remaining-status[value='2'] ~ .tpa-remaining,
 .ui-dialog .charsheet .weapon-state-status[value='2'] ~ .weapon-state,

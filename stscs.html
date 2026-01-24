@@ -1,19 +1,21 @@
 <div class='sheet-content'>
     <input type='hidden' class='bridge-hit-status' name='attr_bridge_hit_status' value='0'/>
+    <input type='hidden' class='cloak-armed' name='attr_cloak_armed' value='0'/>
+    <input type='hidden' class='has-sensor-lock' name='attr_has_sensor_lock' value='0'/>
     <input type='hidden' class='movement-grid-status' name='attr_movement_grid_status' value='0'/>
     <input type='hidden' class='sensors-status' name='attr_sensors_status' value='0'/>
-    <input type="hidden" class="show-cloak-toggle" name="attr_show_cloak" value='0'/>
-    <input type='hidden' class='has-sensor-lock' name='attr_has_sensor_lock' value='0'/>
     <input type='hidden' class='shields-grid-status' name='attr_shields_grid_status' value='0'/>
     <input type='hidden' class='ship-is-cloaked' name='attr_ship_is_cloaked' value='0'/>
     <input type='hidden' class='ship-is-disabled' name='attr_ship-is-disabled' value='0'/>
     <input type='hidden' class='ship-is-evading' name='attr_ship_is_evading' value='0'/>
+    <input type="hidden" class="show-cloak-toggle" name="attr_show_cloak" value='0'/>
     <input type='hidden' class='tpa-committed-status' name='attr_tpa_committed_status' value='1'/>
     <input type='hidden' class='transporters-grid-status' name='attr_transporters_grid_status' value='0'/>
     <input type='hidden' class='warp-drive-status' name='attr_warp_drive_status' value='0'/>
     <input type='hidden' class='weapons-grid-status' name='attr_weapons_grid_status' value='0'/>
     <h1>
         <span name='attr_character_name'></span>
+        <span class='cloak-engaged' style='cursor: default;' title='cloak engaged'> &#x1F977;</span>
         <span class='alert1 disable-ship' title='disabled'> &#x1F198;</span>
         <span class='alert1 warning-bridge-hit' style='cursor: default;' title='bridge hit'> &#x1F527;</span>
         <span class='alert1 warning-sensors' style='cursor: default;' title='sensors offline'> &#x1F9ED;</span>
@@ -128,7 +130,7 @@
         <input type='hidden' class='tpa-remaining-status' name='attr_tpa_remaining_status'/>
         <input type='number' class='tpa-remaining' name='attr_tpa_remaining'  value='0' readonly/>
 
-        <button type='action' class='btn warning' name='act_shield_commit'>Commit TPA</button>
+        <button type='action' class='btn warning' name='act_commit_tpa'>Commit TPA</button>
         <span></span>
         <label>TPA to Movement:</label>
         <input type='number' class='em' name='attr_tpa_movement' min='0' value='0'/>
@@ -147,7 +149,7 @@
         <label>TPA to Weapons:</label>
         <input type='number' class='em' name='attr_tpa_weapons' min='0' value='0'/>
         <label class='tpa-cloak'>TPA to Cloak:</label>
-        <input type='number' class='tpa-cloak' name='attr_tpa_cloak' min='0' value='0' readonly/>
+        <input type='number' class='tpa-cloak tpa-cloak-warning' name='attr_tpa_cloak' min='0' value='0' readonly/>
     </div>
     <br/>
     
@@ -180,7 +182,8 @@
     <br/>
     
     <div class='grid-6col cloak-panel'>
-        <button type='action' class='btn btn-cloak' name='act_cloak'>Engage Cloak</button>
+        <button type='action' class='btn btn-cloak btn-cloak-engage' name='act_cloak'>Engage Cloak</button>
+        <button type='action' class='btn btn-cloak-disengage warning' name='act_cloak'>Disengage Cloak</button>
         <span></span>
         <span></span>
         <span></span>
@@ -230,7 +233,7 @@
         <span class='span2'>
             <select class='scan-question' name='attr_scanquestion'>
                 <option value='0'>Submit a query...</option>
-                <option value='1'>How much power is available?</option>
+                <!--<option value='1'>How much power is available?</option>-->
                 <option value='2'>How is power allocated?</option>
                 <option value='3'>How are the shields powered?</option>
                 <!--<option value='4'>Is a specific shield up?</option>-->
@@ -932,11 +935,11 @@
         <button type='action' class='btn' name='act_repair'>Repair/Reset Vessel</button>
         <span></span>
         <span>
-            <input type="checkbox" name="attr_show_cloak" /><label>Has Cloak</label>
+            <input type="checkbox" name="attr_show_cloak" value='1'/><label>Has Cloak</label>
         </span>
         <span></span>
         <span>
-            <input type="checkbox" name="attr_dark_mode" class="dark-mode-toggle" /><label>Dark Mode</label>
+            <input type="checkbox" name="attr_dark_mode" class="dark-mode-toggle" value='1'/><label>Dark Mode</label>
         </span>
     </div>
 
@@ -1066,6 +1069,7 @@ on(`change:tpa_cloak_required change:cloak_armed`, function(eventInfo) {
         const tpaRequired = parseInt(values[`tpa_cloak_required`]) || 0;
 
         const output = {};
+        output[`cloak_is_armed`] = cloakIsOn;
         output[`tpa_cloak`] = cloakIsOn ? tpaRequired : 0;
         setAttrs(output);
     });
@@ -1082,6 +1086,27 @@ on(`change:scu`, function(eventInfo) {
         output[`scu_cap`] = `${scuCapacity} mt`;
         setAttrs(output);
     });
+});
+
+// CLOAK on/off
+on(`clicked:cloak`, async (event) => {   
+    const values = await getAttrsAsync([`ship_is_cloaked`]);
+    const shipIsCloaked = parseInt(values[`ship_is_cloaked`]) || 0;
+
+
+    const response = await extractChatData(shipIsCloaked ? `?{Confirm Cloaking Device to OFF|Confirm|Cancel}` : `?{Confirm Cloaking Device to ON|Confirm|Cancel}`);
+
+    if (response === `Confirm`) {
+        const cloakStatusStr = shipIsCloaked ? `{{Status=Decloaking...}}` : `{{Status=Cloaking...}}`;
+        startRoll(
+            `&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Cloaking Status}} {{color=purple}} ${cloakStatusStr}`,
+            roll => finishRoll(roll.rollId)
+        );
+
+        const output = {};
+        output[`ship_is_cloaked`] = shipIsCloaked ? 0 : 1;
+        await setAttrsAsync(output); 
+    }
 });
 
 // COMBAT EFFICIENCY calculation
@@ -2153,6 +2178,7 @@ on(`clicked:repair`, async function(eventInfo) {
             output[`hp`] = hpMax;
             output[`crew`] = crewMax;
             output[`wf_current`] = output[`wf_desired`] = output[`warp_drive_status`] = 0;
+            output[`ship_is_cloaked`] = 0;
             output[`shield_1_state`] = output[`shield_1_status`] = output[`shield_1_to_repair`] = 0;
             output[`shield_2_state`] = output[`shield_2_status`] = output[`shield_2_to_repair`] = 0;
             output[`shield_3_state`] = output[`shield_3_status`] = output[`shield_3_to_repair`] = 0;
@@ -2877,12 +2903,11 @@ on(`change:tpa change:tpa_movement change:tpa_warp change:tpa_weapons change:tpa
 });
 
 // TOTAL POWER AVAILABLE COMMITTED
-on(`clicked:shield_commit`, async (event) => {
+on(`clicked:commit_tpa`, async (event) => {
 
     const response = await extractChatData(`?{Confirm TPA Commit|Confirm|Cancel}`);
 
     if (response === `Confirm`) {
-
         startRoll(
             `&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=READY!}} {{color=purple}}`,
             roll => finishRoll(roll.rollId)
@@ -2956,6 +2981,8 @@ function resetTPA() {
     output[`tpa_movement`] = 0;
     output[`tpa_weapons`] = 0;
     output[`tpa_shields`] = 0;
+
+    output[`cloak_armed`] = 0;
 
     output[`crewbonus`] = 0;
     output[`crewbonus_saved`] = 0;
