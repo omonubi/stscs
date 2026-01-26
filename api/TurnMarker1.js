@@ -369,16 +369,26 @@ var TurnMarker = TurnMarker || (function(){
         if(active) {
             turnOrder = TurnOrder.Get();
             current = _.first(turnOrder);
+            var opacity = obj.get('baseOpacity');
             if( obj && current && current.id === obj.id) {
                threadSync++;
                 
                 marker = getMarker();
-                marker.set({
-                    lastmove: obj.get('lastmove'),
-                    layer: obj.get("layer"),
-                    top: obj.get("top"),
-                    left: obj.get("left")
-                });
+                if(opacity != 0) {
+                    marker.set({
+                        lastmove: obj.get('lastmove'),
+                        layer: obj.get("layer"),
+                        top: obj.get("top"),
+                        left: obj.get("left")
+                    });
+                } else {
+                    marker.set({
+                        lastmove: obj.get('lastmove'),
+                        layer: obj.get("layer"),
+                        top: 35,
+                        left: 35
+                    });
+                }
                 
                setTimeout(_.bind(stepAnimation,this,threadSync), 300);
             }
@@ -498,21 +508,32 @@ var TurnMarker = TurnMarker || (function(){
             }
             
             var size = Math.max(currentToken.get("height"),currentToken.get("width")) * state.TurnMarker.scale;
-              
+            
+            var opacity = currentToken.get('baseOpacity');
             if (marker.get("layer") === "gmlayer" && currentToken.get("layer") !== "gmlayer") {
-                marker.set({
-                    lastmove:`${marker.get('left')},${marker.get('top')}`,
-                    top: currentToken.get("top"),
-                    left: currentToken.get("left"),
-                    height: size,
-                    width: size
-                });
+                if(opacity != 0) {
+                    marker.set({
+                        lastmove:`${marker.get('left')},${marker.get('top')}`,
+                        top: currentToken.get("top"),
+                        left: currentToken.get("left"),
+                        height: size,
+                        width: size
+                    });
+                } else {
+                    marker.set({
+                        lastmove:`${marker.get('left')},${marker.get('top')}`,
+                        top: 35,
+                        left: 35,
+                        height: size,
+                        width: size
+                    });
+                }
                 setTimeout(function() {
                     marker.set({
                         "layer": currentToken.get("layer")
                     });    
                 }, 500);
-            } else {
+            } else if (opacity != 0) {
                 marker.set({
                     lastmove:`${marker.get('left')},${marker.get('top')}`,
                     layer: currentToken.get("layer"),
@@ -521,8 +542,17 @@ var TurnMarker = TurnMarker || (function(){
                     height: size,
                     width: size
                 });   
+            } else {
+                marker.set({
+                    lastmove:`${marker.get('left')},${marker.get('top')}`,
+                    layer: currentToken.get("layer"),
+                    top: 35,
+                    left: 35,
+                    height: size,
+                    width: size
+                }); 
             }
-            toFront(currentToken);
+            //toFront(currentToken);
 
             if( 'all' === state.TurnMarker.autoPull ||
                 ('npcs' === state.TurnMarker.autoPull && (
