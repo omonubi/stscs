@@ -1,6 +1,6 @@
 <div class='sheet-content'>
     <input type='hidden' class='bridge-hit-status' name='attr_bridge_hit_status' value='0'/>
-    <input type='hidden' class='cloak-armed' name='attr_cloak_armed' value='0'/>
+    <input type='hidden' class='cloak-armed' name='attr_cloak_is_armed' value='0'/>
     <input type='hidden' class='has-sensor-lock' name='attr_has_sensor_lock' value='0'/>
     <input type='hidden' class='movement-grid-status' name='attr_movement_grid_status' value='0'/>
     <input type='hidden' class='sensors-status' name='attr_sensors_status' value='0'/>
@@ -194,7 +194,7 @@
         <input type='text' class='w10' name='attr_cloak_type'/>
         <label>Power Required:</label>
         <input type='number' name='attr_tpa_cloak_required' min='0' value='0'/>
-        <span><label>Arm Cloak:</label> <input type='checkbox' name='attr_cloak_armed' value='1'/></span>
+        <span><label>Arm Cloak:</label> <input type='checkbox' name='attr_cloak_is_armed' value='1'/></span>
         <span></span>
     </div>
     <br/>
@@ -1066,13 +1066,12 @@ on(`change:caprating`, function(eventInfo) {
 });
 
 // CLOAK ARMED/DISARMED
-on(`change:tpa_cloak_required change:cloak_armed`, function(eventInfo) {
+on(`change:tpa_cloak_required change:cloak_is_armed`, function(eventInfo) {
     getAttrs([`tpa_cloak_required`], function(values) {
         const cloakIsOn = parseInt(eventInfo.newValue) || 0;
         const tpaRequired = parseInt(values[`tpa_cloak_required`]) || 0;
 
         const output = {};
-        output[`cloak_is_armed`] = cloakIsOn;
         output[`tpa_cloak`] = cloakIsOn ? tpaRequired : 0;
         setAttrs(output);
     });
@@ -1093,16 +1092,20 @@ on(`change:scu`, function(eventInfo) {
 
 // CLOAK on/off
 on(`clicked:cloak`, async (event) => {   
+    // Note: Requires use of !bump API script
     const values = await getAttrsAsync([`ship_is_cloaked`]);
     const shipIsCloaked = parseInt(values[`ship_is_cloaked`]) || 0;
 
-
-    const response = await extractChatData(shipIsCloaked ? `?{Confirm Cloaking Device to OFF|Confirm|Cancel}` : `?{Confirm Cloaking Device to ON|Confirm|Cancel}`);
+    const response = await extractChatData(shipIsCloaked ? `?{Confirm Cloaking Device to OFF|SELECT TOKEN|Confirm|Cancel}` : `?{Confirm Cloaking Device to ON|SELECT TOKEN|Confirm|Cancel}`);
 
     if (response === `Confirm`) {
         const cloakStatusStr = shipIsCloaked ? `{{Status=Decloaking...}}` : `{{Status=Cloaking...}}`;
         startRoll(
             `&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Cloaking Status}} {{color=purple}} ${cloakStatusStr}`,
+            roll => finishRoll(roll.rollId)
+        );
+        startRoll(
+            `!bump`,
             roll => finishRoll(roll.rollId)
         );
 
@@ -2985,7 +2988,7 @@ function resetTPA() {
     output[`tpa_weapons`] = 0;
     output[`tpa_shields`] = 0;
 
-    output[`cloak_armed`] = 0;
+    output[`cloak_is_armed`] = 0;
 
     output[`crewbonus`] = 0;
     output[`crewbonus_saved`] = 0;
