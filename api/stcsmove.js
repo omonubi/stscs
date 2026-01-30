@@ -2,6 +2,9 @@
 // author: omonubi (omonubi@hotmail.com)
 // game: FASA Star Trek: STCS
 // description: Script to automate movement of ship tokens via macros
+// 
+// Notes:
+//  Status markers for movement disabled to accomodate cloaking 260130.
 
 if (!state.movementHistory) state.movementHistory = {};    
 
@@ -13,9 +16,9 @@ on('chat:message', function(msg) {
                 var token = getObj('graphic', obj._id);
                 
                 // Add status marker
-                token.set('status_green', false);
-                token.set('status_purple', false);
-                token.set('status_red', true);
+                //token.set('status_green', false);
+                //token.set('status_purple', false);
+                //token.set('status_red', true);
             }
         });
     }
@@ -33,8 +36,8 @@ on('chat:message', function(msg) {
                 token.set({ top: top, left: left });
                 
                 // Add status marker
-                token.set('status_green', true);
-                token.set('status_red', false);
+                //token.set('status_green', true);
+                //token.set('status_red', false);
     
                 if (!state.movementHistory[obj._id]) state.movementHistory[obj._id] = [];
                 state.movementHistory[obj._id].push(prev);
@@ -55,8 +58,8 @@ on('chat:message', function(msg) {
                 token.set({ top: top, left: left });
                 
                 // Add status marker
-                token.set('status_green', true);
-                token.set('status_red', false);
+                //token.set('status_green', true);
+                //token.set('status_red', false);
     
                 if (!state.movementHistory[obj._id]) state.movementHistory[obj._id] = [];
                 state.movementHistory[obj._id].push(prev);
@@ -109,8 +112,8 @@ on('chat:message', function(msg) {
                 token.set({ top: top, left: left });
                 
                 // Add status marker
-                token.set('status_green', true);
-                token.set('status_red', false);
+                //token.set('status_green', true);
+                //token.set('status_red', false);
     
                 if (!state.movementHistory[obj._id]) state.movementHistory[obj._id] = [];
                 state.movementHistory[obj._id].push(prev);
@@ -131,8 +134,8 @@ on('chat:message', function(msg) {
                 token.set({ top: top, left: left });
                 
                 // Add status marker
-                token.set('status_green', true);
-                token.set('status_red', false);
+                //token.set('status_green', true);
+                //token.set('status_red', false);
     
                 if (!state.movementHistory[obj._id]) state.movementHistory[obj._id] = [];
                 state.movementHistory[obj._id].push(prev);
@@ -153,8 +156,8 @@ on('chat:message', function(msg) {
                 token.set({ top: top, left: left });
                 
                 // Add status marker
-                token.set('status_purple', true);
-                token.set('status_red', false);
+                //token.set('status_purple', true);
+                //token.set('status_red', false);
     
                 if (!state.movementHistory[obj._id]) state.movementHistory[obj._id] = [];
                 state.movementHistory[obj._id].push(prev);
@@ -175,8 +178,8 @@ on('chat:message', function(msg) {
                 token.set({ top: top, left: left });
                 
                 // Add status marker
-                token.set('status_purple', true);
-                token.set('status_red', false);
+                //token.set('status_purple', true);
+                //token.set('status_red', false);
     
                 if (!state.movementHistory[obj._id]) state.movementHistory[obj._id] = [];
                 state.movementHistory[obj._id].push(prev);
@@ -197,8 +200,8 @@ on('chat:message', function(msg) {
                 token.set({ top: top, left: left });
                 
                 // Add status marker
-                token.set('status_purple', true);
-                token.set('status_red', false);
+                //token.set('status_purple', true);
+                //token.set('status_red', false);
     
                 if (!state.movementHistory[obj._id]) state.movementHistory[obj._id] = [];
                 state.movementHistory[obj._id].push(prev);
@@ -219,8 +222,8 @@ on('chat:message', function(msg) {
                 token.set({ top: top, left: left });
                 
                 // Add status marker
-                token.set('status_purple', true);
-                token.set('status_red', false);
+                //token.set('status_purple', true);
+                //token.set('status_red', false);
     
                 if (!state.movementHistory[obj._id]) state.movementHistory[obj._id] = [];
                 state.movementHistory[obj._id].push(prev);
