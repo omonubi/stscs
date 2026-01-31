@@ -1024,7 +1024,7 @@ const extractChatData = async (query) => {
 
 // Async function to return a token name and its character id 
 const extractTargetData = async () => {
-    const query = await startRoll(`!{{target=[[0+{"tokenName":"@{target|Target|token_name}","charId":"@{target|Target|character_id}"}]]}} /direct`);
+    const query = await startRoll(`!{{target=[[0+{"tokenName":"@{target|Target|token_name}","charId":"@{target|Target|character_id}","isCloaked":"@{target|Target|ship_is_cloaked}"}]]}} /direct`);
     finishRoll(query.rollId);
     const expr = query.results.target.expression;
     const jsonStr = expr.replace(/0\+\{(.+)\}/, `{$1}`);
@@ -2186,7 +2186,7 @@ on(`clicked:scan`, async (event) => {
     if (oldLock == `` || response == 1) {
         const output = {};
         await undoSensorLock();
-        const { tokenName, charId } = await extractTargetData(); // Destructure JSON
+        const { tokenName, charId, isCloaked } = await extractTargetData(); // Destructure JSON
 
         const attrs = await getAttrsAsync([`type_is_advanced`, `type_is_exploration`]);
         const toScanTarget = attrs[`type_is_advanced`] == 1 ? 8 : attrs[`type_is_exploration`] == 1 ? 7 : 6;
@@ -3179,6 +3179,7 @@ on(`change:tpa_weapons change:wp_beam change:wp_missile`, function(eventInfo) {
 
 // WEAPON TARGETING
 on(`clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target`, async (event) => {
+    const CloakedTargetPenalty = -3;
     const match = event.sourceAttribute.match(/repeating_(?<section>.+?)_(?<rowID>.+?)_(?<buttonName>.+)/);
     const { section, rowID, buttonName } = match?.groups || {};
     const row = `repeating_${section}_${rowID}`;
@@ -3212,7 +3213,7 @@ on(`clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target`, a
     await setAttrsAsync(output);
 
     // Get target input
-    const { tokenName, charId } = await extractTargetData(); // Destructure JSON
+    const { tokenName, charId, isCloaked } = await extractTargetData(); // Destructure JSON
     const wpnTargetDistance = +(await extractChatData(`?{How far|1}`)) || 0;
     const wpnCrewBonus = crewBonus == CREW_BONUS_WEAPONS && !crewBonusApplied ? +(await extractChatData(`?{Apply crew bonus|Yes,1|No,0}`)) || 0 : 0;
     const wpnTargetToHit = getToHit(wpnChart, wpnTargetDistance);
@@ -3249,6 +3250,9 @@ on(`clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target`, a
             // Apply multi-target penalty to all weapons
             wpnTargetToHitModified += multiTargetPenalty;
 
+            // Apply cloaked target penalty to all weapons
+            if (isCloaked == 1) wpnTargetToHitModified += CloakedTargetPenalty;
+
             // Apply cumulative weapon state penalty to all weapons in bank
             wpnTargetToHitModified += weaponStatePenalty;
 
@@ -3263,9 +3267,10 @@ on(`clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target`, a
         const wpnTargetToHitStr = wpnTargetToHitModified < -3 ? `Not Possible` : wpnTargetToHitModified < 1 ? `Slim to None` : `${wpnTargetToHitModified * 10}%`;
         const wpnHasCrewBonusStr = wpnCrewBonus ? `{{Crew Bonus=+1}}` : ``;
         const multiTargetPenaltyStr = typeIsMulti !== 1 && multiTargetPenalty !== 0 ? `{{Multi-Target Penalty=${multiTargetPenalty}}}` : ``;
+        const cloakedTargetPenaltyStr = isCloaked == 1 ? `{{Cloaked Target Penalty=-3}}` : ``;
         
         startRoll(`&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=&#x1F3AF; Weapons Targeted &#x1F3AF;}} {{color=green}} {{Weapons=${weaponNames.join(`\\n`)}}} {{Target=[${tokenName}](${ROLL20_CHAR_URL}${charId})}} {{Distance=${wpnTargetDistance} hexes}} {{Firing Chart=${wpnChart}}}  `, roll => finishRoll(roll.rollId));
-        startRoll(`/w gm &{template:custom} {{color=green}} {{Crew Penalty=${crewCasualtyPenalty}}} ${wpnHasCrewBonusStr} {{Repair Penalty=${weaponStatePenalty}}} ${multiTargetPenaltyStr} {{Chance To-Hit=${wpnTargetToHitStr}}}`, roll => finishRoll(roll.rollId));
+        startRoll(`/w gm &{template:custom} {{color=green}} {{Crew Penalty=${crewCasualtyPenalty}}} ${wpnHasCrewBonusStr} {{Repair Penalty=${weaponStatePenalty}}} ${multiTargetPenaltyStr} ${cloakedTargetPenaltyStr} {{Chance To-Hit=${wpnTargetToHitStr}}}`, roll => finishRoll(roll.rollId));
     } else {
         startRoll(`&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Target Out of Range}} {{Weapon=${wpnName}}} {{Max Range=${wpnMaxRange} hexes}} {{Target=${tokenName}}} {{Distance=${wpnTargetDistance} hexes}}`, roll => finishRoll(roll.rollId));
     }
