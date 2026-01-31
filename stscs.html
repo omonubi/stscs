@@ -2332,6 +2332,33 @@ on(`clicked:send_beams`, async (event) => {
     );
 });
 
+// SENSORS SEND CLOAK
+on(`clicked:scan_cloak`, async (event) => {  
+    const scannedArc = await extractChatData(`?{Shield Arc|#1 (f/p)|#2 (fwd)|#3 (f/s)|#4 (a/s)|#5 (aft)|#6 (a/p)}`);
+    const scanTargetExists = parseInt(+await extractChatData(`?{Am I There?|No,0|Yes,1}`) || 0);
+    
+    if(scanTargetExists) {
+        const range = parseInt(+await extractChatData(`?{Range|30}`) || 0);
+        const roll = getRandomIntInclusive(1,10);
+        if (roll <= Math.ceil((31-range)/10)) {
+            startRoll(
+                `/w "@{target|character_name}" &{template:custom} {{title=**Scan Results: Cloak**}} {{color=green}} {{Arc Scanned=${scannedArc}}} {{Results=Vessel Detected!}} {{At Range=${range}}}`,
+                roll => finishRoll(roll.rollId)
+            );             
+        } else {
+            cloakedShipNotFound(scannedArc);
+        }
+    } else {
+        cloakedShipNotFound(scannedArc);
+    }
+});
+async function cloakedShipNotFound(scannedArc) {
+    startRoll(
+        `/w "@{target|character_name}" &{template:custom} {{title=**Scan Results: Cloak**}} {{color=green}} {{Arc Scanned=${scannedArc}}} {{Results=Nothing Detected}}`,
+        roll => finishRoll(roll.rollId)
+    );
+}
+
 // SENSORS SEND CREW
 on(`clicked:send_crew`, async (event) => {    
     // Get the status variables
