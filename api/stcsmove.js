@@ -232,7 +232,7 @@ on('chat:message', function(msg) {
     }
 });
 
-// Activate cloak
+// Toggle cloak
 on('chat:message', function(msg) {
     if (msg.type === 'api' && msg.content === '!move cloak') {
         _.each(msg.selected, function(obj) {
@@ -245,20 +245,15 @@ on('chat:message', function(msg) {
                 if (!character) return;
                 
                 var charName = character.get('name');
-                var cloakIsArmed = findObjs({
+                var hasCloak = findObjs({
                     _type: 'attribute',
                     characterid: charId,
-                    name: 'cloak_is_armed'
+                    name: 'show_cloak'
                 })[0];
 
-                if (!cloakIsArmed) {
-                    cloakIsArmed = createObj('attribute', {
-                        name: 'cloak_is_armed',
-                        current: 0,
-                        max: '',
-                        characterid: charId
-                    });
-                } else if (cloakIsArmed.get('current') == 1) {
+                if (!hasCloak) return;
+                
+                if (hasCloak.get('current') == 1) {
                     var shipIsCloaked = findObjs({
                         _type: 'attribute',
                         characterid: charId,

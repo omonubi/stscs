@@ -150,7 +150,6 @@
 .ui-dialog .charsheet .bridge-hit-status[value='1'] ~ .shields-header .btn-shields-grid-repair,
 .ui-dialog .charsheet .btn-fire-status[value='0'] ~ .btn-fire,
 .ui-dialog .charsheet .btn-target-status[value='0'] ~ .btn-target,
-.ui-dialog .charsheet .cloak-armed[value='0'] ~ .cloak-panel .btn-cloak,
 .ui-dialog .charsheet .movement-grid-status:not([value='1']) ~ .helm-header .btn-movement-grid-repair,
 .ui-dialog .charsheet .sensors-destroyed[value='1'] ~ .sensors-panel .btn-sensors-repair,
 .ui-dialog .charsheet .sensors-status:not([value='0']) ~ .beams-panel .btn-target,
@@ -167,7 +166,6 @@
 .ui-dialog .charsheet .shields-grid-status:not([value='1']) ~ .shields-header .btn-shields-grid-repair,
 .ui-dialog .charsheet .ship-is-disabled[value='1'] ~ .beams-panel .btn-target,
 .ui-dialog .charsheet .ship-is-disabled[value='1'] ~ .missiles-panel .btn-target,
-.ui-dialog .charsheet .tpa-committed-status[value='1'] ~ .cloak-panel .btn-cloak-engage,
 .ui-dialog .charsheet .tpa-committed-status[value='1'] ~ .dc-panel button.btn.roll-damage,
 .ui-dialog .charsheet .tpa-committed-status[value='1'] ~ .helm-panel button.btn.warning,
 .ui-dialog .charsheet .tpa-committed-status[value='1'] ~ .sensors-panel button.btn.btn-scan,
@@ -489,12 +487,6 @@
 .ui-dialog .charsheet .ship-is-cloaked[value='1'] ~ .grid-6col {
   background: linear-gradient(135deg, var(--bg-cloak-panel1), var(--bg-cloak-panel2));
   border: 2px solid #3300cc;
-}
-.ui-dialog .charsheet .ship-is-cloaked[value='0'] ~ .cloak-panel .btn-cloak-disengage {
-  display: none;
-}
-.ui-dialog .charsheet .ship-is-cloaked[value='1'] ~ .cloak-panel .btn-cloak-engage {
-  display: none;
 }
 .ui-dialog .charsheet .ship-is-cloaked[value='0'] ~ h1 .cloak-engaged {
   display: none;

@@ -182,20 +182,12 @@
     <br/>
     
     <div class='grid-6col cloak-panel'>
-        <button type='action' class='btn btn-cloak btn-cloak-engage' name='act_cloak'>Engage Cloak</button>
-        <button type='action' class='btn btn-cloak-disengage warning' name='act_cloak'>Disengage Cloak</button>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-
         <label>Cloak Device Type:</label>
         <input type='text' class='w10' name='attr_cloak_type'/>
         <label>Power Required:</label>
         <input type='number' name='attr_tpa_cloak_required' min='0' value='0'/>
         <span><label>Arm Cloak:</label> <input type='checkbox' name='attr_cloak_is_armed' value='1'/></span>
-        <span></span>
+        <button type='action' class='btn gm-only' name='act_scan_cloak' title='DO NOT CLICK'>Scan Me</button>
     </div>
     <br/>
 
@@ -1088,31 +1080,6 @@ on(`change:scu`, function(eventInfo) {
         output[`scu_cap`] = `${scuCapacity} mt`;
         setAttrs(output);
     });
-});
-
-// CLOAK on/off
-on(`clicked:cloak`, async (event) => {   
-    // Note: Requires use of !bump API script
-    const values = await getAttrsAsync([`ship_is_cloaked`]);
-    const shipIsCloaked = parseInt(values[`ship_is_cloaked`]) || 0;
-
-    const response = await extractChatData(shipIsCloaked ? `?{Confirm Cloaking Device to OFF|SELECT TOKEN|Confirm|Cancel}` : `?{Confirm Cloaking Device to ON|SELECT TOKEN|Confirm|Cancel}`);
-
-    if (response === `Confirm`) {
-        const cloakStatusStr = shipIsCloaked ? `{{Status=Decloaking...}}` : `{{Status=Cloaking...}}`;
-        startRoll(
-            `&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Cloaking Status}} {{color=purple}} ${cloakStatusStr}`,
-            roll => finishRoll(roll.rollId)
-        );
-        startRoll(
-            `!bump`,
-            roll => finishRoll(roll.rollId)
-        );
-
-        const output = {};
-        output[`ship_is_cloaked`] = shipIsCloaked ? 0 : 1;
-        await setAttrsAsync(output); 
-    }
 });
 
 // COMBAT EFFICIENCY calculation
