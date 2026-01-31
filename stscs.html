@@ -5,6 +5,7 @@
     <input type='hidden' class='movement-grid-status' name='attr_movement_grid_status' value='0'/>
     <input type='hidden' class='sensors-status' name='attr_sensors_status' value='0'/>
     <input type='hidden' class='shields-grid-status' name='attr_shields_grid_status' value='0'/>
+    <input type='hidden' class='ship-has-scanned' name='attr_ship_has_scanned' value='0'/>
     <input type='hidden' class='ship-is-cloaked' name='attr_ship_is_cloaked' value='0'/>
     <input type='hidden' class='ship-is-disabled' name='attr_ship-is-disabled' value='0'/>
     <input type='hidden' class='ship-is-evading' name='attr_ship_is_evading' value='0'/>
@@ -2204,6 +2205,7 @@ on(`clicked:scan`, async (event) => {
             output[`has_sensor_lock`] = 1;
         }
 
+        output[`ship_has_scanned`] = 1;
         await setAttrsAsync(output);
     }
 }); 
@@ -2246,6 +2248,10 @@ on(`change:scanquestion`, function(eventInfo) {
             startRoll(`/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Sensor Query}} {{color=green}} {{Target=[${sensorLock}](${ROLL20_CHAR_URL}${sensorLockId})}} {{Query=${questions[questionIndex]}}}`, roll => {
                 finishRoll(roll.rollId);
             });
+
+            const output = {};
+            output[`ship_has_scanned`] = 1;
+            setAttrs(output);
         });
     }
 });
@@ -2339,8 +2345,10 @@ on(`clicked:scan_cloak`, async (event) => {
     
     if(scanTargetExists) {
         const range = parseInt(+await extractChatData(`?{Range|30}`) || 0);
+        const values = await getAttrsAsync(['ship_has_scanned']); // Has the cloaked vessel used scanners?
+        const shipHasScanned = values['ship_has_scanned'];
         const roll = getRandomIntInclusive(1,10);
-        if (roll <= Math.ceil((31-range)/10)) {
+        if (roll <= (Math.ceil((31-range)/10) + shipHasScanned)) {
             startRoll(
                 `/w "@{target|character_name}" &{template:custom} {{title=**Scan Results: Cloak**}} {{color=green}} {{Arc Scanned=${scannedArc}}} {{Results=Vessel Detected!}} {{At Range=${range}}}`,
                 roll => finishRoll(roll.rollId)
@@ -2919,7 +2927,7 @@ on(`clicked:commit_tpa`, async (event) => {
     }
 });
 
-// TOTAL POWER AVAILABLE reset
+// TPA RESET
 on(`clicked:tpa_reset`, async (event) => {
 
     const response = await extractChatData(`?{Confirm TPA Reset|Confirm|Cancel}`);
@@ -2993,6 +3001,7 @@ function resetTPA() {
     const SCAN_NONE = 0;
     output[`scanquestion`] = SCAN_NONE;
     output[`scananswer`] = ``;
+    output[`ship_has_scanned`] = 0;
 
     output[`trans_on_std`] = output[`trans_on_cbt`] = output[`trans_on_er`] = output[`trans_on_scu`] = 0;
 
