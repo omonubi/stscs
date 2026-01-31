@@ -2345,12 +2345,17 @@ on(`clicked:scan_cloak`, async (event) => {
     
     if(scanTargetExists) {
         const range = parseInt(+await extractChatData(`?{Range|30}`) || 0);
+        const isDestroyer = parseInt(+await extractChatData(`?{Is Destroyer|No,0|Yes,1}`) || 0);
+
         const values = await getAttrsAsync(['ship_has_scanned']); // Has the cloaked vessel used scanners?
-        const shipHasScanned = values['ship_has_scanned'];
+        const shipHasScanned = parseInt(values['ship_has_scanned'] || 0);
+
         const roll = getRandomIntInclusive(1,10);
-        if (roll <= (Math.ceil((31-range)/10) + shipHasScanned)) {
+        const result = Math.max(roll - isDestroyer, 0); // DDs get +1 on roll
+        if (result <= (Math.ceil((31-range)/10) + shipHasScanned)) {
+            const isDestroyerStr = isDestroyer ? `{{DD Bonus=Yes}}` : ``;
             startRoll(
-                `/w "@{target|character_name}" &{template:custom} {{title=**Scan Results: Cloak**}} {{color=green}} {{Arc Scanned=${scannedArc}}} {{Results=Vessel Detected!}} {{At Range=${range}}}`,
+                `/w "@{target|character_name}" &{template:custom} {{title=**Scan Results: Cloak**}} {{color=green}} {{Arc Scanned=${scannedArc}}} {{Results=Vessel Detected!}} {{At Range=${range}}} ${isDestroyerStr}`,
                 roll => finishRoll(roll.rollId)
             );             
         } else {
