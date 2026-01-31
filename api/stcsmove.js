@@ -166,7 +166,7 @@ on('chat:message', function(msg) {
     }
 });
 
-// Move backward 2 hexes
+// Move backward 2 hexes - NOT CURRENTLY IN USE
 on('chat:message', function(msg) {
     if (msg.type === 'api' && msg.content === '!move r2') {
         _.each(msg.selected, function(obj) {
@@ -188,7 +188,7 @@ on('chat:message', function(msg) {
     }
 });
 
-// Sideslip to aft/port
+// Sideslip to aft/port - NOT CURRENTLY IN USE
 on('chat:message', function(msg) {
     if (msg.type === 'api' && msg.content === '!move sspr') {
         _.each(msg.selected, function(obj) {
@@ -210,7 +210,7 @@ on('chat:message', function(msg) {
     }
 });
 
-// Sideslip to aft/starboard
+// Sideslip to aft/starboard - NOT CURRENTLY IN USE
 on('chat:message', function(msg) {
     if (msg.type === 'api' && msg.content === '!move sssr') {
         _.each(msg.selected, function(obj) {
@@ -227,6 +227,59 @@ on('chat:message', function(msg) {
     
                 if (!state.movementHistory[obj._id]) state.movementHistory[obj._id] = [];
                 state.movementHistory[obj._id].push(prev);
+            }
+        });
+    }
+});
+
+// Activate cloak
+on('chat:message', function(msg) {
+    if (msg.type === 'api' && msg.content === '!move cloak') {
+        _.each(msg.selected, function(obj) {
+            if (obj._type === 'graphic') {
+                var token = getObj('graphic', obj._id);
+                var charId = token.get('represents');
+                if (!charId) return;
+        
+                var character = getObj('character', charId);
+                if (!character) return;
+                
+                var charName = character.get('name');
+                var cloakIsArmed = findObjs({
+                    _type: 'attribute',
+                    characterid: charId,
+                    name: 'cloak_is_armed'
+                })[0];
+
+                if (!cloakIsArmed) {
+                    cloakIsArmed = createObj('attribute', {
+                        name: 'cloak_is_armed',
+                        current: 0,
+                        max: '',
+                        characterid: charId
+                    });
+                } else if (cloakIsArmed.get('current') == 1) {
+                    var shipIsCloaked = findObjs({
+                        _type: 'attribute',
+                        characterid: charId,
+                        name: 'ship_is_cloaked'
+                    })[0];
+            
+                    if (!shipIsCloaked) {
+                        shipIsCloaked = createObj('attribute', {
+                            name: 'ship_is_cloaked',
+                            current: 1,
+                            max: '',
+                            characterid: charId
+                        });
+                    } else if (shipIsCloaked.get('current') == 0) {
+                        shipIsCloaked.setWithWorker({ current: 1 });
+                        sendChat(`character|${charId}`, `&{template:custom} {{title=**[${charName}](https://journal.roll20.net/character/${charId})**}} {{subtitle=Cloaking Status}} {{color=purple}} {{Status=Cloaking...}}`);
+                    } else {
+                        shipIsCloaked.setWithWorker({ current: 0 });
+                        sendChat(`character|${charId}`, `&{template:custom} {{title=**[${charName}](https://journal.roll20.net/character/${charId})**}} {{subtitle=Cloaking Status}} {{color=purple}} {{Status=Decloaking...}}`);
+                    }
+                }
             }
         });
     }
@@ -269,4 +322,4 @@ on('chat:message', function(msg) {
             }
         });
     }
-});   
+});
