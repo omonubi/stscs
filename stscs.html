@@ -766,6 +766,7 @@
         <label>Type:</label>
         <select class='w16' name='attr_type'>
             <option>Select...</option>
+            <option value='BB'>Battleship</option>
             <option value='BC'>Battlecruiser</option>
             <option value='CL'>Cruiser, Light</option>
             <option value='CS'>Cruiser, Medium</option>
@@ -3057,7 +3058,8 @@ on(`change:type`, function(eventInfo) {
         const type = values[`type`];
 
         const types = [
-            `BC`, 0,1,0,1,0,0,0, `CL`, 0,0,1,0,0,0,0, `CS`, 0,0,1,1,0,0,0, `CA`, 0,0,1,1,0,0,1,
+            `BB`, 0,1,0,1,0,0,1, `BC`, 0,1,0,1,0,0,0,
+            `CL`, 0,0,1,0,0,0,0, `CS`, 0,0,1,1,0,0,0, `CA`, 0,0,1,1,0,0,1,
             `DD`, 0,0,0,0,0,1,0,
             `ES`, 1,0,0,0,0,0,0,
             `FL`, 0,0,0,0,0,0,0,
