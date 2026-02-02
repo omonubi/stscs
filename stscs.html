@@ -330,7 +330,7 @@
             <input type='hidden' name='attr_wfr_jump'/>
             <input type='hidden' name='attr_wfr_cruise'/>
             <span>
-                <input type='number' class='w5' name='attr_wfr_1' value='0' readonly/>
+                <input type='number' class='w5' name='attr_wfr_1' value='1' readonly/>
                 /
                 <input type='number' class='w5' name='attr_wfr_2' value='1' readonly/>
             </span>
@@ -1013,6 +1013,7 @@ on(`sheet:opened`,function(){
         output[`shields-percent`] = shieldsPercent == -1 ? 100 : shieldsPercent;
         output[`weapons-percent`] = weaponsPercent == -1 ? 100 : weaponsPercent;
         output[`crew-percent`] = crewPercent == -1 ? 100 : crewPercent;
+        output[`wfr_1`] = 1;
 
         setAttrs(output);
     });
@@ -3157,7 +3158,8 @@ on(`change:repeating_engines:engine_power_full remove:repeating_engines change:w
 
             output[`wf_current`] = output[`wf_desired`] = 0; // Clear settings
             output[`wfr_jump`] = output[`wfr_1`] = Math.floor(totalWarpPower / wfEmergency);
-            output[`wfr_cruise`] = totalWarpEngines;
+            //output[`wfr_cruise`] = totalWarpEngines;
+            output[`wfr_cruise`] = 1;
             setAttrs(output);
         });
     });
