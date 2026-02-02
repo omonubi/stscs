@@ -3118,7 +3118,7 @@ on(`change:wf_current change:wf_desired`, function(eventInfo) {
         const wfrJump = parseInt(values[`wfr_jump`]) || 0;
 
         const wfrCurrent = wfDesired > wfCurrent ? wfrJump : wfrCruise;
-        const tpaRequired = wfDesired > wfCurrent ? wfDesired * wfrCurrent : wfrCruise * Math.min(wfCurrent, wfDesired);
+        const tpaRequired = wfDesired > wfCurrent ? (wfDesired - wfCurrent) * wfrCurrent : wfrCruise * Math.min(wfCurrent, wfDesired);
 
         const output = {};
         output[`wfr_1`] = wfrCurrent;
