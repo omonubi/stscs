@@ -2410,7 +2410,7 @@ on(`clicked:send_damage`, async (event) => {
     const weapons = statusData['weapons-percent'] || 0;
     
     // Build roll string with status values
-    const statusString = `{{Sup:=${superstructure}%}} {{Power:=${tpa}%}} {{Shd:=${shields}%}} {{Wpn:=${weapons}%}}`;
+    const statusString = `{{Sup:=${superstructure}%}} {{TPA:=${tpa}%}} {{Shlds:=${shields}%}} {{Wpns:=${weapons}%}}`;
 
     startRoll(
         `/w "@{target|character_name}" &{template:custom} {{title=**Scan Results: Damage**}} {{subtitle=[@{character_name}](${ROLL20_CHAR_URL}@{character_id})}} {{color=green}} ${statusString}`,
@@ -2489,7 +2489,7 @@ on(`clicked:send_shields`, async (event) => {
     const sprValue = `${shieldVars.spr_1}/${shieldVars.spr_2}`;
     
     // Build the shields string
-    const shieldsString = `{{Shields:=${shieldsPowered}}} {{Power:=${powerAllocated}}} {{SPR:=${sprValue}}}`;
+    const shieldsString = `{{Shields:=${shieldsPowered}}} {{Points:=${powerAllocated}}} {{SPR:=${sprValue}}}`;
 
     startRoll(
         `/w "@{target|character_name}" &{template:custom} {{title=**Scan Results: Shields**}} {{subtitle=[@{character_name}](${ROLL20_CHAR_URL}@{character_id})}} {{color=green}} ${shieldsString}`,
@@ -2681,7 +2681,9 @@ async function releaseLockedRepairStatuses() {
 
 // STRESS TURNS
 on(`clicked:stress_turn`, async (event) => {
-    const response = await extractChatData(`?{Select Type of Turn|Emergency Heading Change, 0|Tactical Heading Change, 1|Evasive Maneuver, 2}`);
+    const response = await extractChatData(`?{Select Type of Turn|Select..., -1|Emergency, 0|Tactical, 1|Evasive, 2}`);
+
+    if (response == -1) return;
 
     const turnTypes = [`Energency Heading Change`, `Tactical Heading Change`, `Evasive Maneuver`];
     const engines = await getSectionIDsAsync(`repeating_engines`);
@@ -2917,7 +2919,7 @@ on(`change:tpa change:tpa_movement change:tpa_warp change:tpa_weapons change:tpa
     });
 });
 
-// TOTAL POWER AVAILABLE COMMITTED
+// TPA COMMIT
 on(`clicked:commit_tpa`, async (event) => {
 
     const response = await extractChatData(`?{Confirm TPA Commit|Confirm|Cancel}`);
@@ -2940,6 +2942,10 @@ on(`clicked:tpa_reset`, async (event) => {
     const response = await extractChatData(`?{Confirm TPA Reset|Confirm|Cancel}`);
 
     if (response === `Confirm`) {
+        startRoll(
+            `&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=**NOT** READY}} {{color=purple}}`,
+            roll => finishRoll(roll.rollId)
+        );
         resetTPA();
     }
 });
