@@ -724,8 +724,8 @@
                 <option>X</option>
                 <option>Y</option>
             </select>
-            <input type='number' name='attr_cost' min='1' max='4' value='1'/>
-            <input type='number' name='attr_power' min='1' max='20' value='1'/>
+            <input type='number' name='attr_cost' min='1' value='1'/>
+            <input type='number' name='attr_power' min='1' value='1'/>
             <input type='hidden' name='attr_damage'/>
             <input type='hidden' class='missile-armed-status' name='attr_armed_status'/>
             <input type='checkbox' class='missile-armed' style='margin-left: 13px;' value='1' name='attr_armed'/>
@@ -3271,8 +3271,10 @@ on(`clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target`, a
             if (power == 0 || state == 1 || state == 3) continue;
 
             // If plasma bolt, get damage based on range; else set equal to power
+            const nameSuffix = name.match(/#\d+([a-z]+)/i);
+            const letterGroup = nameSuffix ? nameSuffix[1] : null; // is at half-power
             const isPlasmaBolt = await getPlasmaBoltDamage(wpnName, wpnTargetDistance);
-            const damage = isPlasmaBolt ? isPlasmaBolt : power;
+            const damage = isPlasmaBolt ? letterGroup != 'h' ? isPlasmaBolt : Math.floor(isPlasmaBolt / 2) : power;
 
             // Calculate base to-hit for this weapon
             const baseToHit = getToHit(chart, wpnTargetDistance);
@@ -3376,6 +3378,7 @@ async function getBankedWeaponRows(wpnName, section, rowID, isRecursive = false)
         ids.forEach(id => {
             const name = values[`repeating_${section}_${id}_name`];
             if (name && name.match(nameRoot)) {
+                if (section == 'beams' || (section == 'missiles' && name == wpnName))
                 bankedRows.push(id);
             }
         });
