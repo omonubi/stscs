@@ -725,6 +725,7 @@
             </select>
             <input type='number' name='attr_cost' min='1' max='4' value='1'/>
             <input type='number' name='attr_power' min='1' max='20' value='1'/>
+            <input type='hidden' name='attr_damage'/>
             <input type='hidden' class='missile-armed-status' name='attr_armed_status'/>
             <input type='checkbox' class='missile-armed' style='margin-left: 13px;' value='1' name='attr_armed'/>
             <span style='margin-left: 14px;'>
@@ -3268,6 +3269,10 @@ on(`clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target`, a
             // Skip if not powered or currently damaged
             if (power == 0 || state == 1 || state == 3) continue;
 
+            // If plasma bolt, get damage based on range; else set equal to power
+            const isPlasmaBolt = await getPlasmaBoltDamage(wpnName, wpnTargetDistance);
+            const damage = isPlasmaBolt ? isPlasmaBolt : power;
+
             // Calculate base to-hit for this weapon
             const baseToHit = getToHit(chart, wpnTargetDistance);
             wpnTargetToHitModified = baseToHit + wpnCrewBonus + crewCasualtyPenalty;
@@ -3282,6 +3287,7 @@ on(`clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target`, a
             wpnTargetToHitModified += weaponStatePenalty;
 
             weaponNames.push(name);
+            output[`${targetRow}_damage`] = damage;
             output[`${targetRow}_target_name`] = tokenName;
             output[`${targetRow}_target_id`] = charId;
             output[`${targetRow}_target_distance`] = wpnTargetDistance;
@@ -3519,6 +3525,44 @@ function getToHit (chart, distance) {
     return isNaN(toHit) ? 0 : toHit;
 }
 
+// Determine damage from plasma bolts based on given name
+async function getPlasmaBoltDamage(name, range) {
+    const boltTypes = [
+        `RPL-1`, 24,20,20,16,16,12,4,2,0,0,0,0,0,0,0,
+        `RPL-2`, 32,32,32,24,24,24,20,20,16,16,12,12,8,8,0,
+        `RPL-3`, 28,28,28,28,24,24,24,24,24,20,20,20,16,16,12,12
+    ];
+    
+    // Extract the weapon name (RPL-X) from the formatted string
+    const match = name.match(/RPL-\d+/);
+    const weaponName = match ? match : name;  // Extract the string from the match array
+    
+    // Find the index of the weapon name
+    let nameIndex = -1;
+    for (let i = 0; i < boltTypes.length; i++) {
+        if (boltTypes[i] == weaponName) {
+            nameIndex = i;
+            break;
+        }
+    }
+    
+    // If weapon not found, return null or 0
+    if (nameIndex === -1) {
+        return null;
+    }
+    
+    // Calculate the damage value index (range is 1-based, so range-1 gives 0-based index)
+    const damageIndex = nameIndex + range;
+    
+    // Check if range is valid and return damage
+    if (damageIndex < boltTypes.length && typeof boltTypes[damageIndex] === 'number') {
+        return boltTypes[damageIndex];
+    }
+    
+    // Return 0 if range is out of bounds
+    return 0;
+}
+
 // WEAPON FIRING
 on(`clicked:repeating_beams:btn-fire clicked:repeating_missiles:btn-fire`, async (event) => {
     const match = event.sourceAttribute.match(/repeating_(?<section>.+?)_(?<rowID>.+?)_(?<buttonName>.+)/);
@@ -3526,8 +3570,7 @@ on(`clicked:repeating_beams:btn-fire clicked:repeating_missiles:btn-fire`, async
     const row = `repeating_${section}_${rowID}`;
 
     const attributes = await getAttrsAsync([
-        `${row}_name`, `${row}_armed`, `${row}_power`, `${row}_power_max`,
-        `${row}_bonus_3`, `${row}_bonus_2`, `${row}_bonus_1`,
+        `${row}_name`, 
         `${row}_target_name`, `${row}_target_id`, 
         `${row}_target_distance`, `${row}_target_tohit`, `faction`, 
         `ship_is_evading`
@@ -3570,7 +3613,7 @@ on(`clicked:repeating_beams:btn-fire clicked:repeating_missiles:btn-fire`, async
     for (const id of bankedRows) {
         const rowAttrs = await getAttrsAsync([
             `repeating_${section}_${id}_name`,
-            `repeating_${section}_${id}_power`, `repeating_${section}_${id}_power_max`,
+            `repeating_${section}_${id}_power`, `repeating_${section}_${id}_power_max`, `repeating_${section}_${id}_damage`, 
             `repeating_${section}_${id}_bonus_3`, `repeating_${section}_${id}_bonus_2`, `repeating_${section}_${id}_bonus_1`,
             `repeating_${section}_${id}_armed`,
             `repeating_${section}_${id}_target_name`, `repeating_${section}_${id}_target_tohit`
@@ -3579,6 +3622,7 @@ on(`clicked:repeating_beams:btn-fire clicked:repeating_missiles:btn-fire`, async
         const wpnName = rowAttrs[`repeating_${section}_${id}_name`];
         const power = parseInt(rowAttrs[`repeating_${section}_${id}_power`]) || 0;
         const powerMax = parseInt(rowAttrs[`repeating_${section}_${id}_power_max`]) || 0;
+        const damage = parseInt(rowAttrs[`repeating_${section}_${id}_damage`]) || 0;
         const bonus3 = parseInt(rowAttrs[`repeating_${section}_${id}_bonus_3`]) || 0;
         const bonus2 = parseInt(rowAttrs[`repeating_${section}_${id}_bonus_2`]) || 0;
         const bonus1 = parseInt(rowAttrs[`repeating_${section}_${id}_bonus_1`]) || 0;
@@ -3590,7 +3634,7 @@ on(`clicked:repeating_beams:btn-fire clicked:repeating_missiles:btn-fire`, async
         if (!targetName) continue;
 
         const isOCLaser = armed ? 0 : (power > powerMax ? 1 : 0);
-        const powerDischarge = isOCLaser ? Math.floor(power / 2) : power;
+        const powerDischarge = isOCLaser ? Math.floor(damage / 2) : damage;
         const totalDamage = powerDischarge + (
             targetDistance <= bonus3 ? 3 :
             targetDistance <= bonus2 ? 2 :
