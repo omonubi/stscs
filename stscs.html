@@ -44,7 +44,8 @@
             <span name='attr_ce'>0</span>
         </span>
 
-        <label>Captain:</label>
+        <!--<label>Captain:</label>-->
+        <button type='roll' class='btn' value='&{template:custom} {{title=**[@{character_name}](@{roll20charurl}@{character_id})**}} {{subtitle=Command Rating Check}} {{color=gold}} {{Captain=@{capname}}} {{Rating=[[@{caprating}]]}} {{Roll=[[d100cf<0cs>101]]}}'>Captain</button>
         <input type='text' class='w12' name='attr_capname' placeholder='name...'/>
         <label>Command Rating:</label>
         <input type='hidden' name='attr_caprating_ta'/>
@@ -70,7 +71,7 @@
         <label>Damage Charts:</label>
         <span name='attr_dmg_chart'></span>
 
-        <button type='roll' class='btn' name='roll_rollcrew' value='&{template:custom} {{title=**[@{character_name}](@{roll20charurl}@{character_id})**}} {{subtitle=Crew Efficiency Roll}} {{color=gold}} {{Efficiency=[[@{crewefficiency}]]}} {{Roll=[[d100cf<0cs>101]]}}'>Crew Check</button>
+        <button type='roll' class='btn' name='roll_rollcrew' value='&{template:custom} {{title=**[@{character_name}](@{roll20charurl}@{character_id})**}} {{subtitle=Crew Efficiency Check}} {{color=gold}} {{Rating=[[@{crewefficiency}]]}} {{Roll=[[d100cf<0cs>101]]}}'>Crew Check</button>
         <span></span>
         <label><strong>Crew:</strong></label>
         <input type='hidden' name='attr_crew-percent' value='100'/>
@@ -3865,15 +3866,15 @@ function getSectionIDsAsync(sectionName){
         <div class="sheet-value">{{value}}</div>
         {{/allprops() title subtitle color Damage Slim-Roll Slim-To-Hit}}
 
-        {{#^rollGreater() Roll Efficiency}}
+        {{#^rollGreater() Roll Rating}}
         <div class="sheet-key">Result</div>
         <div class="sheet-value"><span class="success">Success!</span></div>
-        {{/^rollGreater() Roll Efficiency}}
+        {{/^rollGreater() Roll Rating}}
 
-        {{#rollGreater() Roll Efficiency}}
+        {{#rollGreater() Roll Rating}}
         <div class="sheet-key">Result</div>
         <div class="sheet-value"><span class="failure">Failure</span></div>
-        {{/rollGreater() Roll Efficiency}}
+        {{/rollGreater() Roll Rating}}
 
         {{#^rollGreater() Roll To-Hit}}
         <div class="sheet-key">Result</div>
