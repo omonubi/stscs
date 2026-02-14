@@ -598,14 +598,14 @@
         <h4 class='span-grid'>Beam Weapons</h4>
         <input type='hidden' name='attr_wp_beam'/>
         <div class='span-grid'>
-            <label style='padding-left: 27px;'>Desig. (Arcs)</label>
-            <label style='padding-left: 26px;'>Range</label>
-            <label style='padding-left: 13px;'>Chart</label>
-            <label style='padding-left: 7px;'>Power</label>
-            <label style='padding-left: 18px;'>Max</label>
-            <label style='padding-left: 24px;'>+3</label>
-            <label style='padding-left: 25px;'>+2</label>
-            <label style='padding-left: 26px;'>+1</label>
+            <label style='padding-left: 45px;'>Desig. (Arcs)</label>
+            <label style='padding-left: 30px;'>Range</label>
+            <label style='padding-left: 11px;'>Chart</label>
+            <label style='padding-left: 10px;'>Pwr</label>
+            <label style='padding-left: 21px;'>Max</label>
+            <label style='padding-left: 20px;'>+3</label>
+            <label style='padding-left: 22px;'>+2</label>
+            <label style='padding-left: 22px;'>+1</label>
             <label style='padding-left: 95px;'>Target</label>
             <label style='padding-left: 65px;'>Dist.</label>
             <label style='padding-left: 7px;'>To-Hit</label>
@@ -618,7 +618,7 @@
                 <option value='2'>R</option>
                 <option value='3'>X</option>
             </select>
-            <input type='text' class='w10' name='attr_name' placeholder='# Name (arcs)...'/>
+            <input type='text' class='w12' name='attr_name' placeholder='# Name (arcs)...'/>
             <input type='number' class='w5' name='attr_maxrange'/>
             <select class='w3 firing-chart' name='attr_chart'>
                 <option value='0' selected>select...</option>
@@ -649,8 +649,8 @@
                 <option>Y</option>
             </select>
             <input type='hidden' class='power-status' name='attr_power_status'/>
-            <input type='number' class='power' name='attr_power' min='0' max='10' value='0'/> /
-            <input type='number' name='attr_power_max' min='0' max='10' value='0'/>
+            <input type='text' class='w3 power' name='attr_power' min='0' max='10' value='0'/> /
+            <input type='text' class='w3' name='attr_power_max' min='0' max='10' value='0'/>
             <input type='text' class='w3' name='attr_bonus_3' value='-'/>
             <input type='text' class='w3' name='attr_bonus_2' value='-'/>
             <input type='text' class='w3' name='attr_bonus_1' value='-'/> 
@@ -676,10 +676,10 @@
         <h4 class='span-grid'>Missile Weapons</h4>
         <input type='hidden' name='attr_wp_missile'/>
         <div class='span-grid'>
-            <label style='padding-left: 27px;'>Desig. (Arcs)</label>
-            <label style='padding-left: 26px;'>Range</label>
-            <label style='padding-left: 13px;'>Chart</label>
-            <label style='padding-left: 10px;'>Power</label>
+            <label style='padding-left: 45px;'>Desig. (Arcs)</label>
+            <label style='padding-left: 30px;'>Range</label>
+            <label style='padding-left: 10px;'>Chart</label>
+            <label style='padding-left: 9px;'>Power</label>
             <label style='padding-left: 4px;'>Damage</label>
             <label style='padding-left: 7px;'>Arm</label>
             <label style='padding-left: 169px;'>Target</label>
@@ -694,7 +694,7 @@
                 <option value='2'>R</option>
                 <option value='3'>X</option>
             </select>
-            <input type='text' class='w10' name='attr_name' placeholder='# Name (arcs)...'/>
+            <input type='text' class='w12' name='attr_name' placeholder='# Name (arcs)...'/>
             <input type='number' class='w5' name='attr_maxrange'/>
             <select class='w3 firing-chart' name='attr_chart'>
                 <option value='0' selected>select...</option>
@@ -729,7 +729,7 @@
             <input type='hidden' name='attr_damage'/>
             <input type='hidden' class='missile-armed-status' name='attr_armed_status'/>
             <input type='checkbox' class='missile-armed' style='margin-left: 13px;' value='1' name='attr_armed'/>
-            <span style='margin-left: 14px;'>
+            <span style='margin-left: 0px;'>
                 <input type='hidden' class='btn-target-status' name='attr_btn-target_status' value='0'/>
                 <button type='action' class='btn btn-target' style='margin-left: 87px;' name='act_btn-target'>Target</button>
             </span> →
