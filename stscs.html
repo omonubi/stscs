@@ -778,6 +778,7 @@
             <option value='ES'>Escort</option>
             <option value='FL'>Frigate, Light</option>
             <option value='FS'>Frigate, Medium</option>
+            <option value='MN'>Monitor</option>
             <option value='RV'>Research Vessel</option>
             <option value='SC'>Scout</option>
             <option value='TC'>Transport, Commercial</option>
@@ -899,7 +900,7 @@
         <input type='number' name='attr_trans_tpa_cbt' value='0' readonly/>
         <button type='action' class='btn trans-btn-cbt' name='act_trans_btn_cbt'>Energize</button>
         
-        <label>Energency</label>
+        <label>Emergency</label>
         <input type='hidden' class='trans-ison-er' name='attr_trans_ison_er' value='0'/>
         <input type='number' name='attr_trans_cap_er' min='0' value='0' title='# persons'/>
         <input type='number' name='attr_trans_num_er' min='0' value='0'/>
@@ -3075,6 +3076,7 @@ on(`change:type`, function(eventInfo) {
             `DD`, 0,0,0,0,0,1,0,
             `ES`, 1,0,0,0,0,0,0,
             `FL`, 0,0,0,0,0,0,0, `FS`, 0,0,0,1,0,0,0,
+            `MN`, 1,0,0,0,0,0,0,
             `RV`, 0,0,0,0,0,0,0,
             `SC`, 0,0,1,1,1,0,0,
             `TC`, 0,0,0,0,0,0,0, `TF`, 0,0,0,0,0,0,0, `TL`, 0,0,0,0,0,0,0, `TU`, 0,0,0,0,0,0,0,
