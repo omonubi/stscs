@@ -771,6 +771,7 @@
             <option value='BB'>Battleship</option>
             <option value='BC'>Battlecruiser</option>
             <option value='CL'>Cruiser, Light</option>
+            <option value='CM'>Cruiser, Missile</option>
             <option value='CR'>Cruiser, Research</option>
             <option value='CS'>Cruiser, Medium</option>
             <option value='CA'>Cruiser, Heavy</option>
@@ -3072,7 +3073,7 @@ on(`change:type`, function(eventInfo) {
 
         const types = [
             `BB`, 0,1,0,1,0,0,1, `BC`, 0,1,0,1,0,0,0,
-            `CA`, 0,0,1,1,0,0,1, `CL`, 0,0,1,0,0,0,0, `CR`, 0,0,1,0,0,0,0, `CS`, 0,0,1,1,0,0,0,
+            `CA`, 0,0,1,1,0,0,1, `CL`, 0,0,1,0,0,0,0, `CM`, 0,1,1,0,0,0,0, `CR`, 0,0,1,0,0,0,0, `CS`, 0,0,1,1,0,0,0,
             `DD`, 0,0,0,0,0,1,0,
             `ES`, 1,0,0,0,0,0,0,
             `FL`, 0,0,0,0,0,0,0, `FS`, 0,0,0,1,0,0,0,
