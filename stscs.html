@@ -3099,11 +3099,12 @@ on(`change:type`, function(eventInfo) {
 });
 
 
-// TYPE = STATION = no warp speed
+// TYPE = STATION or MONITOR = no warp speed
 on(`change:type`, function(eventInfo) {
     getAttrs([`type`], function(values) {
         const type = values[`type`];
         const isStation = 
+            type == `MN` ||
             type == `ZA` ||
             type == `ZD` || 
             type == `ZO` || 
