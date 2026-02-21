@@ -1204,7 +1204,7 @@ on(`change:crewbonus`, async function(eventInfo) {
                 const enginePower = parseInt(engineValues[`repeating_engines_${engineId}_engine_power`]) || 0;
                 const enginePowerFull = parseInt(engineValues[`repeating_engines_${engineId}_engine_power_full`]) || 0;
 
-                if (engineType === 2 && enginePower < lowestPower && enginePower < enginePowerFull) {
+                if (engineType === ENGINE_TYPE_WARP && enginePower < lowestPower && enginePower < enginePowerFull) {
                     lowestPower = enginePower;
                     lowestEngineId = engineId;
                 }
@@ -2358,10 +2358,14 @@ on(`clicked:scan_cloak`, async (event) => {
 
         const values = await getAttrsAsync(['ship_has_scanned']); // Has the cloaked vessel used scanners?
         const shipHasScanned = parseInt(values['ship_has_scanned'] || 0);
+        const numWarpEngines = await getNumWarpEngines();
 
         const roll = getRandomIntInclusive(1,10);
         const result = Math.max(roll - isDestroyer, 0); // DDs get +1 on roll
-        if (result <= (Math.ceil((31-range)/10) + shipHasScanned)) {
+    console.log('Scanning for cloaked vessels at range: ' + range);
+    console.log('Roll target: ' + (Math.ceil((31-range)/10) + shipHasScanned + (numWarpEngines - 2)));
+    console.log('Roll result: ' + result);
+        if (result <= (Math.ceil((31-range)/10) + shipHasScanned + (numWarpEngines - 2))) {
             const isDestroyerStr = isDestroyer ? `{{DD Bonus=Yes}}` : ``;
             startRoll(
                 `/w "@{target|character_name}" &{template:custom} {{title=**Scan Results: Cloak**}} {{color=green}} {{Arc Scanned=${scannedArc}}} {{Results=Vessel Detected!}} {{At Range=${range}}} ${isDestroyerStr}`,
@@ -3781,6 +3785,23 @@ on(`change:repeating_beams:target_tohit change:repeating_missiles:target_tohit`,
         });
     });
 });
+
+/****************************/
+async function getNumWarpEngines() {            
+    const engineIds = await getSectionIDsAsync(`repeating_engines`);
+    let numWarpEngines = 0;
+
+    for (const engineId of engineIds) {
+        const engineValues = await getAttrsAsync([
+            `repeating_engines_${engineId}_engine_type`
+        ]);
+
+        const engineType = parseInt(engineValues[`repeating_engines_${engineId}_engine_type`]) || 0;
+
+        if (engineType === ENGINE_TYPE_WARP) ++numWarpEngines;
+    }
+    return numWarpEngines;
+}
 
 /****************************/
 function isRunningOnServer() { return self.dispatchEvent == undefined; }
