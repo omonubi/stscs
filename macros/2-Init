@@ -1,1 +1,2 @@
-!nextphase
+&{template:custom} {{title=**Tactical Advantage**}} {{color=black}}
+!group-init
