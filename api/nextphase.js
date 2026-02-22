@@ -94,7 +94,7 @@ on('change:campaign:turnorder', function() {
     	    displayNewPhase();
         } else if (!myObj.get('name').startsWith('Round')) {
             // This is NOT a new phase or round so must be a vessel
-            const myOpacity = myObj.get('baseOpacity');
+            const myLayer = myObj.get('layer');
             const characterId = myObj.get('represents');
             const mpAttr = findObjs({ type: 'attribute', characterid: characterId, name: 'mp' });
             const mp = mpAttr ? mpAttr[0].get('current') : 0;
@@ -103,7 +103,7 @@ on('change:campaign:turnorder', function() {
             let noCurrentMove = 0;
             switch (PhaseIndex) {
                 case PHASE_1_MOVEMENT:
-                    if (myOpacity != 0) {
+                    if (myLayer != 'gmlayer') {
                         noCurrentMove = (mp == 0 || mp == 1) ? 1 : 0;
                         sendChat('Vessel', `&{template:custom} {{title=[**${myObj.get('name')} - ${Math.floor(mp / 3) + Math.floor((mp % 3) / 2)} MP**](http://journal.roll20.net/character/${characterId})}}`);
                     } else {
@@ -111,7 +111,7 @@ on('change:campaign:turnorder', function() {
                     }
                     break;
                 case PHASE_2_MOVEMENT:
-                    if (myOpacity != 0) {
+                    if (myLayer != 'gmlayer') {
                         noCurrentMove = (mp == 0 || mp == 2) ? 1 : 0;
                         sendChat('Vessel', `&{template:custom} {{title=[**${myObj.get('name')} - ${Math.floor(mp / 3) + (mp % 3 == 1 ? 1 : 0)} MP**](http://journal.roll20.net/character/${characterId})}}`);
                     } else {
@@ -119,7 +119,7 @@ on('change:campaign:turnorder', function() {
                     }
                     break;
                 case PHASE_3_MOVEMENT:
-                    if (myOpacity != 0) {
+                    if (myLayer != 'gmlayer') {
                         noCurrentMove = (mp == 0 || mp == 1) ? 1 : 0;
                         sendChat('Vessel', `&{template:custom} {{title=[**${myObj.get('name')} - ${Math.floor(mp / 3) + Math.floor((mp % 3) / 2)} MP**](http://journal.roll20.net/character/${characterId})}}`);
                     } else {
@@ -132,9 +132,9 @@ on('change:campaign:turnorder', function() {
 
             // Set movement status marker if no movement in this phase
             if (noCurrentMove) {
-                myObj.set('status_green', false);
-                myObj.set('status_purple', false);
-                myObj.set('status_red', true);
+                //myObj.set('status_green', false);
+                //myObj.set('status_purple', false);
+                //myObj.set('status_red', true);
             }
         }
     }
@@ -144,8 +144,10 @@ on('change:campaign:turnorder', function() {
 function displayNewPhase () {
     sendChat('Phase', `&{template:custom} {{title=**${names[PhaseIndex]}**}} {{color=black}}`);
     switch (PhaseIndex) {
-        case PHASE_SENSORS:
+        case PHASE_ALLOCATION:
             sendChat('Phase', `&{template:custom} {{title=**Engage/Disengage Cloaks?**}} {{color=blue}}`);
+            break;
+        case PHASE_SENSORS:
             sortTurnOrder(sorter_asc);
             break;
         case PHASE_1_TARGET: case PHASE_2_TARGET: case PHASE_3_TARGET:
