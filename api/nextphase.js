@@ -39,6 +39,7 @@ on('chat:message', function(msg) {
         PhaseIndex = PHASE_NEWROUND;
         RoundIndex = 1;
         sendChat('Phase', `&{template:custom} {{title=**Let the Battle Begin!**}} {{color=red}}`);
+    	setCurrentPhase();
     // New combat round
     } else if (msg.type == 'api' && msg.content.indexOf('!nextphase back') == 0){
         if (PhaseIndex != PHASE_NEWROUND) previousPhase();
@@ -62,6 +63,7 @@ function nextPhase() {
     		    obj.set('name', names[PhaseIndex]);
 		        stopLoop = true;
     	        displayNewPhase();
+    	        setCurrentPhase();
 		    }
 	    }
 	});
@@ -74,8 +76,42 @@ function previousPhase() {
 		if (obj.get('_subtype') == 'token' && obj.get('name').startsWith('Phase')) {
 		    obj.set('name', names[PhaseIndex]);
     	    displayNewPhase();
+    	    setCurrentPhase();
 		}
 	});
+}
+
+function setCurrentPhase() {
+    var tokens = findObjs({ _type: 'graphic' });
+
+    tokens.forEach(function(token) {
+        if (!token.get('name').startsWith('Phase')) { 
+            var charId = token.get('represents');
+            if (!charId) return;
+    
+            var character = getObj('character', charId);
+            if (!character) return;
+    
+            var currentPhaseAttr = findObjs({
+                _type: 'attribute',
+                characterid: charId,
+                name: 'current_phase'
+                })[0];
+    
+            if (!currentPhaseAttr) {
+                // Create attribute and use setWithWorker
+                currentPhaseAttr = createObj('attribute', {
+                    name: 'current_phase',
+                    current: PhaseIndex,
+                    max: '',
+                    characterid: charId
+                });
+            } else {
+                // Use setWithWorker instead of set
+                currentPhaseAttr.setWithWorker({ current: PhaseIndex });
+            }
+        }
+    });
 }
 
 // Advance to the next combat phase
@@ -183,6 +219,7 @@ function displayNewPhase () {
         default:
             sortTurnOrder(sorter_asc);
     }
+    setCurrentPhase();
 }
 
 // Remove fire tokens from map

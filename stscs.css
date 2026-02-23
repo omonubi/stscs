@@ -150,6 +150,8 @@
 .ui-dialog .charsheet .bridge-hit-status[value='1'] ~ .shields-header .btn-shields-grid-repair,
 .ui-dialog .charsheet .btn-fire-status[value='0'] ~ .btn-fire,
 .ui-dialog .charsheet .btn-target-status[value='0'] ~ .btn-target,
+.ui-dialog .charsheet .is-firing-phase[value='1'] ~ .beams-panel .btn-target,
+.ui-dialog .charsheet .is-firing-phase[value='1'] ~ .missiles-panel .btn-target,
 .ui-dialog .charsheet .movement-grid-status:not([value='1']) ~ .helm-header .btn-movement-grid-repair,
 .ui-dialog .charsheet .sensors-destroyed[value='1'] ~ .sensors-panel .btn-sensors-repair,
 .ui-dialog .charsheet .sensors-status:not([value='0']) ~ .beams-panel .btn-target,
