@@ -56,7 +56,8 @@ on('chat:message', function(msg) {
 function nextPhase() {
 	PhaseIndex ++;
 	let stopLoop = false;
-	const selectedObjs = findObjs({type: 'graphic'});
+    var currentPageId = Campaign().get('playerpageid');
+    var selectedObjs = findObjs({ _type: 'graphic', pageid: currentPageId });
 	_.each (selectedObjs, function(obj) {
 	    if (!stopLoop) {
 		    if (obj.get('_subtype') == 'token' && obj.get('name').startsWith('Phase')) {
@@ -71,7 +72,8 @@ function nextPhase() {
 
 function previousPhase() {
 	PhaseIndex --;
-	const selectedObjs = findObjs({type: 'graphic'});
+    var currentPageId = Campaign().get('playerpageid');
+    var selectedObjs = findObjs({ _type: 'graphic', pageid: currentPageId });
 	_.each (selectedObjs, function(obj) {
 		if (obj.get('_subtype') == 'token' && obj.get('name').startsWith('Phase')) {
 		    obj.set('name', names[PhaseIndex]);
@@ -82,7 +84,8 @@ function previousPhase() {
 }
 
 function setCurrentPhase() {
-    var tokens = findObjs({ _type: 'graphic' });
+    var currentPageId = Campaign().get('playerpageid');
+    var tokens = findObjs({ _type: 'graphic', pageid: currentPageId });
 
     tokens.forEach(function(token) {
         if (!token.get('name').startsWith('Phase')) { 
@@ -132,12 +135,17 @@ on('change:campaign:turnorder', function() {
             // This is NOT a new phase or round so must be a vessel
             const myLayer = myObj.get('layer');
             const characterId = myObj.get('represents');
+            const lockAttr = findObjs({ type: 'attribute', characterid: characterId, name: 'sensorlock' });
+            const lock = lockAttr ? lockAttr[0].get('current') != `` ? lockAttr[0].get('current') : `no lock` : 0;
             const mpAttr = findObjs({ type: 'attribute', characterid: characterId, name: 'mp' });
             const mp = mpAttr ? mpAttr[0].get('current') : 0;
             
             // If the current phase is a movement phase, display the vessel's current MP for the phase
             let noCurrentMove = 0;
             switch (PhaseIndex) {
+                case PHASE_SENSORS:
+                    sendChat('Vessel', `&{template:custom} {{title=[**${myObj.get('name')}**](http://journal.roll20.net/character/${characterId}) (${lock})}}`);
+                    break;
                 case PHASE_1_MOVEMENT:
                     if (myLayer != 'gmlayer') {
                         noCurrentMove = (mp == 0 || mp == 1) ? 1 : 0;
@@ -224,7 +232,8 @@ function displayNewPhase () {
 
 // Remove fire tokens from map
 function removeFireTokens() {
-	const selectedObjs = findObjs({type: 'graphic'});
+    var currentPageId = Campaign().get('playerpageid');
+    var selectedObjs = findObjs({ _type: 'graphic', pageid: currentPageId });
 	
 	_.each (selectedObjs, function(obj) {
 		if (obj.get('_subtype') == 'card') { obj.remove(); }
@@ -233,7 +242,8 @@ function removeFireTokens() {
 
 // Remove no-sensor status tokens
 function removeEvasion() {
-    const selectedObjs = findObjs({type: 'graphic'});
+    var currentPageId = Campaign().get('playerpageid');
+    var selectedObjs = findObjs({ _type: 'graphic', pageid: currentPageId });
     _.each(selectedObjs, function(obj) {
         if (obj.get('_subtype') == 'token') {
             let markers = obj.get('statusmarkers');
@@ -246,11 +256,12 @@ function removeEvasion() {
 }
 
 function resetTPA() {
-    var tokens = findObjs({ _type: 'graphic' });
+    var currentPageId = Campaign().get('playerpageid');
+    var tokens = findObjs({ _type: 'graphic', pageid: currentPageId });
     var now = new Date().toLocaleString();
 
     tokens.forEach(function(token) {
-        if (!token.get('name').startsWith('Phase')) { 
+        if (!token.get('name').startsWith('Phase') && !token.get('name').startsWith('Round')) { 
             var charId = token.get('represents');
             if (!charId) return;
     

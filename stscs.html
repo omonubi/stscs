@@ -999,8 +999,11 @@ const ROLL20_CHAR_URL = `https://journal.roll20.net/character/`;
 
 // ON SHEET OPENED
 on(`sheet:opened`,function(){
-    getAttrs([`character_name`, `sup-percent`, `tpa-percent`, `shields-percent`, `weapons-percent`, `crew-percent`], function(values) {
+    getAttrs([`character_name`, `sensorlock`, `mp`, `tpa_reset`, `sup-percent`, `tpa-percent`, `shields-percent`, `weapons-percent`, `crew-percent`], function(values) {
         const charactername = values[`character_name`];
+        const sensorLock = values[`sensorlock`] || ``;
+        const mp = parseInt(values[`mp`]) || 0;
+        const tpaReset = parseInt(values[`tpa_reset`]) || 0;
         const supPercent = parseInt(values[`sup-percent`]) || -1;
         const tpaPercent = parseInt(values[`tpa-percent`]) || -1;
         const shieldsPercent = parseInt(values[`shields-percent`]) || -1;
@@ -1016,6 +1019,9 @@ on(`sheet:opened`,function(){
         }
         output[`roll20charurl`] = ROLL20_CHAR_URL;
 
+        output[`sensorlock`] = sensorLock;
+        output[`mp`] = mp;
+        output[`tpa_reset`] = tpaReset;
         output[`sup-percent`] = supPercent == -1 ? 100 : supPercent;
         output[`tpa-percent`] = tpaPercent == -1 ? 100 : tpaPercent;
         output[`shields-percent`] = shieldsPercent == -1 ? 100 : shieldsPercent;
