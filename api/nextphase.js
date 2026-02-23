@@ -152,6 +152,7 @@ on('change:campaign:turnorder', function() {
                         sendChat('Vessel', `&{template:custom} {{title=[**${myObj.get('name')} - ${Math.floor(mp / 3) + Math.floor((mp % 3) / 2)} MP**](http://journal.roll20.net/character/${characterId})}}`);
                     } else {
                         sendChat('Vessel', `&{template:custom} {{title=[**${myObj.get('name')} - ? MP**](http://journal.roll20.net/character/${characterId})}}`);
+                        sendChat('Vessel', `/w GM &{template:custom} {{title=[**${myObj.get('name')} - ${Math.floor(mp / 3) + Math.floor((mp % 3) / 2)} MP**](http://journal.roll20.net/character/${characterId})}}`);
                     }
                     break;
                 case PHASE_2_MOVEMENT:
@@ -160,6 +161,7 @@ on('change:campaign:turnorder', function() {
                         sendChat('Vessel', `&{template:custom} {{title=[**${myObj.get('name')} - ${Math.floor(mp / 3) + (mp % 3 == 1 ? 1 : 0)} MP**](http://journal.roll20.net/character/${characterId})}}`);
                     } else {
                         sendChat('Vessel', `&{template:custom} {{title=[**${myObj.get('name')} - ? MP**](http://journal.roll20.net/character/${characterId})}}`);
+                        sendChat('Vessel', `/w GM &{template:custom} {{title=[**${myObj.get('name')} - ${Math.floor(mp / 3) + (mp % 3 == 1 ? 1 : 0)} MP**](http://journal.roll20.net/character/${characterId})}}`);
                     }
                     break;
                 case PHASE_3_MOVEMENT:
@@ -168,6 +170,7 @@ on('change:campaign:turnorder', function() {
                         sendChat('Vessel', `&{template:custom} {{title=[**${myObj.get('name')} - ${Math.floor(mp / 3) + Math.floor((mp % 3) / 2)} MP**](http://journal.roll20.net/character/${characterId})}}`);
                     } else {
                         sendChat('Vessel', `&{template:custom} {{title=[**${myObj.get('name')} - ? MP**](http://journal.roll20.net/character/${characterId})}}`);
+                        sendChat('Vessel', `/w GM &{template:custom} {{title=[**${myObj.get('name')} - ${Math.floor(mp / 3) + Math.floor((mp % 3) / 2)} MP**](http://journal.roll20.net/character/${characterId})}}`);
                     }
                     break;
                 default:
