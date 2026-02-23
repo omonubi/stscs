@@ -2372,18 +2372,18 @@ on(`clicked:scan_cloak`, async (event) => {
     
     if(scanTargetExists) {
         const range = parseInt(+await extractChatData(`?{Range|30}`) || 0);
+        const speed = parseInt(+await extractChatData(`?{Is Moving|No,0|Yes,2}`) || 0);
         const isDestroyer = parseInt(+await extractChatData(`?{Is Destroyer|No,0|Yes,1}`) || 0);
 
         const values = await getAttrsAsync(['ship_has_scanned']); // Has the cloaked vessel used scanners?
         const shipHasScanned = parseInt(values['ship_has_scanned'] || 0);
         const numWarpEngines = await getNumWarpEngines();
 
-        const roll = getRandomIntInclusive(1,10);
-        const result = Math.max(roll - isDestroyer, 0); // DDs get +1 on roll
-    console.log('Scanning for cloaked vessels at range: ' + range);
-    console.log('Roll target: ' + (Math.ceil((31-range)/10) + shipHasScanned + (numWarpEngines - 2)));
-    console.log('Roll result: ' + result);
-        if (result <= (Math.ceil((31-range)/10) + shipHasScanned + (numWarpEngines - 2))) {
+        const result = getRandomIntInclusive(1,10);
+        const target = (Math.ceil((31-range)/10) + shipHasScanned + (numWarpEngines - 2) + speed + isDestroyer);
+        console.log ('result: ' + result);
+        console.log ('target: ' + target);
+        if (result <= target) {
             const isDestroyerStr = isDestroyer ? `{{DD Bonus=Yes}}` : ``;
             startRoll(
                 `/w "@{target|character_name}" &{template:custom} {{title=**Scan Results: Cloak**}} {{color=green}} {{Arc Scanned=${scannedArc}}} {{Results=Vessel Detected!}} {{At Range=${range}}} ${isDestroyerStr}`,
@@ -2972,7 +2972,7 @@ on(`clicked:tpa_reset`, async (event) => {
 
     if (response === `Confirm`) {
         startRoll(
-            `&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=**NOT** READY}} {{color=purple}}`,
+            `&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=**NOT** READY}} {{color=blue}}`,
             roll => finishRoll(roll.rollId)
         );
         resetTPA();
