@@ -406,34 +406,34 @@
             <label>Shield #1 (<strong>f/p</strong>):</label>
             <span>
                 <input type='hidden' class='shield-1a-status' name='attr_shield_1a_status'/>
-                <input type='number' class='shield-1' name='attr_shield_1' min='0' value='0' title='Shield #1 (f/p)'/>
+                <input type='number' class='shield-1' name='attr_shield_1' min='0' value='0' title='Shield #1 (f/p)' readonly/>
             </span>
             <label>Shield #2 (<strong>fwd</strong>):</label>
             <span>
                 <input type='hidden' class='shield-2a-status' name='attr_shield_2a_status'/>
-                <input type='number' class='shield-2' name='attr_shield_2' min='0' value='0' title='Shield #2 (fwd)'/>
+                <input type='number' class='shield-2' name='attr_shield_2' min='0' value='0' title='Shield #2 (fwd)' readonly/>
             </span>
             <label>Shield #3 (<strong>f/s</strong>):</label>
             <span>
                 <input type='hidden' class='shield-3a-status' name='attr_shield_3a_status'/>
-                <input type='number' class='shield-3' name='attr_shield_3' min='0' value='0' title='Shield #3 (f/s)'/>
+                <input type='number' class='shield-3' name='attr_shield_3' min='0' value='0' title='Shield #3 (f/s)' readonly/>
             </span>
 
             <label>Shield #6 (<strong>a/p</strong>):</label>
             <span>
                 <input type='hidden' class='shield-6a-status' name='attr_shield_6a_status'/>
-                <input type='number' class='shield-6' name='attr_shield_6' min='0' value='0' title='Shield #6 (a/p)'/>
+                <input type='number' class='shield-6' name='attr_shield_6' min='0' value='0' title='Shield #6 (a/p)' readonly/>
             </span>
             <label>Shield #5 (<strong>aft</strong>):</label>
             <span>
                 
                 <input type='hidden' class='shield-5a-status' name='attr_shield_5a_status'/>
-                <input type='number' class='shield-5' name='attr_shield_5' min='0' value='0' title='Shield #5 (aft)'/>
+                <input type='number' class='shield-5' name='attr_shield_5' min='0' value='0' title='Shield #5 (aft)' readonly/>
             </span>
             <label>Shield #4 (<strong>a/s</strong>):</label>
             <span>
                 <input type='hidden' class='shield-4a-status' name='attr_shield_4a_status'/>
-                <input type='number' class='shield-4' name='attr_shield_4' min='0' value='0' title='Shield #4 (a/s)'/>
+                <input type='number' class='shield-4' name='attr_shield_4' min='0' value='0' title='Shield #4 (a/s)' readonly/>
             </span>
         </div>
 
@@ -1672,19 +1672,22 @@ async function damageImpulse(myDmg = 0, myFactor = 1) {
 
 // DAMAGE SHIELD
 // Note: This is damage to the shield value, NOT the shield generator (see damageSystem).
-async function damageShield(myShieldVar = ``, myDmg = 0, myFactor = 1) {
-    const values = await getAttrsAsync([myShieldVar]);
+async function damageShield(myShieldVar = ``, myDmg = 0) {
+    const values = await getAttrsAsync([myShieldVar, `spr_1`, `spr_2`]);
     const shieldPower = parseInt(values[myShieldVar]) || 0;
+    const spr = (parseInt(values[`spr_1`]) || 1) / (parseInt(values[`spr_2`]) || 1);
+    const damageAbsorption = Math.floor(shieldPower * spr);
 
-    const shieldPowerRemaining = Math.max(0, shieldPower - Math.floor(myDmg * myFactor));
-    const myDmgAbsorbed = shieldPower - shieldPowerRemaining;
-    const penetratingDamage = Math.max(0, Math.floor(myDmg * myFactor) - shieldPower);
+    const penetratingDamage = Math.max(0, myDmg - damageAbsorption);
+    const damageAbsorbed = myDmg - penetratingDamage;
+    const newShieldPower = Math.max(0, shieldPower - myDmg);
+    const shieldReduction = shieldPower - newShieldPower;
 
     const output = {};
-    output[myShieldVar] = shieldPowerRemaining;
+    output[myShieldVar] = newShieldPower;
     await setAttrsAsync(output);
 
-    const returnStr = ` {{Shield Strength=${shieldPower}}} {{Absorbed=${myDmgAbsorbed}}} {{Penetrating Dmg=[[${penetratingDamage}]]}}`;
+    const returnStr = ` {{Shield Strength=${shieldPower}}} {{Damage Absorbed=${damageAbsorbed}}} {{Penetrating Dmg=[[${penetratingDamage}]]}}`;
     return { penetratingDamage, returnStr };
 }
 
@@ -2506,19 +2509,19 @@ on(`clicked:send_shields`, async (event) => {
     const shieldVars = await getAttrsAsync(['shield_1c', 'shield_2c', 'shield_3c', 'shield_4c', 'shield_5c', 'shield_6c', 'spr_1', 'spr_2']);
     
     // Count shields with value > 0
-    const shieldsPowered = ['shield_1c', 'shield_2c', 'shield_3c', 'shield_4c', 'shield_5c', 'shield_6c']
+    const numShieldsOnline = ['shield_1c', 'shield_2c', 'shield_3c', 'shield_4c', 'shield_5c', 'shield_6c']
         .filter(shield => parseInt(shieldVars[shield]) > 0)
         .length;
     
-    // Sum total power allocated
-    const powerAllocated = ['shield_1c', 'shield_2c', 'shield_3c', 'shield_4c', 'shield_5c', 'shield_6c']
+    // Sum total points allocated
+    const totalShieldPoints = ['shield_1c', 'shield_2c', 'shield_3c', 'shield_4c', 'shield_5c', 'shield_6c']
         .reduce((sum, shield) => sum + parseInt(shieldVars[shield] || 0), 0);
     
     // Format SPR as "spr_1/spr_2"
     const sprValue = `${shieldVars.spr_1}/${shieldVars.spr_2}`;
     
     // Build the shields string
-    const shieldsString = `{{Shields:=${shieldsPowered}}} {{Points:=${powerAllocated}}} {{SPR:=${sprValue}}}`;
+    const shieldsString = `{{Shields:=${numShieldsOnline}}} {{Points:=${totalShieldPoints}}} {{SPR:=${sprValue}}}`;
 
     startRoll(
         `/w "@{target|character_name}" &{template:custom} {{title=**Scan Results: Shields**}} {{subtitle=[@{character_name}](${ROLL20_CHAR_URL}@{character_id})}} {{color=green}} ${shieldsString}`,
@@ -2527,37 +2530,33 @@ on(`clicked:send_shields`, async (event) => {
 });
 
 // SHIELD POINTS calculation
-on(`change:tpa_shields change:spr_1 change:spr_2 change:shield_1 change:shield_2 change:shield_3 change:shield_4 change:shield_5 change:shield_6 change:crewbonus3`, function(eventInfo) {
-    getAttrs([`tpa_shields`, `spr_1`, `spr_2`, `shield_1`, `shield_2`, `shield_3`, `shield_4`, `shield_5`, `shield_6`, `crewbonus`], function(values) {
+on(`change:tpa_shields change:spr_1 change:spr_2`, function(eventInfo) {
+    getAttrs([`tpa_shields`, `spr_1`, `spr_2`], function(values) {
         const power = parseInt(values[`tpa_shields`]) || 0;
         const spr = (parseInt(values[`spr_1`]) || 1) / (parseInt(values[`spr_2`]) || 1);
-        const shield1 = parseInt(values[`shield_1`]) || 0;
-        const shield2 = parseInt(values[`shield_2`]) || 0;
-        const shield3 = parseInt(values[`shield_3`]) || 0;
-        const shield4 = parseInt(values[`shield_4`]) || 0;
-        const shield5 = parseInt(values[`shield_5`]) || 0;
-        const shield6 = parseInt(values[`shield_6`]) || 0;
-        const crewBonus = parseInt(values[`crewbonus`]) || 0;
 
-        const totalPower = power + (crewBonus == CREW_BONUS_SHIELD ? 1 : 0);
-        const sp = Math.floor(totalPower / spr - shield1 - shield2 - shield3 - shield4 - shield5 - shield6);
-        const powerRemaining = Math.round(totalPower - shield1 * spr - shield2 * spr - shield3 * spr - shield4 * spr - shield5 * spr - shield6 * spr);
+        //const totalPower = power + (crewBonus ? 1 : 0);
+        //const sp = Math.floor(totalPower / spr - shield1);
+        //const powerRemaining = Math.round(totalPower - shield1 * spr - shield2 * spr - shield3 * spr - shield4 * spr - shield5 * spr - shield6 * spr);
 
         const output = {};
-        output[`sp`] = sp;
-        output[`sp_remaining`] = powerRemaining;
-        output[`sp_remaining_status`] = (power != 0 || powerRemaining != 0) && (powerRemaining < 0 ? 1 : (powerRemaining > 0 ? 2 : 0));
+        output[`shield_1`] = output[`shield_2`] = output[`shield_3`] = output[`shield_4`] = output[`shield_5`] = output[`shield_6`] = power / spr;
+        //output[`sp`] = sp;
+        //output[`sp_remaining`] = powerRemaining;
+        //output[`sp_remaining_status`] = (power != 0 || powerRemaining != 0) && (powerRemaining < 0 ? 1 : (powerRemaining > 0 ? 2 : 0));
         setAttrs(output);
     });
 });
 
 // SHIELD POINTS ALLOCATED status indicators
 [`1`, `2`, `3`, `4`, `5`, `6`].forEach(num => {
-    on(`change:shield_${num} change:shield_${num}_state change:shield_max`, function(eventInfo) {
-        getAttrs([`shield_${num}`, `shield_${num}_state`, `shield_max`], function(values) {
+    on(`change:shield_${num} change:shield_${num}_state change:spr_1 change:spr_2 change:crewbonus3 change:shield_max`, function(eventInfo) {
+        getAttrs([`shield_${num}`, `shield_${num}_state`, `spr_1`, `spr_2`, `crewbonus3`, `shield_max`], function(values) {
             const shieldSP = parseInt(values[`shield_${num}`]) || 0;
             const shieldIsDamaged = parseInt(values[`shield_${num}_state`]) || 0;
-            const shieldSPMax = parseInt(values[`shield_max`]) || 0;
+            const spr = (parseInt(values[`spr_1`]) || 1) / (parseInt(values[`spr_2`]) || 1);
+            const crewBonus = parseInt(values[`crewbonus3`]) || 0;
+            const shieldSPMax = ((parseInt(values[`shield_max`]) || 0) + (crewBonus ? 1 : 0)) / spr;
 
             const output = {};
             output[`shield_${num}a_status`] = shieldSP > shieldSPMax || shieldIsDamaged ? 1 : shieldSP == 0 ? 2 : 0;
@@ -2592,27 +2591,38 @@ on(`clicked:shield_reenergize`, function(eventInfo) {
     );
 });
 function energizeShields() {
-    getAttrs([`shield_1`, `shield_2`, `shield_3`, `shield_4`, `shield_5`, `shield_6`, `shield_1_state`, `shield_2_state`, `shield_3_state`, `shield_4_state`, `shield_5_state`, `shield_6_state`], function(values) {
-        const shield1Allocation = parseInt(values[`shield_1`]) || 0;
-        const shield2Allocation = parseInt(values[`shield_2`]) || 0;
-        const shield3Allocation = parseInt(values[`shield_3`]) || 0;
-        const shield4Allocation = parseInt(values[`shield_4`]) || 0;
-        const shield5Allocation = parseInt(values[`shield_5`]) || 0;
-        const shield6Allocation = parseInt(values[`shield_6`]) || 0;
+    getAttrs([`shield_1c`, `shield_2c`, `shield_3c`, `shield_4c`, `shield_5c`, `shield_6c`, `shield_1_state`, `shield_2_state`, `shield_3_state`, `shield_4_state`, `shield_5_state`, `shield_6_state`], function(values) {
+        const shield1Allocation = parseInt(values[`shield_1c`]) || 0;
+        const shield2Allocation = parseInt(values[`shield_2c`]) || 0;
+        const shield3Allocation = parseInt(values[`shield_3c`]) || 0;
+        const shield4Allocation = parseInt(values[`shield_4c`]) || 0;
+        const shield5Allocation = parseInt(values[`shield_5c`]) || 0;
+        const shield6Allocation = parseInt(values[`shield_6c`]) || 0;
         const shield1IsDamaged = parseInt(values[`shield_1_state`]) || 0;
         const shield2IsDamaged = parseInt(values[`shield_2_state`]) || 0;
         const shield3IsDamaged = parseInt(values[`shield_3_state`]) || 0;
         const shield4IsDamaged = parseInt(values[`shield_4_state`]) || 0;
         const shield5IsDamaged = parseInt(values[`shield_5_state`]) || 0;
         const shield6IsDamaged = parseInt(values[`shield_6_state`]) || 0;
+        const TotalNumberOfShieldFacings = 6;
+
+        const currentAvailableShieldPoints = 
+            shield1Allocation + 
+            shield2Allocation + 
+            shield3Allocation + 
+            shield4Allocation + 
+            shield5Allocation + 
+            shield6Allocation;
+
+        const newShieldPointValue = Math.floor(currentAvailableShieldPoints / TotalNumberOfShieldFacings)
 
         const output = {};
-        output[`shield_1c`] = shield1IsDamaged ? 0 : shield1Allocation;
-        output[`shield_2c`] = shield2IsDamaged ? 0 : shield2Allocation;
-        output[`shield_3c`] = shield3IsDamaged ? 0 : shield3Allocation;
-        output[`shield_4c`] = shield4IsDamaged ? 0 : shield4Allocation;
-        output[`shield_5c`] = shield5IsDamaged ? 0 : shield5Allocation;
-        output[`shield_6c`] = shield6IsDamaged ? 0 : shield6Allocation;
+        output[`shield_1`] = output[`shield_1c`] = shield1IsDamaged ? 0 : newShieldPointValue;
+        output[`shield_2`] = output[`shield_2c`] = shield2IsDamaged ? 0 : newShieldPointValue;
+        output[`shield_3`] = output[`shield_3c`] = shield3IsDamaged ? 0 : newShieldPointValue;
+        output[`shield_4`] = output[`shield_4c`] = shield4IsDamaged ? 0 : newShieldPointValue;
+        output[`shield_5`] = output[`shield_5c`] = shield5IsDamaged ? 0 : newShieldPointValue;
+        output[`shield_6`] = output[`shield_6c`] = shield6IsDamaged ? 0 : newShieldPointValue;
 
         output[`bridge_hit_status`] = 0;
         output[`ship_is_evading`] = 0;
