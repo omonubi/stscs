@@ -6,6 +6,7 @@
     <input type='hidden' class='sensors-status' name='attr_sensors_status' value='0'/>
     <input type='hidden' class='shields-grid-status' name='attr_shields_grid_status' value='0'/>
     <input type='hidden' class='ship-has-scanned' name='attr_ship_has_scanned' value='0'/>
+    <input type='hidden' class='ship-has-troops' name='attr_troops_max' value='0'/>
     <input type='hidden' class='ship-is-cloaked' name='attr_ship_is_cloaked' value='0'/>
     <input type='hidden' class='ship-is-disabled' name='attr_ship-is-disabled' value='0'/>
     <input type='hidden' class='ship-is-evading' name='attr_ship_is_evading' value='0'/>
@@ -13,6 +14,7 @@
     <input type='hidden' class='tpa-committed-status' name='attr_tpa_committed_status' value='1'/>
     <input type='hidden' class='transporters-grid-status' name='attr_transporters_grid_status' value='0'/>
     <input type='hidden' class='warp-drive-status' name='attr_warp_drive_status' value='0'/>
+    <input type='hidden' class='warp-show-content' name='attr_warp_show_content' value='0'/>
     <input type='hidden' class='weapons-grid-status' name='attr_weapons_grid_status' value='0'/>
     <h1>
         <span name='attr_character_name'></span>
@@ -29,320 +31,358 @@
     <input type='hidden' class='is-firing-phase' name='attr_is_firing_phase' value='0'/>
     <input type='hidden' name='attr_tpa_reset' value='0'/>
     <input type='hidden' name='attr_roll20charurl'/>
-    <!--------------------------------------------------------> 
-    <div class='grid-6col overview-panel'>
-        <span class='span2'>
-            <span name='attr_class'></span>
-            (<span name='attr_type'></span>)
-        </span>
-        <span class='span2'>
-            <label>Size:</label>
-            <span name='attr_size'></span>
-        </span>
-        <span class='span2'>
-            <label>D / WDF / CE:</label>
-            <input type='number' class='w6' name='attr_defense' min='0' step='.1' value='0'/> /
-            <input type='number' class='w6' name='attr_wdf' min='0' step='.1' value='0'/> /
-            <span name='attr_ce'>0</span>
-        </span>
 
-        <!--<label>Captain:</label>-->
-        <button type='roll' class='btn' value='&{template:custom} {{title=**[@{character_name}](@{roll20charurl}@{character_id})**}} {{subtitle=Command Rating Check}} {{color=gold}} {{Captain=@{capname}}} {{Rating=[[@{caprating}]]}} {{Roll=[[d100cf<0cs>101]]}}'>Captain</button>
-        <input type='text' class='w12' name='attr_capname' placeholder='name...'/>
-        <label>Command Rating:</label>
-        <input type='hidden' name='attr_caprating_ta'/>
-        <input type='number' name='attr_caprating' min='0'/>   
-        <label>Crew Rating:</label>
-        <input type='number' name='attr_crewrating' min='0'/>
+    <div class='button-panel'>
+        <input type='hidden' class='buttonstoggle' name='attr_sheetButtons' value='damagetab'/> 
+        <button type='action' class='btn-damagetab' name='act_damagetab' >Status</button>
+        <button type='action' class='btn-maintab' name='act_maintab' >Compliment</button>
+        <button type='action' class='btn-sensorstab' name='act_sensorstab' >Sensors</button>
+        <button type='action' class='btn-powertab' name='act_powertab' >Engineering</button>
+        <button type='action' class='btn-helmtab' name='act_helmtab' >Helm</button>  
+        <button type='action' class='btn-shieldstab' name='act_shieldstab' >Shields</button>
+        <button type='action' class='btn-weaponstab' name='act_weaponstab' >Weapons</button>
+        <button type='action' class='btn-transporterstab' name='act_transporterstab' >Transporters</button>
+        <button type='action' class='btn-constructiontab' name='act_constructiontab' >Info</button>
+        <button type='action' class='btn-settingstab' name='act_settingstab' >Settings</button>
     </div>
-    <br/>
+    <input type='hidden' class='tabstoggle' name='attr_sheetTab' value='damagetab'/>
 
     <!-------------------------------------------------------->
-    <h2>Damage Control</h2>
-
-    <div class='grid-6col dc-panel'>
-        <button type='action' class='btn critical roll-damage' name='act_rolldamage'>Roll Damage</button>
-        <span></span>
-        <label><strong>Superstructure:</strong></label>
-        <span>
-            <input type='hidden' class='hp-status' name='attr_hp_status' value='0'/>
-            <input type='number' class='w6 hp' name='attr_hp' value='0'/>
-            /
-            <span name='attr_hp_max'></span>
-        </span>
-        <label>Damage Charts:</label>
-        <span name='attr_dmg_chart'></span>
-
-        <button type='roll' class='btn' name='roll_rollcrew' value='/w gm &{template:custom} {{title=**[@{character_name}](@{roll20charurl}@{character_id})**}} {{subtitle=Crew Efficiency Check}} {{color=gold}} {{Rating=[[@{crewefficiency}]]}} {{Roll=[[d100cf<0cs>101]]}}'>Crew Check</button>
-        <span></span>
-        <label><strong>Crew:</strong></label>
-        <input type='hidden' name='attr_crew-percent' value='100'/>
-        <span >
-            <input type='hidden' class='crew-status' name='attr_crew_status' value='0'/>
-            <input type='number' class='w6 crew' name='attr_crew' value='0' min='0'/> /
-            <span name='attr_crew_max'></span>
-        </span>
-        <label>Crew Efficiency:</label>
-        <span>
-            <input type='number' name='attr_crewefficiency' readonly/> / 
-            <input type='number' name='attr_crewrollpenalty' readonly/>
-        </span>
-
-        <input type='hidden' name='attr_crewbonus_saved'/>
-        <input type='hidden' name='attr_crewbonus_engineid'/>
-        <select class='crew-bonus' name='attr_crewbonus'>
-            <option value='0' selected>None</option>
-            <option value='1'>Bonus To-Hit</option>
-            <option value='2'>Bonus TPA</option>
-            <option value='3'>Bonus SPA</option>
-            <option value='4'>+1 Superstructure</option>
-            <option value='5'>+1 Impulse</option>
-            <option value='6'>+1 Warp Engine</option>
-        </select>
-        <span></span>
-        <span>
-            <label>TPA: </label>
-            <span><span name='attr_tpa-percent'>100</span>%</span>
-        </span>
-        <span>
-            <label>Sup: </label>
-            <span><span name='attr_sup-percent'>100</span>%</span>
-        </span>
-        <span>
-            <label>Shields: </label>
-            <span><span name='attr_shields-percent'>100</span>%</span>
-        </span>
-        <span>
-            <label>Wpns: </label>
-            <span><span name='attr_weapons-percent'>100</span>%</span>
-        </span>
-    </div>
-    <br/>
-
-    <!-------------------------------------------------------->
-    <h2>Engineering
-        <input type='hidden' class='crewbonus2' name='attr_crewbonus2' value='0'/>
-        <span class='crewbonusicon' title='crew efficiency bonus'>&#x26A1;</span>
-    </h2>
-
-    <div class='grid-6col tpa-panel'>
-        <button type='action' class='btn' name='act_tpa_reset'>Reset TPA</button>
-        <span></span>
-        <label><strong>Current TPA:</strong></label> 
-        <span><strong><span name='attr_tpa'></span> / <span name='attr_tpa_max'></span></strong></span>
-        <label>TPA Unallocated:</label>
-        <input type='hidden' class='tpa-remaining-status' name='attr_tpa_remaining_status'/>
-        <input type='number' class='tpa-remaining' name='attr_tpa_remaining'  value='0' readonly/>
-
-        <button type='action' class='btn warning' name='act_commit_tpa'>Commit TPA</button>
-        <span></span>
-        <label>TPA to Movement:</label>
-        <input type='number' class='em' name='attr_tpa_movement' min='0' value='0'/>
-        <label>TPA to Warp:</label>
-        <input type='number' name='attr_tpa_warp' min='0' value='0' readonly/>
-
-        <button type='action' class='btn energize' name='act_shield_reenergize'>No Repairs</button>
-        <span></span>
-        <label>TPA to Shields:</label>
-        <input type='number' class='em' name='attr_tpa_shields' min='0' value='0'/>
-        <label>TPA to Transporters:</label>
-        <input type='number' name='attr_tpa_transporters' min='0' value='0' readonly/>
-
-        <span></span>
-        <span></span>
-        <label>TPA to Weapons:</label>
-        <input type='number' class='em' name='attr_tpa_weapons' min='0' value='0'/>
-        <label class='tpa-cloak'>TPA to Cloak:</label>
-        <input type='number' class='tpa-cloak tpa-cloak-warning' name='attr_tpa_cloak' min='0' value='0' readonly/>
-    </div>
-    <br/>
-    
-    <div class='grid-6col engines-panel'>    
-        <h4 class='span-grid'>Engines</h4>
-        <div class='span-grid'>
-            <label style='padding-left: 32px;'>Model</label>
-            <label style='padding-left: 42px;'>Type</label>
-            <label style='padding-left: 70px;'>Location</label>
-            <label style='padding-left: 46px;'>Power</label>
-            <label style='padding-left: 22px;'>Max</label>
+    <section class='damagetab'>
+        <div class='grid-4col status-panel'>
+            <div class="callout">
+                <h3>Sup</h3>
+                <h5><span name='attr_sup-percent'>100</span>%</h5>
+            </div>
+            <div class="callout">
+                <h3>Crew</h3>
+                <h5><span name='attr_crew-percent'>100</span>%</h5>
+            </div>
+            <div class="callout">
+                <h3>Power</h3>
+                <h5><span name='attr_tpa-percent'>100</span>%</h5>
+            </div>
+            <div class="callout">
+                <h3>Shields</h3>
+                <h5><span name='attr_shields-percent'>100</span>%</h5>
+            </div>
+            <div class="callout">
+                <h3>Weapons</h3>
+                <h5><span name='attr_weapons-percent'>100</span>%</h5>
+            </div>
         </div>
-        <fieldset class='repeating_engines'>
-            <input type='text' class='w10' name='attr_engine_model' placeholder='model...'/>
-            <select class='w10' name='attr_engine_type'>
-                <option value='0' selected>select...</option>
-                <option value='1'>Impulse</option>
-                <option value='2'>Warp</option>
-            </select>
-            <select class='w10' name='attr_engine_location'>
-                <option value='0' selected>select...</option>
-                <option value='1'>Centerline</option>
-                <option value='2'>Port</option>
-                <option value='3'>Starboard</option>
-            </select>
-            <input type='hidden' class='engine-power-status' name='attr_engine_power_status' value='0'/>
-            <input type='number' class='w5 engine-power' name='attr_engine_power' min='0' value='0'/> / <input type='number' class='w5' name='attr_engine_power_full' min='0' value='0'/>
-        </fieldset>
-    </div>
-    <br/>
-    
-    <div class='grid-6col cloak-panel'>
-        <label>Cloak Device Type:</label>
-        <input type='text' class='w10' name='attr_cloak_type'/>
-        <label>Power Required:</label>
-        <input type='number' name='attr_tpa_cloak_required' min='0' value='0'/>
-        <span><label>Arm Cloak:</label> <input type='checkbox' name='attr_cloak_is_armed' value='1'/></span>
-        <button type='action' class='btn gm-only' name='act_scan_cloak' title='DO NOT CLICK'>Scan Me</button>
-    </div>
-    <br/>
 
-    <!-------------------------------------------------------->
-    <span class='sensors-header header-container'>
-        <h2>Sensors</h2>
-        <span>
-            <input type='hidden' name='attr_sensors_to_repair' value='0'/>
-            <select class='w7 state-select' name='attr_sensors_state' readonly>
-                <option value='0' selected>Online</option>
-                <option value='1'>Dmg 1-8</option>
-                <option value='2'>Dmg 1-6</option>
-                <option value='3'>Dmg 1-4</option>
-                <option value='4'>Dmg 1-2</option>
-                <option value='5'>DEST</option>
-            </select>
-            <button type='action' class='btn btn-sensors-repair repair' name='act_sensors_repair'>Repair</button>
-        </span>
-    </span>
+        <div class='grid-6col dc-panel'>  
+            <h4 class='span-grid'>Damage Control</h4>
 
-    <input type='hidden' class='sensors-destroyed' name='attr_sensors_destroyed' value='0'/>
-    <div class='grid-6col sensors-panel'>
-        <button type='action' class='btn btn-scan' name='act_scan'>Scan Target</button>
-        <button type='roll' class='btn btn-nosensors critical' name='roll_nosensors' value='/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=SENSORS OFFLINE}} {{color=green}}'>Sensors Offline</button>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
+            <span class='span2'>
+                <label>Sup:</label>
+                <input type='hidden' class='hp-status' name='attr_hp_status' value='0'/>
+                <input type='number' class='w6 hp' name='attr_hp' value='0'/>
+                /
+                <label>Full:</label>
+                <span name='attr_hp_max'></span>
+            </span>
+            <label>Damage Charts:</label>
+            <span name='attr_dmg_chart'></span>
+            <button type='action' class='btn norepairs' style='width: 80%;' name='act_no_repairs'>No Repairs</button>
+            <button type='action' class='btn critical roll-damage' style='width: 80%;' name='act_rolldamage'>Roll Damage</button>
+        </div>
+        <br/>
         
-        <span class='span2'>
-            <input type='text' class='scan-lock' name='attr_sensorlock' placeholder='No target lock...' readonly/>
-        </span>
-        <input type='hidden' class='w12' name='attr_sensorlockid'/>
-        <span class='span2'>
-            <select class='scan-question' name='attr_scanquestion'>
-                <option value='0'>Submit a query...</option>
-                <!--<option value='1'>How much power is available?</option>-->
-                <option value='2'>How is power allocated?</option>
-                <option value='3'>How are the shields powered?</option>
-                <!--<option value='4'>Is a specific shield up?</option>-->
-                <option value='5'>How are the beam weapons powered?</option>
-                <option value='6'>How are the missile weapons powered?</option>
-                <!--<option value='7'>Is a specific weapon powered?</option>-->
-                <option value='8'>How much damage has been taken?</option>
-                <option value='9'>What is the status of the crew?</option>
-                <!--<option value='10'>Are any transporters powered?</option>-->
-                <option value='11'>Is the #1 (f/p) shield powered?</option>
-                <option value='12'>Is the #2 (fwd) shield powered?</option>
-                <option value='13'>Is the #3 (f/s) shield powered?</option>
-                <option value='14'>Is the #4 (a/s) shield powered?</option>
-                <option value='15'>Is the #5 (aft) shield powered?</option>
-                <option value='16'>Is the #6 (a/p) shield powered?</option>
+        <div class='grid-6col tpa-panel'>
+            <h4 class='span-grid'>Power
+                <input type='hidden' class='crewbonus2' name='attr_crewbonus2' value='0'/>
+                <span class='crewbonusicon' title='crew efficiency bonus'>&#x26A1;</span>
+            </h4>
+
+            <span class='span2'>
+                <label>Current:</label>
+                <input type='hidden' class='tpa-status' name='attr_tpa_status' value='0'/>
+                <input type='number' class='w6 tpa' name='attr_tpa' value='0' readonly/>
+                /
+                <label>Full:</label>
+                <span name='attr_tpa_max'></span>
+            </span>
+            <label>Unallocated:</label>
+            <input type='hidden' class='tpa-remaining-status' name='attr_tpa_remaining_status'/>
+            <input type='number' class='tpa-remaining w5' name='attr_tpa_remaining'  value='0' readonly/>
+            <button type='action' class='btn warning' style='width: 80%;' name='act_commit_tpa'>Commit</button>
+            <button type='action' class='btn' style='width: 80%;' name='act_tpa_reset'>Reset</button>
+        </div>
+        <br/>
+    </section>
+    <!--------------------------------------------------------> 
+    <section class='maintab'>
+        <div class='grid-6col captain-panel'>
+            <h4 class='span-grid'>Captain</h4>
+            
+            <input type='text' class='w20 span2' name='attr_capname' placeholder='Captain name...'/>
+            <label>Command Rating:</label>
+            <input type='hidden' name='attr_caprating_ta'/>
+            <input type='number' class='w5' name='attr_caprating' min='0'/> 
+            <span></span>
+            <button type='roll' class='btn' value='&{template:custom} {{title=**[@{character_name}](@{roll20charurl}@{character_id})**}} {{subtitle=Command Rating Check}} {{color=gold}} {{Captain=@{capname}}} {{Rating=[[@{caprating}]]}} {{Roll=[[d100cf<0cs>101]]}}'>Command Check</button> 
+        </div>
+        <br/>
+
+        <div class='grid-6col crew-panel'>
+            <h4 class='span-grid'>Crew</h4>  
+            <input type='hidden' name='attr_crewbonus_saved'/>
+            <input type='hidden' name='attr_crewbonus_engineid'/>
+
+            <input type='hidden' name='attr_crew-percent' value='100'/>
+            <span class='span2'>
+                <label>Current:</label>
+                <input type='hidden' class='crew-status' name='attr_crew_status' value='0'/>
+                <input type='number' class='w6 crew' name='attr_crew' value='0' min='0'/> /
+                <label>Full:</label>
+                <span name='attr_crew_max'></span>
+            </span>
+            <label>Efficiency Rating:</label>
+            <input type='number' class='w5' name='attr_crewefficiency' readonly/>
+            <span></span>
+            <button type='roll' class='btn' name='roll_rollcrew' value='/w gm &{template:custom} {{title=**[@{character_name}](@{roll20charurl}@{character_id})**}} {{subtitle=Crew Efficiency Check}} {{color=gold}} {{Rating=[[@{crewefficiency}]]}} {{Roll=[[d100cf<0cs>101]]}}'>Crew Check</button>
+
+            <label>Base Rating:</label>
+            <input type='number' class='w5' name='attr_crewrating' min='0'/>
+            <label>Performance Modifier</label>
+            <input type='number' class='w5' name='attr_crewrollpenalty' readonly/>
+            <label> Current Bonus:</label>
+            <select class='crew-bonus' name='attr_crewbonus'>
+                <option value='0' selected>None</option>
+                <option value='1'>Bonus To-Hit</option>
+                <option value='2'>Bonus Power</option>
+                <option value='3'>Bonus Shields</option>
+                <option value='4'>Repair Hull</option>
+                <option value='5'>Repair Impulse</option>
+                <option value='6'>Repair Warp</option>
             </select>
-        </span>
-        <span class='span2'><input type='text' class='scan-answer' name='attr_scananswer' placeholder='Paste the result here...'/></span>
-        
-        <button type='action' class='btn gm-only btn-send' name='act_send_alloc' title='DO NOT CLICK'>Alloc</button>
-        <button type='action' class='btn gm-only btn-send' name='act_send_beams' title='DO NOT CLICK'>Beams</button>
-        <button type='action' class='btn gm-only btn-send' name='act_send_crew' title='DO NOT CLICK'>Crew</button>
-        <button type='action' class='btn gm-only btn-send' name='act_send_damage' title='DO NOT CLICK'>Damage</button>
-        <button type='action' class='btn gm-only btn-send' name='act_send_missiles' title='DO NOT CLICK'>Missiles</button>
-        <button type='action' class='btn gm-only btn-send' name='act_send_shields' title='DO NOT CLICK'>Shields</button>
-
-        <button type='action' class='btn gm-only btn-send' name='act_send_shield_1' title='DO NOT CLICK'>Shield 1</button>
-        <button type='action' class='btn gm-only btn-send' name='act_send_shield_2' title='DO NOT CLICK'>Shield 2</button>
-        <button type='action' class='btn gm-only btn-send' name='act_send_shield_3' title='DO NOT CLICK'>Shield 3</button>
-        <button type='action' class='btn gm-only btn-send' name='act_send_shield_4' title='DO NOT CLICK'>Shield 4</button>
-        <button type='action' class='btn gm-only btn-send' name='act_send_shield_5' title='DO NOT CLICK'>Shield 5</button>
-        <button type='action' class='btn gm-only btn-send' name='act_send_shield_6' title='DO NOT CLICK'>Shield 6</button>
-    </div>
-    <br/>
-
+        </div>
+        <br/>
+    </section>
     <!-------------------------------------------------------->
-    <span class='helm-header header-container'>
-        <h2>Helm Control</h2>
-        <span>
-            <input type='hidden' name='attr_movement_grid_to_repair' value='0'/>
-            <select class='w7 state-select' name='attr_movement_grid_state' readonly>
-                <option value='0' selected>Online</option>
-                <option value='1'>Dmg 1-8</option>
-                <option value='2'>Dmg 1-6</option>
-                <option value='3'>Dmg 1-4</option>
-                <option value='4'>Dmg 1-2</option>
-                <option value='5'>DEST</option>
-            </select>
-            <button type='action' class='btn btn-movement-grid-repair repair' name='act_movement_grid_repair'>Repair</button>
-        </span>
-    </span>
+    <section class='powertab'>
+        <div class='grid-6col dc-panel'>  
+            <h4 class='span-grid'>Power Grids</h4>
+            <label >Movement:</label>
+            <span>
+                <input type='hidden' name='attr_movement_grid_to_repair' value='0'/>
+                <select class='w7 state-select btn-movement-grid-state' name='attr_movement_grid_state' readonly>
+                    <option value='0' selected>Online</option>
+                    <option value='1'>Dmg 1-8</option>
+                    <option value='2'>Dmg 1-6</option>
+                    <option value='3'>Dmg 1-4</option>
+                    <option value='4'>Dmg 1-2</option>
+                    <option value='5'>DEST</option>
+                </select>
+                <button type='action' class='btn btn-movement-grid-repair repair' name='act_movement_grid_repair'>Repair</button>
+            </span>
+            <label>Sensors:</label>
+            <span>
+                <input type='hidden' name='attr_sensors_to_repair' value='0'/>
+                <select class='w7 state-select btn-sensors-grid-state' name='attr_sensors_state' readonly>
+                    <option value='0' selected>Online</option>
+                    <option value='1'>Dmg 1-8</option>
+                    <option value='2'>Dmg 1-6</option>
+                    <option value='3'>Dmg 1-4</option>
+                    <option value='4'>Dmg 1-2</option>
+                    <option value='5'>DEST</option>
+                </select>
+                <button type='action' class='btn btn-sensors-repair repair' name='act_sensors_repair'>Repair</button>
+            </span>
+            <label>Shields:</label>
+            <span>
+                <input type='hidden' name='attr_shields_grid_to_repair' value='0'/>
+                <select class='w7 state-select btn-shields-grid-state' name='attr_shields_grid_state' readonly>
+                    <option value='0' selected>Online</option>
+                    <option value='1'>Dmg 1-8</option>
+                    <option value='2'>Dmg 1-6</option>
+                    <option value='3'>Dmg 1-4</option>
+                    <option value='4'>Dmg 1-2</option>
+                    <option value='5'>DEST</option>
+                </select>
+                <button type='action' class='btn btn-shields-grid-repair repair' name='act_shields_grid_repair'>Repair</button>
+            </span>
 
-    <div class='grid-6col helm-panel'>
-        <button type='action' class='btn warning btn-stress-turn' name='act_stress_turn'>Stress Turn</button>
-        <span></span>
-        <label><strong>TPA to Movement:</strong></label>
-        <input type='number' class='em' name='attr_tpa_movement' min='0' value='0'/>
-        <label>TPA Remaining:</label> 
-        <input type='hidden' class='mp-remaining-status' name='attr_mp_remaining_status'/>
-        <input type='number' class='mp-remaining' name='attr_mp_remaining' value='0' readonly/>
+            <label>Transporters:</label>
+            <span>
+                <input type='hidden' name='attr_transporters_grid_to_repair' value='0'/>
+                <select class='w7 state-select btn-transporters-grid-state' name='attr_transporters_grid_state' readonly>
+                    <option value='0' selected>Online</option>
+                    <option value='1'>Dmg 1-8</option>
+                    <option value='2'>Dmg 1-6</option>
+                    <option value='3'>Dmg 1-4</option>
+                    <option value='4'>Dmg 1-2</option>
+                    <option value='5'>DEST</option>
+                </select>
+                <button type='action' class='btn btn-transporters-grid-repair repair' name='act_transporters_grid_repair'>Repair</button>
+            </span>
+            <label>Weapons:</label>
+            <span>
+                <input type='hidden' name='attr_weapons_grid_to_repair' value='0'/>
+                <select class='w7 state-select btn-weapons-grid-state' name='attr_weapons_grid_state' readonly>
+                    <option value='0' selected>Online</option>
+                    <option value='1'>Dmg 1-8</option>
+                    <option value='2'>Dmg 1-6</option>
+                    <option value='3'>Dmg 1-4</option>
+                    <option value='4'>Dmg 1-2</option>
+                    <option value='5'>DEST</option>
+                </select>
+                <button type='action' class='btn btn-weapons-grid-repair repair' name='act_weapons_grid_repair'>Repair</button>
+            </span>
+            <span></span>
+            <span></span>
+        </div>
+        <br/>
+        
+        <div class='grid-6col engines-panel'>    
+            <h4 class='span-grid'>Engines</h4>
 
-        <label>Movement Point Ratio: </label>
-        <span>
-            <input type='number' class='w5' name='attr_mpr_1' min='1' value='1'/>
-            /
-            <input type='number' class='w5' name='attr_mpr_2' min='1' value='1'/>
-        </span>
-        <label>Movement Points:</label>
-        <span>
-            <input type='number' name='attr_mp' readonly/>
-            <input type='hidden' class='impulse-power-status' name='attr_impulse_power_status' value='0'/>
-            <span class='no-impulse-power' title='no impulse power = max 1'>&#x1F534;</span>
-        </span>
-        <label>MP by Phase:</label> 
-        <input type='hidden' name='attr_ta'/>
-        <span>
-            <span name='attr_mp1'></span> | <span name='attr_mp2'></span> | <span name='attr_mp3'></span>
-        </span>
-    </div>
-    <br/>
+            <div class='span-grid'>
+                <label style='padding-left: 32px;'>Model</label>
+                <label style='padding-left: 42px;'>Type</label>
+                <label style='padding-left: 70px;'>Location</label>
+                <label style='padding-left: 50px;'>Power</label>
+                <label style='padding-left: 26px;'>Max</label>
+            </div>
+            <fieldset class='repeating_engines'>
+                <input type='text' class='w10' name='attr_engine_model' placeholder='model...'/>
+                <select class='w10' name='attr_engine_type'>
+                    <option value='0' selected>select...</option>
+                    <option value='1'>Impulse</option>
+                    <option value='2'>Warp</option>
+                </select>
+                <select class='w10' name='attr_engine_location'>
+                    <option value='0' selected>select...</option>
+                    <option value='1'>Centerline</option>
+                    <option value='2'>Port</option>
+                    <option value='3'>Starboard</option>
+                </select>
+                <input type='hidden' class='engine-power-status' name='attr_engine_power_status' value='0'/>
+                <input type='number' class='w5 engine-power' name='attr_engine_power' min='0' value='0'/> / <input type='number' class='w5' name='attr_engine_power_full' min='0' value='0'/>
+            </fieldset>
+        </div>
+    </section>
+    <!-------------------------------------------------------->
+    <section class='sensorstab'>
+        <input type='hidden' class='sensors-destroyed' name='attr_sensors_destroyed' value='0'/>
+        <div class='grid-6col sensors-panel'>
+            <h4 class='span-grid'>Current Lock</h4>
+            
+            <span class='span2'>
+                <input type='text' class='scan-lock' name='attr_sensorlock' placeholder='No target lock...' readonly/>
+            </span>
+            <input type='hidden' class='w12' name='attr_sensorlockid'/>
+            <span class='span2'>
+                <select class='scan-question' name='attr_scanquestion'>
+                    <option value='0'>Submit a query...</option>
+                    <!--<option value='1'>How much power is available?</option>-->
+                    <option value='2'>How is power allocated?</option>
+                    <option value='3'>How are the shields powered?</option>
+                    <!--<option value='4'>Is a specific shield up?</option>-->
+                    <option value='5'>How are the beam weapons powered?</option>
+                    <option value='6'>How are the missile weapons powered?</option>
+                    <!--<option value='7'>Is a specific weapon powered?</option>-->
+                    <option value='8'>How much damage has been taken?</option>
+                    <option value='9'>What is the status of the crew?</option>
+                    <!--<option value='10'>Are any transporters powered?</option>-->
+                    <option value='11'>Is the #1 (f/p) shield powered?</option>
+                    <option value='12'>Is the #2 (fwd) shield powered?</option>
+                    <option value='13'>Is the #3 (f/s) shield powered?</option>
+                    <option value='14'>Is the #4 (a/s) shield powered?</option>
+                    <option value='15'>Is the #5 (aft) shield powered?</option>
+                    <option value='16'>Is the #6 (a/p) shield powered?</option>
+                </select>
+            </span>
+            <span></span>
+            <button type='action' class='btn btn-scan' name='act_scan'>Scan Target</button>
+            <button type='roll' class='btn btn-nosensors critical' name='roll_nosensors' value='/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=SENSORS OFFLINE}} {{color=green}}'>Sensors Offline</button>
+            
+            <button type='action' class='btn gm-only btn-send' name='act_send_alloc' title='DO NOT CLICK'>Alloc</button>
+            <button type='action' class='btn gm-only btn-send' name='act_send_beams' title='DO NOT CLICK'>Beams</button>
+            <button type='action' class='btn gm-only btn-send' name='act_send_crew' title='DO NOT CLICK'>Crew</button>
+            <button type='action' class='btn gm-only btn-send' name='act_send_damage' title='DO NOT CLICK'>Damage</button>
+            <button type='action' class='btn gm-only btn-send' name='act_send_missiles' title='DO NOT CLICK'>Missiles</button>
+            <button type='action' class='btn gm-only btn-send' name='act_send_shields' title='DO NOT CLICK'>Shields</button>
 
-    <div class='grid-6col warp-panel'>
-        <input type='hidden' class='warp-show-content' name='attr_warp_show_content' value='1'/>
-        <div class='warp-content'>
-            <h4>Warp Drive</h4>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
+            <button type='action' class='btn gm-only btn-send' name='act_send_shield_1' title='DO NOT CLICK'>Shield 1</button>
+            <button type='action' class='btn gm-only btn-send' name='act_send_shield_2' title='DO NOT CLICK'>Shield 2</button>
+            <button type='action' class='btn gm-only btn-send' name='act_send_shield_3' title='DO NOT CLICK'>Shield 3</button>
+            <button type='action' class='btn gm-only btn-send' name='act_send_shield_4' title='DO NOT CLICK'>Shield 4</button>
+            <button type='action' class='btn gm-only btn-send' name='act_send_shield_5' title='DO NOT CLICK'>Shield 5</button>
+            <button type='action' class='btn gm-only btn-send' name='act_send_shield_6' title='DO NOT CLICK'>Shield 6</button>
+        </div>
+        <br/>
+        
+        <div class='grid-6col cloak-panel'>
+            <h4 class='span-grid'>Cloaking Device</h4>
 
-            <input type='hidden' class='warp-factor-status' name='attr_warp_factor_status' value='0'/>
-            <button type='action' class='btn btn-jump' name='act_jump'>Engage Warp Drive</button>
+            <label>Power Required:</label>
+            <input type='number' class='w5' name='attr_tpa_cloak_required' min='0' value='0'/>
+            <label>Power Available:</label>
+            <input type='hidden' class='tpa-remaining-status' name='attr_tpa_remaining_status'/>
+            <input type='number' class='tpa-remaining w5' name='attr_tpa_remaining'  value='0' readonly/>
+            <span><label><strong>Armed:</strong></label> <input type='checkbox' name='attr_cloak_is_armed' value='1'/></span>
+            <button type='action' class='btn gm-only' name='act_scan_cloak' title='DO NOT CLICK'>Scan Me</button>
+        </div>
+        <br/>
+    </section>
+    <!-------------------------------------------------------->
+    <section class='helmtab'>
+        <div class='grid-6col helm-panel'>
+            <h4 class='span-grid'>Movement</h4>
+            
+            <label>Power to Movement:</label>
+            <input type='number' class='w5' name='attr_tpa_movement' min='0' value='0' readonly/>
+            <label>Power Available:</label>
+            <input type='hidden' class='tpa-remaining-status' name='attr_tpa_remaining_status'/>
+            <input type='number' class='tpa-remaining w5' name='attr_tpa_remaining'  value='0' readonly/>
             <span></span>
-            <label>TPA to Warp:</label>
-            <input type='number' name='attr_tpa_warp' readonly/>
-            <span></span>
-            <span></span>
+            <button type='action' class='btn warning btn-stress-turn' name='act_stress_turn'>Stress Turns</button>
 
-            <label>Warp Factor Ratio:</label>
+            
+            <label><strong>Movement Points:</strong></label>
+            <input type='number' class='em w5' name='attr_mp'/>
+            <label>MP by Phase:</label> 
+            <input type='hidden' name='attr_ta'/>
+            <span>
+                <span name='attr_mp1'></span> | <span name='attr_mp2'></span> | <span name='attr_mp3'></span>
+            </span>
+            <label>Power / MP: </label>
+            <span>
+                <input type='number' class='w5' name='attr_mpr_1' min='1' value='1'/>
+                /
+                <input type='number' class='w5' name='attr_mpr_2' min='1' value='1'/>
+            </span>
+        </div>
+        <br/>
+
+        <div class='grid-6col warp-panel'>
+            <h4 class='span-grid'>Warp Drive</h4>
             <input type='hidden' name='attr_wfr_jump'/>
             <input type='hidden' name='attr_wfr_cruise'/>
-            <span>
-                <input type='number' class='w5' name='attr_wfr_1' value='1' readonly/>
-                /
-                <input type='number' class='w5' name='attr_wfr_2' value='1' readonly/>
-            </span>
+
             <label>Current Warp Factor:</label>
             <input type='hidden' class='wf-current-status' name='attr_wf_current_status'/>
-            <input type='number' class='wf-current' min='0' value='0' name='attr_wf_current' readonly/>
-            <label>Desired Warp Factor:</label>
+            <input type='number' class='w5 wf-current' min='0' value='0' name='attr_wf_current' readonly/>
+            <label>Power Available:</label>
+            <input type='hidden' class='tpa-remaining-status' name='attr_tpa_remaining_status'/>
+            <input type='number' class='w5 tpa-remaining' name='attr_tpa_remaining'  value='0' readonly/>
+            <span></span>
+            <input type='hidden' class='warp-factor-status' name='attr_warp_factor_status' value='0'/>
+            <button type='action' class='btn btn-jump' name='act_jump'>Engage Warp Drive</button>
+
+            <label><strong>Desired Warp Factor:</strong></label>
             <input type='hidden' class='wf-desired-status' name='attr_wf_desired_status'/>
-            <input type='number' class='em' min='0' value='0' name='attr_wf_desired'/>
+            <input type='number' class='em w5' min='0' value='0' name='attr_wf_desired'/>
+            <label>Power to Warp:</label>
+            <input type='number' class='w5' name='attr_tpa_warp' readonly/>
+            <label>Power / WF</label>
+            <span>
+                <input type='number' class='w5' name='attr_wfr_1' value='1' readonly/> /
+                <input type='number' class='w5' name='attr_wfr_2' value='1' readonly/>
+            </span>
 
             <label>Safe Cruise WF:</label>
             <input type='number' class='w5' name='attr_wf_cruise' min='0' value='0'/>
@@ -355,596 +395,610 @@
                 <input type='text' class='w5' name='attr_stress_sup' maxlength='1'/> 
             </span>
         </div>
-    </div>
-    <br/>
-
+    </section>
     <!-------------------------------------------------------->
-    <span class='shields-header header-container'>
-        <h2>Shield Control
-            <input type='hidden' class='crewbonus3' name='attr_crewbonus3' value='0'/>
-            <span class='crewbonusicon' title='crew efficiency bonus'>&#x26A1;</span>
-        </h2>
-        <span>
-            <input type='hidden' name='attr_shields_grid_to_repair' value='0'/>
-            <select class='w7 state-select' name='attr_shields_grid_state' readonly>
-                <option value='0' selected>Online</option>
-                <option value='1'>Dmg 1-8</option>
-                <option value='2'>Dmg 1-6</option>
-                <option value='3'>Dmg 1-4</option>
-                <option value='4'>Dmg 1-2</option>
-                <option value='5'>DEST</option>
-            </select>
-            <button type='action' class='btn btn-shields-grid-repair repair' name='act_shields_grid_repair'>Repair</button>
-        </span>
-    </span>
+    <section class='shieldstab'>
+        <div class='grid-6col shields-panel'>
+            <h4 class='span-grid'>Power Allocation
+                <input type='hidden' class='crewbonus3' name='attr_crewbonus3' value='0'/>
+                <span class='crewbonusicon' title='crew efficiency bonus'>&#x26A1;</span>
+            </h4>
 
-    <div class='grid-6col shields-panel'>
-        <label>Shield Type:</label>
-        <input type='text' class='w10' name='attr_shield_type'/>
-        <label><strong>TPA to Shields:</strong></label>
-        <input type='number' class='em' name='attr_tpa_shields' min='0' value='0'/>
-        <label>TPA Remaining:</label>
-        <input type='hidden' class='sp-remaining-status' name='attr_sp_remaining_status'/>
-        <input type='number' class='sp-remaining' name='attr_sp_remaining' value='0' readonly/>
+            <label><strong>Power to Shields:</strong></label>
+            <input type='number' class='em w5' name='attr_tpa_shields' min='0' value='0'/>
+            <label>Power Available:</label>
+            <input type='hidden' class='tpa-remaining-status' name='attr_tpa_remaining_status'/>
+            <input type='number' class='tpa-remaining w5' name='attr_tpa_remaining'  value='0' readonly/>
+            <label>Shield Points:</label>
+            <input type='text' class='w5' name='attr_sp' readonly/>
 
-        <label>Shield Point Ratio: </label>
-        <span>
-            <input type='number' class='w5' name='attr_spr_1' min='1' max='2' value='1'/>
-            /        
-            <input type='number' class='w5' name='attr_spr_2' min='1' max='6' value='1'/>
-        </span>
-        <label>Max Shield Power:</label>
-        <input type='number' name='attr_shield_max' min='0' value='0'/>
-        <label>SPA Remaining:</label>
-        <input type='number' name='attr_sp' readonly/>
-    </div>
-    <br/>
-    <div class='grid-6col spa-panel'>
-        <h4 class='span-grid'>Shield Configuration</h4>
+            <label>Maximum Power:</label>
+            <input type='number' class='w5' name='attr_shield_max' min='0' value='0'/>
+            <label>Power / SP: </label>
+            <span>
+                <input type='number' class='w5' name='attr_spr_1' min='1' max='2' value='1'/>
+                /        
+                <input type='number' class='w5' name='attr_spr_2' min='1' max='6' value='1'/>
+            </span>            
+            <label>DAC:</label>
+            <input type='text' class='w5' name='attr_shield_dac' value='100%' readonly/>
+        </div>
+        <br/>
+        <div class='grid-6col spa-panel'>
+            <h4 class='span-grid'>Shield Configuration</h4>
 
-        <div class='shields-allocated'>
+            <div class='shields-allocated'>
+                <label>Shield #1 (<strong>f/p</strong>):</label>
+                <span>
+                    <input type='hidden' class='shield-1a-status' name='attr_shield_1a_status'/>
+                    <input type='number' class='shield-1 w5' name='attr_shield_1' min='0' value='0' title='Shield #1 (f/p)' readonly/>
+                </span>
+                <label>Shield #2 (<strong>fwd</strong>):</label>
+                <span>
+                    <input type='hidden' class='shield-2a-status' name='attr_shield_2a_status'/>
+                    <input type='number' class='shield-2 w5' name='attr_shield_2' min='0' value='0' title='Shield #2 (fwd)' readonly/>
+                </span>
+                <label>Shield #3 (<strong>f/s</strong>):</label>
+                <span>
+                    <input type='hidden' class='shield-3a-status' name='attr_shield_3a_status'/>
+                    <input type='number' class='shield-3 w5' name='attr_shield_3' min='0' value='0' title='Shield #3 (f/s)' readonly/>
+                </span>
+
+                <label>Shield #6 (<strong>a/p</strong>):</label>
+                <span>
+                    <input type='hidden' class='shield-6a-status' name='attr_shield_6a_status'/>
+                    <input type='number' class='shield-6 w5' name='attr_shield_6' min='0' value='0' title='Shield #6 (a/p)' readonly/>
+                </span>
+                <label>Shield #5 (<strong>aft</strong>):</label>
+                <span>
+                    
+                    <input type='hidden' class='shield-5a-status' name='attr_shield_5a_status'/>
+                    <input type='number' class='shield-5 w5' name='attr_shield_5' min='0' value='0' title='Shield #5 (aft)' readonly/>
+                </span>
+                <label>Shield #4 (<strong>a/s</strong>):</label>
+                <span>
+                    <input type='hidden' class='shield-4a-status' name='attr_shield_4a_status'/>
+                    <input type='number' class='shield-4 w5' name='attr_shield_4' min='0' value='0' title='Shield #4 (a/s)' readonly/>
+                </span>
+            </div>
+
+            <div class='shields-current'>
+                <label>Shield #1 (<strong>f/p</strong>):</label>
+                <span>
+                    <input type='hidden' class='shield-1c-status' name='attr_shield_1c_status'/>
+                    <input type='number' class='shield-1c w5' name='attr_shield_1c'/>
+                </span>
+                <label>Shield #2 (<strong>fwd</strong>):</label>
+                <span>
+                    <input type='hidden' class='shield-2c-status' name='attr_shield_2c_status'/>
+                    <input type='number' class='shield-2c w5' name='attr_shield_2c'/>
+                </span>
+                <label>Shield #3 (<strong>f/s</strong>):</label>
+                <span>
+                    <input type='hidden' class='shield-3c-status' name='attr_shield_3c_status'/>
+                    <input type='number' class='shield-3c w5' name='attr_shield_3c'/>
+                </span>
+
+                <label>Shield #6 (<strong>a/p</strong>):</label>
+                <span>
+                    <input type='hidden' class='shield-6c-status' name='attr_shield_6c_status'/>
+                    <input type='number' class='shield-6c w5' name='attr_shield_6c'/>
+                </span>
+                <label>Shield #5 (<strong>aft</strong>):</label>
+                <span>
+                    <input type='hidden' class='shield-5c-status' name='attr_shield_5c_status'/>
+                    <input type='number' class='shield-5c w5' name='attr_shield_5c'/>
+                </span>
+                <label>Shield #4 (<strong>a/s</strong>):</label>
+                <span>
+                    <input type='hidden' class='shield-4c-status' name='attr_shield_4c_status'/>
+                    <input type='number' class='shield-4c w5' name='attr_shield_4c'/>
+                </span>
+            </div>
+        </div>
+        <br/>
+        <div class='grid-6col shield-status-panel'>
+            <h4 class='span-grid'>Generator Status</h4>
+
             <label>Shield #1 (<strong>f/p</strong>):</label>
             <span>
-                <input type='hidden' class='shield-1a-status' name='attr_shield_1a_status'/>
-                <input type='number' class='shield-1' name='attr_shield_1' min='0' value='0' title='Shield #1 (f/p)' readonly/>
+                <input type='hidden' class='shield-1-status' name='attr_shield_1_status' value='0'/>
+                <input type='hidden' name='attr_shield_1_to_repair' value='0'/>
+                <select class='w7 state-select' name='attr_shield_1_state' readonly>
+                    <option value='0' selected>Online</option>
+                    <option value='1'>Dmg 1-8</option>
+                    <option value='2'>Dmg 1-6</option>
+                    <option value='3'>Dmg 1-4</option>
+                    <option value='4'>Dmg 1-2</option>
+                    <option value='5'>DEST</option>
+                </select>
+                <button type='action' class='btn btn-shield-repair repair' name='act_shield_1_repair'>Repair</button>
             </span>
             <label>Shield #2 (<strong>fwd</strong>):</label>
             <span>
-                <input type='hidden' class='shield-2a-status' name='attr_shield_2a_status'/>
-                <input type='number' class='shield-2' name='attr_shield_2' min='0' value='0' title='Shield #2 (fwd)' readonly/>
+                <input type='hidden' class='shield-2-status' name='attr_shield_2_status' value='0'/>
+                <input type='hidden' name='attr_shield_2_to_repair' value='0'/>
+                <select class='w7 state-select' name='attr_shield_2_state' readonly>
+                    <option value='0' selected>Online</option>
+                    <option value='1'>Dmg 1-8</option>
+                    <option value='2'>Dmg 1-6</option>
+                    <option value='3'>Dmg 1-4</option>
+                    <option value='4'>Dmg 1-2</option>
+                    <option value='5'>DEST</option>
+                </select>
+                <button type='action' class='btn btn-shield-repair repair' name='act_shield_2_repair'>Repair</button>
             </span>
             <label>Shield #3 (<strong>f/s</strong>):</label>
             <span>
-                <input type='hidden' class='shield-3a-status' name='attr_shield_3a_status'/>
-                <input type='number' class='shield-3' name='attr_shield_3' min='0' value='0' title='Shield #3 (f/s)' readonly/>
+                <input type='hidden' class='shield-3-status' name='attr_shield_3_status' value='0'/>
+                <input type='hidden' name='attr_shield_3_to_repair' value='0'/>
+                <select class='w7 state-select' name='attr_shield_3_state' readonly>
+                    <option value='0' selected>Online</option>
+                    <option value='1'>Dmg 1-8</option>
+                    <option value='2'>Dmg 1-6</option>
+                    <option value='3'>Dmg 1-4</option>
+                    <option value='4'>Dmg 1-2</option>
+                    <option value='5'>DEST</option>
+                </select>
+                <button type='action' class='btn btn-shield-repair repair' name='act_shield_3_repair'>Repair</button>
             </span>
 
             <label>Shield #6 (<strong>a/p</strong>):</label>
             <span>
-                <input type='hidden' class='shield-6a-status' name='attr_shield_6a_status'/>
-                <input type='number' class='shield-6' name='attr_shield_6' min='0' value='0' title='Shield #6 (a/p)' readonly/>
+                <input type='hidden' class='shield-6-status' name='attr_shield_6_status' value='0'/>
+                <input type='hidden' name='attr_shield_6_to_repair' value='0'/>
+                <select class='w7 state-select' name='attr_shield_6_state' readonly>
+                    <option value='0' selected>Online</option>
+                    <option value='1'>Dmg 1-8</option>
+                    <option value='2'>Dmg 1-6</option>
+                    <option value='3'>Dmg 1-4</option>
+                    <option value='4'>Dmg 1-2</option>
+                    <option value='5'>DEST</option>
+                </select>
+                <button type='action' class='btn btn-shield-repair repair' name='act_shield_6_repair'>Repair</button>
             </span>
             <label>Shield #5 (<strong>aft</strong>):</label>
             <span>
-                
-                <input type='hidden' class='shield-5a-status' name='attr_shield_5a_status'/>
-                <input type='number' class='shield-5' name='attr_shield_5' min='0' value='0' title='Shield #5 (aft)' readonly/>
+                <input type='hidden' class='shield-5-status' name='attr_shield_5_status' value='0'/>
+                <input type='hidden' name='attr_shield_5_to_repair' value='0'/>
+                <select class='w7 state-select' name='attr_shield_5_state' readonly>
+                    <option value='0' selected>Online</option>
+                    <option value='1'>Dmg 1-8</option>
+                    <option value='2'>Dmg 1-6</option>
+                    <option value='3'>Dmg 1-4</option>
+                    <option value='4'>Dmg 1-2</option>
+                    <option value='5'>DEST</option>
+                </select>
+                <button type='action' class='btn btn-shield-repair repair' name='act_shield_5_repair'>Repair</button>
             </span>
             <label>Shield #4 (<strong>a/s</strong>):</label>
             <span>
-                <input type='hidden' class='shield-4a-status' name='attr_shield_4a_status'/>
-                <input type='number' class='shield-4' name='attr_shield_4' min='0' value='0' title='Shield #4 (a/s)' readonly/>
+                <input type='hidden' class='shield-4-status' name='attr_shield_4_status' value='0'/>
+                <input type='hidden' name='attr_shield_4_to_repair' value='0'/>
+                <select class='w7 state-select' name='attr_shield_4_state' readonly>
+                    <option value='0' selected>Online</option>
+                    <option value='1'>Dmg 1-8</option>
+                    <option value='2'>Dmg 1-6</option>
+                    <option value='3'>Dmg 1-4</option>
+                    <option value='4'>Dmg 1-2</option>
+                    <option value='5'>DEST</option>
+                </select>
+                <button type='action' class='btn btn-shield-repair repair' name='act_shield_4_repair'>Repair</button>
             </span>
         </div>
-
-        <div class='shields-current'>
-            <label>Shield #1 (<strong>f/p</strong>):</label>
-            <span>
-                <input type='hidden' class='shield-1c-status' name='attr_shield_1c_status'/>
-                <input type='number' class='shield-1c' name='attr_shield_1c'/>
-            </span>
-            <label>Shield #2 (<strong>fwd</strong>):</label>
-            <span>
-                <input type='hidden' class='shield-2c-status' name='attr_shield_2c_status'/>
-                <input type='number' class='shield-2c' name='attr_shield_2c'/>
-            </span>
-            <label>Shield #3 (<strong>f/s</strong>):</label>
-            <span>
-                <input type='hidden' class='shield-3c-status' name='attr_shield_3c_status'/>
-                <input type='number' class='shield-3c' name='attr_shield_3c'/>
-            </span>
-
-            <label>Shield #6 (<strong>a/p</strong>):</label>
-            <span>
-                <input type='hidden' class='shield-6c-status' name='attr_shield_6c_status'/>
-                <input type='number' class='shield-6c' name='attr_shield_6c'/>
-            </span>
-            <label>Shield #5 (<strong>aft</strong>):</label>
-            <span>
-                <input type='hidden' class='shield-5c-status' name='attr_shield_5c_status'/>
-                <input type='number' class='shield-5c' name='attr_shield_5c'/>
-            </span>
-            <label>Shield #4 (<strong>a/s</strong>):</label>
-            <span>
-                <input type='hidden' class='shield-4c-status' name='attr_shield_4c_status'/>
-                <input type='number' class='shield-4c' name='attr_shield_4c'/>
-            </span>
-        </div>
-    </div>
-    <br/>
-    <div class='grid-6col shield-status-panel'>
-        <h4 class='span-grid'>Shield Generators Status</h4>
-
-        <label>Shield #1 (<strong>f/p</strong>):</label>
-        <span>
-            <input type='hidden' class='shield-1-status' name='attr_shield_1_status' value='0'/>
-            <input type='hidden' name='attr_shield_1_to_repair' value='0'/>
-            <select class='w7 state-select' name='attr_shield_1_state' readonly>
-                <option value='0' selected>Online</option>
-                <option value='1'>Dmg 1-8</option>
-                <option value='2'>Dmg 1-6</option>
-                <option value='3'>Dmg 1-4</option>
-                <option value='4'>Dmg 1-2</option>
-                <option value='5'>DEST</option>
-            </select>
-            <button type='action' class='btn btn-shield-repair repair' name='act_shield_1_repair'>Repair</button>
-        </span>
-        <label>Shield #2 (<strong>fwd</strong>):</label>
-        <span>
-            <input type='hidden' class='shield-2-status' name='attr_shield_2_status' value='0'/>
-            <input type='hidden' name='attr_shield_2_to_repair' value='0'/>
-            <select class='w7 state-select' name='attr_shield_2_state' readonly>
-                <option value='0' selected>Online</option>
-                <option value='1'>Dmg 1-8</option>
-                <option value='2'>Dmg 1-6</option>
-                <option value='3'>Dmg 1-4</option>
-                <option value='4'>Dmg 1-2</option>
-                <option value='5'>DEST</option>
-            </select>
-            <button type='action' class='btn btn-shield-repair repair' name='act_shield_2_repair'>Repair</button>
-        </span>
-        <label>Shield #3 (<strong>f/s</strong>):</label>
-        <span>
-            <input type='hidden' class='shield-3-status' name='attr_shield_3_status' value='0'/>
-            <input type='hidden' name='attr_shield_3_to_repair' value='0'/>
-            <select class='w7 state-select' name='attr_shield_3_state' readonly>
-                <option value='0' selected>Online</option>
-                <option value='1'>Dmg 1-8</option>
-                <option value='2'>Dmg 1-6</option>
-                <option value='3'>Dmg 1-4</option>
-                <option value='4'>Dmg 1-2</option>
-                <option value='5'>DEST</option>
-            </select>
-            <button type='action' class='btn btn-shield-repair repair' name='act_shield_3_repair'>Repair</button>
-        </span>
-
-        <label>Shield #6 (<strong>a/p</strong>):</label>
-        <span>
-            <input type='hidden' class='shield-6-status' name='attr_shield_6_status' value='0'/>
-            <input type='hidden' name='attr_shield_6_to_repair' value='0'/>
-            <select class='w7 state-select' name='attr_shield_6_state' readonly>
-                <option value='0' selected>Online</option>
-                <option value='1'>Dmg 1-8</option>
-                <option value='2'>Dmg 1-6</option>
-                <option value='3'>Dmg 1-4</option>
-                <option value='4'>Dmg 1-2</option>
-                <option value='5'>DEST</option>
-            </select>
-            <button type='action' class='btn btn-shield-repair repair' name='act_shield_6_repair'>Repair</button>
-        </span>
-        <label>Shield #5 (<strong>aft</strong>):</label>
-        <span>
-            <input type='hidden' class='shield-5-status' name='attr_shield_5_status' value='0'/>
-            <input type='hidden' name='attr_shield_5_to_repair' value='0'/>
-            <select class='w7 state-select' name='attr_shield_5_state' readonly>
-                <option value='0' selected>Online</option>
-                <option value='1'>Dmg 1-8</option>
-                <option value='2'>Dmg 1-6</option>
-                <option value='3'>Dmg 1-4</option>
-                <option value='4'>Dmg 1-2</option>
-                <option value='5'>DEST</option>
-            </select>
-            <button type='action' class='btn btn-shield-repair repair' name='act_shield_5_repair'>Repair</button>
-        </span>
-        <label>Shield #4 (<strong>a/s</strong>):</label>
-        <span>
-            <input type='hidden' class='shield-4-status' name='attr_shield_4_status' value='0'/>
-            <input type='hidden' name='attr_shield_4_to_repair' value='0'/>
-            <select class='w7 state-select' name='attr_shield_4_state' readonly>
-                <option value='0' selected>Online</option>
-                <option value='1'>Dmg 1-8</option>
-                <option value='2'>Dmg 1-6</option>
-                <option value='3'>Dmg 1-4</option>
-                <option value='4'>Dmg 1-2</option>
-                <option value='5'>DEST</option>
-            </select>
-            <button type='action' class='btn btn-shield-repair repair' name='act_shield_4_repair'>Repair</button>
-        </span>
-    </div>
-    <br/>
-
+        <br/>
+    </section>
     <!-------------------------------------------------------->
-    <span class='fc-header header-container'>
-        <h2>Fire Control
-            <input type='hidden' class='crewbonus1' name='attr_crewbonus1' value='0'/>
-            <span class='crewbonusicon' title='crew efficiency bonus'>&#x26A1;</span>
-        </h2>
-        <span>
-            <input type='hidden' name='attr_weapons_grid_to_repair' value='0'/>
-            <select class='w7 state-select' name='attr_weapons_grid_state' readonly>
-                <option value='0' selected>Online</option>
-                <option value='1'>Dmg 1-8</option>
-                <option value='2'>Dmg 1-6</option>
-                <option value='3'>Dmg 1-4</option>
-                <option value='4'>Dmg 1-2</option>
-                <option value='5'>DEST</option>
-            </select>
-            <button type='action' class='btn btn-weapons-grid-repair repair' name='act_weapons_grid_repair'>Repair</button>
-        </span>
-    </span>
+    <section class='weaponstab'>
+        <input type='hidden' name='attr_crewbonustohitapplied' value='0'/>
+        <div class='grid-6col fc-panel'>
+            <h4 class='span-grid'>Fire Control
+                <input type='hidden' class='crewbonus1' name='attr_crewbonus1' value='0'/>
+                <span class='crewbonusicon' title='crew efficiency bonus'>&#x26A1;</span>
+            </h4>
 
-    <input type='hidden' name='attr_crewbonustohitapplied' value='0'/>
-    <div class='grid-6col fc-panel'>
-        <span></span>
-        <span></span>
-        <label><strong>TPA to Weapons:</strong></label>
-        <input type='number' class='em' name='attr_tpa_weapons' min='0' value='0'/>
-        <label>TPA Remaining:</label>
-        <input type='hidden' class='wp-remaining-status' name='attr_wp_remaining_status'/>
-        <input type='number' class='wp-remaining' name='attr_wp_remaining' value='0' readonly/>
-    </div>
-    <br/>
-
-    
-    <div class='grid-6col beams-panel'>
-        <h4 class='span-grid'>Beam Weapons</h4>
-        <input type='hidden' name='attr_wp_beam'/>
-        <div class='span-grid'>
-            <label style='padding-left: 45px;'>Desig. (Arcs)</label>
-            <label style='padding-left: 30px;'>Range</label>
-            <label style='padding-left: 11px;'>Chart</label>
-            <label style='padding-left: 10px;'>Pwr</label>
-            <label style='padding-left: 21px;'>Max</label>
-            <label style='padding-left: 20px;'>+3</label>
-            <label style='padding-left: 22px;'>+2</label>
-            <label style='padding-left: 22px;'>+1</label>
-            <label style='padding-left: 95px;'>Target</label>
-            <label style='padding-left: 65px;'>Dist.</label>
-            <label style='padding-left: 7px;'>To-Hit</label>
+            <label>Power to Weapons:</label>
+            <input type='number' class='w5' name='attr_tpa_weapons' value='0' readonly/>
+            <label>Power Available:</label>
+            <input type='hidden' class='tpa-remaining-status' name='attr_tpa_remaining_status'/>
+            <input type='number' class='tpa-remaining w5' name='attr_tpa_remaining'  value='0' readonly/>
+            <span></span>
+            <span></span>
         </div>
-        <fieldset class='repeating_beams'>
-            <input type='hidden' class='weapon-state-status' name='attr_weapon_state_status' value='0'/>
-            <select class='damaged state-select weapon-state' name='attr_state' value='0'>
-                <option value='0' selected>N</option>
-                <option value='1'>D</option>
-                <option value='2'>R</option>
-                <option value='3'>X</option>
-            </select>
-            <input type='text' class='w12' name='attr_name' placeholder='# Name (arcs)...'/>
-            <input type='number' class='w5' name='attr_maxrange'/>
-            <select class='w3 firing-chart' name='attr_chart'>
-                <option value='0' selected>select...</option>
-                <option>A</option>
-                <option>B</option>
-                <option>C</option>
-                <option>D</option>
-                <option>E</option>
-                <option>F</option>
-                <option>G</option>
-                <option>H</option>
-                <option>I</option>
-                <option>J</option>
-                <option>K</option>
-                <option>L</option>
-                <option>M</option>
-                <option>N</option>
-                <option>O</option>
-                <option>P</option>
-                <option>Q</option>
-                <option>R</option>
-                <option>S</option>
-                <option>T</option>
-                <option>U</option>
-                <option>V</option>
-                <option>W</option>
-                <option>X</option>
-                <option>Y</option>
-            </select>
-            <input type='hidden' class='power-status' name='attr_power_status'/>
-            <input type='text' class='w3 power' name='attr_power' min='0' max='10' value='0'/> /
-            <input type='text' class='w3' name='attr_power_max' min='0' max='10' value='0'/>
-            <input type='text' class='w3' name='attr_bonus_3' value='-'/>
-            <input type='text' class='w3' name='attr_bonus_2' value='-'/>
-            <input type='text' class='w3' name='attr_bonus_1' value='-'/> 
-            <span>
-                <input type='hidden' class='btn-target-status' name='attr_btn-target_status' value='0'/>
-                <button type='action' class='btn btn-target' name='act_btn-target'>Target</button>
-            </span> →
-            <input type='text' class='w10' name='attr_target_name' readonly/>
-            <input type='hidden' name='attr_target_id'/>
-            <input type='text' class='w3' name='attr_target_distance' value='0' readonly/>
-            <input type='hidden' class='target-tohit-status' name='attr_target_tohit_status'/>
-            <input type='text' class='w3 target-tohit' name='attr_target_tohit' value='0' readonly/>
-            <span>
-                <input type='hidden' class='btn-fire-status' name='attr_btn-fire_status' value='0'/> 
-                <button type='action' class='btn btn-fire critical' name='act_btn-fire'>Fire</button>
-            </span>
-            <button type='action' class='btn weapon-repair repair' name='act_weapon-repair'>Repair</button>
-        </fieldset>
-    </div>
-    <br/>
+        <br/>
+
         
-    <div class='grid-6col missiles-panel'>
-        <h4 class='span-grid'>Missile Weapons</h4>
-        <input type='hidden' name='attr_wp_missile'/>
-        <div class='span-grid'>
-            <label style='padding-left: 45px;'>Desig. (Arcs)</label>
-            <label style='padding-left: 30px;'>Range</label>
-            <label style='padding-left: 10px;'>Chart</label>
-            <label style='padding-left: 9px;'>Power</label>
-            <label style='padding-left: 4px;'>Damage</label>
-            <label style='padding-left: 7px;'>Arm</label>
-            <label style='padding-left: 169px;'>Target</label>
-            <label style='padding-left: 65px;'>Dist.</label>
-            <label style='padding-left: 7px;'>To-Hit</label>
+        <div class='grid-6col beams-panel'>
+            <h4 class='span-grid'>Beam Weapons</h4>
+
+            <input type='hidden' name='attr_wp_beam'/>
+            <div class='span-grid'>
+                <label style='padding-left: 45px;'>Desig. (Arcs)</label>
+                <label style='padding-left: 26px;'>Range</label>
+                <label style='padding-left: 2px;'>Chart</label>
+                <label style='padding-left: 8px;'><strong>Power</strong></label>
+                <label style='padding-left: 19px;'>Max</label>
+                <label style='padding-left: 20px;'>+3</label>
+                <label style='padding-left: 22px;'>+2</label>
+                <label style='padding-left: 22px;'>+1</label>
+                <label style='padding-left: 95px;'>Target</label>
+                <label style='padding-left: 65px;'>Dist.</label>
+                <label style='padding-left: 7px;'>To-Hit</label>
+            </div>
+            <fieldset class='repeating_beams'>
+                <input type='hidden' class='weapon-state-status' name='attr_weapon_state_status' value='0'/>
+                <select class='damaged state-select weapon-state' name='attr_state' value='0'>
+                    <option value='0' selected>N</option>
+                    <option value='1'>D</option>
+                    <option value='2'>R</option>
+                    <option value='3'>X</option>
+                </select>
+                <input type='text' class='w12' name='attr_name' placeholder='# Name (arcs)...'/>
+                <input type='text' class='w3' name='attr_maxrange'/>
+                <select class='w3 firing-chart' name='attr_chart'>
+                    <option value='0' selected>select...</option>
+                    <option>A</option>
+                    <option>B</option>
+                    <option>C</option>
+                    <option>D</option>
+                    <option>E</option>
+                    <option>F</option>
+                    <option>G</option>
+                    <option>H</option>
+                    <option>I</option>
+                    <option>J</option>
+                    <option>K</option>
+                    <option>L</option>
+                    <option>M</option>
+                    <option>N</option>
+                    <option>O</option>
+                    <option>P</option>
+                    <option>Q</option>
+                    <option>R</option>
+                    <option>S</option>
+                    <option>T</option>
+                    <option>U</option>
+                    <option>V</option>
+                    <option>W</option>
+                    <option>X</option>
+                    <option>Y</option>
+                </select>
+                <input type='hidden' class='power-status' name='attr_power_status'/>
+                <input type='number' class='w5 power' name='attr_power' min='0' max='10' value='0'/> /
+                <input type='text' class='w3' name='attr_power_max' min='0' max='10' value='0'/>
+                <input type='text' class='w3' name='attr_bonus_3' value='-'/>
+                <input type='text' class='w3' name='attr_bonus_2' value='-'/>
+                <input type='text' class='w3' name='attr_bonus_1' value='-'/> 
+                <span>
+                    <input type='hidden' class='btn-target-status' name='attr_btn-target_status' value='0'/>
+                    <button type='action' class='btn btn-target' name='act_btn-target'>Target</button>
+                </span> →
+                <input type='text' class='w10' name='attr_target_name' readonly/>
+                <input type='hidden' name='attr_target_id'/>
+                <input type='text' class='w3' name='attr_target_distance' value='0' readonly/>
+                <input type='hidden' class='target-tohit-status' name='attr_target_tohit_status'/>
+                <input type='text' class='w3 target-tohit' name='attr_target_tohit' value='0' readonly/>
+                <span>
+                    <input type='hidden' class='btn-fire-status' name='attr_btn-fire_status' value='0'/> 
+                    <button type='action' class='btn btn-fire critical' name='act_btn-fire'>Fire</button>
+                </span>
+                <button type='action' class='btn weapon-repair repair' name='act_weapon-repair'>Repair</button>
+            </fieldset>
         </div>
-        <fieldset class='repeating_missiles'>
-            <input type='hidden' class='weapon-state-status' name='attr_weapon_state_status' value='0'/>
-            <select class='damaged state-select weapon-state' name='attr_state' value='0'>
-                <option value='0' selected>N</option>
-                <option value='1'>D</option>
-                <option value='2'>R</option>
-                <option value='3'>X</option>
-            </select>
-            <input type='text' class='w12' name='attr_name' placeholder='# Name (arcs)...'/>
-            <input type='number' class='w5' name='attr_maxrange'/>
-            <select class='w3 firing-chart' name='attr_chart'>
-                <option value='0' selected>select...</option>
-                <option>A</option>
-                <option>B</option>
-                <option>C</option>
-                <option>D</option>
-                <option>E</option>
-                <option>F</option>
-                <option>G</option>
-                <option>H</option>
-                <option>I</option>
-                <option>J</option>
-                <option>K</option>
-                <option>L</option>
-                <option>M</option>
-                <option>N</option>
-                <option>O</option>
-                <option>P</option>
-                <option>Q</option>
-                <option>R</option>
-                <option>S</option>
-                <option>T</option>
-                <option>U</option>
-                <option>V</option>
-                <option>W</option>
-                <option>X</option>
-                <option>Y</option>
-            </select>
-            <input type='number' name='attr_cost' min='1' value='1'/>
-            <input type='number' name='attr_power' min='1' value='1'/>
-            <input type='hidden' name='attr_damage'/>
-            <input type='hidden' class='missile-armed-status' name='attr_armed_status'/>
-            <input type='checkbox' class='missile-armed' style='margin-left: 13px;' value='1' name='attr_armed'/>
-            <span style='margin-left: 0px;'>
-                <input type='hidden' class='btn-target-status' name='attr_btn-target_status' value='0'/>
-                <button type='action' class='btn btn-target' style='margin-left: 87px;' name='act_btn-target'>Target</button>
-            </span> →
-            <input type='text' class='w10' name='attr_target_name' readonly/>
-            <input type='hidden' name='attr_target_id'/>
-            <input type='text' class='w3' name='attr_target_distance' value='0' readonly/>
-            <input type='hidden' class='target-tohit-status' name='attr_target_tohit_status'/>
-            <input type='text' class='w3 target-tohit' name='attr_target_tohit' value='0' readonly/>
-            <span>
-                <input type='hidden' class='btn-fire-status' name='attr_btn-fire_status' value='0'/>
-                <button type='action' class='btn btn-fire critical' name='act_btn-fire'>Fire</button>
-            </span>
-            <button type='action' class='btn weapon-repair repair' name='act_weapon-repair'>Repair</button>
-        </fieldset>
-    </div>
-    <br/>
-
+        <br/>
+            
+        <div class='grid-6col missiles-panel'>
+            <h4 class='span-grid'>Missile Weapons</h4>
+            
+            <input type='hidden' name='attr_wp_missile'/>
+            <div class='span-grid'>
+                <label style='padding-left: 45px;'>Desig. (Arcs)</label>
+                <label style='padding-left: 25px;'>Range</label>
+                <label style='padding-left: 3px;'>Chart</label>
+                <label style='padding-left: 7px;'>Power</label>
+                <label style='padding-left: 4px;'>Damage</label>
+                <label style='padding-left: 7px;'><strong>Arm</strong></label>
+                <label style='padding-left: 169px;'>Target</label>
+                <label style='padding-left: 65px;'>Dist.</label>
+                <label style='padding-left: 7px;'>To-Hit</label>
+            </div>
+            <fieldset class='repeating_missiles'>
+                <input type='hidden' class='weapon-state-status' name='attr_weapon_state_status' value='0'/>
+                <select class='damaged state-select weapon-state' name='attr_state' value='0'>
+                    <option value='0' selected>N</option>
+                    <option value='1'>D</option>
+                    <option value='2'>R</option>
+                    <option value='3'>X</option>
+                </select>
+                <input type='text' class='w12' name='attr_name' placeholder='# Name (arcs)...'/>
+                <input type='text' class='w3' name='attr_maxrange'/>
+                <select class='w3 firing-chart' name='attr_chart'>
+                    <option value='0' selected>select...</option>
+                    <option>A</option>
+                    <option>B</option>
+                    <option>C</option>
+                    <option>D</option>
+                    <option>E</option>
+                    <option>F</option>
+                    <option>G</option>
+                    <option>H</option>
+                    <option>I</option>
+                    <option>J</option>
+                    <option>K</option>
+                    <option>L</option>
+                    <option>M</option>
+                    <option>N</option>
+                    <option>O</option>
+                    <option>P</option>
+                    <option>Q</option>
+                    <option>R</option>
+                    <option>S</option>
+                    <option>T</option>
+                    <option>U</option>
+                    <option>V</option>
+                    <option>W</option>
+                    <option>X</option>
+                    <option>Y</option>
+                </select>
+                <input type='number' name='attr_cost' min='1' value='1'/>
+                <input type='number' name='attr_power' min='1' value='1'/>
+                <input type='hidden' name='attr_damage'/>
+                <input type='hidden' class='missile-armed-status' name='attr_armed_status'/>
+                <input type='checkbox' class='missile-armed' style='margin-left: 13px;' value='1' name='attr_armed'/>
+                <span style='margin-left: 0px;'>
+                    <input type='hidden' class='btn-target-status' name='attr_btn-target_status' value='0'/>
+                    <button type='action' class='btn btn-target' style='margin-left: 87px;' name='act_btn-target'>Target</button>
+                </span> →
+                <input type='text' class='w10' name='attr_target_name' readonly/>
+                <input type='hidden' name='attr_target_id'/>
+                <input type='text' class='w3' name='attr_target_distance' value='0' readonly/>
+                <input type='hidden' class='target-tohit-status' name='attr_target_tohit_status'/>
+                <input type='text' class='w3 target-tohit' name='attr_target_tohit' value='0' readonly/>
+                <span>
+                    <input type='hidden' class='btn-fire-status' name='attr_btn-fire_status' value='0'/>
+                    <button type='action' class='btn btn-fire critical' name='act_btn-fire'>Fire</button>
+                </span>
+                <button type='action' class='btn weapon-repair repair' name='act_weapon-repair'>Repair</button>
+            </fieldset>
+        </div>
+        <br/>
+    </section>
     <!-------------------------------------------------------->
-    <h2>Construction Data</h2> 
+    <section class='transporterstab'>
+        <div class='grid-6col'>
+            <h4 class='span-grid'>Power Usage</h4>
 
-    <div class='grid-6col construction-panel'>
-        <span class='span2'>
-            <select name='attr_faction'>
+            <label>Power to Transporters:</label>
+            <input type='number' class='w5' name='attr_tpa_transporters' value='0' readonly/>
+            <label>Power Available:</label>
+            <input type='hidden' class='tpa-remaining-status w5' name='attr_tpa_remaining_status'/>
+            <input type='number' class='tpa-remaining' name='attr_tpa_remaining'  value='0' readonly/>
+            <span></span>
+            <span></span>
+        </div>
+        <br/>
+
+        <div class='grid-6col trans-standard-panel'>
+            <input type='hidden' class='trans-ison-std' name='attr_trans_ison_std' value='0'/>
+            <input type='hidden' name='attr_trans_tpa_std' value='0'/>
+            <h4 class='span-grid'>Standard</h4>
+
+            <span>
+                <label>Size:</label>
+                <input type='number' class='w5' name='attr_trans_cap_std' min='0' value='6'/>
+            </span>
+            <span></span>
+            <span>
+                <label>Num:</label>
+                <input type='number' class='w5' name='attr_trans_num_std' min='0' value='0'/>
+            </span>
+            <span></span>
+            <span>
+                <label><strong>In Use:</strong></label>
+                <input type='number' class='trans-on-std w5' name='attr_trans_on_std' min='0' value='0'/>
+            </span>
+            <button type='action' class='btn trans-btn-std' name='act_trans_btn_std'>Energize</button>
+        </div>
+        <br/>
+
+        <div class='grid-6col trans-emergency-panel'>
+            <input type='hidden' class='trans-ison-er' name='attr_trans_ison_er' value='0'/>
+            <input type='hidden' name='attr_trans_tpa_er' value='0'/>
+            <h4 class='span-grid'>Emergency</h4>
+
+            <span>
+                <label>Size:</label>
+                <input type='number' class='w5' name='attr_trans_cap_er' min='0' value='0'/>
+            </span>
+            <span></span>
+            <span>
+                <label>Num:</label>
+                <input type='number' class='w5' name='attr_trans_num_er' min='0' value='0'/>
+            </span>
+            <span></span>
+            <span>
+                <label><strong>In Use:</strong></label>
+                <input type='number' class='trans-on-er w5' name='attr_trans_on_er' min='0' value='0'/>
+            </span>
+            <button type='action' class='btn trans-btn-er' name='act_trans_btn_er'>Energize</button>
+        </div>
+        <br/>
+
+        <div class='grid-6col trans-cargo-panel'>
+            <input type='hidden' class='trans-ison-scu' name='attr_trans_ison_scu' value='0'/>
+            <input type='hidden' name='attr_trans_tpa_scu' value='0'/>
+            <h4 class='span-grid'>Cargo</h4>
+
+            <span>
+                <label>Size:</label>
+                <input type='number' class='w5' name='attr_trans_cap_scu' value='1' readonly/>
+            </span>
+            <span></span>
+            <span>
+                <label>Num:</label>
+                <input type='number' class='w5' name='attr_trans_num_scu' min='0' value='0'/>
+            </span>
+            <span></span>
+            <span>
+                <label><strong>In Use:</strong></label>
+                <input type='number' class='trans-on-scu w5' name='attr_trans_on_scu' min='0' value='0'/>
+            </span>
+            <button type='action' class='btn trans-btn-scu' name='act_trans_btn_scu'>Energize</button>
+        </div>
+        <br/>
+
+        <div class='grid-6col trans-combat-panel'>
+            <input type='hidden' class='trans-ison-cbt' name='attr_trans_ison_cbt' value='0'/>
+            <input type='hidden' name='attr_trans_tpa_cbt' value='0'/>
+            <h4 class='span-grid'>Combat</h4>
+
+            <span>
+                <label>Size:</label>
+                <input type='number' class='w5' name='attr_trans_cap_cbt' min='0' value='0'/>
+            </span>
+            <span></span>
+            <span>
+                <label>Num:</label>
+                <input type='number' class='w5' name='attr_trans_num_cbt' min='0' value='0'/>
+            </span>
+            <span></span>
+            <span>
+                <label><strong>In Use:</strong></label>
+                <input type='number' class='trans-on-cbt w5' name='attr_trans_on_cbt' min='0' value='0'/>
+            </span>
+            <button type='action' class='btn trans-btn-cbt' name='act_trans_btn_cbt'>Energize</button>
+        </div>
+    </section>
+    <!-------------------------------------------------------->
+    <section class='constructiontab'>
+        <div class='grid-6col construction-panel'>
+            <h4 class='span-grid'>Combat Efficiency</h4>
+
+            <label>Defense:</label>
+            <input type='number' class='w6' name='attr_defense' min='0' step='.1' value='0'/>
+            <label>Weapons:</label>
+            <input type='number' class='w6' name='attr_wdf' min='0' step='.1' value='0'/>
+            <label><strong>CE Rating:</strong></label>
+            <span name='attr_ce'><strong>0</strong></span>
+        </div>
+        <br/>
+
+        <div class='grid-6col construction-panel'>
+            <h4 class='span-grid'>Classification Data</h4>
+
+            <label>Vessel Class:</label>
+            <input type='text' class='span2 w20' name='attr_class' placeholder='Class...'/>
+            <label>Vessel Type:</label>
+            <select class='span2 w20' name='attr_type'>
+                <option>Select...</option>
+                <option value='BB'>Battleship</option>
+                <option value='BC'>Battlecruiser</option>
+                <option value='CL'>Cruiser, Light</option>
+                <option value='CM'>Cruiser, Missile</option>
+                <option value='CR'>Cruiser, Research</option>
+                <option value='CS'>Cruiser, Medium</option>
+                <option value='CA'>Cruiser, Heavy</option>
+                <option value='DD'>Destroyer</option>
+                <option value='ES'>Escort</option>
+                <option value='FL'>Frigate, Light</option>
+                <option value='FS'>Frigate, Medium</option>
+                <option value='MN'>Monitor</option>
+                <option value='RV'>Research Vessel</option>
+                <option value='SC'>Scout</option>
+                <option value='TC'>Transport, Commercial</option>
+                <option value='TF'>Transport, Freighter</option>
+                <option value='TL'>Transport, Light</option>
+                <option value='TU'>Transport, Robot</option>
+                <option value='ZA'>Administrative Station</option>
+                <option value='ZD'>Defensive Outpost</option>
+                <option value='ZL'>Listening Post</option>
+                <option value='ZO'>Observation Post</option>
+            </select>
+            <input type='hidden' name='attr_type_is_advanced' value='0'/>
+            <input type='hidden' name='attr_type_is_battle' value='0'/>
+            <input type='hidden' name='attr_type_is_exploration' value='0'/>
+            <input type='hidden' name='attr_type_is_repair' value='0'/>
+            <input type='hidden' name='attr_type_is_nonmedical' value='0'/>
+            <input type='hidden' name='attr_type_is_anticloak' value='0'/>
+            <input type='hidden' name='attr_type_is_command' value='0'/>
+
+            <label>Faction: </label>
+            <select class='span2 w20' name='attr_faction'>
                 <option selected>Select faction...</option>
                 <option value='federation'>United Federation of Planets</option>
                 <option value='klingon'>Klingon Empire</option>
                 <option value='romulan'>Romulan Star Empire</option>
                 <option value='independent'>Independent</option>
             </select>
-        </span>
+            <label>Size Class:</label>
+            <span class='span2' name='attr_size'></span>
+        </div>
+        <br/>
 
-        <span class='span2'>
-            <input type='text' class='w20' name='attr_class' placeholder='Class...'/>
-        </span>
+        <div class='grid-6col hull-panel'>
+            <h4 class='span-grid'>Hull Data</h4>
 
-        <label>Type:</label>
-        <select class='w16' name='attr_type'>
-            <option>Select...</option>
-            <option value='BB'>Battleship</option>
-            <option value='BC'>Battlecruiser</option>
-            <option value='CL'>Cruiser, Light</option>
-            <option value='CM'>Cruiser, Missile</option>
-            <option value='CR'>Cruiser, Research</option>
-            <option value='CS'>Cruiser, Medium</option>
-            <option value='CA'>Cruiser, Heavy</option>
-            <option value='DD'>Destroyer</option>
-            <option value='ES'>Escort</option>
-            <option value='FL'>Frigate, Light</option>
-            <option value='FS'>Frigate, Medium</option>
-            <option value='MN'>Monitor</option>
-            <option value='RV'>Research Vessel</option>
-            <option value='SC'>Scout</option>
-            <option value='TC'>Transport, Commercial</option>
-            <option value='TF'>Transport, Freighter</option>
-            <option value='TL'>Transport, Light</option>
-            <option value='TU'>Transport, Robot</option>
-            <option value='ZA'>Administrative Station</option>
-            <option value='ZD'>Defensive Outpost</option>
-            <option value='ZL'>Listening Post</option>
-            <option value='ZO'>Observation Post</option>
-        </select>
-        <input type='hidden' name='attr_type_is_advanced' value='0'/>
-        <input type='hidden' name='attr_type_is_battle' value='0'/>
-        <input type='hidden' name='attr_type_is_exploration' value='0'/>
-        <input type='hidden' name='attr_type_is_repair' value='0'/>
-        <input type='hidden' name='attr_type_is_nonmedical' value='0'/>
-        <input type='hidden' name='attr_type_is_anticloak' value='0'/>
-        <input type='hidden' name='attr_type_is_command' value='0'/>
-
-        <label>Date Entering Service:</label>
-        <input type='text' class='w7' name='attr_date' placeholder='Date...'/>
-
-        <label>Number Constructed:</label>
-        <input type='number' class='w7' name='attr_num' min='0'/>
-
-        <label>Control Computer:</label>
-        <input type='text' class='w7' name='attr_computer'/>
-    </div>
-    <br/>
-
-    <!-------------------------------------------------------->
-    <h2>Hull Data</h2>
-    <div class='grid-6col hull-panel'>
-        <label>Superstructure:</label>
-        <input type='number' class='w7' name='attr_hp_max' min='0' value='0'/>
-        
-        <label>Damage Chart:</label>
-        <select class='w7' name='attr_dmg_chart'>
-            <option value='0' selected>Select...</option>
-            <option>A</option>
-            <option>B</option>
-            <option>C</option>
-            <option>D</option>
-        </select>
-
-        <label>Mass (mt):</label>
-        <input type='number' class='w7' name='attr_mass' min='0' value='0'/>
-
-        <label>Length (m):</label>
-        <input type='number' class='w7' name='attr_length' min='0' step='0.1'/>
-
-        <label>Width (m):</label>
-        <input type='number' class='w7' name='attr_width' min='0' step='0.1'/>
-        
-        <label>Height (m):</label>
-        <input type='number' class='w7' name='attr_height' min='0' step='0.1'/>
-        
-        <label>Cargo Units (SCU):</label>
-        <input type='number' class='w7' name='attr_scu' min='0' value='0'/>
-
-        <label>Cargo Capacity:</label>
-        <span name='attr_scu_cap'></span>
-
-        <label>Landing Capability:</label>
-        <select class='w7' name='attr_landing_capacity'>
-            <option selected>None</option>
-            <option>Yes</option>
-        </select>
-
-        <label>Crew:</label>
-        <input type='number' class='w7' name='attr_crew_max' min='0' value='0'/>
-        
-        <label>Troops:</label>
-        <input type='number' class='w7' name='attr_troops_max' min='0' value='0'/>
-        
-        <label>Passengers:</label>
-        <input type='number' class='w7' name='attr_passengers_max' min='0' value='0'/>
-    </div>
-    <br/>
-
-    <!-------------------------------------------------------->
-    <span class='transporters-header header-container'>
-        <h2>Transporters</h2>
-        <span>
-            <input type='hidden' name='attr_transporters_grid_to_repair' value='0'/>
-            <select class='w7 state-select' name='attr_transporters_grid_state' readonly>
-                <option value='0' selected>Online</option>
-                <option value='1'>Dmg 1-8</option>
-                <option value='2'>Dmg 1-6</option>
-                <option value='3'>Dmg 1-4</option>
-                <option value='4'>Dmg 1-2</option>
-                <option value='5'>DEST</option>
+            <label>Superstructure:</label>
+            <input type='number' class='w7' name='attr_hp_max' min='0' value='0'/>            
+            <label>Damage Chart:</label>
+            <select class='w7' name='attr_dmg_chart'>
+                <option value='0' selected>Select...</option>
+                <option>A</option>
+                <option>B</option>
+                <option>C</option>
+                <option>D</option>
             </select>
-            <button type='action' class='btn btn-transporters-grid-repair repair' name='act_transporters_grid_repair'>Repair</button>
-        </span>
-    </span>
+            <label>Mass (mt):</label>
+            <input type='number' class='w7' name='attr_mass' min='0' value='0'/>
+            
+            <label>Cargo Units (SCU):</label>
+            <input type='number' class='w7' name='attr_scu' min='0' value='0'/>
+            <label>Cargo Capacity:</label>
+            <span name='attr_scu_cap'></span>
+            <label>Shuttlecraft:</label>
+            <input type='number' class='w7' name='attr_shuttlecraft_max' min='0' value='0'/>
 
-    <div class='grid-6col transporter-panel'>
-        <span></span>
-        <label>Capacity</label>
-        <label>Count</label>
-        <label>Online</label>
-        <label>TPA</label>
-        <span></span>
+            <label>Crew:</label>
+            <input type='number' class='w7' name='attr_crew_max' min='0' value='0'/>            
+            <label>Troops:</label>
+            <input type='number' class='w7' name='attr_troops_max' min='0' value='0'/>            
+            <label>Passengers:</label>
+            <input type='number' class='w7' name='attr_passengers_max' min='0' value='0'/>
+        </div>
+    </section>
+        <!-------------------------------------------------------->
+    <section class='settingstab'>
+        <div class='grid-6col'>
+            <h4 class='span-grid'>Player Settings</h4>
+            
+            <span>
+                <label>Dark Mode:</label>
+                <input type="checkbox" name="attr_dark_mode" class="dark-mode-toggle" value='1'/>
+            </span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <br/>
 
-        <label>Standard</label>
-        <input type='hidden' class='trans-ison-std' name='attr_trans_ison_std' value='0'/>
-        <input type='number' name='attr_trans_cap_std' min='0' value='6' title='# persons'/>
-        <input type='number' name='attr_trans_num_std' min='0' value='0'/>
-        <input type='number' class='trans-on-std' name='attr_trans_on_std' min='0' value='0'/>
-        <input type='number' name='attr_trans_tpa_std' value='0' readonly/>
-        <button type='action' class='btn trans-btn-std' name='act_trans_btn_std'>Energize</button>
-        
-        <label>Combat</label>
-        <input type='hidden' class='trans-ison-cbt' name='attr_trans_ison_cbt' value='0'/>
-        <input type='number' name='attr_trans_cap_cbt' min='0' value='0' title='# persons'/>
-        <input type='number' name='attr_trans_num_cbt' min='0' value='0'/>
-        <input type='number' class='trans-on-cbt' name='attr_trans_on_cbt' min='0' value='0'/>
-        <input type='number' name='attr_trans_tpa_cbt' value='0' readonly/>
-        <button type='action' class='btn trans-btn-cbt' name='act_trans_btn_cbt'>Energize</button>
-        
-        <label>Emergency</label>
-        <input type='hidden' class='trans-ison-er' name='attr_trans_ison_er' value='0'/>
-        <input type='number' name='attr_trans_cap_er' min='0' value='0' title='# persons'/>
-        <input type='number' name='attr_trans_num_er' min='0' value='0'/>
-        <input type='number' class='trans-on-er' name='attr_trans_on_er' min='0' value='0'/>
-        <input type='number' name='attr_trans_tpa_er' value='0' readonly/>
-        <button type='action' class='btn trans-btn-er' name='act_trans_btn_er'>Energize</button>
-        
-        <label>Cargo</label>
-        <input type='hidden' class='trans-ison-scu' name='attr_trans_ison_scu' value='0'/>
-        <input type='number' name='attr_trans_cap_scu' value='1' title='# SCUs' readonly/>
-        <input type='number' name='attr_trans_num_scu' min='0' value='0'/>
-        <input type='number' class='trans-on-scu' name='attr_trans_on_scu' min='0' value='0'/>
-        <input type='number' name='attr_trans_tpa_scu' value='0' readonly/>
-        <button type='action' class='btn trans-btn-scu' name='act_trans_btn_scu'>Energize</button>
-    </div>
-    <br/>
-
-    <!-------------------------------------------------------->
-    <h2>Flight Deck</h2>
-    <div class='grid-6col crew-panel'>
-
-        <label>Shuttlecraft:</label>
-        <input type='number' class='w7' name='attr_shuttlecraft_max' min='0' value='0'/>
-
-    </div>
-    <br/>
-
-    <!-------------------------------------------------------->
-    <h2>Maintenance</h2>
-    <div class='grid-6col maint-panel'>
-        <p class='span-grid'><strong>Do not use these controls during battle!</strong></p>
-        <button type='action' class='btn' name='act_repair'>Repair/Reset Vessel</button>
-        <span></span>
-        <span>
-            <input type="checkbox" name="attr_show_cloak" value='1'/><label>Has Cloak</label>
-        </span>
-        <span></span>
-        <span>
-            <input type="checkbox" name="attr_dark_mode" class="dark-mode-toggle" value='1'/><label>Dark Mode</label>
-        </span>
-    </div>
+        <div class='grid-6col'>
+            <h4 class='span-grid'>Vessel Settings</h4>
+            
+            <span>
+                <label>Has Cloak:</label>
+                <input type="checkbox" name="attr_show_cloak" value='1'/>
+            </span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <button type='action' class='btn' name='act_repair'>Repair/Reset Vessel</button>
+        </div>
+        <br/>
+    </section>
+</div>
 
 <!-- Banner placeholders (see readme) -->
 <input type='hidden' name='attr_banner_federationfirebeams' value='[x](https://files.d20.io/images/459374797/BrLK7l69a5n4Mfomy8M4GA/original.png)'/>
@@ -999,7 +1053,10 @@ const ROLL20_CHAR_URL = `https://journal.roll20.net/character/`;
 
 // ON SHEET OPENED
 on(`sheet:opened`,function(){
-    getAttrs([`character_name`, `sensorlock`, `mp`, `tpa_reset`, `sup-percent`, `tpa-percent`, `shields-percent`, `weapons-percent`, `crew-percent`], function(values) {
+    getAttrs([`character_name`, `sensorlock`, `mp`, 
+        `tpa_reset`, `sup-percent`, `tpa-percent`, 
+        `shields-percent`, `weapons-percent`, `crew-percent`, 
+        `spr_1`, `spr_2`, `troops_max`], function(values) {
         const charactername = values[`character_name`];
         const sensorLock = values[`sensorlock`] || ``;
         const mp = parseInt(values[`mp`]) || 0;
@@ -1009,6 +1066,9 @@ on(`sheet:opened`,function(){
         const shieldsPercent = parseInt(values[`shields-percent`]) || -1;
         const weaponsPercent = parseInt(values[`weapons-percent`]) || -1;
         const crewPercent = parseInt(values[`crew-percent`]) || -1;
+        const dac = Math.round((parseInt(values[`spr_1`]) || 1) / (parseInt(values[`spr_2`]) || 1) * 100);
+        const dacStr = `${dac}%`;
+        const troops = parseInt(values[`troops_max`]) || 0;
         
         const output = {};
 
@@ -1028,8 +1088,22 @@ on(`sheet:opened`,function(){
         output[`weapons-percent`] = weaponsPercent == -1 ? 100 : weaponsPercent;
         output[`crew-percent`] = crewPercent == -1 ? 100 : crewPercent;
         output[`wfr_1`] = 1;
+        output[`shield_dac`] = dacStr;
+        output[`troops_max`] = troops;
+        output[`ship_has_troops`] = troops > 0 ? 1 : 0;
 
         setAttrs(output);
+    });
+});
+
+// Select/deselect buttons
+const buttonlist = ['maintab','damagetab','sensorstab','powertab','helmtab','shieldstab','weaponstab','transporterstab','constructiontab','settingstab'];
+buttonlist.forEach(button => {
+    on(`clicked:${button}`, function() {
+        setAttrs({
+            sheetButtons: button,
+            sheetTab: button
+        });
     });
 });
 
@@ -1116,136 +1190,132 @@ on(`change:defense change:wdf`, function(eventInfo) {
 
 // CREW BONUS selection
 on(`change:crewbonus`, async function(eventInfo) {
-    try {
-        const values = await getAttrsAsync([`crewbonus`, `hp`, `hp_max`, `crewbonus_saved`, `crewbonus_engineid`]);
-        const crewBonus = parseInt(values[`crewbonus`]) || 0;
-        const output = {};
+    const values = await getAttrsAsync([`crewbonus`, `hp`, `hp_max`, `crewbonus_saved`, `crewbonus_engineid`]);
+    const crewBonus = parseInt(values[`crewbonus`]) || 0;
+    const output = {};
 
-        // Save crewBonus value to crewbonus_saved
-        output[`crewbonus_saved`] = crewBonus;
+    // Save crewBonus value to crewbonus_saved
+    output[`crewbonus_saved`] = crewBonus;
 
-        // Reset crewbonus1, crewbonus2, crewbonus3 to 0 (skip crewbonus4)
-        output[`crewbonus1`] = output[`crewbonus2`] = output[`crewbonus3`] = 0;
+    // Reset crewbonus1, crewbonus2, crewbonus3 to 0 (skip crewbonus4)
+    output[`crewbonus1`] = output[`crewbonus2`] = output[`crewbonus3`] = 0;
 
-        // If crewBonus is less than 4, set the corresponding crewbonus field to 1
-        if (crewBonus < 4) {
-            output[`crewbonus${crewBonus}`] = 1;
-        }
-
-        // If crewBonus = 4, increase hp by 1 (no higher than hp_max)
-        if (crewBonus === 4) {
-            const currentHp = parseInt(values[`hp`]) || 0;
-            const maxHp = parseInt(values[`hp_max`]) || 0;
-            if (currentHp == maxHp) output[`crewbonus_saved`] = 0; // Don't save if there's no hp dmg
-            output[`hp`] = Math.min(currentHp + 1, maxHp);
-        }
-
-        // If crewbonus_saved = 4, decrease hp by 1 (can go below zero)
-        if (parseInt(values[`crewbonus_saved`]) === 4) {
-            const currentHp = parseInt(values[`hp`]) || 0;
-            output[`hp`] = currentHp - 1;
-        }
-
-        // If crewBonus = 5, add +1 to the Impulse engine with lowest power
-        if (crewBonus === 5) {
-            const engineIds = await getSectionIDsAsync(`repeating_engines`);
-            let lowestPower = Infinity;
-            let lowestEngineId = null;
-
-            // Find Impulse engine with lowest power
-            for (const engineId of engineIds) {
-                const engineValues = await getAttrsAsync([
-                    `repeating_engines_${engineId}_engine_type`,
-                    `repeating_engines_${engineId}_engine_power`,
-                    `repeating_engines_${engineId}_engine_power_full`
-                ]);
-
-                const engineType = parseInt(engineValues[`repeating_engines_${engineId}_engine_type`]) || 0;
-                const enginePower = parseInt(engineValues[`repeating_engines_${engineId}_engine_power`]) || 0;
-                const enginePowerFull = parseInt(engineValues[`repeating_engines_${engineId}_engine_power_full`]) || 0;
-
-                if (engineType === 1 && enginePower < lowestPower && enginePower < enginePowerFull) {
-                    lowestPower = enginePower;
-                    lowestEngineId = engineId;
-                }
-            }
-
-            // Increase power of lowest Impulse engine
-            if (lowestEngineId) {
-                const engineValues = await getAttrsAsync([
-                    `repeating_engines_${lowestEngineId}_engine_power`,
-                    `repeating_engines_${lowestEngineId}_engine_power_full`
-                ]);
-                const currentPower = parseInt(engineValues[`repeating_engines_${lowestEngineId}_engine_power`]) || 0;
-                const maxPower = parseInt(engineValues[`repeating_engines_${lowestEngineId}_engine_power_full`]) || 0;
-
-                output[`repeating_engines_${lowestEngineId}_engine_power`] = Math.min(currentPower + 1, maxPower);
-                output[`crewbonus_engineid`] = lowestEngineId;
-            }
-        }
-
-        // If crewbonus_saved = 5, subtract 1 from previously modified Impulse engine
-        if (parseInt(values[`crewbonus_saved`]) === 5) {
-            const engineId = values[`crewbonus_engineid`];
-            if (engineId) {
-                const engineValues = await getAttrsAsync([`repeating_engines_${engineId}_engine_power`]);
-                const currentPower = parseInt(engineValues[`repeating_engines_${engineId}_engine_power`]) || 0;
-                output[`repeating_engines_${engineId}_engine_power`] = Math.max(currentPower - 1, 0);
-            }
-        }
-
-        // If crewBonus = 6, add +1 to the Warp engine with lowest power
-        if (crewBonus === 6) {
-            const engineIds = await getSectionIDsAsync(`repeating_engines`);
-            let lowestPower = Infinity;
-            let lowestEngineId = null;
-
-            // Find Warp engine with lowest power
-            for (const engineId of engineIds) {
-                const engineValues = await getAttrsAsync([
-                    `repeating_engines_${engineId}_engine_type`,
-                    `repeating_engines_${engineId}_engine_power`,
-                    `repeating_engines_${engineId}_engine_power_full`
-                ]);
-
-                const engineType = parseInt(engineValues[`repeating_engines_${engineId}_engine_type`]) || 0;
-                const enginePower = parseInt(engineValues[`repeating_engines_${engineId}_engine_power`]) || 0;
-                const enginePowerFull = parseInt(engineValues[`repeating_engines_${engineId}_engine_power_full`]) || 0;
-
-                if (engineType === ENGINE_TYPE_WARP && enginePower < lowestPower && enginePower < enginePowerFull) {
-                    lowestPower = enginePower;
-                    lowestEngineId = engineId;
-                }
-            }
-
-            // Increase power of lowest Warp engine
-            if (lowestEngineId) {
-                const engineValues = await getAttrsAsync([
-                    `repeating_engines_${lowestEngineId}_engine_power`,
-                    `repeating_engines_${lowestEngineId}_engine_power_full`
-                ]);
-                const currentPower = parseInt(engineValues[`repeating_engines_${lowestEngineId}_engine_power`]) || 0;
-                const maxPower = parseInt(engineValues[`repeating_engines_${lowestEngineId}_engine_power_full`]) || 0;
-
-                output[`repeating_engines_${lowestEngineId}_engine_power`] = Math.min(currentPower + 1, maxPower);
-                output[`crewbonus_engineid`] = lowestEngineId;
-            }
-        }
-
-        // If crewbonus_saved = 6, subtract 1 from previously modified Warp engine
-        if (parseInt(values[`crewbonus_saved`]) === 6) {
-            const engineId = values[`crewbonus_engineid`];
-            if (engineId) {
-                const engineValues = await getAttrsAsync([`repeating_engines_${engineId}_engine_power`]);
-                const currentPower = parseInt(engineValues[`repeating_engines_${engineId}_engine_power`]) || 0;
-                output[`repeating_engines_${engineId}_engine_power`] = Math.max(currentPower - 1, 0);
-            }
-        }
-
-        await setAttrsAsync(output);
-    } catch (error) {
-        console.error(`Error in crewbonus handler:`, error);
+    // If crewBonus is less than 4, set the corresponding crewbonus field to 1
+    if (crewBonus < 4) {
+        output[`crewbonus${crewBonus}`] = 1;
     }
+
+    // If crewBonus = 4, increase hp by 1 (no higher than hp_max)
+    if (crewBonus === 4) {
+        const currentHp = parseInt(values[`hp`]) || 0;
+        const maxHp = parseInt(values[`hp_max`]) || 0;
+        if (currentHp == maxHp) output[`crewbonus_saved`] = 0; // Don't save if there's no hp dmg
+        output[`hp`] = Math.min(currentHp + 1, maxHp);
+    }
+
+    // If crewbonus_saved = 4, decrease hp by 1 (can go below zero)
+    if (parseInt(values[`crewbonus_saved`]) === 4) {
+        const currentHp = parseInt(values[`hp`]) || 0;
+        output[`hp`] = currentHp - 1;
+    }
+
+    // If crewBonus = 5, add +1 to the Impulse engine with lowest power
+    if (crewBonus === 5) {
+        const engineIds = await getSectionIDsAsync(`repeating_engines`);
+        let lowestPower = Infinity;
+        let lowestEngineId = null;
+
+        // Find Impulse engine with lowest power
+        for (const engineId of engineIds) {
+            const engineValues = await getAttrsAsync([
+                `repeating_engines_${engineId}_engine_type`,
+                `repeating_engines_${engineId}_engine_power`,
+                `repeating_engines_${engineId}_engine_power_full`
+            ]);
+
+            const engineType = parseInt(engineValues[`repeating_engines_${engineId}_engine_type`]) || 0;
+            const enginePower = parseInt(engineValues[`repeating_engines_${engineId}_engine_power`]) || 0;
+            const enginePowerFull = parseInt(engineValues[`repeating_engines_${engineId}_engine_power_full`]) || 0;
+
+            if (engineType === 1 && enginePower < lowestPower && enginePower < enginePowerFull) {
+                lowestPower = enginePower;
+                lowestEngineId = engineId;
+            }
+        }
+
+        // Increase power of lowest Impulse engine
+        if (lowestEngineId) {
+            const engineValues = await getAttrsAsync([
+                `repeating_engines_${lowestEngineId}_engine_power`,
+                `repeating_engines_${lowestEngineId}_engine_power_full`
+            ]);
+            const currentPower = parseInt(engineValues[`repeating_engines_${lowestEngineId}_engine_power`]) || 0;
+            const maxPower = parseInt(engineValues[`repeating_engines_${lowestEngineId}_engine_power_full`]) || 0;
+
+            output[`repeating_engines_${lowestEngineId}_engine_power`] = Math.min(currentPower + 1, maxPower);
+            output[`crewbonus_engineid`] = lowestEngineId;
+        }
+    }
+
+    // If crewbonus_saved = 5, subtract 1 from previously modified Impulse engine
+    if (parseInt(values[`crewbonus_saved`]) === 5) {
+        const engineId = values[`crewbonus_engineid`];
+        if (engineId) {
+            const engineValues = await getAttrsAsync([`repeating_engines_${engineId}_engine_power`]);
+            const currentPower = parseInt(engineValues[`repeating_engines_${engineId}_engine_power`]) || 0;
+            output[`repeating_engines_${engineId}_engine_power`] = Math.max(currentPower - 1, 0);
+        }
+    }
+
+    // If crewBonus = 6, add +1 to the Warp engine with lowest power
+    if (crewBonus === 6) {
+        const engineIds = await getSectionIDsAsync(`repeating_engines`);
+        let lowestPower = Infinity;
+        let lowestEngineId = null;
+
+        // Find Warp engine with lowest power
+        for (const engineId of engineIds) {
+            const engineValues = await getAttrsAsync([
+                `repeating_engines_${engineId}_engine_type`,
+                `repeating_engines_${engineId}_engine_power`,
+                `repeating_engines_${engineId}_engine_power_full`
+            ]);
+
+            const engineType = parseInt(engineValues[`repeating_engines_${engineId}_engine_type`]) || 0;
+            const enginePower = parseInt(engineValues[`repeating_engines_${engineId}_engine_power`]) || 0;
+            const enginePowerFull = parseInt(engineValues[`repeating_engines_${engineId}_engine_power_full`]) || 0;
+
+            if (engineType === ENGINE_TYPE_WARP && enginePower < lowestPower && enginePower < enginePowerFull) {
+                lowestPower = enginePower;
+                lowestEngineId = engineId;
+            }
+        }
+
+        // Increase power of lowest Warp engine
+        if (lowestEngineId) {
+            const engineValues = await getAttrsAsync([
+                `repeating_engines_${lowestEngineId}_engine_power`,
+                `repeating_engines_${lowestEngineId}_engine_power_full`
+            ]);
+            const currentPower = parseInt(engineValues[`repeating_engines_${lowestEngineId}_engine_power`]) || 0;
+            const maxPower = parseInt(engineValues[`repeating_engines_${lowestEngineId}_engine_power_full`]) || 0;
+
+            output[`repeating_engines_${lowestEngineId}_engine_power`] = Math.min(currentPower + 1, maxPower);
+            output[`crewbonus_engineid`] = lowestEngineId;
+        }
+    }
+
+    // If crewbonus_saved = 6, subtract 1 from previously modified Warp engine
+    if (parseInt(values[`crewbonus_saved`]) === 6) {
+        const engineId = values[`crewbonus_engineid`];
+        if (engineId) {
+            const engineValues = await getAttrsAsync([`repeating_engines_${engineId}_engine_power`]);
+            const currentPower = parseInt(engineValues[`repeating_engines_${engineId}_engine_power`]) || 0;
+            output[`repeating_engines_${engineId}_engine_power`] = Math.max(currentPower - 1, 0);
+        }
+    }
+
+    await setAttrsAsync(output);
 });
 
 // CREW calculation
@@ -1255,7 +1325,7 @@ on(`change:crew change:crew_max`, function(eventInfo) {
         const crewMax = parseInt(values[`crew_max`]) || 0;
 
         const output = {};
-        output[`crew-percent`] = Math.max(0, crew / crewMax * 100);
+        output[`crew-percent`] = Math.max(0, Math.round(crew / crewMax * 100));
         output[`crew_status`] = crew <= (crewMax * .4) || crew > crewMax ? 1 : crew <= crewMax * .8 ? 2 : 0;
         setAttrs(output);
     });
@@ -1307,7 +1377,7 @@ on(`clicked:rolldamage`, async () => {
         13, 16, 17, 6, 7, 10, 1, 2, 2, 15,
         13, 16, 6, 6, 3, 11, 1, 2, 2, 8,
 
-        13, 16, 6, 3, 2, 2, 1, 8, 14, 12, 
+        15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 
         13, 16, 17, 2, 2, 2, 1, 5, 14, 12,
         13, 16, 7, 4, 2, 2, 1, 9, 14, 12,
         13, 16, 7, 7, 4, 11, 1, 2, 2, 9,
@@ -1962,51 +2032,23 @@ async function damageWeapon(myShieldNum = 1, myRepeatingSection = ``, myDmg = 0)
     return { residualDamage, returnStr, weaponCount, weapons, matchingCount, matchingWeapons, eligibleCount, eligibleWeapons };
 }
 
-// IMPULSE POWER status indicator
-on(`change:repeating_engines:engine_power`, function(eventInfo) {
-    getSectionIDs(`repeating_engines`, function (ids) {
-        const Fieldnames = [];
-        ids.forEach(id => {
-            Fieldnames.push(`repeating_engines_${id}_engine_type`);
-            Fieldnames.push(`repeating_engines_${id}_engine_power`);
-        });
-        
-        getAttrs([...Fieldnames], function (values) {
-            let totalPower = 0;
-            const output = {};
-            ids.forEach(id => {
-                if (values[`repeating_engines_${id}_engine_type`] == ENGINE_TYPE_IMPULSE) {
-                    const enginePower = parseInt(values[`repeating_engines_${id}_engine_power`]) || 0;
-                    totalPower += enginePower;
-                }
-            });
-            output[`impulse_power_status`] = totalPower == 0 ? 1 : 0;
-            setAttrs(output);
-        });
-    });
-});
-
-// MOVEMENT POINTS AVAILABLE calculation
-on(`change:tpa_movement change:mpr_1 change:mpr_2 change:impulse_power_status`, function(eventInfo) {
-    getAttrs([`tpa_movement`, `mpr_1`, `mpr_2`, `impulse_power_status`], function(values) {
-        const power = parseInt(values[`tpa_movement`]) || 0;
+// MOVEMENT POWER calculation
+on(`change:mp change:mpr_1 change:mpr_2`, function(eventInfo) {
+    getAttrs([`mp`, `mpr_1`, `mpr_2`], function(values) {
+        const mp = parseInt(values[`mp`]) || 0;
         const mpr = (parseInt(values[`mpr_1`]) || 1) / (parseInt(values[`mpr_2`]) || 1);
-        const impulsePowerStatus = parseInt(values[`impulse_power_status`]) || 0;
 
-        const mp = !impulsePowerStatus ? Math.floor(power / mpr) : 0;
+        const powerRequired = mp * mpr;
         const mpPhase1 = Math.floor(mp / 3) + Math.floor((mp % 3) / 2); // phase 1
         const mpPhase2 = Math.floor(mp / 3) + (mp % 3 == 1 ? 1 : 0); // phase 2
         const mpPhase3 = Math.floor(mp / 3) + Math.floor((mp % 3) / 2); // phase 3
-        const powerUnused = power % mpr;
 
         const output = {};
-        output[`mp`] = mp;
+        output[`tpa_movement`] = powerRequired;
         output[`ta`] = mp * 10000;
         output[`mp1`] = mpPhase1;
         output[`mp2`] = mpPhase2;
         output[`mp3`] = mpPhase3;
-        output[`mp_remaining`] = powerUnused;
-        output[`mp_remaining_status`] = power != 0 && (powerUnused < 0 ? 1 : (powerUnused > 0 ? 2 : 0));
         setAttrs(output);
     });
 });
@@ -2242,7 +2284,7 @@ on(`clicked:scan`, async (event) => {
 async function undoSensorLock() {
     const output = {};
     output[`sensorlock`] = output[`sensorlockid`] = ``;
-    output[`scanquestion`] = output[`scananswer`] = ``;
+    output[`scanquestion`] = ``;
     output[`has_sensor_lock`] = 0;
     await setAttrsAsync(output);
 }
@@ -2535,15 +2577,15 @@ on(`change:tpa_shields change:spr_1 change:spr_2`, function(eventInfo) {
         const power = parseInt(values[`tpa_shields`]) || 0;
         const spr = (parseInt(values[`spr_1`]) || 1) / (parseInt(values[`spr_2`]) || 1);
 
-        //const totalPower = power + (crewBonus ? 1 : 0);
-        //const sp = Math.floor(totalPower / spr - shield1);
-        //const powerRemaining = Math.round(totalPower - shield1 * spr - shield2 * spr - shield3 * spr - shield4 * spr - shield5 * spr - shield6 * spr);
+        const sp = power / spr;
+        const totalsp = sp * 6;
+        const dac = Math.round(spr * 100);
+        const dacStr = `${dac}%`;
 
         const output = {};
         output[`shield_1`] = output[`shield_2`] = output[`shield_3`] = output[`shield_4`] = output[`shield_5`] = output[`shield_6`] = power / spr;
-        //output[`sp`] = sp;
-        //output[`sp_remaining`] = powerRemaining;
-        //output[`sp_remaining_status`] = (power != 0 || powerRemaining != 0) && (powerRemaining < 0 ? 1 : (powerRemaining > 0 ? 2 : 0));
+        output[`sp`] = totalsp;
+        output[`shield_dac`] = dacStr;
         setAttrs(output);
     });
 });
@@ -2581,7 +2623,7 @@ on(`change:tpa_shields change:spr_1 change:spr_2`, function(eventInfo) {
 });
 
 // SHIELDS RE-ENERGIZED
-on(`clicked:shield_reenergize`, function(eventInfo) {
+on(`clicked:no_repairs`, function(eventInfo) {
     energizeShields();
     releaseLockedRepairStatuses();
 
@@ -2924,13 +2966,14 @@ on(`change:repeating_engines:engine_power change:repeating_engines:engine_power_
                 const engineType = parseInt(values[`repeating_engines_${id}_engine_type`]) || 0;
                 
                 tpa += enginePower + (enginePower > ENGINE_NO_POWER && crewBonus == CREW_BONUS_ENGINES ? 1 : 0);
-                tpaMax += enginePowerMax
+                tpaMax += enginePowerMax + (enginePower > ENGINE_NO_POWER && crewBonus == CREW_BONUS_ENGINES ? 1 : 0);
                 if (enginePower == 0 && engineType == ENGINE_TYPE_WARP) isWarpOffline = 1;
 
                 output[`repeating_engines_${id}_engine_power_status`] = ((enginePower > enginePowerMax) || (enginePower == 0)) ? 1 : enginePower < enginePowerMax ? 2 : 0;
             });
             output[`tpa`] = tpa;
             output[`tpa_max`] = tpaMax;
+            output[`tpa_status`] = tpa < (tpaMax / 2) || tpa > tpaMax ? 1 : tpa < tpaMax ? 2 : 0;
             output[`tpa-percent`] = Math.max(0, Math.round(tpa / tpaMax * 100));
             output[`warp_drive_status`] = isWarpOffline ? 1 : 0;
             setAttrs(output);
@@ -2938,7 +2981,7 @@ on(`change:repeating_engines:engine_power change:repeating_engines:engine_power_
     });
 });
 
-// TOTAL POWER AVAILABLE remaining calculation
+// TPA remaining calculation
 on(`change:tpa change:tpa_movement change:tpa_warp change:tpa_weapons change:tpa_shields change:tpa_transporters change:tpa_cloak`, function(eventInfo) {
     getAttrs([`tpa`, `tpa_movement`, `tpa_warp`, `tpa_weapons`, `tpa_shields`, `tpa_transporters`, `tpa_cloak`], function(values) {
         const tpa = parseInt(values[`tpa`]) || 0;
@@ -2954,6 +2997,21 @@ on(`change:tpa change:tpa_movement change:tpa_warp change:tpa_weapons change:tpa
         const output = {};
         output[`tpa_remaining`] = tpaRemaining;
         output[`tpa_remaining_status`] = (tpaRemaining < 0 ? 1 : (tpaRemaining > 0 ? 2 : 0));
+        setAttrs(output);
+    });
+});
+
+// TPA status
+on(`change:tpa change:tpa_max`, function(eventInfo) {
+    getAttrs([`tpa`, `tpa_max`], function(values) {
+        const tpa = parseInt(values[`tpa`]) || 0;  
+        const tpaMax = parseInt(values[`tpa_max`]) || 0;  
+
+        const output = {};
+        output[`sup-percent`] = Math.max(0, Math.round(hp / hpMax * 100));
+        if (hp < 1) output[`tpa_movement`] = 0; // disable movement
+        output[`hp_status`] = hp < (hpMax / 2) || hp > hpMax ? 1 : hp < hpMax ? 2 : 0;
+        output[`ship-is-disabled`] = hp < 1 ? 1 : 0;
         setAttrs(output);
     });
 });
@@ -3038,7 +3096,7 @@ function resetTPA() {
 
     output[`shield_1`] = output[`shield_2`] = output[`shield_3`] = output[`shield_4`] = output[`shield_5`] = output[`shield_6`] = 0
     output[`tpa_committed_status`] = 1;
-    output[`tpa_movement`] = 0;
+    output[`mp`] = 0;
     output[`tpa_weapons`] = 0;
     output[`tpa_shields`] = 0;
 
@@ -3052,7 +3110,6 @@ function resetTPA() {
 
     const SCAN_NONE = 0;
     output[`scanquestion`] = SCAN_NONE;
-    output[`scananswer`] = ``;
     output[`ship_has_scanned`] = 0;
 
     output[`trans_on_std`] = output[`trans_on_cbt`] = output[`trans_on_er`] = output[`trans_on_scu`] = 0;
@@ -3228,7 +3285,7 @@ on(`clicked:jump`, async (event) => {
 });
 
 // WEAPON POINTS calculation
-on(`change:tpa_weapons change:wp_beam change:wp_missile`, function(eventInfo) {
+on(`change:wp_beam change:wp_missile`, function(eventInfo) {
     getAttrs([`tpa_weapons`, `wp_beam`, `wp_missile`], function(values) {
         const tpa = parseInt(values[`tpa_weapons`]) || 0;
         const tpaToBeams = parseInt(values[`wp_beam`]) || 0;
@@ -3237,6 +3294,7 @@ on(`change:tpa_weapons change:wp_beam change:wp_missile`, function(eventInfo) {
         const tpaRemaining = tpa - tpaToBeams - tpaToMissiles;
 
         const output = {};
+        output[`tpa_weapons`] = tpaToBeams + tpaToMissiles;
         output[`wp_remaining`] = tpaRemaining;
         output[`wp_remaining_status`] = (tpa != 0 || tpaRemaining != 0) && (tpaRemaining < 0 ? 1 : (tpaRemaining > 0 ? 2 : 0));
         setAttrs(output);
