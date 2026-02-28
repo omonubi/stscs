@@ -3253,8 +3253,7 @@ on(`change:repeating_engines:engine_power_full remove:repeating_engines change:w
 
             output[`wf_current`] = output[`wf_desired`] = 0; // Clear settings
             output[`wfr_jump`] = output[`wfr_1`] = Math.floor(totalWarpPower / wfEmergency);
-            //output[`wfr_cruise`] = totalWarpEngines;
-            output[`wfr_cruise`] = 1;
+            output[`wfr_cruise`] = totalWarpEngines;
             setAttrs(output);
         });
     });
