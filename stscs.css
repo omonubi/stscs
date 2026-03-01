@@ -344,7 +344,6 @@
 .ui-dialog .charsheet .tpa-committed-status[value='1'] ~ .sensorstab .sensors-panel .btn-nosensors,
 .ui-dialog .charsheet .tpa-committed-status[value='1'] ~ .damagetab .dc-panel button.btn.norepairs,
 .ui-dialog .charsheet .tpa-committed-status[value='0'] ~ .damagetab .tpa-panel button.btn.warning,
-.ui-dialog .charsheet .tpa-remaining-status:not([value='0']) ~ .damagetab .tpa-panel button.btn.warning,
 .ui-dialog .charsheet .trans-ison-std[value='0'] ~ .trans-btn-std,
 .ui-dialog .charsheet .trans-ison-cbt[value='0'] ~ .trans-btn-cbt,
 .ui-dialog .charsheet .trans-ison-er[value='0'] ~ .trans-btn-er,
