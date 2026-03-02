@@ -136,7 +136,7 @@ on('change:campaign:turnorder', function() {
             const myLayer = myObj.get('layer');
             const characterId = myObj.get('represents');
             const lockAttr = findObjs({ type: 'attribute', characterid: characterId, name: 'sensorlock' });
-            const lock = lockAttr ? lockAttr[0].get('current') != `` ? lockAttr[0].get('current') : `no lock` : 0;
+            const lock = lockAttr ? lockAttr[0].get('current') != `` ? lockAttr[0].get('current') : `None` : 0;
             const mpAttr = findObjs({ type: 'attribute', characterid: characterId, name: 'mp' });
             const mp = mpAttr ? mpAttr[0].get('current') : 0;
             
@@ -144,7 +144,7 @@ on('change:campaign:turnorder', function() {
             let noCurrentMove = 0;
             switch (PhaseIndex) {
                 case PHASE_SENSORS:
-                    sendChat('Vessel', `&{template:custom} {{title=[**${myObj.get('name')}**](http://journal.roll20.net/character/${characterId}) (${lock})}}`);
+                    sendChat('Vessel', `&{template:custom} {{title=[**${myObj.get('name')}**](http://journal.roll20.net/character/${characterId})}} {{Current Lock=${lock}}}`);
                     break;
                 case PHASE_1_MOVEMENT:
                     if (myLayer != 'gmlayer') {
