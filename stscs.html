@@ -315,6 +315,7 @@
         
         <div class='grid-6col cloak-panel'>
             <h4 class='span-grid'>Cloaking Device</h4>
+            <input type='hidden' name='attr_tpa_cloak'/>
 
             <label>Power Required:</label>
             <input type='number' class='w5' name='attr_tpa_cloak_required' min='0' value='0'/>
@@ -1050,46 +1051,42 @@ const REPAIR_IS_LOCKED = 9;
 const ROLL20_CHAR_URL = `https://journal.roll20.net/character/`;    
 
 // ON SHEET OPENED
-on(`sheet:opened`,function(){
-    getAttrs([`character_name`, `sensorlock`, `mp`, 
-        `sup-percent`, `tpa-percent`, 
-        `shields-percent`, `weapons-percent`, `crew-percent`, 
-        `spr_1`, `spr_2`, `troops_max`], function(values) {
-        const charactername = values[`character_name`];
-        const sensorLock = values[`sensorlock`] || ``;
-        const mp = parseInt(values[`mp`]) || 0;
-        const supPercent = parseInt(values[`sup-percent`]) || -1;
-        const tpaPercent = parseInt(values[`tpa-percent`]) || -1;
-        const shieldsPercent = parseInt(values[`shields-percent`]) || -1;
-        const weaponsPercent = parseInt(values[`weapons-percent`]) || -1;
-        const crewPercent = parseInt(values[`crew-percent`]) || -1;
-        const dac = Math.round((parseInt(values[`spr_1`]) || 1) / (parseInt(values[`spr_2`]) || 1) * 100);
-        const dacStr = `${dac}%`;
-        const troops = parseInt(values[`troops_max`]) || 0;
-        
-        const output = {};
+on(`sheet:opened`, async function(eventInfo) {
+    const values = await getAttrsAsync([`character_name`, `sensorlock`, `mp`, `sup-percent`, `tpa-percent`, `shields-percent`, `weapons-percent`, `crew-percent`, `spr_1`, `spr_2`, `troops_max`]);
+    const charactername = values[`character_name`];
+    const sensorLock = values[`sensorlock`] || ``;
+    const mp = parseInt(values[`mp`]) || 0;
+    const supPercent = parseInt(values[`sup-percent`]) || -1;
+    const tpaPercent = parseInt(values[`tpa-percent`]) || -1;
+    const shieldsPercent = parseInt(values[`shields-percent`]) || -1;
+    const weaponsPercent = parseInt(values[`weapons-percent`]) || -1;
+    const crewPercent = parseInt(values[`crew-percent`]) || -1;
+    const dac = Math.round((parseInt(values[`spr_1`]) || 1) / (parseInt(values[`spr_2`]) || 1) * 100);
+    const dacStr = `${dac}%`;
+    const troops = parseInt(values[`troops_max`]) || 0;
+    
+    const output = {};
 
-        const SEARCH_STR = "Copy of";
-        if (charactername.includes(SEARCH_STR)) {
-            output[`caprating`] = 45 + getRandomIntInclusive(1,10) + getRandomIntInclusive(1,10) + getRandomIntInclusive(1,10);
-            output[`crewrating`] = output[`crewefficiency`] = 25 + getRandomIntInclusive(1,10) + getRandomIntInclusive(1,10) + getRandomIntInclusive(1,10);
-        }
-        output[`roll20charurl`] = ROLL20_CHAR_URL;
+    const SEARCH_STR = "Copy of";
+    if (charactername.includes(SEARCH_STR)) {
+        output[`caprating`] = 45 + getRandomIntInclusive(1,10) + getRandomIntInclusive(1,10) + getRandomIntInclusive(1,10);
+        output[`crewrating`] = output[`crewefficiency`] = 25 + getRandomIntInclusive(1,10) + getRandomIntInclusive(1,10) + getRandomIntInclusive(1,10);
+    }
+    output[`roll20charurl`] = ROLL20_CHAR_URL;
 
-        output[`sensorlock`] = sensorLock;
-        output[`mp`] = mp;
-        output[`sup-percent`] = supPercent == -1 ? 100 : supPercent;
-        output[`tpa-percent`] = tpaPercent == -1 ? 100 : tpaPercent;
-        output[`shields-percent`] = shieldsPercent == -1 ? 100 : shieldsPercent;
-        output[`weapons-percent`] = weaponsPercent == -1 ? 100 : weaponsPercent;
-        output[`crew-percent`] = crewPercent == -1 ? 100 : crewPercent;
-        output[`wfr_1`] = 1;
-        output[`shield_dac`] = dacStr;
-        output[`troops_max`] = troops;
-        output[`ship_has_troops`] = troops > 0 ? 1 : 0;
+    output[`sensorlock`] = sensorLock;
+    output[`mp`] = mp;
+    output[`sup-percent`] = supPercent == -1 ? 100 : supPercent;
+    output[`tpa-percent`] = tpaPercent == -1 ? 100 : tpaPercent;
+    output[`shields-percent`] = shieldsPercent == -1 ? 100 : shieldsPercent;
+    output[`weapons-percent`] = weaponsPercent == -1 ? 100 : weaponsPercent;
+    output[`crew-percent`] = crewPercent == -1 ? 100 : crewPercent;
+    output[`wfr_1`] = 1;
+    output[`shield_dac`] = dacStr;
+    output[`troops_max`] = troops;
+    output[`ship_has_troops`] = troops > 0 ? 1 : 0;
 
-        setAttrs(output);
-    });
+    setAttrsAsync(output);
 });
 
 // Select/deselect buttons
@@ -2997,29 +2994,20 @@ on(`change:tpa change:tpa_movement change:tpa_warp change:tpa_weapons change:tpa
     });
 });
 
-// TPA status
-on(`change:tpa change:tpa_max`, function(eventInfo) {
-    getAttrs([`tpa`, `tpa_max`], function(values) {
-        const tpa = parseInt(values[`tpa`]) || 0;  
-        const tpaMax = parseInt(values[`tpa_max`]) || 0;  
-
-        const output = {};
-        output[`sup-percent`] = Math.max(0, Math.round(hp / hpMax * 100));
-        if (hp < 1) output[`tpa_movement`] = 0; // disable movement
-        output[`hp_status`] = hp < (hpMax / 2) || hp > hpMax ? 1 : hp < hpMax ? 2 : 0;
-        output[`ship-is-disabled`] = hp < 1 ? 1 : 0;
-        setAttrs(output);
-    });
-});
-
 // TPA COMMIT
 on(`clicked:commit_tpa`, async (event) => {
 
     const response = await extractChatData(`?{Confirm TPA Commit|Confirm|Cancel}`);
 
     if (response === `Confirm`) {
+        const values = await getAttrsAsync([`show_cloak`, `cloak_is_armed`]);
+        const shipHasCloak = parseInt(values[`show_cloak`]) || 0;
+        const cloakIsArmed = parseInt(values[`cloak_is_armed`]) || 0;
+
+        const cloakStr = shipHasCloak ? ` {{Cloak is Powered=` + (cloakIsArmed ? `Yes`: `No` )+ `}}` : ``;
+
         startRoll(
-            `&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=READY!}} {{color=purple}}`,
+            `/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=READY!}} {{color=purple}} ${cloakStr}`,
             roll => finishRoll(roll.rollId)
         );
     
@@ -3036,7 +3024,7 @@ on(`clicked:tpa_reset`, async (event) => {
 
     if (response === `Confirm`) {
         startRoll(
-            `&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=**NOT** READY}} {{color=blue}}`,
+            `/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=**NOT** READY}} {{color=blue}}`,
             roll => finishRoll(roll.rollId)
         );
         resetTPA();
