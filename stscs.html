@@ -3294,7 +3294,7 @@ on(`clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target`, a
     const attributes = await getAttrsAsync([
         `${row}_name`, `${row}_chart`, `${row}_maxrange`, `${row}_power`, 
         `type_is_battle`, `sensorlock`, `sensorlockid`, 
-        `crewbonus`, `crewbonustohitapplied`, `crewrollpenalty`
+        `crewbonus`, `crewrollpenalty`
     ]);
 
     const wpnName = attributes[`${row}_name`];
@@ -3305,7 +3305,6 @@ on(`clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target`, a
     const sensorLockName = String(attributes[`sensorlock`]) || ``;
     const sensorLockId = String(attributes[`sensorlockid`]) || ``;
     const crewBonus = parseInt(attributes[`crewbonus`]) || 0;
-    const crewBonusApplied = parseInt(attributes[`crewbonustohitapplied`]) || 0;
     const crewCasualtyPenalty = parseInt(attributes[`crewrollpenalty`]) || 0;
 
     const output = {};
@@ -3322,7 +3321,7 @@ on(`clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target`, a
     // Get target input
     const { tokenName, charId, isCloaked } = await extractTargetData(); // Destructure JSON
     const wpnTargetDistance = +(await extractChatData(`?{How far|1}`)) || 0;
-    const wpnCrewBonus = crewBonus == CREW_BONUS_WEAPONS && !crewBonusApplied ? +(await extractChatData(`?{Apply crew bonus|Yes,1|No,0}`)) || 0 : 0;
+    const wpnCrewBonus = crewBonus == CREW_BONUS_WEAPONS ? 1 : 0;
     const wpnTargetToHit = getToHit(wpnChart, wpnTargetDistance);
 
     if (wpnTargetToHit) {
@@ -3388,8 +3387,6 @@ on(`clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target`, a
     } else {
         startRoll(`&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Target Out of Range}} {{Weapon=${wpnName}}} {{Max Range=${wpnMaxRange} hexes}} {{Target=${tokenName}}} {{Distance=${wpnTargetDistance} hexes}}`, roll => finishRoll(roll.rollId));
     }
-
-    output[`crewbonustohitapplied`] = Math.max(wpnCrewBonus, crewBonusApplied);
     await setAttrsAsync(output);
 });
 
