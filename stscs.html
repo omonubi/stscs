@@ -2422,8 +2422,6 @@ on(`clicked:scan_cloak`, async (event) => {
 
         const result = getRandomIntInclusive(1,10);
         const target = (Math.ceil((31-range)/10) + shipHasScanned + (numWarpEngines - 2) + speed + isDestroyer);
-        console.log ('result: ' + result);
-        console.log ('target: ' + target);
         if (result <= target) {
             const isDestroyerStr = isDestroyer ? `{{DD Bonus=Yes}}` : ``;
             startRoll(
@@ -3295,15 +3293,15 @@ on(`clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target`, a
     const row = `repeating_${section}_${rowID}`;
 
     const attributes = await getAttrsAsync([
-        `${row}_name`, `${row}_chart`, `${row}_maxrange`, `${row}_power`, 
+        `${row}_name`, `${row}_chart`, `${row}_maxrange`, `${row}_power`, `${row}_armed`,
         `type_is_battle`, `sensorlock`, `sensorlockid`, 
         `crewbonus`, `crewrollpenalty`
     ]);
-
     const wpnName = attributes[`${row}_name`];
     const wpnChart = attributes[`${row}_chart`];
     const wpnMaxRange = parseInt(attributes[`${row}_maxrange`]) || 0;
     const wpnIsPowered = parseInt(attributes[`${row}_power`]) || 0;
+    const wpnIsArmed = parseInt(attributes[`${row}_armed`]) || 0;
     const typeIsMulti = parseInt(attributes[`type_is_battle`]) || 0;
     const sensorLockName = String(attributes[`sensorlock`]) || ``;
     const sensorLockId = String(attributes[`sensorlockid`]) || ``;
@@ -3330,7 +3328,7 @@ on(`clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target`, a
 
     if (wpnTargetToHit) {
         let multiTargetPenalty = await calculateMultiTargetPenalty(typeIsMulti, charId);
-        let bankedRows = await getBankedWeaponRows(wpnName, section, rowID);
+        let bankedRows = await getBankedWeaponRows(wpnName, wpnIsArmed, section, rowID);
         let weaponStatePenalty = await calculateWeaponStatePenalty(bankedRows, section);
         let wpnTargetToHitModified = await processAllTargetedWeapons(output, wpnCrewBonus, crewCasualtyPenalty, weaponStatePenalty, multiTargetPenalty, charId);
         
@@ -3451,19 +3449,22 @@ async function calculateWeaponStatePenalty(bankedRows, section) {
     return weaponStatePenalty;
 }
 
-async function getBankedWeaponRows(wpnName, section, rowID, isRecursive = false) {
+async function getBankedWeaponRows(wpnName, wpnIsArmed, section, rowID, isRecursive = false) {
     let bankedRows = [];
     const nameRoot = wpnName.match(/#\d+/);
     
     if (nameRoot) {
         const ids = await getSectionIDsAsync(`repeating_${section}`);
-        const fieldnames = ids.map(id => `repeating_${section}_${id}_name`);
+        const fieldnames = ids.flatMap(id => [
+            `repeating_${section}_${id}_name`,
+            `repeating_${section}_${id}_armed`
+        ]);
         const values = await getAttrsAsync(fieldnames);
-
         ids.forEach(id => {
             const name = values[`repeating_${section}_${id}_name`];
+            const armed = values[`repeating_${section}_${id}_armed`];
             if (name && name.match(nameRoot)) {
-                if (section == 'beams' || (section == 'missiles' && name == wpnName))
+                if (section == 'beams' || (section == 'missiles' && armed == 1))
                 bankedRows.push(id);
             }
         });
@@ -3548,17 +3549,19 @@ async function processAllTargetedWeapons(output, wpnCrewBonus, crewCasualtyPenal
             `${weapon.row}_name`,
             `${weapon.row}_chart`,
             `${weapon.row}_power`,
+            `${weapon.row}_armed`,
             `${weapon.row}_state`,                
             `${weapon.row}_target_distance`
         ]);
         const name = rowAttrs[weapon.name] || `Unknown Weapon`;
         const chart = rowAttrs[`${weapon.row}_chart`];
         const power = parseInt(rowAttrs[weapon.power]) || 0;
+        const isArmed = parseInt(rowAttrs[weapon.armed]) || 0;
         const state = parseInt(rowAttrs[weapon.state]) || 0;
         const distance = parseInt(rowAttrs[weapon.distance]) || 0;
 
         const rowArray = weapon.row.split(`_`);
-        let myBankedRows = await getBankedWeaponRows(name, rowArray[1], rowArray[2], true);
+        let myBankedRows = await getBankedWeaponRows(name, isArmed, rowArray[1], rowArray[2], true);
         let myWpnStatePenalty = await calculateWeaponStatePenalty(myBankedRows, rowArray[1]);
         
         // Skip if not powered or currently damaged
