@@ -1006,6 +1006,9 @@
 <input type='hidden' name='attr_banner_federationfirebeams' value='[x](https://files.d20.io/images/459374797/BrLK7l69a5n4Mfomy8M4GA/original.png)'/>
 <input type='hidden' name='attr_banner_federationfiremissiles' value='[x](https://files.d20.io/images/461676845/PIWNmdJhQ8DotQAYJS7Eew/original.png)'/>
 <input type='hidden' name='attr_banner_federationwarp' value='[x](https://files.d20.io/images/461519720/yapt5OaNN9fy0m-b2HhVaQ/original.png)'/>
+<input type='hidden' name='attr_banner_gornfirebeams' value='[x](https://files.d20.io/images/478385510/wBeg8-JMQ9Xs5IuupkJ2ig/original.png)'/>
+<input type='hidden' name='attr_banner_gornfiremissiles' value='[x](https://files.d20.io/images/478385519/Y4u4ZjzlCi3g6kUZMrw57A/original.png)'/>
+<input type='hidden' name='attr_banner_gornwarp' value='[x](https://files.d20.io/images/461677914/LFn_ncPFcBHm_yHjz6xr9A/original.png)'/>
 <input type='hidden' name='attr_banner_klingonfirebeams' value='[x](https://files.d20.io/images/461674377/cX_DbSv-iBzHRa8XCK36uw/original.png)'/>
 <input type='hidden' name='attr_banner_klingonfiremissiles' value='[x](https://files.d20.io/images/459155112/hNZ9AQX33_kJr7InoxYVbA/original.png)'/>
 <input type='hidden' name='attr_banner_klingonwarp' value='[x](https://files.d20.io/images/461677914/LFn_ncPFcBHm_yHjz6xr9A/original.png)'/>
@@ -3620,13 +3623,19 @@ function getToHit (chart, distance) {
 // Determine damage from plasma bolts based on given name
 async function getPlasmaBoltDamage(name, range) {
     const boltTypes = [
-        `RPL-1`, 24,20,20,16,16,12,4,2,0,0,0,0,0,0,0,
-        `RPL-2`, 32,32,32,24,24,24,20,20,16,16,12,12,8,8,0,
-        `RPL-3`, 28,28,28,28,24,24,24,24,24,20,20,20,16,16,12,12
+        `GPL-1`, 18,16,14,12,10,6,0,0,0,0,0,0,0,0,0,0,0,0,
+        `GPL-2`, 22,18,18,16,14,12,10,6,0,0,0,0,0,0,0,0,0,0,
+        `GPL-3`, 26,24,22,18,18,16,14,12,10,6,0,0,0,0,0,0,0,0,
+        `GPL-4`, 28,26,26,24,22,18,18,16,14,12,10,6,0,0,0,0,0,0,
+        `GPL-5`, 32,30,28,26,26,24,22,18,18,16,14,12,10,6,0,0,0,0,
+        `RPL-1`, 24,20,20,16,16,12,4,2,0,0,0,0,0,0,0,0,0,0,
+        `RPL-2`, 32,32,32,24,24,24,20,20,16,16,12,12,8,8,0,0,0,0,
+        `RPL-3`, 28,28,28,28,24,24,24,24,20,20,20,16,16,12,12,0,0,0,
+        `RPL-4`, 44,44,40,40,36,36,32,32,28,28,24,24,20,20,16,12,8,4
     ];
     
     // Extract the weapon name (RPL-X) from the formatted string
-    const match = name.match(/RPL-\d+/);
+    const match = name.match(/[RG]PL-\d+/);
     const weaponName = match ? match : name;  // Extract the string from the match array
     
     // Find the index of the weapon name

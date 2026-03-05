@@ -198,9 +198,8 @@ function displayNewPhase () {
             sortTurnOrder(sorter_asc);
             break;
         case PHASE_1_TARGET: case PHASE_2_TARGET: case PHASE_3_TARGET:
-            sendChat('Phase', `&{template:custom} {{title=**Plasma Bolts**}} {{color=blue}}`);
-            sendChat('Phase', `&{template:custom} {{title=**Tactical Heading Changes**}} {{color=blue}}`);
-            sendChat('Phase', `&{template:custom} {{title=**Engage/Disengage Cloaks**}} {{color=blue}}`);
+            sendChat('Phase', `&{template:custom} {{title=**Tactical Heading Changes?**}} {{color=blue}}`);
+            sendChat('Phase', `&{template:custom} {{title=**Engage/Disengage Cloaks?**}} {{color=blue}}`);
             sendChat('Phase', `&{template:custom} {{title=**Fire / No Fire Selection**}} {{color=blue}}`);
             sortTurnOrder(sorter_asc);
             break;
