@@ -2802,15 +2802,10 @@ on(`clicked:stress_turn`, async (event) => {
         strOutput += `{{Warp Factor=${currentWF}}} {{Stress Charts=${stressChartEng}/${stressChartSup}}} {{Engine Dmg=${stressDmgEng} (ea.)}} {{Sup Dmg=${stressDmgSup}}}`;
     } else {
         // Evasive maneuver results
-        const TO_EVADE_TARGET = 5;
+        const evadeDirection = await extractChatData(`?{Rotate Towards|Port|Starboard}`);
         const myNewSup = currentSup - 1
         output[`hp`] = myNewSup;
-        output[`ship_is_evading`] = 1;
-        strOutput += `{{Sup Dmg=1}} `;
-
-        const evadeResult = getRandomIntInclusive(1, 10) <= TO_EVADE_TARGET ? `Success` : `Failure`;
-        strOutput += `{{All To-Hits=-2}} {{To-Evade=[[${TO_EVADE_TARGET}]]}} {{Roll=[[1d10cs>11cf<0]]}} `;
-        await updateWeaponTargetToHit();
+        strOutput += `{{Evade Towards=${evadeDirection}}} {{Sup Dmg=1}} `;
     }
 
     await setAttrsAsync(output);
@@ -2847,63 +2842,6 @@ async function getStress (chart, speed) {
     const damage = stresses[index + Math.min(speed, 11)];
 
     return isNaN(damage) ? 0 : damage;
-}
-
-async function updateWeaponTargetToHit() {
-    try {
-        // Define the repeating sections to process
-        const sections = ['repeating_beams', 'repeating_missiles'];
-        
-        // Get section IDs for both weapon types
-        const [beamIds, missileIds] = await Promise.all([
-            getSectionIDsAsync('repeating_beams'),
-            getSectionIDsAsync('repeating_missiles')
-        ]);
-        
-        // Combine section IDs with their section names
-        const allWeapons = [
-            ...(beamIds || []).map(id => ({ section: 'repeating_beams', id })),
-            ...(missileIds || []).map(id => ({ section: 'repeating_missiles', id }))
-        ];
-        
-        if (allWeapons.length === 0) {
-            console.log('No weapons found');
-            return;
-        }
-        
-        // Build array of attribute names to fetch
-        const attrNames = [];
-        allWeapons.forEach(weapon => {
-            attrNames.push(`${weapon.section}_${weapon.id}_target_name`);
-            attrNames.push(`${weapon.section}_${weapon.id}_target_tohit`);
-        });
-        
-        // Get all the attributes
-        const values = await getAttrsAsync(attrNames);
-        
-        // Build update object for weapons with valid target_name
-        const updates = {};
-        allWeapons.forEach(weapon => {
-            const targetName = values[`${weapon.section}_${weapon.id}_target_name`];
-            const targetToHit = parseInt(values[`${weapon.section}_${weapon.id}_target_tohit`]) || 0;
-            
-            // Check if target_name has a valid value (not empty/null/undefined)
-            if (targetName && targetName.trim() !== '') {
-                updates[`${weapon.section}_${weapon.id}_target_tohit`] = targetToHit - 2;
-            }
-        });
-        
-        // Apply the updates if any were found
-        if (Object.keys(updates).length > 0) {
-            await setAttrsAsync(updates);
-            console.log(`Updated ${Object.keys(updates).length} weapon(s) (beams and missiles)`);
-        } else {
-            console.log('No weapons with valid targets found');
-        }
-        
-    } catch (error) {
-        console.error('Error updating weapon target to-hit values:', error);
-    }
 }
 
 // SUPERSTRUCTURE MASS and SIZE calculations
