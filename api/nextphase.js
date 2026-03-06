@@ -204,7 +204,6 @@ function displayNewPhase () {
             sortTurnOrder(sorter_asc);
             break;
         case PHASE_1_FIRE: case PHASE_2_FIRE: case PHASE_3_FIRE:
-            sendChat('Phase', `&{template:custom} {{title=**Evasive Maneuvers?**}} {{color=blue}}`);
             sortTurnOrder(sorter_desc);
             break;
         case PHASE_1_REPAIR: case PHASE_2_REPAIR: case PHASE_3_REPAIR:
