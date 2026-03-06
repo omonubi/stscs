@@ -415,7 +415,7 @@
 .ui-dialog .charsheet .shield-5-status[value='9'] ~ .btn-shield-repair,
 .ui-dialog .charsheet .shield-6-status[value='9'] ~ .btn-shield-repair,
 .ui-dialog .charsheet .shields-grid-status[value='9'] ~ .powertab .dc-panel .btn-shields-grid-repair,
-.ui-dialog .charsheet .transporters-grid-status[value='9'] ~ .weaponstab .fc-header .btn-transporters-grid-repair,
+.ui-dialog .charsheet .transporters-grid-status[value='9'] ~ .powertab .dc-panel .btn-transporters-grid-repair,
 .ui-dialog .charsheet .weapon-state-status[value='9'] ~ .weapon-repair,
 .ui-dialog .charsheet .weapons-grid-status[value='9'] ~ .powertab .dc-panel .btn-weapons-grid-repair {
   background: linear-gradient(135deg, #ff6600 0%, #cc3300 100%);
@@ -732,6 +732,16 @@
 .ui-dialog .charsheet .warp-drive-status[value='1'] ~ .helmtab .warp-panel {
   background: linear-gradient(135deg, var(--bg-color-panel1-dmg), var(--bg-color-panel2-dmg));
   border: 2px solid #cc0000;
+}
+
+
+.ui-dialog .charsheet .transporters-grid-status:not([value='0']) ~ .transporterstab .grid-6col {
+  background: linear-gradient(135deg, var(--bg-color-panel1-dmg), var(--bg-color-panel2-dmg));
+  border: 2px solid #cc0000;
+  pointer-events: none;
+}
+.ui-dialog .charsheet .transporters-grid-status[value='0'] ~ h1 .warning-transporters {
+  display: none;
 }
 
 .ui-dialog .charsheet .weapons-grid-status:not([value='0']) ~ .weaponstab .fc-panel,

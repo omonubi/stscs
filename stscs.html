@@ -25,6 +25,7 @@
         <span class='alert1 warning-sensors' style='cursor: default;' title='sensors offline'> &#x1F9ED;</span>
         <span class='alert1 warning-movement' style='cursor: default;' title='helm offline'> &#x1F6DE;</span>
         <span class='alert1 warning-shields' style='cursor: default;' title='shields offline'> &#x1F6E1;&#xFE0F;</span>
+        <span class='alert1 warning-transporters' style='cursor: default;' title='transporters offline'> &#x1F6FB;</span>
         <span class='alert1 warning-weapons' style='cursor: default;' title='weapons offline'> &#x2694;&#xFE0F;</span>
         <span class='alert1 evade' style='cursor: default;' title='evasive maneuvers'> &#x26A0;&#xFE0F;</span>
     </h1> 
@@ -1376,7 +1377,7 @@ on(`clicked:rolldamage`, async () => {
         13, 16, 17, 6, 7, 10, 1, 2, 2, 15,
         13, 16, 6, 6, 3, 11, 1, 2, 2, 8,
 
-        15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 
+        13, 16, 6, 3, 2, 2, 1, 8, 14, 12, 
         13, 16, 17, 2, 2, 2, 1, 5, 14, 12,
         13, 16, 7, 4, 2, 2, 1, 9, 14, 12,
         13, 16, 7, 7, 4, 11, 1, 2, 2, 9,
@@ -1599,8 +1600,8 @@ on(`clicked:rolldamage`, async () => {
             let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
             result += returnStr;
             if (penetratingDamage) {
-                const gridNames = [`Shields`, `Weapons`, `Movement`];
-                const randomGrid = getRandomIntInclusive(0, 2);
+                const gridNames = [`Shields`, `Weapons`, `Movement`, `Transporters`];
+                const randomGrid = getRandomIntInclusive(0, 3);
                 result += ` {{Grid=${gridNames[randomGrid]}}}`;
                 let { residualDamage, returnStr: systemReturn } = await damageSystem(`${gridNames[randomGrid].toLowerCase()}_grid`, penetratingDamage);
                 result += systemReturn;
@@ -2072,6 +2073,7 @@ on(`clicked:shield_4_repair`, function(eventInfo) { repairSystem(`shield_4`, `Sh
 on(`clicked:shield_5_repair`, function(eventInfo) { repairSystem(`shield_5`, `Shield #5 (aft)`); });
 on(`clicked:shield_6_repair`, function(eventInfo) { repairSystem(`shield_6`, `Shield #6 (a/p)`); });
 on(`clicked:shields_grid_repair`, function(eventInfo) { repairSystem(`shields_grid`, `Shields Grid`); energizeShields()});
+on(`clicked:transporters_grid_repair`, function(eventInfo) { repairSystem(`transporters_grid`, `Transporters Grid`); });
 on(`clicked:weapons_grid_repair`, function(eventInfo) { repairSystem(`weapons_grid`, `Weapons Grid`); });
 function repairSystem(mySystemVar = ``, mySystemName = ``) {
     getAttrs([`${mySystemVar}_to_repair`, `crewrollpenalty`, `type_is_repair`], function(values) {
@@ -2234,6 +2236,7 @@ on(`clicked:repair`, async function(eventInfo) {
             output[`shields_grid_state`] = output[`shields_grid_status`] = output[`shields_grid_to_repair`] = output[`shields_grid_destroyed`] = 0;
             output[`weapons_grid_state`] = output[`weapons_grid_status`] = output[`weapons_grid_to_repair`] = output[`weapons_grid_destroyed`] = 0;
             output[`movement_grid_state`] = output[`movement_grid_status`] = output[`movement_grid_to_repair`] = output[`movement_grid_destroyed`] = 0;
+            output[`transporters_grid_state`] = output[`transporters_grid_status`] = output[`transporters_grid_to_repair`] = output[`transporters_grid_destroyed`] = 0;
             output[`bridge_hit_status`] = 0;
             output[`ship_is_evading`] = 0;
             setAttrs(output);
@@ -2682,6 +2685,7 @@ async function releaseLockedRepairStatuses() {
         `shield_5_status`, 
         `shield_6_status`,
         `shields_grid_status`,
+        `transporters_grid_status`,
         `weapons_grid_status`
     ]);
 
