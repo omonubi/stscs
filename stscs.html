@@ -908,6 +908,7 @@
                 <option value='MN'>Monitor</option>
                 <option value='RV'>Research Vessel</option>
                 <option value='SC'>Scout</option>
+                <option value='SB'>Scout, Battle</option>
                 <option value='TC'>Transport, Commercial</option>
                 <option value='TF'>Transport, Freighter</option>
                 <option value='TL'>Transport, Light</option>
@@ -924,6 +925,7 @@
             <input type='hidden' name='attr_type_is_nonmedical' value='0'/>
             <input type='hidden' name='attr_type_is_anticloak' value='0'/>
             <input type='hidden' name='attr_type_is_command' value='0'/>
+            <input type='hidden' name='attr_type_is_ecm' value='0'/>
 
             <label>Faction: </label>
             <select class='span2 w20' name='attr_faction'>
@@ -1117,7 +1119,7 @@ const extractChatData = async (query) => {
 
 // Async function to return a token name and its character id 
 const extractTargetData = async () => {
-    const query = await startRoll(`!{{target=[[0+{"tokenName":"@{target|Target|token_name}","charId":"@{target|Target|character_id}","isCloaked":"@{target|Target|ship_is_cloaked}","defense_mod":"@{target|Target|defense_mod}"}]]}} /direct`);
+    const query = await startRoll(`!{{target=[[0+{"tokenName":"@{target|Target|token_name}","charId":"@{target|Target|character_id}","isCloaked":"@{target|Target|ship_is_cloaked}","defense_mod":"@{target|Target|defense_mod}","hasECM":"@{target|Target|type_is_ecm}"}]]}} /direct`);
     finishRoll(query.rollId);
     const expr = query.results.target.expression;
     const jsonStr = expr.replace(/0\+\{(.+)\}/, `{$1}`);
@@ -2262,7 +2264,7 @@ on(`clicked:scan`, async (event) => {
     if (oldLock == `` || response == 1) {
         const output = {};
         await undoSensorLock();
-        const { tokenName, charId, isCloaked, defense_mod } = await extractTargetData(); // Destructure JSON
+        const { tokenName, charId, isCloaked, hasECM, defense_mod } = await extractTargetData(); // Destructure JSON
 
         const attrs = await getAttrsAsync([`type_is_advanced`, `type_is_exploration`]);
         const toScanTarget = attrs[`type_is_advanced`] == 1 ? 8 : attrs[`type_is_exploration`] == 1 ? 7 : 6;
@@ -3092,16 +3094,16 @@ on(`change:type`, function(eventInfo) {
         const type = values[`type`];
 
         const types = [
-            `BB`, 0,1,0,1,0,0,1, `BC`, 0,1,0,1,0,0,0,
-            `CA`, 0,0,1,1,0,0,1, `CL`, 0,0,1,0,0,0,0, `CM`, 0,1,1,0,0,0,0, `CR`, 0,0,1,0,0,0,0, `CS`, 0,0,1,1,0,0,0,
-            `DD`, 0,0,0,1,0,1,0, `DN`, 0,1,0,0,0,0,1,
-            `ES`, 1,0,0,0,0,0,0,
-            `FL`, 0,0,0,0,0,0,0, `FS`, 0,0,0,1,0,0,0,
-            `MN`, 1,0,0,0,0,0,0,
-            `RV`, 0,0,0,0,0,0,0,
-            `SC`, 0,0,1,1,1,0,0,
-            `TC`, 0,0,0,0,0,0,0, `TF`, 0,0,0,0,0,0,0, `TL`, 0,0,0,0,0,0,0, `TU`, 0,0,0,0,0,0,0,
-            `ZA`, 0,0,0,0,0,0,0, `ZD`, 0,1,0,1,0,0,0, `ZL`, 1,0,0,0,0,0,0, `ZO`, 0,0,1,0,0,0,0
+            `BB`, 0,1,0,1,0,0,1,0, `BC`, 0,1,0,1,0,0,0,0,
+            `CA`, 0,0,1,1,0,0,1,0, `CL`, 0,0,1,0,0,0,0,0, `CM`, 0,1,1,0,0,0,0,0, `CR`, 0,0,1,0,0,0,0, `CS`, 0,0,1,1,0,0,0,0,
+            `DD`, 0,0,0,1,0,1,0,0, `DN`, 0,1,0,0,0,0,1,0,
+            `ES`, 1,0,0,0,0,0,0,0,
+            `FL`, 0,0,0,0,0,0,0,0, `FS`, 0,0,0,1,0,0,0,0,
+            `MN`, 1,0,0,0,0,0,0,0,
+            `RV`, 0,0,0,0,0,0,0,0,
+            `SC`, 0,0,1,1,1,0,0,0, `SB`, 0,0,1,0,1,0,0,1,
+            `TC`, 0,0,0,0,0,0,0,0, `TF`, 0,0,0,0,0,0,0,0, `TL`, 0,0,0,0,0,0,0,0, `TU`, 0,0,0,0,0,0,0,0,
+            `ZA`, 0,0,0,0,0,0,0,0, `ZD`, 0,1,0,1,0,0,0,0, `ZL`, 1,0,0,0,0,0,0,0, `ZO`, 0,0,1,0,0,0,0,0
         ];
 
         const index = types.indexOf(type);
@@ -3114,6 +3116,7 @@ on(`change:type`, function(eventInfo) {
         output[`type_is_nonmedical`] = types[index + 5];
         output[`type_is_anticloak`] = types[index + 6];
         output[`type_is_command`] = types[index + 7];
+        output[`type_is_ecm`] = types[index + 8];
         setAttrs(output);
     });
 });
@@ -3234,6 +3237,7 @@ on(`change:wp_beam change:wp_missile`, function(eventInfo) {
 // WEAPON TARGETING
 on(`clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target`, async (event) => {
     const CloakedTargetPenalty = -3;
+    const ECMTargetPenalty = -1;
     const match = event.sourceAttribute.match(/repeating_(?<section>.+?)_(?<rowID>.+?)_(?<buttonName>.+)/);
     const { section, rowID, buttonName } = match?.groups || {};
     const row = `repeating_${section}_${rowID}`;
@@ -3266,7 +3270,7 @@ on(`clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target`, a
     await setAttrsAsync(output);
 
     // Get target input
-    const { tokenName, charId, isCloaked, defense_mod } = await extractTargetData(); // Destructure JSON
+    const { tokenName, charId, isCloaked, hasECM, defense_mod } = await extractTargetData(); // Destructure JSON
     const wpnTargetDistance = +(await extractChatData(`?{How far|1}`)) || 0;
     const wpnCrewBonus = crewBonus == CREW_BONUS_WEAPONS ? 1 : 0;
     const wpnTargetToHit = getToHit(wpnChart, wpnTargetDistance);
@@ -3312,6 +3316,7 @@ on(`clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target`, a
 
             // Apply cloaked target penalty to all weapons
             if (isCloaked == 1) wpnTargetToHitModified += CloakedTargetPenalty;
+            if (hasECM == 1) wpnTargetToHitModified += ECMTargetPenalty;
 
             // Apply defense modifier penalty to all weapons
             if (defense_mod > 0) wpnTargetToHitModified -= defense_mod;
@@ -3332,10 +3337,11 @@ on(`clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target`, a
         const wpnHasCrewBonusStr = wpnCrewBonus ? `{{Crew Bonus=+1}}` : ``;
         const multiTargetPenaltyStr = typeIsMulti !== 1 && multiTargetPenalty !== 0 ? `{{Multi-Target Penalty=${multiTargetPenalty}}}` : ``;
         const cloakedTargetPenaltyStr = isCloaked == 1 ? `{{Cloaked Target Penalty=-3}}` : ``;
+        const ecmTargetPenaltyStr = hasECM == 1 ? `{{ECM Target Penalty=-1}}` : ``;
         const defenseModifierStr = defenseModifier > 0 ? `{{Target Defense Modifier=-${defenseModifier}}}` : ``;
         
         startRoll(`&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=&#x1F3AF; Weapons Targeted &#x1F3AF;}} {{color=green}} {{Weapons=${weaponNames.join(`\\n`)}}} {{Target=[${tokenName}](${ROLL20_CHAR_URL}${charId})}} {{Distance=${wpnTargetDistance} hexes}} {{Firing Chart=${wpnChart}}}  `, roll => finishRoll(roll.rollId));
-        startRoll(`/w gm &{template:custom} {{color=green}} {{Crew Penalty=${crewCasualtyPenalty}}} ${wpnHasCrewBonusStr} {{Repair Penalty=${weaponStatePenalty}}} ${multiTargetPenaltyStr} ${cloakedTargetPenaltyStr} ${defenseModifierStr} {{Chance To-Hit=${wpnTargetToHitStr}}}`, roll => finishRoll(roll.rollId));
+        startRoll(`/w gm &{template:custom} {{color=green}} {{Crew Penalty=${crewCasualtyPenalty}}} ${wpnHasCrewBonusStr} {{Repair Penalty=${weaponStatePenalty}}} ${multiTargetPenaltyStr} ${cloakedTargetPenaltyStr} ${ecmTargetPenaltyStr} ${defenseModifierStr} {{Chance To-Hit=${wpnTargetToHitStr}}}`, roll => finishRoll(roll.rollId));
     } else {
         startRoll(`&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Target Out of Range}} {{Weapon=${wpnName}}} {{Max Range=${wpnMaxRange} hexes}} {{Target=${tokenName}}} {{Distance=${wpnTargetDistance} hexes}}`, roll => finishRoll(roll.rollId));
     }
