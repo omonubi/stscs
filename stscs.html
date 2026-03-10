@@ -2949,14 +2949,16 @@ on(`clicked:commit_tpa`, async (event) => {
     const response = await extractChatData(`?{Confirm TPA Commit|Confirm|Cancel}`);
 
     if (response === `Confirm`) {
-        const values = await getAttrsAsync([`show_cloak`, `cloak_is_armed`]);
+        const values = await getAttrsAsync([`show_cloak`, `cloak_is_armed`, `ship_is_cloaked`]);
         const shipHasCloak = parseInt(values[`show_cloak`]) || 0;
         const cloakIsArmed = parseInt(values[`cloak_is_armed`]) || 0;
+        const shipIsCloaked = parseInt(values[`ship_is_cloaked`]) || 0;
 
-        const cloakStr = shipHasCloak ? ` {{Cloak is Powered=` + (cloakIsArmed ? `Yes`: `No` )+ `}}` : ``;
+        const cloakIsArmedStr = shipHasCloak ? ` {{Cloak is Powered=` + (cloakIsArmed ? `Yes`: `No` )+ `}}` : ``;
+        const shipIsCloakedStr = shipHasCloak ? ` {{Cloak is On=` + (shipIsCloaked ? `Yes`: `No` )+ `}}` : ``;
 
         startRoll(
-            `/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=READY!}} {{color=purple}} ${cloakStr}`,
+            `/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=READY!}} {{color=purple}} ${cloakIsArmedStr} ${shipIsCloakedStr}`,
             roll => finishRoll(roll.rollId)
         );
     
