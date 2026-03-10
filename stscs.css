@@ -656,7 +656,7 @@
 }
 
 /**************** DAMAGE/STATE INDICATORS ****************/
-.ui-dialog .charsheet .ship-is-cloaked[value='1'] ~ .grid-6col {
+.ui-dialog .charsheet .ship-is-cloaked[value='1'] ~ section .grid-6col {
   background: linear-gradient(135deg, var(--bg-cloak-panel1), var(--bg-cloak-panel2));
   border: 2px solid #3300cc;
 }
@@ -885,7 +885,6 @@
 .ui-dialog .charsheet .shield-4c-status[value='2'] ~ .shield-4c,
 .ui-dialog .charsheet .shield-5c-status[value='2'] ~ .shield-5c,
 .ui-dialog .charsheet .shield-6c-status[value='2'] ~ .shield-6c,
-.ui-dialog .charsheet .ship-is-cloaked[value='1'] ~ .damagetab .tpa-panel .tpa-cloak-warning[value='0'],
 .ui-dialog .charsheet .sp-remaining-status[value='2'] ~ .sp-remaining,
 .ui-dialog .charsheet .tpa-remaining-status[value='2'] ~ .tpa-remaining,
 .ui-dialog .charsheet .tpa-status[value='2'] ~ .tpa,
