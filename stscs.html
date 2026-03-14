@@ -1361,6 +1361,7 @@ on(`change:crewrating change:crew-percent`, function(eventInfo) {
 on(`clicked:rolldamage`, async () => {
     const shieldArcStr = await extractChatData(`?{Shield Arc|#1 (f/p)|#2 (fwd)|#3 (f/s)|#4 (a/s)|#5 (aft)|#6 (a/p)}`);
     const baseDamage = +await extractChatData(`?{Damage|0}`);
+    const spreadIsWide = +await extractChatData(`?{Spread|Narrow,0|Wide,1}`);
   
     const shieldArc = shieldArcStr.substring(1,2);
     const shieldVar = `shield_${shieldArc}c`;
@@ -1398,14 +1399,6 @@ on(`clicked:rolldamage`, async () => {
     ];
 
     //13, 16, 6, 3, 2, 2, 1, 8, 14, 12,
-
-    let residualDamage = 0;
-    let penetratingDamage = 0;
-    let returnStr = ``;
-    let rollStr = `/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=&#x1F494; Damage Results (Chart ${damageChart}) &#x1F494;}} {{color=red}} {{Incoming Dmg=${baseDamage}}} {{On Shield Arc=${shieldArcStr}}} `;
-
-    const hitRollResult = getRandomIntInclusive(0, 9);
-    const hitLocation = ((damageChart.charCodeAt(0) - 65) * 60) + ((shieldArc - 1) * 10) + hitRollResult;
     
     const damageHandlers = {
         1: async (shieldVar, baseDamage) => {
@@ -1645,13 +1638,47 @@ on(`clicked:rolldamage`, async () => {
         }
     };
 
-    const hitResult = damageResults[hitLocation];
-    rollStr += await damageHandlers[hitResult]?.(shieldVar, baseDamage) || ``;
+    const WideDamageLimit = 5;
+    const numRolls = spreadIsWide ? Math.ceil(baseDamage / WideDamageLimit) : 1;
+    let residualDamage = 0;
+    let penetratingDamage = 0;
+    let returnStr = ``;
+    let rollStr = `/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=&#x1F494; Damage Results (Chart ${damageChart}) &#x1F494;}} {{color=red}} {{Incoming Dmg=${baseDamage}}} {{On Shield Arc=${shieldArcStr}}} `;
 
-    await startRoll(
-        rollStr,
-        roll => finishRoll(roll.rollId)
-    );
+    if (spreadIsWide) {
+        let wideAnnounceStr = `/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=&#x1F494; Damage Spread (Chart ${damageChart}) &#x1F494;}} {{color=red}} {{Total Dmg=${baseDamage}}} {{On Shield Arc=${shieldArcStr}}} `;
+        await startRoll(
+            wideAnnounceStr,
+            roll => finishRoll(roll.rollId)
+        );
+        let remainingDamage = baseDamage;
+        for (let i = 0; i < numRolls; i++) {
+            const chunkDamage = (remainingDamage >= WideDamageLimit) ? WideDamageLimit : remainingDamage;
+            remainingDamage -= chunkDamage;
+
+            const hitRollResult = getRandomIntInclusive(0, 9);
+            const hitLocation = ((damageChart.charCodeAt(0) - 65) * 60) + ((shieldArc - 1) * 10) + hitRollResult;
+            const hitResult = damageResults[hitLocation];
+            
+            let chunkRollStr = `/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=&#x1F494; Damage Results (Chart ${damageChart}) &#x1F494;}} {{color=red}} {{Incoming Dmg=${chunkDamage}}} {{On Shield Arc=${shieldArcStr}}} `;
+            chunkRollStr += await damageHandlers[hitResult]?.(shieldVar, chunkDamage) || ``;
+            
+            await startRoll(
+                chunkRollStr,
+                roll => finishRoll(roll.rollId)
+            );
+        }
+    } else {
+        const hitRollResult = getRandomIntInclusive(0, 9);
+        const hitLocation = ((damageChart.charCodeAt(0) - 65) * 60) + ((shieldArc - 1) * 10) + hitRollResult;
+        const hitResult = damageResults[hitLocation];
+        rollStr += await damageHandlers[hitResult]?.(shieldVar, baseDamage) || ``;
+        
+        await startRoll(
+            rollStr,
+            roll => finishRoll(roll.rollId)
+        );
+    }
 });
 
 async function handleWarpDamage(penetratingDamage, engineLocation) {
