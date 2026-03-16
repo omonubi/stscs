@@ -161,6 +161,21 @@
             </select>
         </div>
         <br/>
+
+        <div class='grid-6col troop-panel'>
+            <h4 class='span-grid'>Troops</h4>
+            <span class='span2'>
+                <input type='hidden' class='troop-status' name='attr_troop_status' value='0'/>
+                <input type='number' class='w6 troops' name='attr_troops' value='0' min='0'/> /
+                <label>Full:</label>
+                <span name='attr_troops_max'></span>
+            </span>
+            <label>Transporter Capacity:</label>
+            <input type='number' class='w5' name='attr_troop_capacity'/>
+            <span></span>
+            <button type='action' class='btn' name='act_assault'>Assault</button>
+        </div>
+        <br/>
     </section>
     <!-------------------------------------------------------->
     <section class='powertab'>
@@ -1012,15 +1027,19 @@
 <input type='hidden' name='attr_banner_federationfirebeams' value='[x](https://files.d20.io/images/459374797/BrLK7l69a5n4Mfomy8M4GA/original.png)'/>
 <input type='hidden' name='attr_banner_federationfiremissiles' value='[x](https://files.d20.io/images/461676845/PIWNmdJhQ8DotQAYJS7Eew/original.png)'/>
 <input type='hidden' name='attr_banner_federationwarp' value='[x](https://files.d20.io/images/461519720/yapt5OaNN9fy0m-b2HhVaQ/original.png)'/>
+<input type='hidden' name='attr_banner_federationassault' value='[x](https://files.d20.io/images/479640424/7jbXwFFVP6Vu-TCeNw_qnQ/original.jpg)'/>
 <input type='hidden' name='attr_banner_gornfirebeams' value='[x](https://files.d20.io/images/478385510/wBeg8-JMQ9Xs5IuupkJ2ig/original.png)'/>
 <input type='hidden' name='attr_banner_gornfiremissiles' value='[x](https://files.d20.io/images/478385519/Y4u4ZjzlCi3g6kUZMrw57A/original.png)'/>
 <input type='hidden' name='attr_banner_gornwarp' value='[x](https://files.d20.io/images/461677914/LFn_ncPFcBHm_yHjz6xr9A/original.png)'/>
+<input type='hidden' name='attr_banner_gornassault' value='[x](https://files.d20.io/images/479640455/ovEu7L9o8GN_wcQBj0Tn_Q/original.jpg)'/>
 <input type='hidden' name='attr_banner_klingonfirebeams' value='[x](https://files.d20.io/images/461674377/cX_DbSv-iBzHRa8XCK36uw/original.png)'/>
 <input type='hidden' name='attr_banner_klingonfiremissiles' value='[x](https://files.d20.io/images/459155112/hNZ9AQX33_kJr7InoxYVbA/original.png)'/>
 <input type='hidden' name='attr_banner_klingonwarp' value='[x](https://files.d20.io/images/461677914/LFn_ncPFcBHm_yHjz6xr9A/original.png)'/>
+<input type='hidden' name='attr_banner_klingonassault' value='[x](https://files.d20.io/images/479640487/049AknVoPt4eQfOPu0uyhA/original.jpg)'/>
 <input type='hidden' name='attr_banner_romulanfirebeams' value='[x](https://files.d20.io/images/472921906/Ye7aWGEDnt2N6KbVSmm8cQ/original.png)'/>
 <input type='hidden' name='attr_banner_romulanfiremissiles' value='[x](https://files.d20.io/images/472921905/8OmveOp3rHpys9iZgQJ6hw/original.png)'/>
 <input type='hidden' name='attr_banner_romulanwarp' value='[x](https://files.d20.io/images/472921908/GUYIW3R_IRQUzDG5wuB1FA/original.png)'/>
+<input type='hidden' name='attr_banner_romulanassault' value='[x](https://files.d20.io/images/479640506/kFOz_l8myOw3eaUbUjI47Q/original.jpg)'/>
 
 <script type='text/worker'>
 const COMMAND_RATING_BONUS = 5;
@@ -1064,7 +1083,10 @@ const ROLL20_CHAR_URL = `https://journal.roll20.net/character/`;
 
 // ON SHEET OPENED
 on(`sheet:opened`, async function(eventInfo) {
-    const values = await getAttrsAsync([`character_name`, `sensorlock`, `mp`, `sup-percent`, `tpa-percent`, `shields-percent`, `weapons-percent`, `crew-percent`, `spr_1`, `spr_2`, `troops_max`]);
+    const values = await getAttrsAsync([
+        `character_name`, `sensorlock`, `mp`, `sup-percent`, `tpa-percent`, 
+        `shields-percent`, `weapons-percent`, `crew-percent`, `spr_1`, `spr_2`, 
+        `troops`, `troops_max`, `troop_capacity`, `trans_cap_cbt`, `trans_num_cbt`]);
     const charactername = values[`character_name`];
     const sensorLock = values[`sensorlock`] || ``;
     const mp = parseInt(values[`mp`]) || 0;
@@ -1075,7 +1097,11 @@ on(`sheet:opened`, async function(eventInfo) {
     const crewPercent = parseInt(values[`crew-percent`]) || -1;
     const dac = Math.round((parseInt(values[`spr_1`]) || 1) / (parseInt(values[`spr_2`]) || 1) * 100);
     const dacStr = `${dac}%`;
-    const troops = parseInt(values[`troops_max`]) || 0;
+    const troops = parseInt(values[`troops`]) || 0;
+    const troopsMax = parseInt(values[`troops_max`]) || 0;
+    const troopCap = parseInt(values[`troop_capacity`]) || 0;
+    const cbtTranCap = parseInt(values[`trans_cap_cbt`]) || 0;
+    const cbtTranNum = parseInt(values[`trans_num_cbt`]) || 0;
     
     const output = {};
 
@@ -1095,8 +1121,10 @@ on(`sheet:opened`, async function(eventInfo) {
     output[`crew-percent`] = crewPercent == -1 ? 100 : crewPercent;
     output[`wfr_1`] = 1;
     output[`shield_dac`] = dacStr;
-    output[`troops_max`] = troops;
-    output[`ship_has_troops`] = troops > 0 ? 1 : 0;
+    output[`troops_max`] = troopsMax;
+    output[`troops`] = troops ? troops : troopsMax;
+    output[`troop_capacity`] = troopCap > 0 ? troopCap : cbtTranCap * cbtTranNum;
+    output[`ship_has_troops`] = troopsMax > 0 ? 1 : 0;
 
     setAttrsAsync(output);
 });
@@ -1140,6 +1168,27 @@ function formatNumber(value) {
     value = value.replace(/\D/g, ``);
     return value.replace(/\B(?=(\d{3})+(?!\d))/g, `,`);
 }
+
+// BOARDING ACTION
+on(`clicked:assault`, async () => {
+    const values = await getAttrsAsync([`faction`, `troops`, `troop_capacity`]);
+    const faction = values[`faction`];
+    const troops = parseInt(values[`troops`]) || 0;
+    const troopCap = parseInt(values[`troop_capacity`]) || 0;
+    const maxAsk = Math.min(troops, troopCap);
+
+    const { tokenName, charId, isCloaked, hasECM, defense_mod } = await extractTargetData(); // Destructure JSON
+    const numTroops = +(await extractChatData(`?{Number of Troops|${maxAsk}}`)) || 0;
+
+    await startRoll(
+        `/w gm &{template:custom} {{title=@{banner_${faction}assault} **[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Launch Boarding Action}} {{color=red}} {{Destination=[${tokenName}](${ROLL20_CHAR_URL}${charId})}} {{Troops=${numTroops}}}`,
+        roll => finishRoll(roll.rollId)
+    );
+
+    const output = {};
+    output[`troops`] = troops - numTroops;
+    await setAttrsAsync(output);  
+});
 
 // CAPTAIN RATING change
 on(`change:caprating`, function(eventInfo) {
@@ -1697,9 +1746,10 @@ async function handleWarpDamage(penetratingDamage, engineLocation) {
 
 // DAMAGE CREW
 async function damageCrew(myDmg, myFactor = 1, isCritArea = false) {
-    const values = await getAttrsAsync([`crew`, `crew_max`, `crewefficiency`, `hp_max`, `type_is_nonmedical`]);
+    const values = await getAttrsAsync([`crew`, `crew_max`, `crewefficiency`, `troops`, `hp_max`, `type_is_nonmedical`]);
     const crew = parseInt(values[`crew`]) || 0;
     const crewEfficiency = parseInt(values[`crewefficiency`]) || 0;
+    const troops = parseInt(values[`troops`]) || 0;
     const maxSup = parseInt(values[`hp_max`]) || 0;
     const NON_MEDICAL_PENALTY = 5;
     const typeIsNonMedical = parseInt(values[`type_is_nonmedical`]) || 0;
@@ -1723,9 +1773,12 @@ async function damageCrew(myDmg, myFactor = 1, isCritArea = false) {
     const percentLost = Math.min((isCritArea == true) ? BRIDGE_CAP : 100, percentsLost[index] * Math.min(CREW_MAX_DMG, myDmg) * myFactor / (isCrewEffective ? 2 : 1));
     const crewLost = Math.ceil(crew * percentLost / 100);
     const newCrew = Math.max(0, crew - crewLost);
+    const troopsLost = Math.ceil(troops * percentLost / 100);
+    const newTroops = Math.max(0, troops - troopsLost);
 
     const output = {};
     output[`crew`] = newCrew;
+    output[`troops`] = newTroops;
     await setAttrsAsync(output);
     
     const CREW_EFFECTIVE_TRUE = `Success!`;
@@ -2249,13 +2302,15 @@ on(`clicked:repair`, async function(eventInfo) {
         });
 
         // Other vars
-        getAttrs([`hp_max`, `crew_max`], function(values) {
+        getAttrs([`hp_max`, `crew_max`, `troops_max`], function(values) {
             const hpMax = parseInt(values[`hp_max`]) || 0;
             const crewMax = parseInt(values[`crew_max`]) || 0;
+            const troopsMax = parseInt(values[`troops_max`]) || 0;
 
             const output = {};
             output[`hp`] = hpMax;
             output[`crew`] = crewMax;
+            output[`troops`] = troopsMax;
             output[`wf_current`] = output[`wf_desired`] = output[`warp_drive_status`] = 0;
             output[`ship_is_cloaked`] = 0;
             output[`shield_1_state`] = output[`shield_1_status`] = output[`shield_1_to_repair`] = 0;
@@ -3115,6 +3170,18 @@ on(`change:trans_on_std change:trans_on_cbt change:trans_on_er change:trans_on_s
 
         const output = {};
         output[`tpa_transporters`] = transTPA;
+        setAttrs(output);
+    });
+});
+
+// TROOP calculation
+on(`change:troops change:troops_max`, function(eventInfo) {
+    getAttrs([`troops`, `troops_max`], function(values) {
+        const troops = parseInt(values[`troops`]) || 0;
+        const troopsMax = parseInt(values[`troops_max`]) || 0;
+
+        const output = {};
+        output[`troop_status`] = troops <= (troopsMax * .4) || troops > troopsMax ? 1 : troops <= troopsMax * .8 ? 2 : 0;
         setAttrs(output);
     });
 });

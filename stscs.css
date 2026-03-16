@@ -383,6 +383,7 @@
 .ui-dialog .charsheet .trans-combat-panel {
     display: inline-block; 
 }
+.ui-dialog .charsheet .ship-has-troops[value='0'] ~ .maintab .troop-panel,
 .ui-dialog .charsheet .ship-has-troops[value='0'] ~ .transporterstab .trans-combat-panel {
     display: none;
 }  
@@ -798,6 +799,7 @@
 .ui-dialog .charsheet .trans-ison-cbt[value='1'] ~ .trans-on-cbt,
 .ui-dialog .charsheet .trans-ison-er[value='1'] ~ .trans-on-er,
 .ui-dialog .charsheet .trans-ison-scu[value='1'] ~ .trans-on-scu,
+.ui-dialog .charsheet .troop-status[value='0'] ~ .troops,
 .ui-dialog .charsheet .wp-remaining-status[value='0'] ~ .wp-remaining,
 .ui-dialog .charsheet .wf-current-status[value='0'] ~ .wf-current,
 .ui-dialog .charsheet .wf-desired-status[value='0'] ~ .em,
@@ -853,6 +855,7 @@
 .ui-dialog .charsheet .trans-ison-scu[value='2'] ~ .trans-on-scu,
 .ui-dialog .charsheet .transporters-grid-status[value='1'] ~ .powertab .dc-panel span .btn-transporters-grid-state,
 .ui-dialog .charsheet .transporters-grid-status[value='9'] ~ .powertab .dc-panel span .btn-transporters-grid-state,
+.ui-dialog .charsheet .troop-status[value='1'] ~ .troops,
 .ui-dialog .charsheet .tpa-remaining-status[value='1'] ~ .tpa-remaining,
 .ui-dialog .charsheet .weapons-grid-status[value='1'] ~ .powertab .dc-panel span .btn-weapons-grid-state,
 .ui-dialog .charsheet .weapons-grid-status[value='9'] ~ .powertab .dc-panel span .btn-weapons-grid-state,
@@ -888,6 +891,7 @@
 .ui-dialog .charsheet .sp-remaining-status[value='2'] ~ .sp-remaining,
 .ui-dialog .charsheet .tpa-remaining-status[value='2'] ~ .tpa-remaining,
 .ui-dialog .charsheet .tpa-status[value='2'] ~ .tpa,
+.ui-dialog .charsheet .troop-status[value='2'] ~ .troops,
 .ui-dialog .charsheet .weapon-state-status[value='2'] ~ .weapon-state,
 .ui-dialog .charsheet .wp-remaining-status[value='2'] ~ .wp-remaining,
 .ui-dialog .charsheet .wf-current-status[value='2'] ~ .wf-current,
