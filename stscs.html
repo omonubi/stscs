@@ -3345,6 +3345,7 @@ on(`change:wp_beam change:wp_missile`, function(eventInfo) {
 on(`clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target`, async (event) => {
     const CloakedTargetPenalty = -3;
     const ECMTargetPenalty = -1;
+    const SectionIsMissles = `missiles`;
     const match = event.sourceAttribute.match(/repeating_(?<section>.+?)_(?<rowID>.+?)_(?<buttonName>.+)/);
     const { section, rowID, buttonName } = match?.groups || {};
     const row = `repeating_${section}_${rowID}`;
@@ -3446,8 +3447,9 @@ on(`clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target`, a
         const cloakedTargetPenaltyStr = isCloaked == 1 ? `{{Cloaked Target Penalty=-3}}` : ``;
         const ecmTargetPenaltyStr = hasECM == 1 ? `{{ECM Target Penalty=-1}}` : ``;
         const defenseModifierStr = defenseModifier > 0 ? `{{Target Defense Modifier=-${defenseModifier}}}` : ``;
+        const evasionStr = section == SectionIsMissles ? `{{Evasive Maneuvers=**Yes or No?**}}` : ``;
         
-        startRoll(`&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=&#x1F3AF; Weapons Targeted &#x1F3AF;}} {{color=green}} {{Weapons=${weaponNames.join(`\\n`)}}} {{Target=[${tokenName}](${ROLL20_CHAR_URL}${charId})}} {{Distance=${wpnTargetDistance} hexes}} {{Firing Chart=${wpnChart}}}  `, roll => finishRoll(roll.rollId));
+        startRoll(`&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=&#x1F3AF; Weapons Targeted &#x1F3AF;}} {{color=green}} {{Weapons=${weaponNames.join(`\\n`)}}} {{Target=[${tokenName}](${ROLL20_CHAR_URL}${charId})}} {{Distance=${wpnTargetDistance} hexes}} {{Firing Chart=${wpnChart}}} ${evasionStr}`, roll => finishRoll(roll.rollId));
         startRoll(`/w gm &{template:custom} {{color=green}} {{Base To-Hit=${baseTargetToHit}}} {{Crew Penalty=${crewCasualtyPenalty}}} ${wpnHasCrewBonusStr} {{Repair Penalty=${weaponStatePenalty}}} ${multiTargetPenaltyStr} ${cloakedTargetPenaltyStr} ${ecmTargetPenaltyStr} ${defenseModifierStr} {{Chance To-Hit=${wpnTargetToHitStr}}}`, roll => finishRoll(roll.rollId));
     } else {
         startRoll(`&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Target Out of Range}} {{Weapon=${wpnName}}} {{Max Range=${wpnMaxRange} hexes}} {{Target=${tokenName}}} {{Distance=${wpnTargetDistance} hexes}}`, roll => finishRoll(roll.rollId));
@@ -3663,6 +3665,9 @@ on(`clicked:repeating_beams:btn-fire clicked:repeating_missiles:btn-fire`, async
     const shipIsEvading = (parseInt(attributes[`ship_is_evading`]) || 0);
     const targetToHit = parseInt(attributes[`${row}_target_tohit`]) || 0 - shipIsEvading * 2;
 
+    const isPlasmaBolt = await getPlasmaBoltDamage(wpnName, targetDistance);
+    const rollForGrazeStr = isPlasmaBolt ? `{{Plasma=[[1]]}}` : ``;
+
     // Calc slim to none to-hit
     const targetSlimToHit = targetToHit < 1 ? 8 - Math.abs(targetToHit) * 2 : 0;
 
@@ -3738,7 +3743,7 @@ on(`clicked:repeating_beams:btn-fire clicked:repeating_missiles:btn-fire`, async
         const evasionStr = shipIsEvading ? `{{Ship is Evading=-2 to-hit}}` : ``;
 
         startRoll(
-            `&{template:custom} {{title=@{banner_${faction}fire${section}} **[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Weapons Fired}} {{color=red}} {{Weapons=${weaponNames.join(`\\n`)}}} {{Target=[${targetName}](${ROLL20_CHAR_URL}${targetId})}} ${evasionStr} {{To-Hit=[[${targetToHit}]] or less}} {{Roll=[[1d10cs>11cf<0]]}} {{Slim-To-Hit=[[${targetSlimToHit}]]}} {{Slim-Roll=[[1d10cs>11cf<0]]}} {{Damage=${damageList.join(`, `)}}}`,
+            `&{template:custom} {{title=@{banner_${faction}fire${section}} **[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Weapons Fired}} {{color=red}} {{Weapons=${weaponNames.join(`\\n`)}}} {{Target=[${targetName}](${ROLL20_CHAR_URL}${targetId})}} ${evasionStr} {{To-Hit=[[${targetToHit}]] or less}} {{Roll=[[1d10cs>11cf<0]]}} {{Slim-To-Hit=[[${targetSlimToHit}]]}} {{Slim-Roll=[[1d10cs>11cf<0]]}} {{Damage=${damageList.join(`, `)}}} ${rollForGrazeStr}`,
             roll => finishRoll(roll.rollId)
         );
     });
@@ -3955,10 +3960,10 @@ function getSectionIDsAsync(sectionName){
       </div>
 
       <div class="sheet-content">
-        {{#allprops() title subtitle color Damage Slim-Roll Slim-To-Hit}}
+        {{#allprops() title subtitle color Damage Plasma Slim-Roll Slim-To-Hit}}
         <div class="sheet-key">{{key}}</div>
         <div class="sheet-value">{{value}}</div>
-        {{/allprops() title subtitle color Damage Slim-Roll Slim-To-Hit}}
+        {{/allprops() title subtitle color Damage Plasma Slim-Roll Slim-To-Hit}}
 
         {{#^rollGreater() Roll Rating}}
         <div class="sheet-key">Result</div>
@@ -3977,6 +3982,10 @@ function getSectionIDsAsync(sectionName){
             <div class="sheet-key">Damage</div>
             <div class="sheet-value">{{Damage}}</div>
         {{/Damage}}
+        {{#Plasma}}
+            <div class="sheet-key">Plasma Bolt</div>
+            <div class="sheet-value">**Roll for Grazing Hit**</div>
+        {{/Plasma}}
         {{/^rollGreater() Roll To-Hit}}
 
         {{#rollGreater() Roll To-Hit}}
