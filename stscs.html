@@ -164,16 +164,17 @@
 
         <div class='grid-6col troop-panel'>
             <h4 class='span-grid'>Troops</h4>
+            <input type='hidden' class='trans-ison-cbt' name='attr_trans_ison_cbt' value='0'/>
             <span class='span2'>
                 <input type='hidden' class='troop-status' name='attr_troop_status' value='0'/>
-                <input type='number' class='w6 troops' name='attr_troops' value='0' min='0'/> /
+                <input type='number' class='w6 troops' name='attr_troops' value='-1' min='0'/> /
                 <label>Full:</label>
                 <span name='attr_troops_max'></span>
             </span>
-            <label>Transporter Capacity:</label>
-            <input type='number' class='w5' name='attr_troop_capacity'/>
+            <label>Capacity Online:</label>
+            <input type='number' class='w5 assault-capacity' name='attr_assault_capacity' value='0' readonly/>
             <span></span>
-            <button type='action' class='btn' name='act_assault'>Assault</button>
+            <button type='action' class='btn assault' name='act_assault'>Assault</button>
         </div>
         <br/>
     </section>
@@ -801,19 +802,19 @@
             <h4 class='span-grid'>Standard</h4>
 
             <span>
-                <label>Size:</label>
+                <label>Capacity:</label>
                 <input type='number' class='w5' name='attr_trans_cap_std' min='0' value='6'/>
             </span>
-            <span></span>
             <span>
-                <label>Num:</label>
+                <label>Pads:</label>
                 <input type='number' class='w5' name='attr_trans_num_std' min='0' value='0'/>
             </span>
-            <span></span>
             <span>
-                <label><strong>In Use:</strong></label>
+                <label><strong># Ready:</strong></label>
                 <input type='number' class='trans-on-std w5' name='attr_trans_on_std' min='0' value='0'/>
             </span>
+            <span></span>
+            <span></span>
             <button type='action' class='btn trans-btn-std' name='act_trans_btn_std'>Energize</button>
         </div>
         <br/>
@@ -824,19 +825,19 @@
             <h4 class='span-grid'>Emergency</h4>
 
             <span>
-                <label>Size:</label>
+                <label>Capacity:</label>
                 <input type='number' class='w5' name='attr_trans_cap_er' min='0' value='0'/>
             </span>
-            <span></span>
             <span>
-                <label>Num:</label>
+                <label>Pads:</label>
                 <input type='number' class='w5' name='attr_trans_num_er' min='0' value='0'/>
             </span>
-            <span></span>
             <span>
-                <label><strong>In Use:</strong></label>
+                <label><strong># Ready:</strong></label>
                 <input type='number' class='trans-on-er w5' name='attr_trans_on_er' min='0' value='0'/>
             </span>
+            <span></span>
+            <span></span>
             <button type='action' class='btn trans-btn-er' name='act_trans_btn_er'>Energize</button>
         </div>
         <br/>
@@ -847,19 +848,19 @@
             <h4 class='span-grid'>Cargo</h4>
 
             <span>
-                <label>Size:</label>
+                <label>Capacity:</label>
                 <input type='number' class='w5' name='attr_trans_cap_scu' value='1' readonly/>
             </span>
-            <span></span>
             <span>
-                <label>Num:</label>
+                <label>Pads:</label>
                 <input type='number' class='w5' name='attr_trans_num_scu' min='0' value='0'/>
             </span>
-            <span></span>
             <span>
-                <label><strong>In Use:</strong></label>
+                <label><strong># Ready:</strong></label>
                 <input type='number' class='trans-on-scu w5' name='attr_trans_on_scu' min='0' value='0'/>
             </span>
+            <span></span>
+            <span></span>
             <button type='action' class='btn trans-btn-scu' name='act_trans_btn_scu'>Energize</button>
         </div>
         <br/>
@@ -870,19 +871,19 @@
             <h4 class='span-grid'>Combat</h4>
 
             <span>
-                <label>Size:</label>
+                <label>Capacity:</label>
                 <input type='number' class='w5' name='attr_trans_cap_cbt' min='0' value='0'/>
             </span>
-            <span></span>
             <span>
-                <label>Num:</label>
+                <label>Pads:</label>
                 <input type='number' class='w5' name='attr_trans_num_cbt' min='0' value='0'/>
             </span>
-            <span></span>
             <span>
-                <label><strong>In Use:</strong></label>
+                <label><strong># Ready:</strong></label>
                 <input type='number' class='trans-on-cbt w5' name='attr_trans_on_cbt' min='0' value='0'/>
             </span>
+            <span></span>
+            <span></span>
             <button type='action' class='btn trans-btn-cbt' name='act_trans_btn_cbt'>Energize</button>
         </div>
     </section>
@@ -1086,7 +1087,7 @@ on(`sheet:opened`, async function(eventInfo) {
     const values = await getAttrsAsync([
         `character_name`, `sensorlock`, `mp`, `sup-percent`, `tpa-percent`, 
         `shields-percent`, `weapons-percent`, `crew-percent`, `spr_1`, `spr_2`, 
-        `troops`, `troops_max`, `troop_capacity`, `trans_cap_cbt`, `trans_num_cbt`]);
+        `troops`, `troops_max`]);
     const charactername = values[`character_name`];
     const sensorLock = values[`sensorlock`] || ``;
     const mp = parseInt(values[`mp`]) || 0;
@@ -1097,11 +1098,8 @@ on(`sheet:opened`, async function(eventInfo) {
     const crewPercent = parseInt(values[`crew-percent`]) || -1;
     const dac = Math.round((parseInt(values[`spr_1`]) || 1) / (parseInt(values[`spr_2`]) || 1) * 100);
     const dacStr = `${dac}%`;
-    const troops = parseInt(values[`troops`]) || 0;
+    const troops = parseInt(values[`troops`]);
     const troopsMax = parseInt(values[`troops_max`]) || 0;
-    const troopCap = parseInt(values[`troop_capacity`]) || 0;
-    const cbtTranCap = parseInt(values[`trans_cap_cbt`]) || 0;
-    const cbtTranNum = parseInt(values[`trans_num_cbt`]) || 0;
     
     const output = {};
 
@@ -1122,8 +1120,7 @@ on(`sheet:opened`, async function(eventInfo) {
     output[`wfr_1`] = 1;
     output[`shield_dac`] = dacStr;
     output[`troops_max`] = troopsMax;
-    output[`troops`] = troops ? troops : troopsMax;
-    output[`troop_capacity`] = troopCap > 0 ? troopCap : cbtTranCap * cbtTranNum;
+    output[`troops`] = troops < 0 ? troopsMax : troops;
     output[`ship_has_troops`] = troopsMax > 0 ? 1 : 0;
 
     setAttrsAsync(output);
@@ -1171,17 +1168,17 @@ function formatNumber(value) {
 
 // BOARDING ACTION
 on(`clicked:assault`, async () => {
-    const values = await getAttrsAsync([`faction`, `troops`, `troop_capacity`]);
+    const values = await getAttrsAsync([`faction`, `troops`, `assault_capacity`]);
     const faction = values[`faction`];
     const troops = parseInt(values[`troops`]) || 0;
-    const troopCap = parseInt(values[`troop_capacity`]) || 0;
-    const maxAsk = Math.min(troops, troopCap);
+    const assaultCap = parseInt(values[`assault_capacity`]) || 0;
+    const maxAsk = Math.min(troops, assaultCap);
 
     const { tokenName, charId, isCloaked, hasECM, defense_mod } = await extractTargetData(); // Destructure JSON
     const numTroops = +(await extractChatData(`?{Number of Troops|${maxAsk}}`)) || 0;
 
     await startRoll(
-        `/w gm &{template:custom} {{title=@{banner_${faction}assault} **[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Launch Boarding Action}} {{color=red}} {{Destination=[${tokenName}](${ROLL20_CHAR_URL}${charId})}} {{Troops=${numTroops}}}`,
+        `/w gm &{template:custom} {{title=@{banner_${faction}assault} **[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Boarding Action!}} {{color=red}} {{Destination=[${tokenName}](${ROLL20_CHAR_URL}${charId})}} {{Troops=${numTroops}}}`,
         roll => finishRoll(roll.rollId)
     );
 
@@ -3042,7 +3039,7 @@ on(`clicked:commit_tpa`, async (event) => {
         const shipIsCloakedStr = shipHasCloak ? ` {{Cloak is On=` + (shipIsCloaked ? `Yes`: `No` )+ `}}` : ``;
 
         startRoll(
-            `/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=READY!}} {{color=purple}} ${cloakIsArmedStr} ${shipIsCloakedStr}`,
+            `/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=TPA Commit}} {{color=purple}} ${cloakIsArmedStr} ${shipIsCloakedStr}`,
             roll => finishRoll(roll.rollId)
         );
     
@@ -3059,7 +3056,7 @@ on(`clicked:tpa_reset`, async (event) => {
 
     if (response === `Confirm`) {
         startRoll(
-            `/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=**NOT** READY}} {{color=blue}}`,
+            `/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=TPA Reset}} {{color=blue}}`,
             roll => finishRoll(roll.rollId)
         );
         resetTPA();
@@ -3136,7 +3133,19 @@ function resetTPA() {
     setAttrs(output);
 }
 
-// TRANSPORTER on/off
+// TRANSPORTER Assault capacity
+on(`change:trans_on_cbt`, function(eventInfo) {    
+    getAttrs([`trans_cap_cbt`, `trans_on_cbt`], function(values) {
+        const transCbtCap = parseInt(values[`trans_cap_cbt`]) || 0;
+        const transCbtOn = parseInt(values[`trans_on_cbt`]) || 0;
+
+        const output = {};
+        output[`assault_capacity`] = transCbtCap * transCbtOn;
+        setAttrs(output);
+    });
+});
+
+// TRANSPORTER Power allocation
 on(`change:trans_num_std change:trans_on_std change:trans_num_cbt change:trans_on_cbt change:trans_num_er change:trans_on_er change:trans_num_scu change:trans_on_scu`, function(eventInfo) {
     // Determine which type triggered the event
     const triggerAttr = eventInfo.sourceAttribute;
@@ -3181,7 +3190,7 @@ on(`change:troops change:troops_max`, function(eventInfo) {
         const troopsMax = parseInt(values[`troops_max`]) || 0;
 
         const output = {};
-        output[`troop_status`] = troops <= (troopsMax * .4) || troops > troopsMax ? 1 : troops <= troopsMax * .8 ? 2 : 0;
+        output[`troop_status`] = troops > troopsMax ? 1 : troops <= troopsMax * .5 ? 2 : 0;
         setAttrs(output);
     });
 });

@@ -9,9 +9,9 @@
 var PhaseIndex = 0;
 var RoundIndex = 0; // Used to track combat rounds
 const names = ['Phase: New Round', 'Phase: Crew Rolls', 'Phase: Allocate TPA', 'Phase: Sensor Scans', 
-    'Phase 1: Movement', 'Phase 1: Targeting', 'Phase 1: Fire', 'Phase 1: Repair', 
-    'Phase 2: Movement', 'Phase 2: Targeting', 'Phase 2: Fire', 'Phase 2: Repair', 
-    'Phase 3: Movement', 'Phase 3: Targeting', 'Phase 3: Fire', 'Phase 3: Repair', 
+    'Phase 1: Movement', 'Phase 1: Targeting', 'Phase 1: Fire', 'Phase 1: Operations', 'Phase 1: Repair', 
+    'Phase 2: Movement', 'Phase 2: Targeting', 'Phase 2: Fire', 'Phase 2: Operations', 'Phase 2: Repair', 
+    'Phase 3: Movement', 'Phase 3: Targeting', 'Phase 3: Fire', 'Phase 3: Operations', 'Phase 3: Repair', 
     'Phase/Round is COMPLETE!'];
 
 const PHASE_NEWROUND = 0;
@@ -21,16 +21,19 @@ const PHASE_SENSORS = 3;
 const PHASE_1_MOVEMENT = 4;
 const PHASE_1_TARGET = 5;
 const PHASE_1_FIRE = 6;
-const PHASE_1_REPAIR = 7;
-const PHASE_2_MOVEMENT = 8;
-const PHASE_2_TARGET = 9;
-const PHASE_2_FIRE = 10;
-const PHASE_2_REPAIR = 11;
-const PHASE_3_MOVEMENT = 12;
-const PHASE_3_TARGET = 13;
-const PHASE_3_FIRE = 14;
-const PHASE_3_REPAIR = 15;
-const PHASE_ROUND_COMPLETE = 16;
+const PHASE_1_OPERATIONS = 7;
+const PHASE_1_REPAIR = 8;
+const PHASE_2_MOVEMENT = 9;
+const PHASE_2_TARGET = 10;
+const PHASE_2_FIRE = 11;
+const PHASE_2_OPERATIONS = 12;
+const PHASE_2_REPAIR = 13;
+const PHASE_3_MOVEMENT = 14;
+const PHASE_3_TARGET = 15;
+const PHASE_3_FIRE = 16;
+const PHASE_3_OPERATIONS = 17;
+const PHASE_3_REPAIR = 18;
+const PHASE_ROUND_COMPLETE = 19;
 
 // Reset name of token and phase counter
 on('chat:message', function(msg) {
@@ -206,9 +209,13 @@ function displayNewPhase () {
         case PHASE_1_FIRE: case PHASE_2_FIRE: case PHASE_3_FIRE:
             sortTurnOrder(sorter_desc);
             break;
+        case PHASE_1_OPERATIONS: case PHASE_2_OPERATIONS: case PHASE_3_OPERATIONS:
+            sendChat('Phase', `&{template:custom} {{title=**Boarding Actions?**}} {{color=blue}}`);
+            sendChat('Phase', `&{template:custom} {{title=**Self-Destruct?**}} {{color=blue}}`);
+            sendChat('Phase', `&{template:custom} {{title=**Explosions**}} {{color=blue}}`);
+            sortTurnOrder(sorter_asc);
+            break;
         case PHASE_1_REPAIR: case PHASE_2_REPAIR: case PHASE_3_REPAIR:
-            sendChat('Phase', `&{template:custom} {{title=**Transporters?**}} {{color=blue}}`);
-            sendChat('Phase', `&{template:custom} {{title=**Explosions?**}} {{color=blue}}`);
             removeEvasion();
             removeFireTokens();
             sortTurnOrder(sorter_asc);

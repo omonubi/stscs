@@ -855,7 +855,6 @@
 .ui-dialog .charsheet .trans-ison-scu[value='2'] ~ .trans-on-scu,
 .ui-dialog .charsheet .transporters-grid-status[value='1'] ~ .powertab .dc-panel span .btn-transporters-grid-state,
 .ui-dialog .charsheet .transporters-grid-status[value='9'] ~ .powertab .dc-panel span .btn-transporters-grid-state,
-.ui-dialog .charsheet .troop-status[value='1'] ~ .troops,
 .ui-dialog .charsheet .tpa-remaining-status[value='1'] ~ .tpa-remaining,
 .ui-dialog .charsheet .weapons-grid-status[value='1'] ~ .powertab .dc-panel span .btn-weapons-grid-state,
 .ui-dialog .charsheet .weapons-grid-status[value='9'] ~ .powertab .dc-panel span .btn-weapons-grid-state,
