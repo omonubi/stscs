@@ -708,7 +708,6 @@
 .ui-dialog .charsheet .sensors-status:not([value='0']) ~ .helmtab .warp-panel {
   background: linear-gradient(135deg, var(--bg-color-panel1-dmg), var(--bg-color-panel2-dmg));
   border: 2px solid #cc0000;
-  pointer-events: none;
 }
 
 .ui-dialog .charsheet .has-sensor-lock[value='0'] ~ .sensorstab .sensors-panel select[name='attr_scanquestion'],
