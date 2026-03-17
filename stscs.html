@@ -1429,7 +1429,7 @@ on(`clicked:rolldamage`, async () => {
         13, 16, 17, 6, 7, 10, 1, 2, 2, 15,
         13, 16, 6, 6, 3, 11, 1, 2, 2, 8,
 
-        14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 
+        13, 16, 6, 3, 2, 2, 1, 8, 14, 12,
         13, 16, 17, 2, 2, 2, 1, 5, 14, 12,
         13, 16, 7, 4, 2, 2, 1, 9, 14, 12,
         13, 16, 7, 7, 4, 11, 1, 2, 2, 9,
@@ -1449,7 +1449,7 @@ on(`clicked:rolldamage`, async () => {
     const damageHandlers = {
         1: async (shieldVar, baseDamage) => {
             let result = `{{Hit Location=${DAMAGE_RESULT_SUP}}} `;
-            let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
+            let { penetratingDamage, returnStr } = await damageShield(shieldArcStr, shieldVar, baseDamage);
             result += returnStr;
             if (penetratingDamage) {
                 let { residualDamage, returnStr: supReturn } = await damageSup(penetratingDamage);
@@ -1461,7 +1461,7 @@ on(`clicked:rolldamage`, async () => {
         },
         2: async (shieldVar, baseDamage) => {
             let result = `{{Hit Location=${DAMAGE_RESULT_SUP_HALF}}} `;
-            let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
+            let { penetratingDamage, returnStr } = await damageShield(shieldArcStr, shieldVar, baseDamage);
             result += returnStr;
             if (penetratingDamage) {
                 let { residualDamage, returnStr: supReturn } = await damageSup(penetratingDamage, 0.5);
@@ -1473,7 +1473,7 @@ on(`clicked:rolldamage`, async () => {
         },
         3: async (shieldVar, baseDamage) => {
             let result = `{{Hit Location=${DAMAGE_RESULT_PORT}}} `;
-            let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
+            let { penetratingDamage, returnStr } = await damageShield(shieldArcStr, shieldVar, baseDamage);
             result += returnStr;
             if (penetratingDamage) {
                 result += await handleWarpDamage(penetratingDamage, ENGINE_LOCATION_PORT);
@@ -1482,7 +1482,7 @@ on(`clicked:rolldamage`, async () => {
             },
         4: async (shieldVar, baseDamage) => {
             let result = `{{Hit Location=${DAMAGE_RESULT_STBD}}} `;
-            let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
+            let { penetratingDamage, returnStr } = await damageShield(shieldArcStr, shieldVar, baseDamage);
             result += returnStr;
             if (penetratingDamage) {
                 result += await handleWarpDamage(penetratingDamage, ENGINE_LOCATION_STBD);
@@ -1491,7 +1491,7 @@ on(`clicked:rolldamage`, async () => {
         },
         5: async (shieldVar, baseDamage) => {
             let result = `{{Hit Location=${DAMAGE_RESULT_WARP}}} `;
-            let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
+            let { penetratingDamage, returnStr } = await damageShield(shieldArcStr, shieldVar, baseDamage);
             result += returnStr;
             if (penetratingDamage) {
                 result += await handleWarpDamage(penetratingDamage, null);
@@ -1500,7 +1500,7 @@ on(`clicked:rolldamage`, async () => {
         },
         6: async (shieldVar, baseDamage) => {
             let result = `{{Hit Location=${DAMAGE_RESULT_PORT_HALF}}} `;
-            let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
+            let { penetratingDamage, returnStr } = await damageShield(shieldArcStr, shieldVar, baseDamage);
             result += returnStr;
             if (penetratingDamage) {
                 result += await handleWarpDamage(Math.floor(penetratingDamage / 2), ENGINE_LOCATION_PORT);
@@ -1509,7 +1509,7 @@ on(`clicked:rolldamage`, async () => {
         },
         7: async (shieldVar, baseDamage) => {
             let result = `{{Hit Location=${DAMAGE_RESULT_STBD_HALF}}} `;
-            let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
+            let { penetratingDamage, returnStr } = await damageShield(shieldArcStr, shieldVar, baseDamage);
             result += returnStr;
             if (penetratingDamage) {
                 result += await handleWarpDamage(Math.floor(penetratingDamage / 2), ENGINE_LOCATION_STBD);
@@ -1518,7 +1518,7 @@ on(`clicked:rolldamage`, async () => {
         },
         8: async (shieldVar, baseDamage) => {
             let result = `{{Hit Location=${DAMAGE_RESULT_SUP_PORT}}} `;
-            let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
+            let { penetratingDamage, returnStr } = await damageShield(shieldArcStr, shieldVar, baseDamage);
             result += returnStr;
             if (penetratingDamage) {
                 let penetratingDamageEng = Math.ceil(penetratingDamage / 2);
@@ -1543,7 +1543,7 @@ on(`clicked:rolldamage`, async () => {
         },
         9: async (shieldVar, baseDamage) => {
             let result = `{{Hit Location=${DAMAGE_RESULT_SUP_STBD}}} `;
-            let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
+            let { penetratingDamage, returnStr } = await damageShield(shieldArcStr, shieldVar, baseDamage);
             result += returnStr;
             if (penetratingDamage) {
                 let penetratingDamageEng = Math.ceil(penetratingDamage / 2);
@@ -1568,7 +1568,7 @@ on(`clicked:rolldamage`, async () => {
         },
         10: async (shieldVar, baseDamage) => {
             let result = `{{Hit Location=${DAMAGE_RESULT_IMP}}} `;
-            let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
+            let { penetratingDamage, returnStr } = await damageShield(shieldArcStr, shieldVar, baseDamage);
             result += returnStr;
             if (penetratingDamage) {
                 let { residualDamage, returnStr: impulseReturn } = await damageImpulse(penetratingDamage);
@@ -1582,7 +1582,7 @@ on(`clicked:rolldamage`, async () => {
         },
         11: async (shieldVar, baseDamage) => {
             let result = `{{Hit Location=${DAMAGE_RESULT_IMP_HALF}}} `;
-            let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
+            let { penetratingDamage, returnStr } = await damageShield(shieldArcStr, shieldVar, baseDamage);
             result += returnStr;
             if (penetratingDamage) {
                 let { residualDamage, returnStr: impulseReturn } = await damageImpulse(penetratingDamage, 0.5);
@@ -1596,7 +1596,7 @@ on(`clicked:rolldamage`, async () => {
         },
         12: async (shieldVar, baseDamage) => {
             let result = `{{Hit Location=${DAMAGE_RESULT_BRIDGE}}} `;
-            let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
+            let { penetratingDamage, returnStr } = await damageShield(shieldArcStr, shieldVar, baseDamage);
             result += returnStr;
             if (penetratingDamage) {
                 let { residualDamage, returnStr: supReturn } = await damageSup(1);
@@ -1612,7 +1612,7 @@ on(`clicked:rolldamage`, async () => {
         },
         13: async (shieldVar, baseDamage) => {
             let result = `{{Hit Location=${DAMAGE_RESULT_SHIELD}}} `;
-            let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
+            let { penetratingDamage, returnStr } = await damageShield(shieldArcStr, shieldVar, baseDamage);
             result += returnStr;
             if (penetratingDamage) {
                 let { residualDamage, returnStr: systemReturn } = await damageSystem(`shield_${shieldArc}`, penetratingDamage);
@@ -1626,7 +1626,7 @@ on(`clicked:rolldamage`, async () => {
         },
         14: async (shieldVar, baseDamage) => {
             let result = `{{Hit Location=${DAMAGE_RESULT_SENSORS}}} `;
-            let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
+            let { penetratingDamage, returnStr } = await damageShield(shieldArcStr, shieldVar, baseDamage);
             result += returnStr;
             if (penetratingDamage) {
                 let { residualDamage, returnStr: systemReturn } = await damageSystem(`sensors`, penetratingDamage);
@@ -1641,7 +1641,7 @@ on(`clicked:rolldamage`, async () => {
         },
         15: async (shieldVar, baseDamage) => {
             let result = `{{Hit Location=${DAMAGE_RESULT_ENG}}} `;
-            let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
+            let { penetratingDamage, returnStr } = await damageShield(shieldArcStr, shieldVar, baseDamage);
             result += returnStr;
             if (penetratingDamage) {
                 const gridNames = [`Shields`, `Weapons`, `Movement`, `Transporters`];
@@ -1656,7 +1656,7 @@ on(`clicked:rolldamage`, async () => {
         },
         16: async (shieldVar, baseDamage) => {
             let result = `{{Hit Location=${DAMAGE_RESULT_BEAM}}} `;
-            let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
+            let { penetratingDamage, returnStr } = await damageShield(shieldArcStr, shieldVar, baseDamage);
             result += returnStr;
             if (penetratingDamage) {
                 let { residualDamage, returnStr: weaponReturn } = await damageWeapon(shieldArc, `repeating_beams`, penetratingDamage);
@@ -1670,7 +1670,7 @@ on(`clicked:rolldamage`, async () => {
         },
         17: async (shieldVar, baseDamage) => {
             let result = `{{Hit Location=${DAMAGE_RESULT_MISSILE}}} `;
-            let { penetratingDamage, returnStr } = await damageShield(shieldVar, baseDamage);
+            let { penetratingDamage, returnStr } = await damageShield(shieldArcStr, shieldVar, baseDamage);
             result += returnStr;
             if (penetratingDamage) {
                 let { residualDamage, returnStr: weaponReturn } = await damageWeapon(shieldArc, `repeating_missiles`, penetratingDamage);
@@ -1824,7 +1824,7 @@ async function damageImpulse(myDmg = 0, myFactor = 1) {
 
 // DAMAGE SHIELD
 // Note: This is damage to the shield value, NOT the shield generator (see damageSystem).
-async function damageShield(myShieldVar = ``, myDmg = 0) {
+async function damageShield(myShieldArcStr = ``, myShieldVar = ``, myDmg = 0) {
     const values = await getAttrsAsync([myShieldVar, `spr_1`, `spr_2`]);
     const shieldPower = parseInt(values[myShieldVar]) || 0;
     const spr = (parseInt(values[`spr_1`]) || 1) / (parseInt(values[`spr_2`]) || 1);
@@ -1838,6 +1838,13 @@ async function damageShield(myShieldVar = ``, myDmg = 0) {
     const output = {};
     output[myShieldVar] = newShieldPower;
     await setAttrsAsync(output);
+
+    if (newShieldPower == 0) {
+            await startRoll(
+            `&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=**Shield is down!**}} {{color=red}} {{Facing=${myShieldArcStr}}}`,
+            roll => finishRoll(roll.rollId)
+        );
+    } 
 
     const returnStr = ` {{Shield Strength=${shieldPower}}} {{Damage Absorbed=${damageAbsorbed}}} {{Penetrating Dmg=[[${penetratingDamage}]]}}`;
     return { penetratingDamage, returnStr };
