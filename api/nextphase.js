@@ -210,7 +210,7 @@ function displayNewPhase () {
             sortTurnOrder(sorter_desc);
             break;
         case PHASE_1_OPERATIONS: case PHASE_2_OPERATIONS: case PHASE_3_OPERATIONS:
-            sendChat('Phase', `&{template:custom} {{title=**Boarding Actions?**}} {{color=blue}}`);
+            sendChat('Phase', `&{template:custom} {{title=**Transporters?**}} {{color=blue}}`);
             sendChat('Phase', `&{template:custom} {{title=**Self-Destruct?**}} {{color=blue}}`);
             sendChat('Phase', `&{template:custom} {{title=**Explosions**}} {{color=blue}}`);
             sortTurnOrder(sorter_asc);
