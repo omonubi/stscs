@@ -29,6 +29,7 @@
   --tab-color-helmtab: #ddddff;
   --tab-color-shieldstab: #ddffdd;
   --tab-color-weaponstab: #ffdddd;
+  --tab-color-transporterstab: #ddffff;
   --tab-color-settingstab: #eeeeee;
 }
 
@@ -60,6 +61,7 @@
   --tab-color-helmtab: #000044;
   --tab-color-shieldstab: #004400;
   --tab-color-weaponstab: #440000;
+  --tab-color-transporterstab: #004444;
   --tab-color-settingstab: #333333;
 }
 
@@ -271,9 +273,11 @@
 .ui-dialog .charsheet .btn-weaponstab {
   background-color: var(--tab-color-weaponstab);
 }
-.ui-dialog .charsheet .btn-constructiontab,
-.ui-dialog .charsheet .btn-settingstab,
 .ui-dialog .charsheet .btn-transporterstab {
+  background-color: var(--tab-color-transporterstab);
+}
+.ui-dialog .charsheet .btn-constructiontab,
+.ui-dialog .charsheet .btn-settingstab {
   background-color: var(--tab-color-settingstab);
 }
 
