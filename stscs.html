@@ -2576,11 +2576,11 @@ on(`clicked:scan_cloak`, async (event) => {
     
     if(scanTargetExists) {
         const range = parseInt(+await extractChatData(`?{Range|30}`) || 0);
-        const speed = parseInt(+await extractChatData(`?{Is Moving|No,0|Yes,2}`) || 0);
         const isDestroyer = parseInt(+await extractChatData(`?{Is Destroyer|No,0|Yes,1}`) || 0);
 
-        const values = await getAttrsAsync(['ship_has_scanned']); // Has the cloaked vessel used scanners?
-        const shipHasScanned = parseInt(values['ship_has_scanned'] || 0);
+        const values = await getAttrsAsync([`mp`, `ship_has_scanned`]); // Has the cloaked vessel used scanners?
+        const speed = parseInt(values[`mp`] || 0) > 0 ? 2 : 0; // Is the cloaked vessel moving?
+        const shipHasScanned = parseInt(values[`ship_has_scanned`] || 0);
         const numWarpEngines = await getNumWarpEngines();
 
         const result = getRandomIntInclusive(1,10);
