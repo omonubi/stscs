@@ -1429,7 +1429,7 @@ on(`clicked:rolldamage`, async () => {
         13, 16, 17, 6, 7, 10, 1, 2, 2, 15,
         13, 16, 6, 6, 3, 11, 1, 2, 2, 8,
 
-        13, 16, 6, 3, 2, 2, 1, 8, 14, 12,
+        17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
         13, 16, 17, 2, 2, 2, 1, 5, 14, 12,
         13, 16, 7, 4, 2, 2, 1, 9, 14, 12,
         13, 16, 7, 7, 4, 11, 1, 2, 2, 9,
@@ -2105,6 +2105,43 @@ async function damageWeapon(myShieldNum = 1, myRepeatingSection = ``, myDmg = 0)
             updateObj[`${myRepeatingSection}_${id}_state`] = newState;
             updateObj[`${myRepeatingSection}_${id}_weapon_state_status`] = REPAIR_IS_LOCKED;
             await setAttrsAsync(updateObj);
+
+            // Check if this is a plasma weapon; if so, find and damage the matching paired entry
+            const weaponFullName = rowAttrs[`${myRepeatingSection}_${id}_name`];
+            const isPlasmaBolt = await getPlasmaBoltDamage(weaponFullName, 1);
+            if (isPlasmaBolt !== null) {
+                // Extract the numeric designator (e.g. "3" from "#3 GPL-5" or "#3h GPL-5")
+                const plasmaNumericMatch = weaponFullName.match(/^#(\d{1,2})/);
+                if (plasmaNumericMatch) {
+                    const plasmaNumber = plasmaNumericMatch[1]; // e.g. "3"
+                    const allIds = await getSectionIDsAsync(myRepeatingSection);
+                    const pairedFieldnames = allIds.flatMap(pid => [
+                        `${myRepeatingSection}_${pid}_name`,
+                        `${myRepeatingSection}_${pid}_state`
+                    ]);
+                    const pairedValues = await getAttrsAsync(pairedFieldnames);
+
+                    for (const pid of allIds) {
+                        if (pid === id) continue; // skip the already-damaged weapon
+                        const pairedName = pairedValues[`${myRepeatingSection}_${pid}_name`] || ``;
+                        // Match same number but must NOT be the same full name
+                        const pairedNumericMatch = pairedName.match(/^#(\d{1,2})/);
+                        if (pairedNumericMatch && pairedNumericMatch[1] === plasmaNumber && pairedName !== weaponFullName) {
+                            let pairedState = parseInt(pairedValues[`${myRepeatingSection}_${pid}_state`]) || 0;
+                            if (pairedState == WEAPON_IS_UNDAMAGED) {
+                                pairedState = WEAPON_IS_DAMAGED;
+                            } else if (pairedState == WEAPON_IS_REPAIRED) {
+                                pairedState = WEAPON_IS_DESTROYED;
+                            }
+                            const pairedUpdateObj = {};
+                            pairedUpdateObj[`${myRepeatingSection}_${pid}_state`] = pairedState;
+                            pairedUpdateObj[`${myRepeatingSection}_${pid}_weapon_state_status`] = REPAIR_IS_LOCKED;
+                            await setAttrsAsync(pairedUpdateObj);
+                            break; // Only one paired entry expected
+                        }
+                    }
+                }
+            }
             
             bankedNames.push(rowAttrs[`${myRepeatingSection}_${id}_name`]);
 
