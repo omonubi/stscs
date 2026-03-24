@@ -270,6 +270,28 @@ on('chat:message', function(msg) {
                     } else if (shipIsCloaked.get('current') == 0) {
                         shipIsCloaked.setWithWorker({ current: 1 });
                         sendChat(`character|${charId}`, `&{template:custom} {{title=**[${charName}](https://journal.roll20.net/character/${charId})**}} {{subtitle=Cloaking Status}} {{color=purple}} {{Status=Cloaking...}}`);
+                        
+                        // Clear sensorlock on other tokens that have this ship's name
+                        var allTokens = findObjs({ _type: 'graphic', _pageid: token.get('_pageid') });
+                        _.each(allTokens, function(otherToken) {
+                            if (otherToken.id === token.id) return; // Skip the cloaking ship itself
+                            
+                            var otherCharId = otherToken.get('represents');
+                            if (!otherCharId) return;
+                            
+                            var sensorlock = findObjs({
+                                _type: 'attribute',
+                                characterid: otherCharId,
+                                name: 'sensorlock'
+                            })[0];
+                            
+                            if (sensorlock) {
+                                if (sensorlock.get('current') === charName) {
+                                    sensorlock.setWithWorker({ current: '' });
+                                }
+                            }
+                        });
+                        
                     } else {
                         shipIsCloaked.setWithWorker({ current: 0 });
                         sendChat(`character|${charId}`, `&{template:custom} {{title=**[${charName}](https://journal.roll20.net/character/${charId})**}} {{subtitle=Cloaking Status}} {{color=purple}} {{Status=Decloaking...}}`);
