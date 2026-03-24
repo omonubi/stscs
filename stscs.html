@@ -2271,6 +2271,35 @@ on(`clicked:repeating_beams:weapon-repair clicked:repeating_missiles:weapon-repa
 
             await setAttrsAsync(updateObj);
 
+            // Check if this is a plasma weapon; if so, find and update the matching paired entry
+            const isPlasmaBolt = await getPlasmaBoltDamage(wpnName, 1);
+            if (isPlasmaBolt !== null) {
+                const plasmaNumericMatch = wpnName.match(/^#(\d{1,2})/);
+                if (plasmaNumericMatch) {
+                    const plasmaNumber = plasmaNumericMatch[1];
+                    const myRepeatingSection = `repeating_${section}`;
+                    const allIds = await getSectionIDsAsync(myRepeatingSection);
+                    const pairedFieldnames = allIds.flatMap(pid => [
+                        `${myRepeatingSection}_${pid}_name`,
+                        `${myRepeatingSection}_${pid}_state`
+                    ]);
+                    const pairedValues = await getAttrsAsync(pairedFieldnames);
+
+                    for (const pid of allIds) {
+                        if (pid === rowID) continue; // skip the already-repaired weapon
+                        const pairedName = pairedValues[`${myRepeatingSection}_${pid}_name`] || ``;
+                        const pairedNumericMatch = pairedName.match(/^#(\d{1,2})/);
+                        if (pairedNumericMatch && pairedNumericMatch[1] === plasmaNumber && pairedName !== wpnName) {
+                            const pairedUpdateObj = {};
+                            pairedUpdateObj[`${myRepeatingSection}_${pid}_state`] = 2;
+                            pairedUpdateObj[`${myRepeatingSection}_${pid}_weapon_state_status`] = 2;
+                            await setAttrsAsync(pairedUpdateObj);
+                            break; // Only one paired entry expected
+                        }
+                    }
+                }
+            }
+
             await updateWeaponsPercent();
         }
     }
