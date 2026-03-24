@@ -889,7 +889,7 @@
     </section>
     <!-------------------------------------------------------->
     <section class='constructiontab'>
-        <div class='grid-6col construction-panel'>
+        <div class='grid-6col combat-efficiency-panel'>
             <h4 class='span-grid'>Combat Efficiency</h4>
 
             <label>Defense:</label>
@@ -901,7 +901,19 @@
         </div>
         <br/>
 
-        <div class='grid-6col construction-panel'>
+        <div class='grid-6col combat-history-panel'>
+            <h4 class='span-grid'>Combat History</h4>
+
+            <label>Battles:</label>
+            <input type='number' class='w6' name='attr_battles' min='0' value='0'/>
+            <label>Victories:</label>
+            <input type='number' class='w6' name='attr_victories' min='0' value='0'/>
+            <label>Losses:</label>
+            <input type='number' class='w6' name='attr_losses' min='0' value='0'/>
+        </div>
+        <br/>
+
+        <div class='grid-6col construction-data-panel'>
             <h4 class='span-grid'>Classification Data</h4>
 
             <label>Vessel Class:</label>
@@ -959,7 +971,7 @@
         </div>
         <br/>
 
-        <div class='grid-6col hull-panel'>
+        <div class='grid-6col hull-data-panel'>
             <h4 class='span-grid'>Hull Data</h4>
 
             <label>Superstructure:</label>
