@@ -134,6 +134,7 @@ on('change:campaign:turnorder', function() {
             PhaseIndex ++;
     	    myObj.set('name', names[PhaseIndex]);
     	    displayNewPhase();
+    	    setCurrentPhase();
         } else if (!myObj.get('name').startsWith('Round')) {
             // This is NOT a new phase or round so must be a vessel
             const myLayer = myObj.get('layer');

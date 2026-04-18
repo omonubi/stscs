@@ -2198,7 +2198,7 @@ on(`change:mp change:mpr_1 change:mpr_2`, function(eventInfo) {
 // PHASE UPDATED
 on(`change:current_phase`, async (event) => {
     const currentPhase = parseInt(event.newValue) || 0;
-    const isFiringPhase = (currentPhase === 6 || currentPhase === 10 || currentPhase === 14) ? 1 : 0;
+    const isFiringPhase = (currentPhase === 6 || currentPhase === 11 || currentPhase === 16) ? 1 : 0;
 
     await setAttrsAsync({
             'is_firing_phase': isFiringPhase
