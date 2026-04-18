@@ -179,6 +179,71 @@
         <br/>
     </section>
     <!-------------------------------------------------------->
+    <!-------------------------------------------------------->
+    <section class='sensorstab'>
+        <input type='hidden' class='sensors-destroyed' name='attr_sensors_destroyed' value='0'/>
+        <div class='grid-6col sensors-panel'>
+            <h4 class='span-grid'>Current Lock</h4>
+            
+            <span class='span2'>
+                <input type='text' class='scan-lock' name='attr_sensorlock' placeholder='No target lock...' readonly/>
+            </span>
+            <input type='hidden' class='w12' name='attr_sensorlockid'/>
+            <span class='span2'>
+                <select class='scan-question' name='attr_scanquestion'>
+                    <option value='0'>Submit a query...</option>
+                    <!--<option value='1'>How much power is available?</option>-->
+                    <option value='2'>How is power allocated?</option>
+                    <option value='3'>How are the shields powered?</option>
+                    <!--<option value='4'>Is a specific shield up?</option>-->
+                    <option value='5'>How are the beam weapons powered?</option>
+                    <option value='6'>How are the missile weapons powered?</option>
+                    <!--<option value='7'>Is a specific weapon powered?</option>-->
+                    <option value='8'>How much damage has been taken?</option>
+                    <option value='9'>What is the status of the crew?</option>
+                    <!--<option value='10'>Are any transporters powered?</option>-->
+                    <option value='11'>Is the #1 (f/p) shield powered?</option>
+                    <option value='12'>Is the #2 (fwd) shield powered?</option>
+                    <option value='13'>Is the #3 (f/s) shield powered?</option>
+                    <option value='14'>Is the #4 (a/s) shield powered?</option>
+                    <option value='15'>Is the #5 (aft) shield powered?</option>
+                    <option value='16'>Is the #6 (a/p) shield powered?</option>
+                </select>
+            </span>
+            <span></span>
+            <button type='action' class='btn btn-scan' name='act_scan'>Scan Target</button>
+            <button type='roll' class='btn btn-nosensors critical' name='roll_nosensors' value='/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=SENSORS OFFLINE}} {{color=green}}'>Sensors Offline</button>
+            
+            <button type='action' class='btn gm-only btn-send' name='act_send_alloc' title='DO NOT CLICK'>Alloc</button>
+            <button type='action' class='btn gm-only btn-send' name='act_send_beams' title='DO NOT CLICK'>Beams</button>
+            <button type='action' class='btn gm-only btn-send' name='act_send_crew' title='DO NOT CLICK'>Crew</button>
+            <button type='action' class='btn gm-only btn-send' name='act_send_damage' title='DO NOT CLICK'>Damage</button>
+            <button type='action' class='btn gm-only btn-send' name='act_send_missiles' title='DO NOT CLICK'>Missiles</button>
+            <button type='action' class='btn gm-only btn-send' name='act_send_shields' title='DO NOT CLICK'>Shields</button>
+
+            <button type='action' class='btn gm-only btn-send' name='act_send_shield_1' title='DO NOT CLICK'>Shield 1</button>
+            <button type='action' class='btn gm-only btn-send' name='act_send_shield_2' title='DO NOT CLICK'>Shield 2</button>
+            <button type='action' class='btn gm-only btn-send' name='act_send_shield_3' title='DO NOT CLICK'>Shield 3</button>
+            <button type='action' class='btn gm-only btn-send' name='act_send_shield_4' title='DO NOT CLICK'>Shield 4</button>
+            <button type='action' class='btn gm-only btn-send' name='act_send_shield_5' title='DO NOT CLICK'>Shield 5</button>
+            <button type='action' class='btn gm-only btn-send' name='act_send_shield_6' title='DO NOT CLICK'>Shield 6</button>
+        </div>
+        <br/>
+        
+        <div class='grid-6col cloak-panel'>
+            <h4 class='span-grid'>Cloaking Device</h4>
+            <input type='hidden' name='attr_tpa_cloak'/>
+
+            <label>Power Required:</label>
+            <input type='number' class='w5' name='attr_tpa_cloak_required' min='0' value='0'/>
+            <label>Power Available:</label>
+            <input type='hidden' class='tpa-remaining-status' name='attr_tpa_remaining_status'/>
+            <input type='number' class='tpa-remaining w5' name='attr_tpa_remaining'  value='0' readonly/>
+            <span><label><strong>Armed:</strong></label> <input type='checkbox' name='attr_cloak_is_armed' value='1'/></span>
+            <button type='action' class='btn gm-only' name='act_scan_cloak' title='DO NOT CLICK'>Scan Me</button>
+        </div>
+        <br/>
+    </section>
     <section class='powertab'>
         <div class='grid-6col dc-panel'>  
             <h4 class='span-grid'>Power Grids</h4>
@@ -254,15 +319,19 @@
         <br/>
         
         <div class='grid-6col engines-panel'>    
-            <h4 class='span-grid'>Engines</h4>
-
-            <div class='span-grid'>
+            <h4 class='span-grid'>Engines</h4>            
+            <span style='grid-column: 1/5;'>
                 <label style='padding-left: 32px;'>Model</label>
                 <label style='padding-left: 42px;'>Type</label>
                 <label style='padding-left: 70px;'>Location</label>
                 <label style='padding-left: 50px;'>Power</label>
                 <label style='padding-left: 26px;'>Max</label>
-            </div>
+            </span>
+            <label>Power Available:</label>
+            <span>
+                <input type='hidden' class='tpa-remaining-status' name='attr_tpa_remaining_status'/>
+                <input type='number' class='tpa-remaining w5' name='attr_tpa_remaining'  value='0' readonly/>
+            </span>
             <fieldset class='repeating_engines'>
                 <input type='text' class='w10' name='attr_engine_model' placeholder='model...'/>
                 <select class='w10' name='attr_engine_type'>
@@ -280,71 +349,6 @@
                 <input type='number' class='w5 engine-power' name='attr_engine_power' min='0' value='0'/> / <input type='number' class='w5' name='attr_engine_power_full' min='0' value='0'/>
             </fieldset>
         </div>
-    </section>
-    <!-------------------------------------------------------->
-    <section class='sensorstab'>
-        <input type='hidden' class='sensors-destroyed' name='attr_sensors_destroyed' value='0'/>
-        <div class='grid-6col sensors-panel'>
-            <h4 class='span-grid'>Current Lock</h4>
-            
-            <span class='span2'>
-                <input type='text' class='scan-lock' name='attr_sensorlock' placeholder='No target lock...' readonly/>
-            </span>
-            <input type='hidden' class='w12' name='attr_sensorlockid'/>
-            <span class='span2'>
-                <select class='scan-question' name='attr_scanquestion'>
-                    <option value='0'>Submit a query...</option>
-                    <!--<option value='1'>How much power is available?</option>-->
-                    <option value='2'>How is power allocated?</option>
-                    <option value='3'>How are the shields powered?</option>
-                    <!--<option value='4'>Is a specific shield up?</option>-->
-                    <option value='5'>How are the beam weapons powered?</option>
-                    <option value='6'>How are the missile weapons powered?</option>
-                    <!--<option value='7'>Is a specific weapon powered?</option>-->
-                    <option value='8'>How much damage has been taken?</option>
-                    <option value='9'>What is the status of the crew?</option>
-                    <!--<option value='10'>Are any transporters powered?</option>-->
-                    <option value='11'>Is the #1 (f/p) shield powered?</option>
-                    <option value='12'>Is the #2 (fwd) shield powered?</option>
-                    <option value='13'>Is the #3 (f/s) shield powered?</option>
-                    <option value='14'>Is the #4 (a/s) shield powered?</option>
-                    <option value='15'>Is the #5 (aft) shield powered?</option>
-                    <option value='16'>Is the #6 (a/p) shield powered?</option>
-                </select>
-            </span>
-            <span></span>
-            <button type='action' class='btn btn-scan' name='act_scan'>Scan Target</button>
-            <button type='roll' class='btn btn-nosensors critical' name='roll_nosensors' value='/w gm &{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=SENSORS OFFLINE}} {{color=green}}'>Sensors Offline</button>
-            
-            <button type='action' class='btn gm-only btn-send' name='act_send_alloc' title='DO NOT CLICK'>Alloc</button>
-            <button type='action' class='btn gm-only btn-send' name='act_send_beams' title='DO NOT CLICK'>Beams</button>
-            <button type='action' class='btn gm-only btn-send' name='act_send_crew' title='DO NOT CLICK'>Crew</button>
-            <button type='action' class='btn gm-only btn-send' name='act_send_damage' title='DO NOT CLICK'>Damage</button>
-            <button type='action' class='btn gm-only btn-send' name='act_send_missiles' title='DO NOT CLICK'>Missiles</button>
-            <button type='action' class='btn gm-only btn-send' name='act_send_shields' title='DO NOT CLICK'>Shields</button>
-
-            <button type='action' class='btn gm-only btn-send' name='act_send_shield_1' title='DO NOT CLICK'>Shield 1</button>
-            <button type='action' class='btn gm-only btn-send' name='act_send_shield_2' title='DO NOT CLICK'>Shield 2</button>
-            <button type='action' class='btn gm-only btn-send' name='act_send_shield_3' title='DO NOT CLICK'>Shield 3</button>
-            <button type='action' class='btn gm-only btn-send' name='act_send_shield_4' title='DO NOT CLICK'>Shield 4</button>
-            <button type='action' class='btn gm-only btn-send' name='act_send_shield_5' title='DO NOT CLICK'>Shield 5</button>
-            <button type='action' class='btn gm-only btn-send' name='act_send_shield_6' title='DO NOT CLICK'>Shield 6</button>
-        </div>
-        <br/>
-        
-        <div class='grid-6col cloak-panel'>
-            <h4 class='span-grid'>Cloaking Device</h4>
-            <input type='hidden' name='attr_tpa_cloak'/>
-
-            <label>Power Required:</label>
-            <input type='number' class='w5' name='attr_tpa_cloak_required' min='0' value='0'/>
-            <label>Power Available:</label>
-            <input type='hidden' class='tpa-remaining-status' name='attr_tpa_remaining_status'/>
-            <input type='number' class='tpa-remaining w5' name='attr_tpa_remaining'  value='0' readonly/>
-            <span><label><strong>Armed:</strong></label> <input type='checkbox' name='attr_cloak_is_armed' value='1'/></span>
-            <button type='action' class='btn gm-only' name='act_scan_cloak' title='DO NOT CLICK'>Scan Me</button>
-        </div>
-        <br/>
     </section>
     <!-------------------------------------------------------->
     <section class='helmtab'>
