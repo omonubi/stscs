@@ -143,6 +143,8 @@ on('change:campaign:turnorder', function() {
             const lock = lockAttr ? lockAttr[0].get('current') != `` ? lockAttr[0].get('current') : `None` : 0;
             const mpAttr = findObjs({ type: 'attribute', characterid: characterId, name: 'mp' });
             const mp = mpAttr ? mpAttr[0].get('current') : 0;
+            const totalTargetedWeaponsAttr = findObjs({ type: 'attribute', characterid: characterId, name: 'total_targeted_weapons' });
+            const totalTargetedWeapons = totalTargetedWeaponsAttr ? totalTargetedWeaponsAttr[0].get('current') : 0;
             
             // If the current phase is a movement phase, display the vessel's current MP for the phase
             let noCurrentMove = 0;
@@ -176,6 +178,11 @@ on('change:campaign:turnorder', function() {
                         sendChat('Vessel', `&{template:custom} {{title=[**${myObj.get('name')} - ? MP**](http://journal.roll20.net/character/${characterId})}}`);
                         sendChat('Vessel', `/w GM &{template:custom} {{title=[**${myObj.get('name')} - ${Math.floor(mp / 3) + Math.floor((mp % 3) / 2)} MP**](http://journal.roll20.net/character/${characterId})}}`);
                     }
+                    break;
+                case PHASE_1_FIRE:
+                case PHASE_2_FIRE:
+                case PHASE_3_FIRE:
+                    sendChat('Vessel', `&{template:custom} {{title=[**${myObj.get('name')} (${totalTargetedWeapons})**](http://journal.roll20.net/character/${characterId})}}`);
                     break;
                 default:
                     sendChat('Vessel', `&{template:custom} {{title=[**${myObj.get('name')}**](http://journal.roll20.net/character/${characterId})}}`);

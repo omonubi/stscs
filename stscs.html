@@ -613,6 +613,7 @@
     <!-------------------------------------------------------->
     <section class='weaponstab'>
         <input type='hidden' name='attr_crewbonustohitapplied' value='0'/>
+        <input type='hidden' name='attr_total_targeted_weapons' value='0'/>
         <div class='grid-6col fc-panel'>
             <h4 class='span-grid'>Fire Control
                 <input type='hidden' class='crewbonus1' name='attr_crewbonus1' value='0'/>
@@ -1102,7 +1103,8 @@ const ROLL20_CHAR_URL = `https://journal.roll20.net/character/`;
 on(`sheet:opened`, async function(eventInfo) {
     const values = await getAttrsAsync([
         `character_name`, `sensorlock`, `mp`, `sup-percent`, `tpa-percent`, 
-        `shields-percent`, `weapons-percent`, `crew-percent`, `spr_1`, `spr_2`, 
+        `shields-percent`, `weapons-percent`, `crew-percent`, `spr_1`, `spr_2`,
+        `total_targeted_weapons`, 
         `troops`, `troops_max`]);
     const charactername = values[`character_name`];
     const sensorLock = values[`sensorlock`] || ``;
@@ -1114,6 +1116,7 @@ on(`sheet:opened`, async function(eventInfo) {
     const crewPercent = parseInt(values[`crew-percent`]) || -1;
     const dac = Math.round((parseInt(values[`spr_1`]) || 1) / (parseInt(values[`spr_2`]) || 1) * 100);
     const dacStr = `${dac}%`;
+    const totalTargetedWeapons = parseInt(values[`total_targeted_weapons`]) || -1;
     const troops = parseInt(values[`troops`]);
     const troopsMax = parseInt(values[`troops_max`]) || 0;
     
@@ -1135,6 +1138,7 @@ on(`sheet:opened`, async function(eventInfo) {
     output[`crew-percent`] = crewPercent == -1 ? 100 : crewPercent;
     output[`wfr_1`] = 1;
     output[`shield_dac`] = dacStr;
+    output[`total_targeted_weapons`] = totalTargetedWeapons === -1 ? 0 : totalTargetedWeapons;
     output[`troops_max`] = troopsMax;
     output[`troops`] = troops < 0 ? troopsMax : troops;
     output[`ship_has_troops`] = troopsMax > 0 ? 1 : 0;
@@ -3465,6 +3469,7 @@ on(`clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target`, a
     output[`${row}_btn-fire_status`] = 0;
 
     await setAttrsAsync(output);
+    setTotalTargetedWeapons();
 
     // Get target input
     const { tokenName, charId, isCloaked, hasECM, defense_mod } = await extractTargetData(); // Destructure JSON
@@ -3544,6 +3549,7 @@ on(`clicked:repeating_beams:btn-target clicked:repeating_missiles:btn-target`, a
         startRoll(`&{template:custom} {{title=**[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Target Out of Range}} {{Weapon=${wpnName}}} {{Max Range=${wpnMaxRange} hexes}} {{Target=${tokenName}}} {{Distance=${wpnTargetDistance} hexes}}`, roll => finishRoll(roll.rollId));
     }
     await setAttrsAsync(output);
+    setTotalTargetedWeapons();
 });
 
 async function calculateMultiTargetPenalty(typeIsMulti, charId) {
@@ -3686,6 +3692,41 @@ function getToHit (chart, distance) {
     const toHit = ranges[index + Math.min(distance, MAX_WPN_DISTANCE)];
 
     return isNaN(toHit) ? 0 : toHit;
+}
+
+function setTotalTargetedWeapons () {
+    Promise.all([
+        getSectionIDsAsync(`repeating_beams`),
+        getSectionIDsAsync(`repeating_missiles`)
+    ]).then(([beamIds, missileIds]) => {
+        const fieldnames = [];
+
+        beamIds.forEach(id => {
+            fieldnames.push(`repeating_beams_${id}_target_name`);
+        });
+
+        missileIds.forEach(id => {
+            fieldnames.push(`repeating_missiles_${id}_target_name`);
+        });
+
+        return getAttrsAsync(fieldnames);
+    }).then(values => {
+        let totalTargetedWeapons = 0;
+
+        Object.values(values).forEach(value => {
+            if (typeof value === `string` && value.trim() !== ``) {
+                totalTargetedWeapons++;
+            }
+        });
+
+        setAttrs({
+            total_targeted_weapons: totalTargetedWeapons
+        });
+    }).catch(() => {
+        setAttrs({
+            total_targeted_weapons: 0
+        });
+    });
 }
 
 // Determine damage from plasma bolts based on given name
@@ -3835,6 +3876,8 @@ on(`clicked:repeating_beams:btn-fire clicked:repeating_missiles:btn-fire`, async
             `&{template:custom} {{title=@{banner_${faction}fire${section}} **[@{character_name}](${ROLL20_CHAR_URL}@{character_id})**}} {{subtitle=Weapons Fired}} {{color=red}} {{Weapons=${weaponNames.join(`\\n`)}}} {{Target=[${targetName}](${ROLL20_CHAR_URL}${targetId})}} ${evasionStr} {{To-Hit=[[${targetToHit}]] or less}} {{Roll=[[1d10cs>11cf<0]]}} {{Slim-To-Hit=[[${targetSlimToHit}]]}} {{Slim-Roll=[[1d10cs>11cf<0]]}} {{Damage=${damageList.join(`, `)}}} ${rollForGrazeStr}`,
             roll => finishRoll(roll.rollId)
         );
+        
+        setTotalTargetedWeapons();
     });
 
 // WEAPON POWER (BEAM) ALLOCATION calculations
